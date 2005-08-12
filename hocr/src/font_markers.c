@@ -943,15 +943,10 @@ has_bet_mark (GdkPixbuf * pix, box font)
 	     end_of_right_bar + 1, font.y2) == 0)
 		return 0;
 
-//      if (find_vertical_notch_up_to_left
-//          (pix, font.x1 + font.width / 5, font.y1, font.x2 - font.width /3,
-//           font.y1 + font.hight/3) == 1)
-//              return 0;
-
-	//if (find_vertical_path
-	//    (pix, font.x1 + font.width / 4, font.y1,
-	//     font.x1 + 3 * font.width / 4, font.y1 + font.hight / 4) == 1)
-	//      return 0;
+    if (find_vertical_path
+	    (pix, font.x1 + font.width / 3, font.y1,
+	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3) == 1)
+	      return 0;
 
 	return 1;
 }
@@ -1350,27 +1345,6 @@ has_kaf_mark (GdkPixbuf * pix, box font)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
-
-	if (number_of_bars != 1)
-		return 0;
-
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y2 - font.hight / 4,
-				     &start_of_right_bar, &end_of_right_bar);
-
-	if (number_of_bars != 1)
-		return 0;
-
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y2 - 2,
-				     &start_of_right_bar, &end_of_right_bar);
-
-	if (number_of_bars != 1)
-		return 0;
-
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y2 - 3,
 				     &start_of_right_bar, &end_of_right_bar);
 
 	if (number_of_bars != 1)
