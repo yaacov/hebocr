@@ -32,10 +32,16 @@ void
 on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
+on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data);
+
+void
 on_toolbutton_save_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
-on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data);
+on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data);
+
+void
+on_toolbutton_spell_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
 on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data);

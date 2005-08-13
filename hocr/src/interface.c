@@ -47,15 +47,15 @@ create_window1 (void)
 	GtkWidget *toolbar;
 	GtkIconSize tmp_toolbar_icon_size;
 	GtkWidget *toolbutton_open;
-	GtkWidget *toolbutton_save;
 	GtkWidget *toolbutton_apply;
+	GtkWidget *toolbutton_save;
+	GtkWidget *toolbutton_about;
+	GtkWidget *toolbutton_spell;
 	GtkWidget *toolbutton_quit;
-	GtkWidget *notebook;
+	GtkWidget *vpaned1;
 	GtkWidget *scrolledwindow_image;
 	GtkWidget *viewport1;
-	GtkWidget *label1;
 	GtkWidget *scrolledwindow_text;
-	GtkWidget *label2;
 	GtkTooltips *tooltips;
 
 	PangoFontDescription *font_desc;
@@ -63,7 +63,7 @@ create_window1 (void)
 	tooltips = gtk_tooltips_new ();
 
 	window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request (window1, 800, 400);
+	gtk_widget_set_size_request (window1, 800, 600);
 	gtk_window_set_title (GTK_WINDOW (window1), _("hocr-gui"));
 
 	vbox1 = gtk_vbox_new (FALSE, 0);
@@ -84,6 +84,13 @@ create_window1 (void)
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_open), tooltips,
 				   _("Open a new picture for the OCR"), NULL);
 
+	toolbutton_apply =
+		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-apply");
+	gtk_widget_show (toolbutton_apply);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_apply);
+	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_apply), tooltips,
+				   _("Convert picture to text"), NULL);
+
 	toolbutton_save =
 		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-save");
 	gtk_widget_show (toolbutton_save);
@@ -92,12 +99,20 @@ create_window1 (void)
 				   _("Save the text created by the OCR"),
 				   NULL);
 
-	toolbutton_apply =
-		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-apply");
-	gtk_widget_show (toolbutton_apply);
-	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_apply);
-	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_apply), tooltips,
-				   _("Convert picture to text"), NULL);
+	toolbutton_spell =
+		(GtkWidget *)
+		gtk_tool_button_new_from_stock ("gtk-spell-check");
+	gtk_widget_show (toolbutton_spell);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_spell);
+	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_spell), tooltips,
+				   _("Spell check the text"), NULL);
+
+	toolbutton_about =
+		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-about");
+	gtk_widget_show (toolbutton_about);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_about);
+	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_about), tooltips,
+				   _("About this application"), NULL);
 
 	toolbutton_quit =
 		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-quit");
@@ -106,13 +121,17 @@ create_window1 (void)
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_quit), tooltips,
 				   _("Quit this program"), NULL);
 
-	notebook = gtk_notebook_new ();
-	gtk_widget_show (notebook);
-	gtk_box_pack_start (GTK_BOX (vbox1), notebook, TRUE, TRUE, 0);
+	vpaned1 = gtk_vpaned_new ();
+	gtk_widget_show (vpaned1);
+	gtk_container_add (GTK_CONTAINER (vbox1), vpaned1);
 
 	scrolledwindow_image = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy ((GtkScrolledWindow *)
+					scrolledwindow_image,
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
 	gtk_widget_show (scrolledwindow_image);
-	gtk_container_add (GTK_CONTAINER (notebook), scrolledwindow_image);
+	gtk_container_add (GTK_CONTAINER (vpaned1), scrolledwindow_image);
 
 	viewport1 = gtk_viewport_new (NULL, NULL);
 	gtk_widget_show (viewport1);
@@ -122,16 +141,13 @@ create_window1 (void)
 	gtk_widget_show (image);
 	gtk_container_add (GTK_CONTAINER (viewport1), image);
 
-	label1 = gtk_label_new (_("Picture"));
-	gtk_widget_show (label1);
-	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook),
-				    gtk_notebook_get_nth_page (GTK_NOTEBOOK
-							       (notebook), 0),
-				    label1);
-
 	scrolledwindow_text = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy ((GtkScrolledWindow *)
+					scrolledwindow_text,
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
 	gtk_widget_show (scrolledwindow_text);
-	gtk_container_add (GTK_CONTAINER (notebook), scrolledwindow_text);
+	gtk_container_add (GTK_CONTAINER (vpaned1), scrolledwindow_text);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW
 					     (scrolledwindow_text),
 					     GTK_SHADOW_IN);
@@ -145,21 +161,20 @@ create_window1 (void)
 	gtk_widget_modify_font (textview, font_desc);
 	pango_font_description_free (font_desc);
 
-	label2 = gtk_label_new (_("Text"));
-	gtk_widget_show (label2);
-	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook),
-				    gtk_notebook_get_nth_page (GTK_NOTEBOOK
-							       (notebook), 1),
-				    label2);
-
 	g_signal_connect ((gpointer) window1, "delete_event",
 			  G_CALLBACK (on_window1_delete_event), NULL);
+
 	g_signal_connect ((gpointer) toolbutton_open, "clicked",
 			  G_CALLBACK (on_toolbutton_open_clicked), NULL);
-	g_signal_connect ((gpointer) toolbutton_save, "clicked",
-			  G_CALLBACK (on_toolbutton_save_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_apply, "clicked",
 			  G_CALLBACK (on_toolbutton_apply_clicked), NULL);
+	g_signal_connect ((gpointer) toolbutton_save, "clicked",
+			  G_CALLBACK (on_toolbutton_save_clicked), NULL);
+	g_signal_connect ((gpointer) toolbutton_about, "clicked",
+			  G_CALLBACK (on_toolbutton_about_clicked), NULL);
+	g_signal_connect ((gpointer) toolbutton_spell, "clicked",
+			  G_CALLBACK (on_toolbutton_spell_clicked), NULL);
+
 	g_signal_connect ((gpointer) toolbutton_quit, "clicked",
 			  G_CALLBACK (on_toolbutton_quit_clicked), NULL);
 

@@ -1,0 +1,8 @@
+hocr (0.2.0)
+
+  * Initial release
+  * Add spell check
+  * Add patch by Yuval Tanny: make gui interface more usable by coloring the unreadble 
+    signs and putting picture and text on the same window.
+
+  -- Yaacov Zamir <kzamir@wall.co.il>  Sun, 14 Aug 2005 22:13

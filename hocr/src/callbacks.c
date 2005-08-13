@@ -21,12 +21,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
 #include <gnome.h>
+#include <gtkspell/gtkspell.h>
 
 #include "callbacks.h"
 #include "interface.h"
@@ -169,7 +170,53 @@ on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data)
 	text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
 
 	if (pixbuf)
+	{
 		do_ocr (pixbuf, text_buffer);
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
+	}
+}
+
+void
+on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data)
+{
+	static const gchar *authors[] = {
+		"Yaacov Zamir <kzamir@walla.co.il>",
+		NULL
+	};
+	static const char *documenters[] = {
+		"Yaacov Zamir <kzamir@walla.co.il>",
+		NULL
+	};
+
+	gtk_show_about_dialog (GTK_WINDOW (window1), "name", _("HOCR"),
+			       "version", VERSION,
+			       "copyright",
+			       "Copyright \xc2\xa9 2005 Yaacov Zamir",
+			       "comments",
+			       _
+			       ("HOCR - Hebrew character recognition software"),
+			       "authors", authors, "documenters", documenters,
+			       "translator-credits", _("translator_credits"),
+			       NULL);
+}
+
+void
+on_toolbutton_spell_clicked (GtkToolButton * toolbutton, gpointer user_data)
+{
+	GtkSpell *spell = NULL;
+
+	spell = gtkspell_get_from_text_view (textview);
+
+	if (spell)
+	{
+		gtkspell_detach (spell);
+	}
+	else
+	{
+		spell = gtkspell_new_attach (GTK_TEXT_VIEW (textview), NULL,
+					     NULL);
+		gtkspell_set_language (spell, "he_IL", NULL);
+	}
 }
 
 void

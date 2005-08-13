@@ -4255,7 +4255,7 @@ _ACEOF
 fi
 
 
-pkg_modules="libgnomeui-2.0"
+pkg_modules="libgnomeui-2.0 gtkspell-2.0"
 
 
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then

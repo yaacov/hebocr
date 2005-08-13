@@ -586,6 +586,8 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	int exlem_mark;
 	int question_mark;
 
+	int asterisk;
+
 	/* need this to put in the text_buffer */
 	char chars[10];
 	GtkTextIter iter;
@@ -712,7 +714,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				has_double_quat_mark (pix, fonts[i][j]);
 			exlem_mark = has_exlem_mark (pix, fonts[i][j]);
 			question_mark = has_question_mark (pix, fonts[i][j]);
-
+			asterisk = 0;
 			/* if wide then arteffact */
 
 			if (width_class == 1)
@@ -747,6 +749,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
+					asterisk = 1;
 				}
 			}
 			else if ((hight_class == -1) && (top_class == 1)
@@ -813,6 +816,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
+					asterisk = 1;
 				}
 			}
 
@@ -870,6 +874,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
+					asterisk = 1;
 				}
 			}
 			/* regular fonts */
@@ -919,7 +924,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				}
 				//else if (nun_mark == 1)
 				//{
-				//	g_sprintf (chars, "נ");
+				//      g_sprintf (chars, "נ");
 				//}
 				else if (sameh_mark == 1)
 				{
@@ -952,6 +957,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
+					asterisk = 1;
 				}
 			}
 
@@ -972,6 +978,9 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			/* visual aids to see font box on screen 
 			 * color_box (pix, fonts[i][j], 1, 0);
 			 * print_font (pix, fonts[i][j]); */
+
+			if (asterisk == 1)
+				color_box (pix, fonts[i][j], 1, 255);
 
 			/* insert the string to text buffer */
 			gtk_text_buffer_get_end_iter (text_buffer, &iter);
