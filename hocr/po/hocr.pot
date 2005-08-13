@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-12 20:49+0300\n"
+"POT-Creation-Date: 2005-08-13 22:15+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,21 +25,33 @@ msgid "Open a new picture for the OCR"
 msgstr ""
 
 #: src/interface.c:92
-msgid "Save the text created by the OCR"
-msgstr ""
-
-#: src/interface.c:100
 msgid "Convert picture to text"
 msgstr ""
 
-#: src/interface.c:107
+#: src/interface.c:99
+msgid "Save the text created by the OCR"
+msgstr ""
+
+#: src/interface.c:108
+msgid "Spell check the text"
+msgstr ""
+
+#: src/interface.c:115
+msgid "About this application"
+msgstr ""
+
+#: src/interface.c:122
 msgid "Quit this program"
 msgstr ""
 
-#: src/interface.c:125
-msgid "Picture"
+#: src/callbacks.c:191
+msgid "HOCR"
 msgstr ""
 
-#: src/interface.c:148
-msgid "Text"
+#: src/callbacks.c:197
+msgid "HOCR - Hebrew character recognition software"
+msgstr ""
+
+#: src/callbacks.c:199
+msgid "translator_credits"
 msgstr ""

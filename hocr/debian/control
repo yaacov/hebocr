@@ -1,0 +1,12 @@
+Source: hocr
+Section: unknown
+Priority: optional
+Maintainer: Yaacov Zamir <kzamir@walla.co.il>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev
+Standards-Version: 3.6.1
+
+Package: hocr
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Hebrew OCR
+ use hocr-gui program to run the ocr
