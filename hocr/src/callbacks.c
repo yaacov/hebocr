@@ -168,13 +168,28 @@ void
 on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	GtkTextBuffer *text_buffer;
+	int width, height;
+	
+	height = gdk_pixbuf_get_height (vis_pixbuf);
+	width = gdk_pixbuf_get_width (vis_pixbuf);
 
 	text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
 
 	if (pixbuf)
 	{
 		do_ocr (pixbuf, text_buffer);
-		gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
+
+		if (vis_pixbuf)
+		{
+			gdk_pixbuf_unref (vis_pixbuf);
+			vis_pixbuf = NULL;
+		}
+
+		vis_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+						      width, height,
+						      GDK_INTERP_BILINEAR);
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image), vis_pixbuf);
 	}
 }
 

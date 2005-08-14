@@ -1589,7 +1589,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=hocr
- VERSION=0.2
+ VERSION=0.3.0
 
 
 cat >>confdefs.h <<_ACEOF
@@ -4455,7 +4455,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-ALL_LINGUAS=""
+ALL_LINGUAS="he"
 # On IRIX 5.3, sys/types and inttypes.h are conflicting.
 
 

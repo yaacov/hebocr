@@ -76,7 +76,7 @@ get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
 	int width, height, rowstride, n_channels;
 	guchar *pixels, *pixel;
 	int i, x, y;
-	int sum, sum1, sum2, sum3;
+	double  sum, sum1, sum2, sum3;
 	int inside_line = FALSE;
 
 	/* get pixbuf stats */
@@ -86,6 +86,9 @@ get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
 	rowstride = gdk_pixbuf_get_rowstride (pix);
 	pixels = gdk_pixbuf_get_pixels (pix);
 
+	*line_end = 0;
+	*line_start = current_pos;
+	
 	for (y = current_pos; y < height; y++)
 	{
 		/* get presentage coverage for this pixel line */
@@ -117,7 +120,6 @@ get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
 		else if (sum <= NOT_IN_A_LINE && inside_line)
 		{
 			*line_end = y;
-
 			/* if here and this line has logical width then found a new line */
 			if ((*line_end - *line_start) > MAX_LINE_HIGHT)
 				return 1;
@@ -125,7 +127,6 @@ get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
 				return 0;
 		}
 	}
-
 	return 1;
 }
 
@@ -248,6 +249,7 @@ fill_lines_array (GdkPixbuf * pix, int width, box * lines,
 	/* get all lines in this column */
 	return_value = get_next_line_extention
 		(pix, line_end, &line_start, &line_end);
+	
 	while (return_value == 0 && line_counter < max_lines)
 	{
 		/* insert this line to lines array */
@@ -268,7 +270,11 @@ fill_lines_array (GdkPixbuf * pix, int width, box * lines,
 
 	/* get the number of lines and avg line hight before you leave */
 	*num_of_lines = line_counter;
-	*avg_hight = sum_of_lines_hight / line_counter;
+	
+	if (line_counter > 0)
+		*avg_hight = sum_of_lines_hight / line_counter;
+	else 
+		*avg_hight = line_end - line_start;
 
 	return 0;
 }
@@ -339,6 +345,9 @@ fill_fonts_array (GdkPixbuf * pix, box line, box * fonts,
 int
 find_font_baseline (box * fonts, int avg_hight, int index, int num_of_fonts)
 {
+	if (fonts[index].hight < 2 || fonts[index].width < 2)
+		return 0;
+	
 	/* font in the middle of line */
 	if (index > 1 && index < (num_of_fonts - 2))
 	{
@@ -393,6 +402,9 @@ find_font_baseline (box * fonts, int avg_hight, int index, int num_of_fonts)
 int
 find_font_topline (box * fonts, int avg_hight, int index, int num_of_fonts)
 {
+	if (fonts[index].hight < 2 || fonts[index].width < 2)
+		return 0;
+	
 	/* font in the middle of line */
 	if (index > 1 && index < (num_of_fonts - 2))
 	{
@@ -614,6 +626,9 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	}
 
 	/* get avg values per page */
+	if (num_of_lines == 0)
+		return 0;
+	
 	avg_font_hight_in_page = avg_font_hight_in_page / num_of_lines;
 	avg_font_width_in_page = avg_font_width_in_page / num_of_lines;
 

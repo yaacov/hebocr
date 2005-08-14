@@ -1,3 +1,10 @@
+hocr (0.3.0)
+
+  * close crash bug
+  * add zoom in and out
+
+  -- Yaacov Zamir <kzamir@wall.co.il>  Sun, 14 Aug 2005 22:13
+   
 hocr (0.2.0)
 
   * Initial release
