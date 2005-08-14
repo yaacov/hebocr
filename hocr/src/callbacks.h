@@ -38,6 +38,15 @@ void
 on_toolbutton_save_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
+on_toolbutton_zoom_in_clicked (GtkToolButton * toolbutton, gpointer user_data);
+
+void
+on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton, gpointer user_data);
+
+void
+on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton, gpointer user_data);
+
+void
 on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void

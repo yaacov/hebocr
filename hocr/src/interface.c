@@ -49,8 +49,19 @@ create_window1 (void)
 	GtkWidget *toolbutton_open;
 	GtkWidget *toolbutton_apply;
 	GtkWidget *toolbutton_save;
-	GtkWidget *toolbutton_about;
+	GtkWidget *toolitem1;
+	GtkWidget *vseparator1;
 	GtkWidget *toolbutton_spell;
+	GtkWidget *toolitem2;
+	GtkWidget *vseparator2;
+	GtkWidget *toolbutton_zoom_in;
+	GtkWidget *toolbutton_zoom_out;
+	GtkWidget *toolbutton_zoom_fit;
+	GtkWidget *toolitem3;
+	GtkWidget *vseparator3;
+	GtkWidget *toolbutton_about;
+	GtkWidget *toolitem4;
+	GtkWidget *vseparator4;
 	GtkWidget *toolbutton_quit;
 	GtkWidget *vpaned1;
 	GtkWidget *scrolledwindow_image;
@@ -99,6 +110,13 @@ create_window1 (void)
 				   _("Save the text created by the OCR"),
 				   NULL);
 
+	toolitem1 = (GtkWidget *) gtk_tool_item_new ();
+	gtk_widget_show (toolitem1);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolitem1);
+	vseparator1 = gtk_vseparator_new ();
+	gtk_widget_show (vseparator1);
+	gtk_container_add (GTK_CONTAINER (toolitem1), vseparator1);
+
 	toolbutton_spell =
 		(GtkWidget *)
 		gtk_tool_button_new_from_stock ("gtk-spell-check");
@@ -106,6 +124,35 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_spell);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_spell), tooltips,
 				   _("Spell check the text"), NULL);
+/*
+	toolitem2 = (GtkWidget *) gtk_tool_item_new ();
+	gtk_widget_show (toolitem2);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolitem2);
+	vseparator2 = gtk_vseparator_new ();
+	gtk_widget_show (vseparator2);
+	gtk_container_add (GTK_CONTAINER (toolitem2), vseparator2);
+*/
+	toolbutton_zoom_in =
+		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-zoom-in");
+	gtk_widget_show (toolbutton_zoom_in);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_zoom_in);
+
+	toolbutton_zoom_out =
+		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-zoom-out");
+	gtk_widget_show (toolbutton_zoom_out);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_zoom_out);
+
+	toolbutton_zoom_fit =
+		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-zoom-fit");
+	gtk_widget_show (toolbutton_zoom_fit);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_zoom_fit);
+
+	toolitem3 = (GtkWidget *) gtk_tool_item_new ();
+	gtk_widget_show (toolitem3);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolitem3);
+	vseparator3 = gtk_vseparator_new ();
+	gtk_widget_show (vseparator3);
+	gtk_container_add (GTK_CONTAINER (toolitem3), vseparator3);
 
 	toolbutton_about =
 		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-about");
@@ -113,6 +160,13 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_about);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_about), tooltips,
 				   _("About this application"), NULL);
+
+	toolitem4 = (GtkWidget *) gtk_tool_item_new ();
+	gtk_widget_show (toolitem4);
+	gtk_container_add (GTK_CONTAINER (toolbar), toolitem4);
+	vseparator4 = gtk_vseparator_new ();
+	gtk_widget_show (vseparator4);
+	gtk_container_add (GTK_CONTAINER (toolitem4), vseparator4);
 
 	toolbutton_quit =
 		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-quit");
@@ -124,7 +178,7 @@ create_window1 (void)
 	vpaned1 = gtk_vpaned_new ();
 	gtk_widget_show (vpaned1);
 	gtk_container_add (GTK_CONTAINER (vbox1), vpaned1);
-
+											 
 	scrolledwindow_image = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy ((GtkScrolledWindow *)
 					scrolledwindow_image,
@@ -170,6 +224,14 @@ create_window1 (void)
 			  G_CALLBACK (on_toolbutton_apply_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_save, "clicked",
 			  G_CALLBACK (on_toolbutton_save_clicked), NULL);
+			  
+	g_signal_connect ((gpointer) toolbutton_zoom_in, "clicked",
+			  G_CALLBACK (on_toolbutton_zoom_in_clicked), NULL);
+	g_signal_connect ((gpointer) toolbutton_zoom_out, "clicked",
+			  G_CALLBACK (on_toolbutton_zoom_out_clicked), NULL);
+	g_signal_connect ((gpointer) toolbutton_zoom_fit, "clicked",
+			  G_CALLBACK (on_toolbutton_zoom_fit_clicked), NULL);
+			  
 	g_signal_connect ((gpointer) toolbutton_about, "clicked",
 			  G_CALLBACK (on_toolbutton_about_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_spell, "clicked",

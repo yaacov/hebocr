@@ -34,6 +34,7 @@
 #include "hocr.h"
 
 GdkPixbuf *pixbuf = NULL;
+GdkPixbuf *vis_pixbuf = NULL;
 
 gboolean
 on_window1_delete_event (GtkWidget * widget,
@@ -48,18 +49,21 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 {
 	GtkWidget *preview;
 	char *filename;
-	GdkPixbuf *pixbuf;
 	gboolean have_preview;
 
 	preview = GTK_WIDGET (data);
 	filename = gtk_file_chooser_get_preview_filename (file_chooser);
-	pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
-	have_preview = (pixbuf != NULL);
+	vis_pixbuf =
+		gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+	have_preview = (vis_pixbuf != NULL);
 	g_free (filename);
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
-	if (pixbuf)
-		gdk_pixbuf_unref (pixbuf);
+	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), vis_pixbuf);
+	if (vis_pixbuf)
+	{
+		gdk_pixbuf_unref (vis_pixbuf);
+		vis_pixbuf = NULL;
+	}
 
 	gtk_file_chooser_set_preview_widget_active (file_chooser,
 						    have_preview);
@@ -100,9 +104,7 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 		g_free (filename);
 
-		gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
-		if (pixbuf)
-			gdk_pixbuf_unref (pixbuf);
+		on_toolbutton_zoom_fit_clicked (NULL, NULL);
 	}
 
 	gtk_widget_destroy (my_file_chooser);
@@ -205,7 +207,7 @@ on_toolbutton_spell_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	GtkSpell *spell = NULL;
 
-	spell = gtkspell_get_from_text_view (textview);
+	spell = gtkspell_get_from_text_view (GTK_TEXT_VIEW (textview));
 
 	if (spell)
 	{
@@ -220,7 +222,107 @@ on_toolbutton_spell_clicked (GtkToolButton * toolbutton, gpointer user_data)
 }
 
 void
+on_toolbutton_zoom_in_clicked (GtkToolButton * toolbutton, gpointer user_data)
+{
+	int width, height;
+
+	height = gdk_pixbuf_get_height (vis_pixbuf);
+	width = gdk_pixbuf_get_width (vis_pixbuf);
+
+	if (pixbuf)
+	{
+		if (vis_pixbuf)
+		{
+			gdk_pixbuf_unref (vis_pixbuf);
+			vis_pixbuf = NULL;
+		}
+
+		vis_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+						      (int) ((double) width *
+							     1.2),
+						      (int) ((double) height *
+							     1.2),
+						      GDK_INTERP_BILINEAR);
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image), vis_pixbuf);
+	}
+}
+
+void
+on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton,
+				gpointer user_data)
+{
+	int width, height;
+
+	height = gdk_pixbuf_get_height (vis_pixbuf);
+	width = gdk_pixbuf_get_width (vis_pixbuf);
+
+	if (pixbuf)
+	{
+		if (vis_pixbuf)
+		{
+			gdk_pixbuf_unref (vis_pixbuf);
+			vis_pixbuf = NULL;
+		}
+
+		vis_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+						      (int) ((double) width *
+							     0.8),
+						      (int) ((double) height *
+							     0.8),
+						      GDK_INTERP_BILINEAR);
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image), vis_pixbuf);
+	}
+}
+
+void
+on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton,
+				gpointer user_data)
+{
+	int width, height, window_width, window_height;
+
+	gtk_window_get_size (GTK_WINDOW (window1), &window_width,
+			     &window_height);
+	window_width -= 20;
+
+	height = gdk_pixbuf_get_height (pixbuf);
+	width = gdk_pixbuf_get_width (pixbuf);
+
+	if (pixbuf)
+	{
+		if (vis_pixbuf)
+		{
+			gdk_pixbuf_unref (vis_pixbuf);
+			vis_pixbuf = NULL;
+		}
+
+		vis_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+						      window_width,
+						      (int) ((double)
+							     window_width *
+							     (double) height /
+							     (double) width),
+						      GDK_INTERP_BILINEAR);
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image), vis_pixbuf);
+	}
+}
+
+void
 on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
+	if (pixbuf)
+	{
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = NULL;
+	}
+
+	if (vis_pixbuf)
+	{
+		gdk_pixbuf_unref (vis_pixbuf);
+		vis_pixbuf = NULL;
+	}
+
 	gtk_main_quit ();
 }
