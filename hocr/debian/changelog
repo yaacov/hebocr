@@ -2,7 +2,7 @@ hocr (0.3.0-1) unstable; urgency=low
 
   * Add zoom. spell check, close crash bug
 
-   -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:16:41 +0300
+ -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:16:41 +0300
    
 hocr (0.2-2) unstable; urgency=low
 
