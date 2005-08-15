@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 10:53+0300\n"
+"POT-Creation-Date: 2005-08-15 18:58+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,14 +44,14 @@ msgstr ""
 msgid "Quit this program"
 msgstr ""
 
-#: src/callbacks.c:209
+#: src/callbacks.c:208
 msgid "HOCR"
 msgstr ""
 
-#: src/callbacks.c:215
+#: src/callbacks.c:214
 msgid "HOCR - Hebrew character recognition software"
 msgstr ""
 
-#: src/callbacks.c:217
+#: src/callbacks.c:216
 msgid "translator_credits"
 msgstr ""
