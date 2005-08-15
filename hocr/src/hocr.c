@@ -201,7 +201,6 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
-g_print ("1) %d %d \n", i,j );
 			
 			/* do not waist time on arteffacts */
 			if (fonts[i][j].width < 2 || fonts[i][j].hight < 2)
