@@ -69,7 +69,6 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	gint result;
 	char *filename;
-	//GdkPixbuf * pixbuf;
 	GtkWidget *preview_frame = gtk_frame_new ("preview");
 	GtkWidget *preview = gtk_image_new ();
 	GtkWidget *my_file_chooser =
