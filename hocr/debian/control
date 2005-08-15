@@ -8,5 +8,8 @@ Standards-Version: 3.6.1
 Package: hocr
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Hebrew OCR
- use hocr-gui program to run the ocr
+Description: hocr is a Hebrew OCR (optical character recognition) program
+ The program will process black&white texts
+ scanned at 300dpi.
+ The text is read without punctuation.
+ Spell checking is using aspell-he.

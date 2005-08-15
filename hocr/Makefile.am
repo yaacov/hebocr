@@ -3,8 +3,12 @@
 SUBDIRS = src po tests
 
 EXTRA_DIST = \
-	autogen.sh 
+	autogen.sh hocr.spec.in hocr.desktop
 
+hocrdesktopdir = ${prefix}/share/applications
+hocrdesktop_DATA = \
+	hocr.desktop
+	
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/pixmaps; then \

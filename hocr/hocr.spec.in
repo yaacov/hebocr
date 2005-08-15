@@ -1,5 +1,5 @@
 %define name	hocr
-%define version	0.3.0
+%define version	@VERSION@
 %define release 2
 
 Name:		%{name} 
