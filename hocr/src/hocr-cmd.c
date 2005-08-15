@@ -36,8 +36,8 @@
 #include "hocr.h"
 
 GdkPixbuf *pixbuf = NULL;
-GtkWidget *image;
-GtkWidget *textview;
+GtkWidget *image = NULL;
+GtkWidget *textview = NULL;
 
 void
 open_pic (char *filename)
@@ -165,6 +165,25 @@ main (int argc, char *argv[])
 	else
 		save_text (NULL);
 
+	/* unref the alocated memory */
+	if (pixbuf)
+	{
+		g_object_unref (pixbuf);
+		pixbuf = NULL;
+	}
+	
+	if (image)
+	{
+		g_object_unref (image);
+		pixbuf = NULL;
+	}
+	
+	if (textview)
+	{
+		g_object_unref (textview);
+		pixbuf = NULL;
+	}
+	
 	/* exit */
 	return 0;
 }

@@ -50,12 +50,12 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 	prev_pixbuf =
 		gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
 	have_preview = (prev_pixbuf != NULL);
+	
 	g_free (filename);
-
-	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), prev_pixbuf);
 	
 	if (prev_pixbuf)
 	{
+		gtk_image_set_from_pixbuf (GTK_IMAGE (preview), prev_pixbuf);
 		g_object_unref (prev_pixbuf);
 		vis_pixbuf = NULL;
 	}
@@ -83,8 +83,10 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 
 	gtk_widget_show (preview);
 	gtk_container_add (GTK_CONTAINER (preview_frame), preview);
+	
 	gtk_file_chooser_set_preview_widget
 		(GTK_FILE_CHOOSER (my_file_chooser), preview_frame);
+	
 	g_signal_connect (my_file_chooser, "update-preview",
 			  G_CALLBACK (update_preview_cb), preview);
 
