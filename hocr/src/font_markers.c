@@ -176,6 +176,7 @@ count_vertical_bars (GdkPixbuf * pix, box font, int y_pos, int *first_x,
 	/* start with white in mind */
 	current_color = 0;
 	*first_x = 0;
+	*last_x = 0;
 
 	/* go axros the font + one white place */
 	for (x = font.x1; x < (font.x2 + 4); x++)
@@ -222,7 +223,8 @@ count_horizontal_bars (GdkPixbuf * pix, box font, int x_pos, int *first_y,
 	/* start with white in mind */
 	current_color = 0;
 	*first_y = 0;
-
+	*last_y = 0;
+	
 	/* go axros the font + one white place */
 	for (y = font.y1; y < (font.y2 + 3); y++)
 	{
@@ -342,7 +344,7 @@ find_vertical_path (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
 		}
 
 		sum = sum / (x2 - x1);
-
+		
 		if (sum > 0)
 			return 0;
 	}
