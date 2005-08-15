@@ -52,8 +52,6 @@ create_window1 (void)
 	GtkWidget *toolitem1;
 	GtkWidget *vseparator1;
 	GtkWidget *toolbutton_spell;
-	GtkWidget *toolitem2;
-	GtkWidget *vseparator2;
 	GtkWidget *toolbutton_zoom_in;
 	GtkWidget *toolbutton_zoom_out;
 	GtkWidget *toolbutton_zoom_fit;
@@ -124,14 +122,7 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_spell);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_spell), tooltips,
 				   _("Spell check the text"), NULL);
-/*
-	toolitem2 = (GtkWidget *) gtk_tool_item_new ();
-	gtk_widget_show (toolitem2);
-	gtk_container_add (GTK_CONTAINER (toolbar), toolitem2);
-	vseparator2 = gtk_vseparator_new ();
-	gtk_widget_show (vseparator2);
-	gtk_container_add (GTK_CONTAINER (toolitem2), vseparator2);
-*/
+
 	toolbutton_zoom_in =
 		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-zoom-in");
 	gtk_widget_show (toolbutton_zoom_in);
