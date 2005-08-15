@@ -3,7 +3,7 @@
 SUBDIRS = src po tests
 
 EXTRA_DIST = \
-	autogen.sh hocr.spec.in hocr.desktop
+	autogen.sh hocr.spec.in hocr.spec hocr.desktop
 
 hocrdocdir = ${prefix}/share/doc/hocr
 hocrdoc_DATA = \
