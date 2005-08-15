@@ -128,7 +128,14 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 EXTRA_DIST = \
-	test1.jpg
+	test1.jpg \
+	test2.jpg
+
+
+hocrdocdir = ${prefix}/share/doc/hocr/tests
+hocrdoc_DATA = \
+	test1.jpg \
+	test2.jpg
 
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -136,6 +143,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
+DATA = $(hocrdoc_DATA)
+
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
 all: all-am
 
@@ -146,6 +155,24 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 uninstall-info-am:
+hocrdocDATA_INSTALL = $(INSTALL_DATA)
+install-hocrdocDATA: $(hocrdoc_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(hocrdocdir)
+	@list='$(hocrdoc_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(hocrdocDATA_INSTALL) $$d$$p $(DESTDIR)$(hocrdocdir)/$$f"; \
+	  $(hocrdocDATA_INSTALL) $$d$$p $(DESTDIR)$(hocrdocdir)/$$f; \
+	done
+
+uninstall-hocrdocDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(hocrdoc_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(hocrdocdir)/$$f"; \
+	  rm -f $(DESTDIR)$(hocrdocdir)/$$f; \
+	done
 tags: TAGS
 TAGS:
 
@@ -186,9 +213,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile
+all-am: Makefile $(DATA)
 
 installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(hocrdocdir)
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -229,7 +257,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-hocrdocDATA
 
 install-exec-am:
 
@@ -255,15 +283,16 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-info-am
+uninstall-am: uninstall-hocrdocDATA uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic distclean \
 	distclean-generic distdir dvi dvi-am info info-am install \
 	install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic pdf pdf-am ps ps-am uninstall uninstall-am \
+	install-exec-am install-hocrdocDATA install-info \
+	install-info-am install-man install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
+	pdf-am ps ps-am uninstall uninstall-am uninstall-hocrdocDATA \
 	uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

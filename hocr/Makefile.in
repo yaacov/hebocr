@@ -130,14 +130,21 @@ target_alias = @target_alias@
 SUBDIRS = src po tests
 
 EXTRA_DIST = \
-	autogen.sh 
+	autogen.sh hocr.spec.in hocr.desktop
+
+
+hocrdesktopdir = ${prefix}/share/applications
+hocrdesktop_DATA = \
+	hocr.desktop
 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = hocr.spec
 DIST_SOURCES =
+DATA = $(hocrdesktop_DATA)
+
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	ps-recursive install-info-recursive uninstall-info-recursive \
@@ -147,7 +154,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure AUTHORS \
 	COPYING ChangeLog INSTALL Makefile.am NEWS aclocal.m4 \
 	config.guess config.h.in config.sub configure configure.in \
-	depcomp install-sh missing mkinstalldirs
+	depcomp hocr.spec.in install-sh missing mkinstalldirs
 DIST_SUBDIRS = $(SUBDIRS)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -186,7 +193,27 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.in $(ACLOC
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+hocr.spec: $(top_builddir)/config.status hocr.spec.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 uninstall-info-am:
+hocrdesktopDATA_INSTALL = $(INSTALL_DATA)
+install-hocrdesktopDATA: $(hocrdesktop_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(hocrdesktopdir)
+	@list='$(hocrdesktop_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(hocrdesktopDATA_INSTALL) $$d$$p $(DESTDIR)$(hocrdesktopdir)/$$f"; \
+	  $(hocrdesktopDATA_INSTALL) $$d$$p $(DESTDIR)$(hocrdesktopdir)/$$f; \
+	done
+
+uninstall-hocrdesktopDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(hocrdesktop_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(hocrdesktopdir)/$$f"; \
+	  rm -f $(DESTDIR)$(hocrdesktopdir)/$$f; \
+	done
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -328,7 +355,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/po
+	$(mkinstalldirs) $(distdir)/. $(distdir)/po
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -442,9 +469,10 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile config.h
+all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
+	$(mkinstalldirs) $(DESTDIR)$(hocrdesktopdir)
 
 install: install-recursive
 install-exec: install-exec-recursive
@@ -487,7 +515,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-data-local
+install-data-am: install-data-local install-hocrdesktopDATA
 
 install-exec-am:
 
@@ -515,7 +543,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am
+uninstall-am: uninstall-hocrdesktopDATA uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
@@ -527,13 +555,14 @@ uninstall-info: uninstall-info-recursive
 	info-am info-recursive install install-am install-data \
 	install-data-am install-data-local install-data-recursive \
 	install-exec install-exec-am install-exec-recursive \
-	install-info install-info-am install-info-recursive install-man \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-generic \
-	mostlyclean-recursive pdf pdf-am pdf-recursive ps ps-am \
-	ps-recursive tags tags-recursive uninstall uninstall-am \
+	install-hocrdesktopDATA install-info install-info-am \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am installdirs-recursive maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
+	mostlyclean-generic mostlyclean-recursive pdf pdf-am \
+	pdf-recursive ps ps-am ps-recursive tags tags-recursive \
+	uninstall uninstall-am uninstall-hocrdesktopDATA \
 	uninstall-info-am uninstall-info-recursive uninstall-recursive
 
 

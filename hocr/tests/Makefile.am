@@ -6,5 +6,5 @@ EXTRA_DIST = \
 
 hocrdocdir = ${prefix}/share/doc/hocr/tests
 hocrdoc_DATA = \
-	text1.jpg \
-	text2.jpg
+	test1.jpg \
+	test2.jpg
