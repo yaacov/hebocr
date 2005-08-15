@@ -10,7 +10,9 @@ hocrdoc_DATA = \
 	README \
 	AUTHORS \
 	COPYING \
-	NEWS
+	NEWS \
+	ChangeLog \
+	INSTALL
 	
 hocrdesktopdir = ${prefix}/share/applications
 hocrdesktop_DATA = \
