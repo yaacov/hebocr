@@ -171,19 +171,7 @@ main (int argc, char *argv[])
 		g_object_unref (pixbuf);
 		pixbuf = NULL;
 	}
-	
-	if (image)
-	{
-		g_object_unref (image);
-		pixbuf = NULL;
-	}
-	
-	if (textview)
-	{
-		g_object_unref (textview);
-		pixbuf = NULL;
-	}
-	
+
 	/* exit */
 	return 0;
 }
