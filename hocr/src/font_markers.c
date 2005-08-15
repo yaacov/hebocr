@@ -913,14 +913,15 @@ has_bet_mark (GdkPixbuf * pix, box font)
 	     end_of_right_bar + 1, font.y2) == 0)
 		return 0;
 
-	if (find_vertical_notch_down_to_left (pix, font.x1 + font.width /4 , font.y1 + font.hight /2,
-										  font.x1+3*font.width/4, font.y2) == 1)
+	if (find_vertical_notch_down_to_left
+	    (pix, font.x1 + font.width / 4, font.y1 + font.hight / 2,
+	     font.x1 + 3 * font.width / 4, font.y2) == 1)
 		return 0;
-	
-    if (find_vertical_path
+
+	if (find_vertical_path
 	    (pix, font.x1 + font.width / 3, font.y1,
 	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3) == 1)
-	      return 0;
+		return 0;
 
 	return 1;
 }
@@ -1279,6 +1280,10 @@ has_yud_mark (GdkPixbuf * pix, box font)
 	int end_of_right_bar;
 	int start_of_right_bar;
 
+	if (find_horizontal_notch_to_left_up (pix, font.x1, font.y1, font.x1 + font.width/2,
+				  font.y1 + font.hight /2) == 0)
+		return 0;
+
 	/* horizontal bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
@@ -1354,6 +1359,9 @@ has_mem_mark (GdkPixbuf * pix, box font)
 	int end_of_right_bar;
 	int start_of_right_bar;
 
+	if (font.width < 10 || font.hight < 15)
+		return 0;
+
 	/* vertical bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
@@ -1381,9 +1389,6 @@ has_mem_mark (GdkPixbuf * pix, box font)
 		return 0;
 
 	if (start_of_top_bar > (font.y1 + font.hight / 3))
-		return 0;
-
-	if (font.width < 10 || font.hight < 10)
 		return 0;
 
 	//if (has_black_right_bottom_mark (pix, font) == 1)
@@ -1973,10 +1978,11 @@ has_quat_mark (GdkPixbuf * pix, box font)
 
 	if (number_of_bars != 1)
 		return 0;
-	
-	if (has_black_left_top_mark (pix, font) == 1)
+
+	if (find_horizontal_notch_to_left_up (pix, font.x1, font.y1, font.x1 + font.width/2,
+				  font.y1 + font.hight /2) == 1)
 		return 0;
-	
+
 	return 1;
 }
 
@@ -1992,7 +1998,7 @@ has_double_quat_mark (GdkPixbuf * pix, box font)
 
 	if (number_of_bars != 2)
 		return 0;
-	
+
 	return 1;
 }
 
@@ -2002,16 +2008,18 @@ has_exlem_mark (GdkPixbuf * pix, box font)
 	int number_of_bars;
 	int start, end;
 
-	if (find_horizontal_path (pix, font.x1, font.y1 + 2 * font.hight /3, font.x2, font.y2 - 3) == 0)
+	if (find_horizontal_path
+	    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x2,
+	     font.y2 - 3) == 0)
 		return 0;
-	
+
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 6,
 				     &start, &end);
 
 	if (number_of_bars != 1)
 		return 0;
-	
+
 	return 1;
 }
 
@@ -2022,15 +2030,29 @@ has_question_mark (GdkPixbuf * pix, box font)
 	int number_of_bars;
 	int start, end;
 
-	if (find_horizontal_path (pix, font.x1, font.y1 + 2 * font.hight /3, font.x2, font.y2 - 3) == 0)
+	if (find_horizontal_path
+	    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x2,
+	     font.y2 - 3) == 0)
 		return 0;
-	
+
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 6,
 				     &start, &end);
 
 	if (number_of_bars != 2)
 		return 0;
-	
+
 	return 1;
+}
+
+int
+has_makaf_mark (GdkPixbuf * pix, box font)
+{
+	if (font.hight > 5)
+		return 0;
+
+	if (font.width / font.hight >= 2)
+		return 1;
+	else
+		return 0;
 }

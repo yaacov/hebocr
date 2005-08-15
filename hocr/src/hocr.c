@@ -94,22 +94,22 @@ color_box (GdkPixbuf * pix, box rect, int chanell, int value)
 int
 do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 {
-	box column;		
+	box column;
 	/* box column; is a place holder to a time when we add column support */
 	box lines[MAX_LINES];
 	box fonts[MAX_LINES][MAX_FONTS_IN_LINE];
-	
+
 	int num_of_fonts[MAX_LINES];
 	int num_of_lines;
 	int num_of_fonts_in_page;
-	
+
 	int avg_font_hight_in_page;
 	int avg_font_width_in_page;
 
 	int i, j;
 	int x, y, y1, y2;
 	int width;
-	
+
 	/* font position classes */
 	int base_class;
 	int top_class;
@@ -152,12 +152,15 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	int double_quat_mark;
 	int exlem_mark;
 	int question_mark;
+	int makaf_mark;
 
 	int unknown;
 
 	/* need this to put in the text_buffer */
 	char chars[10];
+	char *tmp_chars;
 	GtkTextIter iter;
+	GtkTextIter tmp_iter;
 
 	/* get pixbuf width */
 	width = gdk_pixbuf_get_width (pix);
@@ -181,27 +184,29 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
-			num_of_fonts_in_page ++;
+			num_of_fonts_in_page++;
 			avg_font_width_in_page += fonts[i][j].width;
 			avg_font_hight_in_page += fonts[i][j].hight;
 		}
 	}
-	
+
 	if (num_of_fonts_in_page != 0)
 	{
 		avg_font_width_in_page /= num_of_fonts_in_page;
 		avg_font_hight_in_page /= num_of_fonts_in_page;
 	}
-	
+
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
+g_print ("1) %d %d \n", i,j );
+			
 			/* do not waist time on arteffacts */
 			if (fonts[i][j].width < 2 || fonts[i][j].hight < 2)
 				continue;
-			
+
 			y1 = find_font_topline (fonts[i],
 						avg_font_hight_in_page,
 						j, num_of_fonts[i]);
@@ -242,7 +247,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			{
 				if ((i < num_of_lines - 1)
 				    && ((lines[i + 1].y1 - lines[i].y2) >
-					avg_font_hight_in_page))
+					2 * avg_font_hight_in_page))
 					end_of_paragraph = 1;
 
 				end_of_word = 1;
@@ -263,20 +268,24 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			het_mark = has_het_mark (pix, fonts[i][j]);
 			tet_mark = has_tet_mark (pix, fonts[i][j]);
 			yud_mark = has_yud_mark (pix, fonts[i][j]);
+			
 			kaf_mark = has_kaf_mark (pix, fonts[i][j]);
 			kaf_sofit_mark =
 				has_kaf_sofit_mark (pix, fonts[i][j]);
 			lamed_mark = has_lamed_mark (pix, fonts[i][j]);
+
 			mem_mark = has_mem_mark (pix, fonts[i][j]);
 			mem_sofit_mark =
 				has_mem_sofit_mark (pix, fonts[i][j]);
 			nun_mark = has_nun_mark (pix, fonts[i][j]);
+	
 			nun_sofit_mark =
 				has_nun_sofit_mark (pix, fonts[i][j]);
 			sameh_mark = has_sameh_mark (pix, fonts[i][j]);
 			ayin_mark = has_ayin_mark (pix, fonts[i][j]);
 			pe_mark = has_pe_mark (pix, fonts[i][j]);
 			pe_sofit_mark = has_pe_sofit_mark (pix, fonts[i][j]);
+		
 			tzadi_mark = has_tzadi_mark (pix, fonts[i][j]);
 			tzadi_sofit_mark =
 				has_tzadi_sofit_mark (pix, fonts[i][j]);
@@ -290,9 +299,10 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				has_double_quat_mark (pix, fonts[i][j]);
 			exlem_mark = has_exlem_mark (pix, fonts[i][j]);
 			question_mark = has_question_mark (pix, fonts[i][j]);
-			
+			makaf_mark = has_makaf_mark (pix, fonts[i][j]);
+
 			unknown = 0;
-			
+
 			/* if wide then arteffact */
 
 			if (width_class == 1)
@@ -312,7 +322,13 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			}
 			else if (hight_class == -1 && top_class == 0)
 			{
-				if (yud_mark == 1)
+				if (makaf_mark == 1)
+				{
+
+					/* '-' */
+					g_sprintf (chars, "-");
+				}
+				else if (yud_mark == 1)
 				{
 					/* yud */
 					g_sprintf (chars, "י");
@@ -337,8 +353,8 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				/* period */
 				g_sprintf (chars, ".");
 			}
-			else if ((hight_class == -1) && (top_class == 1)
-				 && (base_class == -1))
+			else if ((hight_class == -1)
+				 && (top_class == 1) && (base_class == -1))
 			{
 				/* we assume comma */
 				g_sprintf (chars, ",");
@@ -563,8 +579,25 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 
 			/* insert the string to text buffer */
 			gtk_text_buffer_get_end_iter (text_buffer, &iter);
-			gtk_text_buffer_insert (text_buffer,
-						&iter, chars, -1);
+			
+			/* if quat mark check for doubel quat */
+			if (chars[0] == '\'')
+			{
+				gtk_text_buffer_get_end_iter (text_buffer, &tmp_iter);
+				gtk_text_iter_backward_chars    (&tmp_iter,1);
+				tmp_chars = gtk_text_buffer_get_text (text_buffer,&tmp_iter,&iter,FALSE);
+				
+				if (tmp_chars[0] == '\'')
+				{
+					gtk_text_buffer_delete (text_buffer,&tmp_iter,&iter);
+					chars[0] = '\"';
+				}
+				g_free (tmp_chars);
+				
+			}
+				
+			gtk_text_buffer_insert (text_buffer, &iter, chars,
+						-1);
 		}
 
 	}

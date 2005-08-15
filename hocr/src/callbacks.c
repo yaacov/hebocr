@@ -69,6 +69,8 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	gint result;
 	char *filename;
+	char title[255];
+	
 	GtkWidget *preview_frame = gtk_frame_new ("preview");
 	GtkWidget *preview = gtk_image_new ();
 	GtkWidget *my_file_chooser =
@@ -104,6 +106,11 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 		}
 		
 		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+		
+		/* set the window title */
+		g_snprintf (title,255,"%s - %s", _("hocr-gui"), filename);
+		gtk_window_set_title (GTK_WINDOW (window1), title);
+		
 		g_free (filename);
 
 		on_toolbutton_zoom_fit_clicked (NULL, NULL);

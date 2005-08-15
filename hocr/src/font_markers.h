@@ -69,6 +69,7 @@ int has_quat_mark (GdkPixbuf * pix, box font);
 int has_double_quat_mark (GdkPixbuf * pix, box font);
 int has_exlem_mark (GdkPixbuf * pix, box font);
 int has_question_mark (GdkPixbuf * pix, box font);
+int has_makaf_mark (GdkPixbuf * pix, box font);
 
 /**
  */
