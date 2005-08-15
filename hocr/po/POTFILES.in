@@ -1,6 +1,7 @@
 # List of source files containing translatable strings.
 
-src/main.c
+src/hocr-gui.c
+src/hocr-cmd.c
 src/interface.c
 src/callbacks.c
 

@@ -46,7 +46,7 @@ open_pic (char *filename)
 
 	if (!pixbuf)
 	{
-		g_print ("hocr: can't open file %s\n\n", filename);
+		g_print (_("hocr: can't open file %s\n\n"), filename);
 		exit (0);
 	}
 }
@@ -94,8 +94,8 @@ apply ()
 int
 print_help ()
 {
-	g_print ("\nhocr %s - Hebrew OCR program\n", VERSION);
-	g_print ("USAGE: hocr -f pic_filename.jpg [-o text_filename.txt]\n");
+	g_print (_("\nhocr %s - Hebrew OCR program\n"), VERSION);
+	g_print (_("USAGE: hocr -f pic_filename.jpg [-o text_filename.txt]\n"));
 	g_print ("\n");
 }
 

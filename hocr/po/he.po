@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 18:58+0300\n"
+"POT-Creation-Date: 2005-08-15 23:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Hebrew <LL@li.org>\n"
@@ -16,42 +16,61 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/interface.c:78
+#: src/hocr-cmd.c:49
+#, c-format
+msgid ""
+"hocr: can't open file %s\n"
+"\n"
+msgstr ""
+
+#: src/hocr-cmd.c:97
+#, c-format
+msgid ""
+"\n"
+"hocr %s - Hebrew OCR program\n"
+msgstr ""
+
+#: src/hocr-cmd.c:98
+msgid "USAGE: hocr -f pic_filename.jpg [-o text_filename.txt]\n"
+msgstr ""
+
+#. set the window title
+#: src/interface.c:76 src/callbacks.c:111
 msgid "hocr-gui"
 msgstr ""
 
-#: src/interface.c:96
+#: src/interface.c:94
 msgid "Open a new picture for the OCR"
 msgstr "פתח תמונה לצורך זיהוי כתב"
 
-#: src/interface.c:103
+#: src/interface.c:101
 msgid "Convert picture to text"
 msgstr "זהה כתב בתמונה"
 
-#: src/interface.c:110
+#: src/interface.c:108
 msgid "Save the text created by the OCR"
 msgstr "שמור את התקסט מחלונית הטקסט"
 
-#: src/interface.c:126
+#: src/interface.c:124
 msgid "Spell check the text"
 msgstr "בדוק איות"
 
-#: src/interface.c:162
+#: src/interface.c:153
 msgid "About this application"
 msgstr "אודות אפליקציה זו"
 
-#: src/interface.c:176
+#: src/interface.c:167
 msgid "Quit this program"
-msgstr ""
+msgstr "יציאה מהתוכנית"
 
-#: src/callbacks.c:208
+#: src/callbacks.c:217
 msgid "HOCR"
 msgstr ""
 
-#: src/callbacks.c:214
+#: src/callbacks.c:223
 msgid "HOCR - Hebrew character recognition software"
 msgstr "HOCR - מזהה כתיב אוטומתי עברי"
 
-#: src/callbacks.c:216
+#: src/callbacks.c:225
 msgid "translator_credits"
 msgstr "יעקב זמיר"
