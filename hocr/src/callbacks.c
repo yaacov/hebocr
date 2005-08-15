@@ -101,6 +101,12 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 		filename = gtk_file_chooser_get_preview_filename
 			(GTK_FILE_CHOOSER (my_file_chooser));
 
+		if (pixbuf)
+		{
+			gdk_pixbuf_unref (pixbuf);
+			pixbuf = NULL;
+		}
+		
 		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 		g_free (filename);
 
