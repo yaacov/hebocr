@@ -50,18 +50,20 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 	GtkWidget *preview;
 	char *filename;
 	gboolean have_preview;
-
+	GdkPixbuf *prev_pixbuf = NULL;
+	
 	preview = GTK_WIDGET (data);
 	filename = gtk_file_chooser_get_preview_filename (file_chooser);
-	vis_pixbuf =
+	
+	prev_pixbuf =
 		gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
-	have_preview = (vis_pixbuf != NULL);
+	have_preview = (prev_pixbuf != NULL);
 	g_free (filename);
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), vis_pixbuf);
-	if (vis_pixbuf)
+	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), prev_pixbuf);
+	if (prev_pixbuf)
 	{
-		gdk_pixbuf_unref (vis_pixbuf);
+		gdk_pixbuf_unref (prev_pixbuf);
 		vis_pixbuf = NULL;
 	}
 
