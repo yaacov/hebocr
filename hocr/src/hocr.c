@@ -22,500 +22,49 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
 #include <gnome.h>
-#include "interface.h"
 
+#include "box.h"
+#include "consts.h"
+#include "page_layout.h"
+#include "font_layout.h"
+#include "font_markers.h"
 #include "hocr.h"
-
-/* #define MAKE_DICT to create a new dictionary */
-
-/* FIXME: this is a hack for normal pages 
-   no more then 200 lines and 200 fonts per line
-   better to use dynamic aloocation */
-
-/* in units */
-#define MAX_LINES 200
-#define MAX_FONTS_IN_LINE 200
-
-/* FIXME: this values are good for some book lauouts with 
-   serif fonts using 300 dots per inch lineart scan
-   better to find out this values from the current scaned page */
-
-/* in pixels */
-#define NORMAL_FONT_WIDTH 20
-#define NORMAL_FONT_HIGHT 30
-
-#define MAX_LINE_HIGHT 50
-#define MIN_LINE_HIGHT 10
-
-/* FIXME: this is in pixel convert to 1/1000 ? */
-#define MIN_DISTANCE_BETWEEN_LINES 5
-#define MIN_DISTANCE_BETWEEN_WORDS 10
-
-/* in 1/1000 cover units */
-#define NOT_IN_A_LINE 10
-#define NOT_IN_A_FONT 30
-
-#define SHORT_FONT 900
-#define LONG_FONT 1200
-#define THIN_FONT 900
-
-#define FONT_ASSEND 100
-
-/* page layout functions */
-/* TODO: add support for more then one squre qulumn */
-
-int
-get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
-			 int *line_end)
-{
-	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
-	int i, x, y;
-	double  sum, sum1, sum2, sum3;
-	int inside_line = FALSE;
-
-	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
-
-	*line_end = 0;
-	*line_start = current_pos;
-	
-	for (y = current_pos; y < height; y++)
-	{
-		/* get presentage coverage for this pixel line */
-		/* a line is too long for just one sume (it may be short {1/3 length} 
-		 * and aligned to center, right or left ) */
-		sum1 = sum2 = sum3 = 0;
-		for (x = 0; x < (width / 3); x++)
-		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum1 += (pixel[0] < 100) ? 1 : 0;
-			pixel = pixels + (x + width / 3) * n_channels +
-				y * rowstride;
-			sum2 += (pixel[0] < 100) ? 1 : 0;
-			pixel = pixels + (x + 2 * width / 3) * n_channels +
-				y * rowstride;
-			sum3 += (pixel[0] < 100) ? 1 : 0;
-		}
-		/* check only the part with the most color on it */
-		sum = (sum1 > sum2) ? sum1 : sum2;
-		sum = (sum > sum3) ? sum : sum3;
-		sum = 1000 * sum / width;
-
-		/* if presantage covarage is less then 1 we are between text lines */
-		if (sum >= NOT_IN_A_LINE && !inside_line)
-		{
-			*line_start = y;
-			inside_line = TRUE;
-		}
-		else if (sum <= NOT_IN_A_LINE && inside_line)
-		{
-			*line_end = y;
-			/* if here and this line has logical width then found a new line */
-			if ((*line_end - *line_start) > MAX_LINE_HIGHT)
-				return 1;
-			if ((*line_end - *line_start) > MIN_LINE_HIGHT)
-				return 0;
-		}
-	}
-	return 1;
-}
-
-int
-get_next_font_extention (GdkPixbuf * pix, int line_start, int line_end,
-			 int current_pos, int *font_start, int *font_end)
-{
-	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
-	int x, y;
-	int sum;
-	int inside_font = FALSE;
-	/* we have to calculate line hight, we do not get it from caller */
-	int line_hight = line_end - line_start;
-
-	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
-	/* read line from right to left */
-	for (x = current_pos - 1; x > 0; x--)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (y = line_start; y < line_end; y++)
-		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
-		}
-		sum = 1000 * sum / line_hight;
-
-		/* if presantage covarage is less then 1 we are between text fonts */
-		if (sum >= NOT_IN_A_FONT && !inside_font)
-		{
-			*font_start = x;
-			inside_font = TRUE;
-		}
-		else if (sum <= NOT_IN_A_FONT && inside_font)
-		{
-			*font_end = x + 1;
-
-			/* if here then found a new line */
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
-int
-adjust_font_box (GdkPixbuf * pix, box * font)
-{
-	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
-	int x, y;
-	int sum;
-
-	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
-
-	sum = 0;
-	/* read line from right to left */
-	for (y = (font->y1 - MIN_DISTANCE_BETWEEN_LINES);
-	     y < (font->y2 + MIN_DISTANCE_BETWEEN_LINES) && sum == 0; y++)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (x = font->x1; x < font->x2; x++)
-		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
-		}
-	}
-	font->y1 = y - 1;
-
-	sum = 0;
-
-	/* read line from right to left */
-	for (y = (font->y2 + MIN_DISTANCE_BETWEEN_LINES);
-	     y > (font->y1 - MIN_DISTANCE_BETWEEN_LINES) && sum == 0; y--)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (x = font->x1; x < font->x2; x++)
-		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
-		}
-	}
-	font->y2 = y + 1;
-
-	return 1;
-}
-
-int
-fill_lines_array (GdkPixbuf * pix, int width, box * lines,
-		  int *num_of_lines, int *avg_hight, int max_lines)
-{
-	/* for line detection */
-	int line_start;
-	int line_end;
-	int return_value;
-
-	/* for line statistics */
-	int line_counter;
-	int sum_of_lines_hight;
-
-	/* set initial values */
-	line_end = 0;
-	line_start = 0;
-	line_counter = 0;
-	sum_of_lines_hight = 0;
-
-	/* get all lines in this column */
-	return_value = get_next_line_extention
-		(pix, line_end, &line_start, &line_end);
-	
-	while (return_value == 0 && line_counter < max_lines)
-	{
-		/* insert this line to lines array */
-		lines[line_counter].x1 = 0;
-		lines[line_counter].x2 = width;
-		lines[line_counter].y1 = line_start;
-		lines[line_counter].y2 = line_end;
-		lines[line_counter].hight = (line_end - line_start);
-		lines[line_counter].width = width;
-		sum_of_lines_hight += lines[line_counter].hight;
-		line_counter++;
-
-		/* get some lee way from the end of last line */
-		line_end += MIN_DISTANCE_BETWEEN_LINES;
-		return_value = get_next_line_extention
-			(pix, line_end, &line_start, &line_end);
-	}
-
-	/* get the number of lines and avg line hight before you leave */
-	*num_of_lines = line_counter;
-	
-	if (line_counter > 0)
-		*avg_hight = sum_of_lines_hight / line_counter;
-	else 
-		*avg_hight = line_end - line_start;
-
-	return 0;
-}
-
-int
-fill_fonts_array (GdkPixbuf * pix, box line, box * fonts,
-		  int *num_of_fonts, int *avg_hight, int *avg_width,
-		  int max_fonts)
-{
-	/* for gliphs detection */
-	int font_start;
-	int font_end;
-	int return_value;
-
-	/* for gliphs statistics */
-	int font_counter;
-	int sum_of_fonts_hight;
-	int sum_of_fonts_width;
-
-	/* set initial values */
-	font_end = line.x2;	/* start at the rigth of line */
-	font_start = 0;
-	font_counter = 0;
-	sum_of_fonts_hight = 0;
-	sum_of_fonts_width = 0;
-
-	/* get all lines in this column */
-	return_value = get_next_font_extention (pix,
-						line.y1,
-						line.y2,
-						font_end,
-						&font_start, &font_end);
-
-	while (return_value == 0 && font_counter < max_fonts)
-	{
-		/* insert this line to lines array */
-		fonts[font_counter].x1 = font_end;	/* this is right to left sweep */
-		fonts[font_counter].x2 = font_start;
-		fonts[font_counter].y1 = line.y1;
-		fonts[font_counter].y2 = line.y2;
-		fonts[font_counter].width = (font_start - font_end);
-
-		/* adjust font hight top and bottom borders */
-		adjust_font_box (pix, &(fonts[font_counter]));
-		fonts[font_counter].hight =
-			fonts[font_counter].y2 - fonts[font_counter].y1;
-
-		sum_of_fonts_hight += fonts[font_counter].hight;
-		sum_of_fonts_width += fonts[font_counter].width;
-		font_counter++;
-
-		return_value = get_next_font_extention (pix,
-							line.y1,
-							line.y2,
-							font_end,
-							&font_start,
-							&font_end);
-	}
-
-	/* get the number of lines and avg line hight before you leave */
-	*num_of_fonts = font_counter;
-	*avg_hight = sum_of_fonts_hight / font_counter;
-	*avg_width = sum_of_fonts_width / font_counter;
-
-	return 0;
-}
-
-int
-find_font_baseline (box * fonts, int avg_hight, int index, int num_of_fonts)
-{
-	if (fonts[index].hight < 2 || fonts[index].width < 2)
-		return 0;
-	
-	/* font in the middle of line */
-	if (index > 1 && index < (num_of_fonts - 2))
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y2;
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y2;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y2;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y2;
-	}
-	else
-		/* is this the first or second font in the line */
-	if (index < 2 && num_of_fonts > 3)
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y2;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y2;
-	}
-	else
-		/* is this the last font in the line */
-	if (index > 1)
-	{
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y2;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y2;
-	}
-
-	/* if no other regular font is near then base on yourself */
-	return fonts[index].y2;
-}
-
-int
-find_font_topline (box * fonts, int avg_hight, int index, int num_of_fonts)
-{
-	if (fonts[index].hight < 2 || fonts[index].width < 2)
-		return 0;
-	
-	/* font in the middle of line */
-	if (index > 1 && index < (num_of_fonts - 2))
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y1;
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y1;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y1;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y1;
-	}
-	else
-		/* is this the first or second font in the line */
-	if (index < 2 && num_of_fonts > 3)
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y1;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y1;
-	}
-	else
-		/* is this the last font in the line */
-	if (index > 1)
-	{
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y1;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y1;
-	}
-
-
-	/* if no other regular font is near then base on yourself */
-	return fonts[index].y1;
-}
-
-/*
- font position classes
- */
-
-/* -1 assend 0 normal 1 sunk */
-int
-get_font_top_class (int font_top, int font_topline, int avg_font_hight)
-{
-	int assend = font_topline - font_top;
-
-	if (assend < (-FONT_ASSEND * avg_font_hight / 1000))
-		return 1;
-	if (assend > (FONT_ASSEND * avg_font_hight / 1000))
-		return -1;
-
-	return 0;
-}
-
-/* -1 assend 0 normal 1 sunk */
-int
-get_font_base_class (int font_bottom, int font_baseline, int avg_font_hight)
-{
-	int assend = font_baseline - font_bottom;
-
-	if (assend < (-FONT_ASSEND * avg_font_hight / 1000))
-		return -1;
-	if (assend > (FONT_ASSEND * avg_font_hight / 1000))
-		return 1;
-
-	return 0;
-}
-
-/* -1 short 0 normal 1 ling */
-int
-get_font_hight_class (int font_hight, int avg_font_hight)
-{
-	if (font_hight < (SHORT_FONT * avg_font_hight / 1000))
-		return -1;
-	if (font_hight > (LONG_FONT * avg_font_hight / 1000))
-		return 1;
-
-	return 0;
-}
-
-/* -1 thin 0 normal 1 wide */
-int
-get_font_width_class (int font_width, int avg_font_width)
-{
-	if (font_width < THIN_FONT * avg_font_width / 1000)
-		return -1;
-	if (font_width > 2 * avg_font_width)
-		return 1;
-
-	return 0;
-}
 
 /* 
  visualization helper finction
  */
+
+int
+print_font (GdkPixbuf * pix, box font)
+{
+	int width, height, rowstride, n_channels;
+	guchar *pixels, *pixel;
+	int x, y;
+	int new_color;
+
+	/* get pixbuf stats */
+	n_channels = gdk_pixbuf_get_n_channels (pix);
+	height = gdk_pixbuf_get_height (pix);
+	width = gdk_pixbuf_get_width (pix);
+	rowstride = gdk_pixbuf_get_rowstride (pix);
+	pixels = gdk_pixbuf_get_pixels (pix);
+
+	for (y = font.y1; y < (font.y2 + 0); y++)
+	{
+		for (x = font.x1; x < (font.x2 + 1); x++)
+		{
+			pixel = pixels + x * n_channels + y * rowstride;
+			new_color = (pixel[0] < 100) ? 1 : 0;
+			g_print ("%d", new_color);
+		}
+		g_print ("\n");
+	}
+
+	g_print ("\n");
+
+	return 0;
+}
 
 int
 color_box (GdkPixbuf * pix, box rect, int chanell, int value)
@@ -539,22 +88,28 @@ color_box (GdkPixbuf * pix, box rect, int chanell, int value)
 	return 0;
 }
 
+/*
+ */
+
 int
 do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 {
+	box column;		
+	/* box column; is a place holder to a time when we add column support */
 	box lines[MAX_LINES];
 	box fonts[MAX_LINES][MAX_FONTS_IN_LINE];
-	int num_of_lines;
-	int avg_line_hight;
+	
 	int num_of_fonts[MAX_LINES];
-	int avg_font_hight;
-	int avg_font_width;
+	int num_of_lines;
+	int num_of_fonts_in_page;
+	
 	int avg_font_hight_in_page;
 	int avg_font_width_in_page;
+
 	int i, j;
 	int x, y, y1, y2;
 	int width;
-
+	
 	/* font position classes */
 	int base_class;
 	int top_class;
@@ -598,7 +153,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	int exlem_mark;
 	int question_mark;
 
-	int asterisk;
+	int unknown;
 
 	/* need this to put in the text_buffer */
 	char chars[10];
@@ -608,30 +163,36 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	width = gdk_pixbuf_get_width (pix);
 
 	/* get all lines in this column */
-	fill_lines_array (pix, width, lines,
-			  &num_of_lines, &avg_line_hight, MAX_LINES);
-	avg_font_hight_in_page = 0;
-	avg_font_width_in_page = 0;
+	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
 
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
 		fill_fonts_array (pix, lines[i],
 				  fonts[i],
-				  &(num_of_fonts[i]),
-				  &avg_font_hight,
-				  &avg_font_width, MAX_FONTS_IN_LINE);
-		avg_font_hight_in_page += avg_font_hight;
-		avg_font_width_in_page += avg_font_width;
+				  &(num_of_fonts[i]), MAX_FONTS_IN_LINE);
 	}
 
-	/* get avg values per page */
-	if (num_of_lines == 0)
-		return 0;
+	/* get size statistics for all fonts for all the lines */
+	num_of_fonts_in_page = 0;
+	avg_font_hight_in_page = 0;
+	avg_font_width_in_page = 0;
+	for (i = 0; i < num_of_lines; i++)
+	{
+		for (j = 0; j < num_of_fonts[i]; j++)
+		{
+			num_of_fonts_in_page ++;
+			avg_font_width_in_page += fonts[i][j].width;
+			avg_font_hight_in_page += fonts[i][j].hight;
+		}
+	}
 	
-	avg_font_hight_in_page = avg_font_hight_in_page / num_of_lines;
-	avg_font_width_in_page = avg_font_width_in_page / num_of_lines;
-
+	if (num_of_fonts_in_page != 0)
+	{
+		avg_font_width_in_page /= num_of_fonts_in_page;
+		avg_font_hight_in_page /= num_of_fonts_in_page;
+	}
+	
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
@@ -640,7 +201,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			/* do not waist time on arteffacts */
 			if (fonts[i][j].width < 2 || fonts[i][j].hight < 2)
 				continue;
-
+			
 			y1 = find_font_topline (fonts[i],
 						avg_font_hight_in_page,
 						j, num_of_fonts[i]);
@@ -681,7 +242,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			{
 				if ((i < num_of_lines - 1)
 				    && ((lines[i + 1].y1 - lines[i].y2) >
-					avg_line_hight))
+					avg_font_hight_in_page))
 					end_of_paragraph = 1;
 
 				end_of_word = 1;
@@ -729,13 +290,16 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				has_double_quat_mark (pix, fonts[i][j]);
 			exlem_mark = has_exlem_mark (pix, fonts[i][j]);
 			question_mark = has_question_mark (pix, fonts[i][j]);
-			asterisk = 0;
+			
+			unknown = 0;
+			
 			/* if wide then arteffact */
 
 			if (width_class == 1)
 			{
 				/* arteffact */
 				g_sprintf (chars, "--");
+				unknown = 1;
 			}
 
 			/* small fonts */
@@ -764,7 +328,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
-					asterisk = 1;
+					unknown = 1;
 				}
 			}
 			else if ((hight_class == -1) && (top_class == 1)
@@ -831,7 +395,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
-					asterisk = 1;
+					unknown = 1;
 				}
 			}
 
@@ -889,7 +453,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
-					asterisk = 1;
+					unknown = 1;
 				}
 			}
 			/* regular fonts */
@@ -972,7 +536,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 				else
 				{
 					g_sprintf (chars, "*");
-					asterisk = 1;
+					unknown = 1;
 				}
 			}
 
@@ -994,7 +558,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			 * color_box (pix, fonts[i][j], 1, 0);
 			 * print_font (pix, fonts[i][j]); */
 
-			if (asterisk == 1)
+			if (unknown == 1)
 				color_box (pix, fonts[i][j], 1, 255);
 
 			/* insert the string to text buffer */
@@ -1003,8 +567,6 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 						&iter, chars, -1);
 		}
 
-		/* print the buffer to screen if you want visual fidback 
-		 * gtk_image_set_from_pixbuf (GTK_IMAGE (image), pix); */
 	}
 
 	return 0;

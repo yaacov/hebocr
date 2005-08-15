@@ -12,7 +12,11 @@ hocr_gui_SOURCES = \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
 	hocr.c hocr.h \
-	font_markers.c font_markers.h
+	font_markers.c font_markers.h \
+	page_layout.c page_layout.h \
+	font_layout.c font_layout.h \
+	consts.h \
+	box.h
 
 hocr_gui_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 

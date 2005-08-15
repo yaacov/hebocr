@@ -1,5 +1,5 @@
 /***************************************************************************
- *            hocr.h
+ *            box.h
  *
  *  Fri Aug 12 20:18:34 2005
  *  Copyright  2005  Yaacov Zamir
@@ -22,12 +22,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
+#ifndef __BOX_H__
+#define __BOX_H__
 
-#ifndef __HOCR_H__
-#define __HOCR_H__
-
-/* user only use this function */
-int do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer);
+typedef struct
+{
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+	int hight;
+	int width;
+} box;
 
 #endif

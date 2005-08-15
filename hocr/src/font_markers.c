@@ -27,40 +27,10 @@
  */
 
 #include <gnome.h>
-#include "hocr.h"
 
-#ifndef __FONT_MARKERS_H__
-
-int
-print_font (GdkPixbuf * pix, box font)
-{
-	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
-	int x, y;
-	int new_color;
-
-	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
-
-	for (y = font.y1; y < (font.y2 + 0); y++)
-	{
-		for (x = font.x1; x < (font.x2 + 1); x++)
-		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			new_color = (pixel[0] < 100) ? 1 : 0;
-			g_print ("%d", new_color);
-		}
-		g_print ("\n");
-	}
-
-	g_print ("\n");
-
-	return 0;
-}
+#include "box.h"
+#include "consts.h"
+#include "font_markers.h"
 
 /**
  */
@@ -2064,5 +2034,3 @@ has_question_mark (GdkPixbuf * pix, box font)
 	
 	return 1;
 }
-
-#endif

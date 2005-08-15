@@ -27,11 +27,12 @@
  */
 
 #include <gnome.h>
-#include "hocr.h"
+
+#include "box.h"
 
 #ifndef __FONT_MARKERS_H__
+#define __FONT_MARKERS_H__
 
-int print_font (GdkPixbuf * pix, box font);
 
 /**
  */

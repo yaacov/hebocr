@@ -56,7 +56,7 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 	
 	if (prev_pixbuf)
 	{
-		gdk_pixbuf_unref (prev_pixbuf);
+		g_object_unref (prev_pixbuf);
 		vis_pixbuf = NULL;
 	}
 
@@ -97,7 +97,7 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 
 		if (pixbuf)
 		{
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (pixbuf);
 			pixbuf = NULL;
 		}
 		
@@ -181,7 +181,7 @@ on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data)
 
 		if (vis_pixbuf)
 		{
-			gdk_pixbuf_unref (vis_pixbuf);
+			g_object_unref (vis_pixbuf);
 			vis_pixbuf = NULL;
 		}
 
@@ -248,7 +248,7 @@ on_toolbutton_zoom_in_clicked (GtkToolButton * toolbutton, gpointer user_data)
 	{
 		if (vis_pixbuf)
 		{
-			gdk_pixbuf_unref (vis_pixbuf);
+			g_object_unref (vis_pixbuf);
 			vis_pixbuf = NULL;
 		}
 
@@ -276,7 +276,7 @@ on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton,
 	{
 		if (vis_pixbuf)
 		{
-			gdk_pixbuf_unref (vis_pixbuf);
+			g_object_unref (vis_pixbuf);
 			vis_pixbuf = NULL;
 		}
 
@@ -308,7 +308,7 @@ on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton,
 	{
 		if (vis_pixbuf)
 		{
-			gdk_pixbuf_unref (vis_pixbuf);
+			g_object_unref (vis_pixbuf);
 			vis_pixbuf = NULL;
 		}
 
@@ -330,13 +330,13 @@ on_window1_delete_event (GtkWidget * widget,
 {
 	if (pixbuf)
 	{
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 		pixbuf = NULL;
 	}
 
 	if (vis_pixbuf)
 	{
-		gdk_pixbuf_unref (vis_pixbuf);
+		g_object_unref (vis_pixbuf);
 		vis_pixbuf = NULL;
 	}
 	
@@ -349,13 +349,13 @@ on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	if (pixbuf)
 	{
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 		pixbuf = NULL;
 	}
 
 	if (vis_pixbuf)
 	{
-		gdk_pixbuf_unref (vis_pixbuf);
+		g_object_unref (vis_pixbuf);
 		vis_pixbuf = NULL;
 	}
 
