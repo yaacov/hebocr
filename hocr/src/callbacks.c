@@ -36,14 +36,6 @@
 GdkPixbuf *pixbuf = NULL;
 GdkPixbuf *vis_pixbuf = NULL;
 
-gboolean
-on_window1_delete_event (GtkWidget * widget,
-			 GdkEvent * event, gpointer user_data)
-{
-	gtk_main_quit ();
-	return FALSE;
-}
-
 static void
 update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 {
@@ -61,6 +53,7 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 	g_free (filename);
 
 	gtk_image_set_from_pixbuf (GTK_IMAGE (preview), prev_pixbuf);
+	
 	if (prev_pixbuf)
 	{
 		gdk_pixbuf_unref (prev_pixbuf);
@@ -330,6 +323,26 @@ on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton,
 
 		gtk_image_set_from_pixbuf (GTK_IMAGE (image), vis_pixbuf);
 	}
+}
+
+gboolean
+on_window1_delete_event (GtkWidget * widget,
+			 GdkEvent * event, gpointer user_data)
+{
+	if (pixbuf)
+	{
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = NULL;
+	}
+
+	if (vis_pixbuf)
+	{
+		gdk_pixbuf_unref (vis_pixbuf);
+		vis_pixbuf = NULL;
+	}
+	
+	gtk_main_quit ();
+	return FALSE;
 }
 
 void

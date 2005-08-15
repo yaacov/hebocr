@@ -1,3 +1,10 @@
+hocr (0.3.1)
+
+  * Dan Kenigsberg: Fix memory leak when openinig new picture
+  * Dovix: add menu entry and a spec file for rpm creating
+
+  -- Yaacov Zamir <kzamir@wall.co.il>  Sun, 14 Aug 2005 22:13
+  
 hocr (0.3.0)
 
   * close crash bug
