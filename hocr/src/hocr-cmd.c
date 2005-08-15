@@ -29,15 +29,15 @@
 #  include <config.h>
 #endif
 
-#include <gnome.h>
+#include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "callbacks.h"
 #include "interface.h"
 #include "hocr.h"
 
 GdkPixbuf *pixbuf = NULL;
-GtkWidget *image = NULL;
-GtkWidget *textview = NULL;
+GtkTextBuffer *text_buffer = NULL;
 
 void
 open_pic (char *filename)
@@ -58,14 +58,11 @@ save_text (char *filename)
 	gboolean include_hidden_chars = FALSE;
 	GtkTextIter start;
 	GtkTextIter end;
-	GtkTextBuffer *buffer;
 	FILE *file;
 
-	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
+	gtk_text_buffer_get_bounds (text_buffer, &start, &end);
 
-	gtk_text_buffer_get_bounds (buffer, &start, &end);
-
-	text = gtk_text_buffer_get_text (buffer, &start, &end,
+	text = gtk_text_buffer_get_text (text_buffer, &start, &end,
 					 include_hidden_chars);
 
 	if (filename)
@@ -88,21 +85,10 @@ save_text (char *filename)
 void
 apply ()
 {
-	GtkTextBuffer *text_buffer;
-
-	text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
-
 	if (pixbuf)
 	{
 		do_ocr (pixbuf, text_buffer);
 	}
-}
-
-void
-create_widgets ()
-{
-	image = gtk_image_new ();
-	textview = gtk_text_view_new ();
 }
 
 int
@@ -155,7 +141,7 @@ main (int argc, char *argv[])
 			    GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR, NULL);
 
 	/* this is a gnome program - create widgets */
-	create_widgets ();
+	text_buffer = gtk_text_buffer_new (NULL);
 
 	/* open a file do ocr and dump the results */
 	open_pic (filename_in);
@@ -169,6 +155,12 @@ main (int argc, char *argv[])
 	if (pixbuf)
 	{
 		g_object_unref (pixbuf);
+		pixbuf = NULL;
+	}
+	
+	if (text_buffer)
+	{
+		g_object_unref (text_buffer);
 		pixbuf = NULL;
 	}
 
