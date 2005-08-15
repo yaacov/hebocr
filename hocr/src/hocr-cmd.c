@@ -136,11 +136,10 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
-	gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE,
-			    argc, argv,
-			    GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR, NULL);
+	gtk_set_locale ();
+	gtk_init (&argc, &argv);
 
-	/* this is a gnome program - create widgets */
+	/* this is a gtk program - create widgets */
 	text_buffer = gtk_text_buffer_new (NULL);
 
 	/* open a file do ocr and dump the results */
@@ -157,7 +156,7 @@ main (int argc, char *argv[])
 		g_object_unref (pixbuf);
 		pixbuf = NULL;
 	}
-	
+
 	if (text_buffer)
 	{
 		g_object_unref (text_buffer);
