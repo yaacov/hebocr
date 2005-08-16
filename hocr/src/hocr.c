@@ -193,8 +193,9 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 	/* need this to put in the text_buffer */
 	int len;
+	int last_was_quot = 0;
 	char chars[10];
-	
+
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
 
@@ -231,11 +232,6 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
-
-			/* do not waist time on arteffacts */
-			if (fonts[i][j].width < 2 || fonts[i][j].hight < 2)
-				continue;
-
 			y1 = find_font_topline (fonts[i],
 						avg_font_hight_in_page,
 						j, num_of_fonts[i]);
@@ -276,7 +272,9 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			{
 				if ((i < num_of_lines - 1)
 				    && ((lines[i + 1].y1 - lines[i].y2) >
-					2 * avg_font_hight_in_page))
+					(int) (1.5 *
+					       (double)
+					       avg_font_hight_in_page)))
 					end_of_paragraph = 1;
 
 				end_of_word = 1;
@@ -587,18 +585,33 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 			/* if quat mark check for doubel quat */
 			len = strlen (text_buffer);
-			if (chars[0] == '\'' && text_buffer[len - 1] == '\'')
+			if (chars[0] == '\'' && chars[1] == '\0'
+			    && last_was_quot == 0)
 			{
-				text_buffer[len - 1] == '\"';
+				last_was_quot = 1;
+				if (fonts[i][j].width > 2
+				    && fonts[i][j].hight > 2)
+					g_strlcat (text_buffer, chars,
+						   max_buffer_size);
+			}
+			else if (chars[0] == '\'' && chars[1] == '\0'
+				 && last_was_quot == 1)
+			{
+				last_was_quot = 0;
+				text_buffer[len - 1] = '\"';
 			}
 			else
 			{
-				g_strlcat (text_buffer, chars, max_buffer_size);
+				last_was_quot = 0;
+				if (fonts[i][j].width > 2
+				    && fonts[i][j].hight > 2)
+					g_strlcat (text_buffer, chars,
+						   max_buffer_size);
 			}
-			
+
 			if (unknown == 1)
 				color_box (pix, fonts[i][j], 1, 255);
-			
+
 			/* check for end of word and end of line */
 			if (end_of_word == 1)
 			{
@@ -606,11 +619,13 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			}
 			if (end_of_line == 1)
 			{
-				g_strlcat (text_buffer, "\n", max_buffer_size);
+				g_strlcat (text_buffer, "\n",
+					   max_buffer_size);
 			}
 			if (end_of_paragraph == 1)
 			{
-				g_strlcat (text_buffer, "\n", max_buffer_size);
+				g_strlcat (text_buffer, "\n",
+					   max_buffer_size);
 			}
 
 			/* visual aids to see font box on screen 
