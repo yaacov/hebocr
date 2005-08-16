@@ -585,27 +585,6 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				}
 			}
 
-			/* check for end of word and end of line */
-			if (end_of_word == 1)
-			{
-				g_strlcat (chars, " ", 10);
-			}
-			if (end_of_line == 1)
-			{
-				g_strlcat (chars, "\n", 10);
-			}
-			if (end_of_paragraph == 1)
-			{
-				g_strlcat (chars, "\n", 10);
-			}
-
-			/* visual aids to see font box on screen 
-			 * color_box (pix, fonts[i][j], 1, 0);
-			 * print_font (pix, fonts[i][j]); */
-
-			if (unknown == 1)
-				color_box (pix, fonts[i][j], 1, 255);
-
 			/* if quat mark check for doubel quat */
 			len = strlen (text_buffer);
 			if (chars[0] == '\'' && text_buffer[len - 1] == '\'')
@@ -616,6 +595,27 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			{
 				g_strlcat (text_buffer, chars, max_buffer_size);
 			}
+			
+			if (unknown == 1)
+				color_box (pix, fonts[i][j], 1, 255);
+			
+			/* check for end of word and end of line */
+			if (end_of_word == 1)
+			{
+				g_strlcat (text_buffer, " ", max_buffer_size);
+			}
+			if (end_of_line == 1)
+			{
+				g_strlcat (text_buffer, "\n", max_buffer_size);
+			}
+			if (end_of_paragraph == 1)
+			{
+				g_strlcat (text_buffer, "\n", max_buffer_size);
+			}
+
+			/* visual aids to see font box on screen 
+			 * color_box (pix, fonts[i][j], 1, 0);
+			 * print_font (pix, fonts[i][j]); */
 		}
 
 	}
