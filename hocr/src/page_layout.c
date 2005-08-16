@@ -33,7 +33,7 @@ get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 			 int *line_end)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int i, x, y;
 	double sum, sum1, sum2, sum3;
 	int inside_line = FALSE;
@@ -94,7 +94,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 			 int current_pos, int *font_start, int *font_end)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 	int inside_font = FALSE;
@@ -141,7 +141,7 @@ int
 adjust_font_box (hocr_pixbuf * pix, box * font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 
@@ -190,7 +190,7 @@ int
 adjust_line_box (hocr_pixbuf * pix, box * line)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 

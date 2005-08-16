@@ -37,7 +37,7 @@ int
 has_black_right_bottom_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 
@@ -67,7 +67,7 @@ int
 has_black_left_bottom_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 	/* get pixbuf stats */
@@ -95,7 +95,7 @@ int
 has_black_left_top_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 	/* get pixbuf stats */
@@ -123,7 +123,7 @@ int
 has_black_right_top_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 
@@ -155,7 +155,7 @@ count_vertical_bars (hocr_pixbuf * pix, box font, int y_pos, int *first_x,
 		     int *last_x)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int current_color;
 	int new_color;
@@ -202,7 +202,7 @@ count_horizontal_bars (hocr_pixbuf * pix, box font, int x_pos, int *first_y,
 		       int *last_y)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int current_color;
 	int new_color;
@@ -248,7 +248,7 @@ int
 is_empty (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum = 0;
 
@@ -274,7 +274,7 @@ int
 find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -313,7 +313,7 @@ int
 find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -355,7 +355,7 @@ find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 				     int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -396,7 +396,7 @@ find_horizontal_notch_to_left_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 				    int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -435,7 +435,7 @@ find_horizontal_notch_to_left_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 				  int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -474,7 +474,7 @@ find_horizontal_notch_to_right_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 				   int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -513,7 +513,7 @@ find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 				  int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -558,7 +558,7 @@ find_vertical_notch_up_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 				int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -597,7 +597,7 @@ find_vertical_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1, int x2,
 				 int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -636,7 +636,7 @@ find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 					int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -693,7 +693,7 @@ int
 thin_lines (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int start;
 	int end;
@@ -736,7 +736,7 @@ int
 find_tet_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int start;
 	int end;

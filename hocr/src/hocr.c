@@ -60,7 +60,7 @@ hocr_pixbuf_get_rowstride (hocr_pixbuf * pix)
 	return pix->rowstride;
 }
 
-char *
+unsigned char *
 hocr_pixbuf_get_pixels (hocr_pixbuf * pix)
 {
 	return pix->pixels;
@@ -74,7 +74,7 @@ int
 print_font (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 	int new_color;
 
@@ -105,7 +105,7 @@ int
 color_box (hocr_pixbuf * pix, box rect, int chanell, int value)
 {
 	int width, height, rowstride, n_channels;
-	char *pixels, *pixel;
+	unsigned char *pixels, *pixel;
 	int x, y;
 
 	/* get pixbuf stats */
@@ -195,10 +195,6 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	int len;
 	char chars[10];
 	char *tmp_chars;
-
-	/* get pixbuf width */
-	width = gdk_pixbuf_get_width (pix);
-
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
 
@@ -622,7 +618,6 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 					chars[0] = '\"';
 				}
 			}
-
 			g_strlcat (text_buffer, chars, max_buffer_size);
 
 		}
