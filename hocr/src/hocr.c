@@ -194,7 +194,6 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	/* need this to put in the text_buffer */
 	int len;
 	char chars[10];
-	char tmp_chars[10];
 	
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
@@ -608,19 +607,15 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				color_box (pix, fonts[i][j], 1, 255);
 
 			/* if quat mark check for doubel quat */
-			if (chars[0] == '\'')
+			len = strlen (text_buffer);
+			if (chars[0] == '\'' && text_buffer[len - 1] == '\'')
 			{
-				len = strlen (text_buffer);
-				tmp_chars[0] = text_buffer[len - 1];
-
-				if (tmp_chars[0] == '\'')
-				{
-					text_buffer[len - 1] = '\0';
-					chars[0] = '\"';
-				}
+				text_buffer[len - 1] == '\"';
 			}
-			g_strlcat (text_buffer, chars, max_buffer_size);
-
+			else
+			{
+				g_strlcat (text_buffer, chars, max_buffer_size);
+			}
 		}
 
 	}

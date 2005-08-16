@@ -40,7 +40,7 @@ int
 do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 {
 	hocr_pixbuf hocr_pix;
-	char text[1500];
+	char text[3500];
 	GtkTextIter iter;
 	
 	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
@@ -49,8 +49,8 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 	hocr_pix.pixels = (unsigned char*)(gdk_pixbuf_get_pixels (pixbuf));
 	
-	g_strlcpy (text, "", 1500);
-	hocr_do_ocr (&hocr_pix, text, 1500);
+	g_strlcpy (text, "", 3500);
+	hocr_do_ocr (&hocr_pix, text, 3500);
 
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 	gtk_text_buffer_insert (text_buffer, &iter, text, -1);
