@@ -610,8 +610,6 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			/* if quat mark check for doubel quat */
 			if (chars[0] == '\'')
 			{
-g_print ("ddd");
-				
 				len = strlen (text_buffer);
 				tmp_chars[0] = text_buffer[len - 1];
 
@@ -621,7 +619,6 @@ g_print ("ddd");
 					chars[0] = '\"';
 				}
 			}
-g_print ("%s", chars);
 			g_strlcat (text_buffer, chars, max_buffer_size);
 
 		}
