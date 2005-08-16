@@ -1,3 +1,11 @@
+hocr (0.3.2)
+
+  * make the command line compatible with gocr -i input_file -f format
+  * add html output to command line
+  * add sane support by assuming input is ppm if not explicitly set
+
+  -- Yaacov Zamir <kzamir@wall.co.il>  Tue, 16 Aug 2005 22:13
+  
 hocr (0.3.1)
 
   * Dan Kenigsberg: Fix memory leak when openinig new picture
