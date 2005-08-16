@@ -64,9 +64,9 @@ EOF
 
 
 # move the examples to a better location; delete bad doc dir
-install -d -m 755 %{buildroot}%{_datadir}/misc/%{name}
-mv %{buildroot}%{_docdir}/%{name}/tests/* \
-	%{buildroot}%{_datadir}/misc/%{name}/
+##install -d -m 755 %{buildroot}%{_datadir}/misc/%{name}
+##mv %{buildroot}%{_docdir}/%{name}/tests/* \
+##	%{buildroot}%{_datadir}/misc/%{name}/
 rm -rf %{buildroot}%{_docdir}/%{name}
 
 %clean
