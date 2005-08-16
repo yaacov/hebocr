@@ -4,7 +4,7 @@ EXTRA_DIST = \
 	test1.jpg \
 	test2.jpg
 	
-hocrdocdir = ${prefix}/share/doc/hocr/tests
+hocrdocdir = ${prefix}/share/misc/hocr
 hocrdoc_DATA = \
 	test1.jpg \
 	test2.jpg
