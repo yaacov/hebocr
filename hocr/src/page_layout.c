@@ -22,30 +22,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
-
-#include "box.h"
+#include "hocr.h"
 #include "consts.h"
 #include "page_layout.h"
 
 /* TODO: add support for more then one squre qulumn */
 
 int
-get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
+get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 			 int *line_end)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int i, x, y;
 	double sum, sum1, sum2, sum3;
 	int inside_line = FALSE;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	*line_end = 0;
 	*line_start = current_pos;
@@ -92,11 +90,11 @@ get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
 }
 
 int
-get_next_font_extention (GdkPixbuf * pix, int line_start, int line_end,
+get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 			 int current_pos, int *font_start, int *font_end)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum;
 	int inside_font = FALSE;
@@ -104,11 +102,11 @@ get_next_font_extention (GdkPixbuf * pix, int line_start, int line_end,
 	int line_hight = line_end - line_start;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 	/* read line from right to left */
 	for (x = current_pos - 1; x > 0; x--)
 	{
@@ -140,19 +138,19 @@ get_next_font_extention (GdkPixbuf * pix, int line_start, int line_end,
 }
 
 int
-adjust_font_box (GdkPixbuf * pix, box * font)
+adjust_font_box (hocr_pixbuf * pix, box * font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	sum = 0;
 	/* read line from right to left */
@@ -189,19 +187,19 @@ adjust_font_box (GdkPixbuf * pix, box * font)
 }
 
 int
-adjust_line_box (GdkPixbuf * pix, box * line)
+adjust_line_box (hocr_pixbuf * pix, box * line)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* TODO: make this more intelegent */
 	line->x1 = 0;
@@ -211,7 +209,7 @@ adjust_line_box (GdkPixbuf * pix, box * line)
 }
 
 int
-fill_lines_array (GdkPixbuf * pix, box column, box * lines,
+fill_lines_array (hocr_pixbuf * pix, box column, box * lines,
 		  int *num_of_lines, int max_lines)
 {
 	/* FIXME: column is just a place holder, it does nothing now ! */
@@ -256,7 +254,7 @@ fill_lines_array (GdkPixbuf * pix, box column, box * lines,
 }
 
 int
-fill_fonts_array (GdkPixbuf * pix, box line, box * fonts,
+fill_fonts_array (hocr_pixbuf * pix, box line, box * fonts,
 		  int *num_of_fonts, int max_fonts)
 {
 	/* for gliphs detection */

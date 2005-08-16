@@ -22,9 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
-
-#include "box.h"
+#include "hocr.h"
 
 #ifndef __PAGE_LAYOUT_H__
 #define __PAGE_LAYOUT_H__
@@ -35,19 +33,19 @@
 /**
  @brief adjust lines y borders
 
- @param pix pointer the page GdkPixbuf
+ @param pix pointer the page hocr_pixbuf
  @param current_pos y position of cursor in this this column
  @param line_start return y start of next line
  @param line_end return y end of next line
  */
 int
-get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
+get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 			 int *line_end);
 
 /**
  @brief adjust fonts x borders
 
- @param pix pointer the page GdkPixbuf
+ @param pix pointer the page hocr_pixbuf
  @param line_start y start of this line
  @param line_end y end of this line
  @param current_pos x position of cursor in this this line
@@ -55,51 +53,51 @@ get_next_line_extention (GdkPixbuf * pix, int current_pos, int *line_start,
  @param font_end return x end of next font
  */
 int
-get_next_font_extention (GdkPixbuf * pix, int line_start, int line_end,
+get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 			 int current_pos, int *font_start, int *font_end);
 
 /**
  @brief adjust fonts y borders
 
- @param pix pointer the page GdkPixbuf
+ @param pix pointer the page hocr_pixbuf
  @param font pointer to the fonts extentions
  */
 int
-adjust_font_box (GdkPixbuf * pix, box * font);
+adjust_font_box (hocr_pixbuf * pix, box * font);
 
 /**
  @brief adjust line x borders
 
- @param pix pointer the page GdkPixbuf
+ @param pix pointer the page hocr_pixbuf
  @param line pointer to the lines extentions
  */
 int
-adjust_line_box (GdkPixbuf * pix, box * line);
+adjust_line_box (hocr_pixbuf * pix, box * line);
 
 /**
  @brief fils an array of boxes with this page lines
 
- @param pix pointer the page GdkPixbuf
+ @param pix pointer the page hocr_pixbuf
  @param column the column box extentions
  @param lines the array of lines to be filled
  @param num_of_lines return the number of lines in this column
  @param max_lines maximum size of lines array
  */
 int
-fill_lines_array (GdkPixbuf * pix, box column, box * lines,
+fill_lines_array (hocr_pixbuf * pix, box column, box * lines,
 		  int *num_of_lines, int max_lines);
 
 		  /**
  @brief fils an array of boxs with this page fonts
 
- @param pix pointer the page GdkPixbuf
+ @param pix pointer the page hocr_pixbuf
  @param line the line box extentions
  @param fonts the array of fonts to be filled
  @param num_of_fonts return the number of fonts in this line
  @param max_fonts maximum size of fonts array
  */
 int
-fill_fonts_array (GdkPixbuf * pix, box line, box * fonts,
+fill_fonts_array (hocr_pixbuf * pix, box line, box * fonts,
 		  int *num_of_fonts, int max_fonts);
 		  
 #endif

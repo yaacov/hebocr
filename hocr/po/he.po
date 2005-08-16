@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 23:40+0300\n"
+"POT-Creation-Date: 2005-08-16 09:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Hebrew <LL@li.org>\n"
@@ -16,22 +16,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/hocr-cmd.c:49
+#: src/hocr-cmd.c:64
 #, c-format
 msgid ""
 "hocr: can't open file %s\n"
 "\n"
 msgstr ""
 
-#: src/hocr-cmd.c:97
+#: src/hocr-cmd.c:131
 #, c-format
-msgid ""
-"\n"
-"hocr %s - Hebrew OCR program\n"
+msgid "hocr %s - Hebrew OCR program\n"
 msgstr ""
 
-#: src/hocr-cmd.c:98
-msgid "USAGE: hocr -f pic_filename.jpg [-o text_filename.txt]\n"
+#: src/hocr-cmd.c:133
+msgid ""
+"USAGE: hocr -i pic_filename.jpg/.png/.ppm [-o text_filename.txt] [-f html]\n"
 msgstr ""
 
 #. set the window title

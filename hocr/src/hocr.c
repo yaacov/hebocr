@@ -22,9 +22,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
+#include <glib.h>
+#include <glib/gprintf.h>
+#include <string.h>
 
-#include "box.h"
 #include "consts.h"
 #include "page_layout.h"
 #include "font_layout.h"
@@ -32,23 +33,57 @@
 #include "hocr.h"
 
 /* 
+ internal pixbuf stractures 
+ */
+
+int
+hocr_pixbuf_get_n_channels (hocr_pixbuf * pix)
+{
+	return pix->n_channels;
+}
+
+int
+hocr_pixbuf_get_height (hocr_pixbuf * pix)
+{
+	return pix->height;
+}
+
+int
+hocr_pixbuf_get_width (hocr_pixbuf * pix)
+{
+	return pix->width;
+}
+
+int
+hocr_pixbuf_get_rowstride (hocr_pixbuf * pix)
+{
+	return pix->rowstride;
+}
+
+char *
+hocr_pixbuf_get_pixels (hocr_pixbuf * pix)
+{
+	return pix->pixels;
+}
+
+/* 
  visualization helper finction
  */
 
 int
-print_font (GdkPixbuf * pix, box font)
+print_font (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int new_color;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = font.y1; y < (font.y2 + 0); y++)
 	{
@@ -67,16 +102,16 @@ print_font (GdkPixbuf * pix, box font)
 }
 
 int
-color_box (GdkPixbuf * pix, box rect, int chanell, int value)
+color_box (hocr_pixbuf * pix, box rect, int chanell, int value)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = rect.y1; y < rect.y2; y++)
 		for (x = rect.x1; x < rect.x2; x++)
@@ -92,7 +127,7 @@ color_box (GdkPixbuf * pix, box rect, int chanell, int value)
  */
 
 int
-do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
+hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 {
 	box column;
 	/* box column; is a place holder to a time when we add column support */
@@ -157,10 +192,9 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	int unknown;
 
 	/* need this to put in the text_buffer */
+	int len;
 	char chars[10];
 	char *tmp_chars;
-	GtkTextIter iter;
-	GtkTextIter tmp_iter;
 
 	/* get pixbuf width */
 	width = gdk_pixbuf_get_width (pix);
@@ -201,7 +235,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
-			
+
 			/* do not waist time on arteffacts */
 			if (fonts[i][j].width < 2 || fonts[i][j].hight < 2)
 				continue;
@@ -267,7 +301,7 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			het_mark = has_het_mark (pix, fonts[i][j]);
 			tet_mark = has_tet_mark (pix, fonts[i][j]);
 			yud_mark = has_yud_mark (pix, fonts[i][j]);
-			
+
 			kaf_mark = has_kaf_mark (pix, fonts[i][j]);
 			kaf_sofit_mark =
 				has_kaf_sofit_mark (pix, fonts[i][j]);
@@ -277,14 +311,14 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			mem_sofit_mark =
 				has_mem_sofit_mark (pix, fonts[i][j]);
 			nun_mark = has_nun_mark (pix, fonts[i][j]);
-	
+
 			nun_sofit_mark =
 				has_nun_sofit_mark (pix, fonts[i][j]);
 			sameh_mark = has_sameh_mark (pix, fonts[i][j]);
 			ayin_mark = has_ayin_mark (pix, fonts[i][j]);
 			pe_mark = has_pe_mark (pix, fonts[i][j]);
 			pe_sofit_mark = has_pe_sofit_mark (pix, fonts[i][j]);
-		
+
 			tzadi_mark = has_tzadi_mark (pix, fonts[i][j]);
 			tzadi_sofit_mark =
 				has_tzadi_sofit_mark (pix, fonts[i][j]);
@@ -576,27 +610,21 @@ do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer)
 			if (unknown == 1)
 				color_box (pix, fonts[i][j], 1, 255);
 
-			/* insert the string to text buffer */
-			gtk_text_buffer_get_end_iter (text_buffer, &iter);
-			
 			/* if quat mark check for doubel quat */
 			if (chars[0] == '\'')
 			{
-				gtk_text_buffer_get_end_iter (text_buffer, &tmp_iter);
-				gtk_text_iter_backward_chars    (&tmp_iter,1);
-				tmp_chars = gtk_text_buffer_get_text (text_buffer,&tmp_iter,&iter,FALSE);
-				
+				len = strlen (text_buffer);
+				tmp_chars[0] = text_buffer[len - 1];
+
 				if (tmp_chars[0] == '\'')
 				{
-					gtk_text_buffer_delete (text_buffer,&tmp_iter,&iter);
+					text_buffer[len - 1] = '\0';
 					chars[0] = '\"';
 				}
-				g_free (tmp_chars);
-				
 			}
-				
-			gtk_text_buffer_insert (text_buffer, &iter, chars,
-						-1);
+
+			g_strlcat (text_buffer, chars, max_buffer_size);
+
 		}
 
 	}

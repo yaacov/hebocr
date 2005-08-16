@@ -15,8 +15,7 @@ hocr_gui_SOURCES = \
 	font_markers.c font_markers.h \
 	page_layout.c page_layout.h \
 	font_layout.c font_layout.h \
-	consts.h \
-	box.h
+	consts.h
 
 hocr_gui_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 

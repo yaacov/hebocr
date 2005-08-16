@@ -22,12 +22,49 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
-
 #ifndef __HOCR_H__
 #define __HOCR_H__
 
+#ifndef TRUE
+#define TRUE -1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+typedef struct
+{
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+	int hight;
+	int width;
+} box;
+
+typedef struct
+{
+	int n_channels;
+	int height;
+	int width;
+	int rowstride;
+	char *pixels;
+} hocr_pixbuf;
+
+int hocr_pixbuf_get_n_channels (hocr_pixbuf * pix);
+int hocr_pixbuf_get_height (hocr_pixbuf * pix);
+int hocr_pixbuf_get_width (hocr_pixbuf * pix);
+int hocr_pixbuf_get_rowstride (hocr_pixbuf * pix);
+char *hocr_pixbuf_get_pixels (hocr_pixbuf * pix);
+
+/* DOTO: add this functions */
+/* NOT IMPLEMENTED YET !! */
+hocr_pixbuf *hocr_pixbuf_new_from_file (char *filename);
+int hocr_pixbuf_unref (hocr_pixbuf * pix);
+/* NOT IMPLEMENTED YET !! */
+
 /* user only use this function */
-int do_ocr (GdkPixbuf * pix, GtkTextBuffer * text_buffer);
+int hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size);
 
 #endif

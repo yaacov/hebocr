@@ -30,6 +30,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -40,6 +41,28 @@
 
 GdkPixbuf *pixbuf = NULL;
 GtkTextBuffer *text_buffer = NULL;
+
+int
+do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
+{
+	hocr_pixbuf hocr_pix;
+	char text[1500];
+	GtkTextIter iter;
+
+	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+	hocr_pix.height = gdk_pixbuf_get_height (pixbuf);
+	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
+	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	hocr_pix.pixels = (char*)(gdk_pixbuf_get_pixels (pixbuf));
+
+	g_strlcpy (text, "", 1500);
+	hocr_do_ocr (&hocr_pix, text, 1500);
+
+	gtk_text_buffer_get_end_iter (text_buffer, &iter);
+	gtk_text_buffer_insert (text_buffer, &iter, text, -1);
+
+	return 1;
+}
 
 void
 open_pic (char *filename)
@@ -89,8 +112,8 @@ save_text (char *filename, char *format_out)
 		if (format_out[0] == 'h')
 			g_fprintf (file,
 				   "<html>\n<meta http-equiv=\"Content-Type\" \
-					content=\"text/html; charset=UTF-8\">\n \
-					<body dir=\"rtl\"><pre>\n");
+content=\"text/html; charset=UTF-8\">\n \
+<body dir=\"rtl\"><pre>\n");
 
 		g_fprintf (file, "%s", text);
 
@@ -103,8 +126,8 @@ save_text (char *filename, char *format_out)
 		/* no file name - print to std output */
 		if (format_out[0] == 'h')
 			g_printf ("<html>\n<meta http-equiv=\"Content-Type\" \
-					content=\"text/html; charset=UTF-8\">\n \
-					<body dir=\"rtl\"><pre>\n");
+content=\"text/html; charset=UTF-8\">\n \
+<body dir=\"rtl\"><pre>\n");
 
 		g_printf ("%s", text);
 
@@ -130,7 +153,7 @@ print_help ()
 {
 	g_print (_("hocr %s - Hebrew OCR program\n"), VERSION);
 	g_print (_
-		 ("USAGE: hocr -i pic_filename.jpg/.png/.ppm [-o text_filename.txt] [-f html]\n"));
+		 ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n"));
 	g_print ("\n");
 }
 

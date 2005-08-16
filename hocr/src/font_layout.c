@@ -22,9 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
-
-#include "box.h"
+#include "hocr.h"
 #include "consts.h"
 #include "font_layout.h"
 

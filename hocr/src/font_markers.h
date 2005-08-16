@@ -26,9 +26,7 @@
  font markers
  */
 
-#include <gnome.h>
-
-#include "box.h"
+#include "hocr.h"
 
 #ifndef __FONT_MARKERS_H__
 #define __FONT_MARKERS_H__
@@ -37,39 +35,39 @@
 /**
  */
 
-int alef_mark (GdkPixbuf * pix, box font);
-int has_bet_mark (GdkPixbuf * pix, box font);
-int has_gimel_mark (GdkPixbuf * pix, box font);
-int has_dalet_mark (GdkPixbuf * pix, box font);
-int has_he_mark (GdkPixbuf * pix, box font);
-int has_vav_mark (GdkPixbuf * pix, box font);
-int has_zain_mark (GdkPixbuf * pix, box font);
-int has_het_mark (GdkPixbuf * pix, box font);
-int has_tet_mark (GdkPixbuf * pix, box font);
-int has_yud_mark (GdkPixbuf * pix, box font);
-int has_kaf_mark (GdkPixbuf * pix, box font);
-int has_kaf_sofit_mark (GdkPixbuf * pix, box font);
-int has_lamed_mark (GdkPixbuf * pix, box font);
-int has_mem_mark (GdkPixbuf * pix, box font);
-int has_mem_sofit_mark (GdkPixbuf * pix, box font);
-int has_nun_mark (GdkPixbuf * pix, box font);
-int has_nun_sofit_mark (GdkPixbuf * pix, box font);
-int has_sameh_mark (GdkPixbuf * pix, box font);
-int has_ayin_mark (GdkPixbuf * pix, box font);
-int has_pe_mark (GdkPixbuf * pix, box font);
-int has_pe_sofit_mark (GdkPixbuf * pix, box font);
-int has_tzadi_mark (GdkPixbuf * pix, box font);
-int has_tzadi_sofit_mark (GdkPixbuf * pix, box font);
-int has_kof_mark (GdkPixbuf * pix, box font);
-int has_resh_mark (GdkPixbuf * pix, box font);
-int has_shin_mark (GdkPixbuf * pix, box font);
-int has_tav_mark (GdkPixbuf * pix, box font);
+int alef_mark (hocr_pixbuf * pix, box font);
+int has_bet_mark (hocr_pixbuf * pix, box font);
+int has_gimel_mark (hocr_pixbuf * pix, box font);
+int has_dalet_mark (hocr_pixbuf * pix, box font);
+int has_he_mark (hocr_pixbuf * pix, box font);
+int has_vav_mark (hocr_pixbuf * pix, box font);
+int has_zain_mark (hocr_pixbuf * pix, box font);
+int has_het_mark (hocr_pixbuf * pix, box font);
+int has_tet_mark (hocr_pixbuf * pix, box font);
+int has_yud_mark (hocr_pixbuf * pix, box font);
+int has_kaf_mark (hocr_pixbuf * pix, box font);
+int has_kaf_sofit_mark (hocr_pixbuf * pix, box font);
+int has_lamed_mark (hocr_pixbuf * pix, box font);
+int has_mem_mark (hocr_pixbuf * pix, box font);
+int has_mem_sofit_mark (hocr_pixbuf * pix, box font);
+int has_nun_mark (hocr_pixbuf * pix, box font);
+int has_nun_sofit_mark (hocr_pixbuf * pix, box font);
+int has_sameh_mark (hocr_pixbuf * pix, box font);
+int has_ayin_mark (hocr_pixbuf * pix, box font);
+int has_pe_mark (hocr_pixbuf * pix, box font);
+int has_pe_sofit_mark (hocr_pixbuf * pix, box font);
+int has_tzadi_mark (hocr_pixbuf * pix, box font);
+int has_tzadi_sofit_mark (hocr_pixbuf * pix, box font);
+int has_kof_mark (hocr_pixbuf * pix, box font);
+int has_resh_mark (hocr_pixbuf * pix, box font);
+int has_shin_mark (hocr_pixbuf * pix, box font);
+int has_tav_mark (hocr_pixbuf * pix, box font);
 
-int has_quat_mark (GdkPixbuf * pix, box font);
-int has_double_quat_mark (GdkPixbuf * pix, box font);
-int has_exlem_mark (GdkPixbuf * pix, box font);
-int has_question_mark (GdkPixbuf * pix, box font);
-int has_makaf_mark (GdkPixbuf * pix, box font);
+int has_quat_mark (hocr_pixbuf * pix, box font);
+int has_double_quat_mark (hocr_pixbuf * pix, box font);
+int has_exlem_mark (hocr_pixbuf * pix, box font);
+int has_question_mark (hocr_pixbuf * pix, box font);
+int has_makaf_mark (hocr_pixbuf * pix, box font);
 
 /**
  */

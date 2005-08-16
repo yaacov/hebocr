@@ -36,6 +36,28 @@
 GdkPixbuf *pixbuf = NULL;
 GdkPixbuf *vis_pixbuf = NULL;
 
+int
+do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
+{
+	hocr_pixbuf hocr_pix;
+	char text[1500];
+	GtkTextIter iter;
+	
+	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+	hocr_pix.height = gdk_pixbuf_get_height (pixbuf);
+	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
+	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	hocr_pix.pixels = (char*)(gdk_pixbuf_get_pixels (pixbuf));
+	
+	g_strlcpy (text, "", 1500);
+	hocr_do_ocr (&hocr_pix, text, 1500);
+
+	gtk_text_buffer_get_end_iter (text_buffer, &iter);
+	gtk_text_buffer_insert (text_buffer, &iter, text, -1);
+	
+	return 1;
+}
+
 static void
 update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 {

@@ -26,9 +26,7 @@
  font markers
  */
 
-#include <gnome.h>
-
-#include "box.h"
+#include "hocr.h"
 #include "consts.h"
 #include "font_markers.h"
 
@@ -36,19 +34,19 @@
  */
 
 int
-has_black_right_bottom_mark (GdkPixbuf * pix, box font)
+has_black_right_bottom_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	sum = 0;
 	/* check a 6*6 triangle */
@@ -66,18 +64,18 @@ has_black_right_bottom_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_black_left_bottom_mark (GdkPixbuf * pix, box font)
+has_black_left_bottom_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum;
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 	/* look at bottom right */
 	sum = 0;
 	/* check a 6*6 triangle */
@@ -94,18 +92,18 @@ has_black_left_bottom_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_black_left_top_mark (GdkPixbuf * pix, box font)
+has_black_left_top_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum;
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 	/* look at bottom right */
 	sum = 0;
 	/* check a 6*6 triangle */
@@ -122,19 +120,19 @@ has_black_left_top_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_black_right_top_mark (GdkPixbuf * pix, box font)
+has_black_right_top_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	sum = 0;
 
@@ -153,22 +151,22 @@ has_black_right_top_mark (GdkPixbuf * pix, box font)
 }
 
 int
-count_vertical_bars (GdkPixbuf * pix, box font, int y_pos, int *first_x,
+count_vertical_bars (hocr_pixbuf * pix, box font, int y_pos, int *first_x,
 		     int *last_x)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int current_color;
 	int new_color;
 	int counter = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	y = y_pos;
@@ -200,22 +198,22 @@ count_vertical_bars (GdkPixbuf * pix, box font, int y_pos, int *first_x,
 }
 
 int
-count_horizontal_bars (GdkPixbuf * pix, box font, int x_pos, int *first_y,
+count_horizontal_bars (hocr_pixbuf * pix, box font, int x_pos, int *first_y,
 		       int *last_y)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int current_color;
 	int new_color;
 	int counter = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	x = x_pos;
@@ -247,19 +245,19 @@ count_horizontal_bars (GdkPixbuf * pix, box font, int x_pos, int *first_y,
 }
 
 int
-is_empty (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
+is_empty (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int sum = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* check for black pixels */
 	for (x = x1; x < x2; x++)
@@ -273,10 +271,10 @@ is_empty (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
 }
 
 int
-find_horizontal_path (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
+find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -288,11 +286,11 @@ find_horizontal_path (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
 	int counter = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x1; x < x2; x++)
 	{
@@ -312,10 +310,10 @@ find_horizontal_path (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
 }
 
 int
-find_vertical_path (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
+find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -327,11 +325,11 @@ find_vertical_path (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
 	int counter = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = y1; y < y2; y++)
 	{
@@ -353,22 +351,22 @@ find_vertical_path (GdkPixbuf * pix, int x1, int y1, int x2, int y2)
 }
 
 int
-find_horizontal_notch_to_right_down (GdkPixbuf * pix, int x1, int y1, int x2,
+find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 				     int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 
 
@@ -394,22 +392,22 @@ find_horizontal_notch_to_right_down (GdkPixbuf * pix, int x1, int y1, int x2,
 }
 
 int
-find_horizontal_notch_to_left_down (GdkPixbuf * pix, int x1, int y1, int x2,
+find_horizontal_notch_to_left_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 				    int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = y1; y < y2; y++)
 	{
@@ -433,22 +431,22 @@ find_horizontal_notch_to_left_down (GdkPixbuf * pix, int x1, int y1, int x2,
 }
 
 int
-find_horizontal_notch_to_left_up (GdkPixbuf * pix, int x1, int y1, int x2,
+find_horizontal_notch_to_left_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 				  int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = y2; y > y1; y--)
 	{
@@ -472,22 +470,22 @@ find_horizontal_notch_to_left_up (GdkPixbuf * pix, int x1, int y1, int x2,
 }
 
 int
-find_horizontal_notch_to_right_up (GdkPixbuf * pix, int x1, int y1, int x2,
+find_horizontal_notch_to_right_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 				   int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = y2; y > y1; y--)
 	{
@@ -511,22 +509,22 @@ find_horizontal_notch_to_right_up (GdkPixbuf * pix, int x1, int y1, int x2,
 }
 
 int
-find_vertical_notch_down_to_left (GdkPixbuf * pix, int x1, int y1, int x2,
+find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 				  int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x2; x > x1; x--)
 	{
@@ -556,22 +554,22 @@ find_vertical_notch_down_to_left (GdkPixbuf * pix, int x1, int y1, int x2,
 }
 
 int
-find_vertical_notch_up_to_left (GdkPixbuf * pix, int x1, int y1, int x2,
+find_vertical_notch_up_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 				int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x2; x > x1; x--)
 	{
@@ -595,22 +593,22 @@ find_vertical_notch_up_to_left (GdkPixbuf * pix, int x1, int y1, int x2,
 }
 
 int
-find_vertical_notch_up_to_right (GdkPixbuf * pix, int x1, int y1, int x2,
+find_vertical_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1, int x2,
 				 int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x1; x < x2; x++)
 	{
@@ -634,11 +632,11 @@ find_vertical_notch_up_to_right (GdkPixbuf * pix, int x1, int y1, int x2,
 }
 
 int
-find_vertical_double_notch_up_to_right (GdkPixbuf * pix, int x1, int y1,
+find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 					int x2, int y2)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -647,11 +645,11 @@ find_vertical_double_notch_up_to_right (GdkPixbuf * pix, int x1, int y1,
 	int max = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x1; x < x2; x++)
 	{
@@ -692,21 +690,21 @@ find_vertical_double_notch_up_to_right (GdkPixbuf * pix, int x1, int y1,
 }
 
 int
-thin_lines (GdkPixbuf * pix, box font)
+thin_lines (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int start;
 	int end;
 	int sum = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	x = font.x1 + font.width / 2;
@@ -735,21 +733,21 @@ thin_lines (GdkPixbuf * pix, box font)
 }
 
 int
-find_tet_mark (GdkPixbuf * pix, box font)
+find_tet_mark (hocr_pixbuf * pix, box font)
 {
 	int width, height, rowstride, n_channels;
-	guchar *pixels, *pixel;
+	char *pixels, *pixel;
 	int x, y;
 	int start;
 	int end;
 	int sum = 0;
 
 	/* get pixbuf stats */
-	n_channels = gdk_pixbuf_get_n_channels (pix);
-	height = gdk_pixbuf_get_height (pix);
-	width = gdk_pixbuf_get_width (pix);
-	rowstride = gdk_pixbuf_get_rowstride (pix);
-	pixels = gdk_pixbuf_get_pixels (pix);
+	n_channels = hocr_pixbuf_get_n_channels (pix);
+	height = hocr_pixbuf_get_height (pix);
+	width = hocr_pixbuf_get_width (pix);
+	rowstride = hocr_pixbuf_get_rowstride (pix);
+	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	y = font.y1 + font.hight / 2;
@@ -839,7 +837,7 @@ find_tet_mark (GdkPixbuf * pix, box font)
  */
 
 int
-has_alef_mark (GdkPixbuf * pix, box font)
+has_alef_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int y_top;
@@ -873,7 +871,7 @@ has_alef_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_bet_mark (GdkPixbuf * pix, box font)
+has_bet_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -929,7 +927,7 @@ has_bet_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_gimel_mark (GdkPixbuf * pix, box font)
+has_gimel_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -992,7 +990,7 @@ has_gimel_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_dalet_mark (GdkPixbuf * pix, box font)
+has_dalet_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1042,7 +1040,7 @@ has_dalet_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_he_mark (GdkPixbuf * pix, box font)
+has_he_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1078,7 +1076,7 @@ has_he_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_vav_mark (GdkPixbuf * pix, box font)
+has_vav_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1136,7 +1134,7 @@ has_vav_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_zain_mark (GdkPixbuf * pix, box font)
+has_zain_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1165,7 +1163,7 @@ has_zain_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_het_mark (GdkPixbuf * pix, box font)
+has_het_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1222,7 +1220,7 @@ has_het_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_tet_mark (GdkPixbuf * pix, box font)
+has_tet_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1274,7 +1272,7 @@ has_tet_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_yud_mark (GdkPixbuf * pix, box font)
+has_yud_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1298,7 +1296,7 @@ has_yud_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_kaf_mark (GdkPixbuf * pix, box font)
+has_kaf_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1339,21 +1337,21 @@ has_kaf_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_kaf_sofit_mark (GdkPixbuf * pix, box font)
+has_kaf_sofit_mark (hocr_pixbuf * pix, box font)
 {
 
 	return 0;
 }
 
 int
-has_lamed_mark (GdkPixbuf * pix, box font)
+has_lamed_mark (hocr_pixbuf * pix, box font)
 {
 
 	return 0;
 }
 
 int
-has_mem_mark (GdkPixbuf * pix, box font)
+has_mem_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1418,7 +1416,7 @@ has_mem_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_mem_sofit_mark (GdkPixbuf * pix, box font)
+has_mem_sofit_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1463,7 +1461,7 @@ has_mem_sofit_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_nun_mark (GdkPixbuf * pix, box font)
+has_nun_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1502,14 +1500,14 @@ has_nun_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_nun_sofit_mark (GdkPixbuf * pix, box font)
+has_nun_sofit_mark (hocr_pixbuf * pix, box font)
 {
 
 	return 0;
 }
 
 int
-has_sameh_mark (GdkPixbuf * pix, box font)
+has_sameh_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1566,7 +1564,7 @@ has_sameh_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_ayin_mark (GdkPixbuf * pix, box font)
+has_ayin_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1610,7 +1608,7 @@ has_ayin_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_pe_mark (GdkPixbuf * pix, box font)
+has_pe_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1657,7 +1655,7 @@ has_pe_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_pe_sofit_mark (GdkPixbuf * pix, box font)
+has_pe_sofit_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1698,7 +1696,7 @@ has_pe_sofit_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_tzadi_mark (GdkPixbuf * pix, box font)
+has_tzadi_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1738,7 +1736,7 @@ has_tzadi_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_tzadi_sofit_mark (GdkPixbuf * pix, box font)
+has_tzadi_sofit_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1786,7 +1784,7 @@ has_tzadi_sofit_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_kof_mark (GdkPixbuf * pix, box font)
+has_kof_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1831,7 +1829,7 @@ has_kof_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_resh_mark (GdkPixbuf * pix, box font)
+has_resh_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1885,7 +1883,7 @@ has_resh_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_shin_mark (GdkPixbuf * pix, box font)
+has_shin_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1920,7 +1918,7 @@ has_shin_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_tav_mark (GdkPixbuf * pix, box font)
+has_tav_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1969,7 +1967,7 @@ has_tav_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_quat_mark (GdkPixbuf * pix, box font)
+has_quat_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1989,7 +1987,7 @@ has_quat_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_double_quat_mark (GdkPixbuf * pix, box font)
+has_double_quat_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -2005,7 +2003,7 @@ has_double_quat_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_exlem_mark (GdkPixbuf * pix, box font)
+has_exlem_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -2026,7 +2024,7 @@ has_exlem_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_question_mark (GdkPixbuf * pix, box font)
+has_question_mark (hocr_pixbuf * pix, box font)
 {
 
 	int number_of_bars;
@@ -2048,7 +2046,7 @@ has_question_mark (GdkPixbuf * pix, box font)
 }
 
 int
-has_makaf_mark (GdkPixbuf * pix, box font)
+has_makaf_mark (hocr_pixbuf * pix, box font)
 {
 	if (font.hight > 5)
 		return 0;
