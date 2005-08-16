@@ -29,6 +29,8 @@
 #  include <config.h>
 #endif
 
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
@@ -42,8 +44,21 @@ GtkTextBuffer *text_buffer = NULL;
 void
 open_pic (char *filename)
 {
+	char tmp[255];
+
 	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 
+	/* if this file is unreadble try to assume it is ppm */
+	/* TODO: ugly, usr pixbuf loader to set ppm file type */
+	if (!pixbuf)
+	{
+		g_snprintf (tmp, 255, "/tmp/hocr-testfile-%s.ppn", filename);
+		g_rename (filename, tmp);
+		pixbuf = gdk_pixbuf_new_from_file (tmp, NULL);
+		g_rename (tmp, filename);
+	}
+
+	/* it is not a ppm or any other readble file then can't open :( */
 	if (!pixbuf)
 	{
 		g_print (_("hocr: can't open file %s\n\n"), filename);
@@ -52,7 +67,7 @@ open_pic (char *filename)
 }
 
 int
-save_text (char *filename)
+save_text (char *filename, char *format_out)
 {
 	gchar *text;
 	gboolean include_hidden_chars = FALSE;
@@ -65,17 +80,36 @@ save_text (char *filename)
 	text = gtk_text_buffer_get_text (text_buffer, &start, &end,
 					 include_hidden_chars);
 
+	/* if format string begin with 'h' assume html output */
 	if (filename)
 	{
 		/* save to file */
 		file = fopen (filename, "w");
+
+		if (format_out[0] == 'h')
+			g_fprintf (file,
+				   "<html>\n<meta http-equiv=\"Content-Type\" \
+					content=\"text/html; charset=UTF-8\">\n \
+					<body dir=\"rtl\"><pre>\n");
+
 		g_fprintf (file, "%s", text);
+
+		if (format_out[0] == 'h')
+			g_fprintf (file, "</pre></body>\n</html>\n");
 		fclose (file);
 	}
 	else
 	{
 		/* no file name - print to std output */
+		if (format_out[0] == 'h')
+			g_printf ("<html>\n<meta http-equiv=\"Content-Type\" \
+					content=\"text/html; charset=UTF-8\">\n \
+					<body dir=\"rtl\"><pre>\n");
+
 		g_printf ("%s", text);
+
+		if (format_out[0] == 'h')
+			g_printf ("</pre></body>\n</html>\n");
 	}
 
 	g_free (text);
@@ -94,27 +128,35 @@ apply ()
 int
 print_help ()
 {
-	g_print (_("\nhocr %s - Hebrew OCR program\n"), VERSION);
-	g_print (_("USAGE: hocr -f pic_filename.jpg [-o text_filename.txt]\n"));
+	g_print (_("hocr %s - Hebrew OCR program\n"), VERSION);
+	g_print (_
+		 ("USAGE: hocr -i pic_filename.jpg/.png/.ppm [-o text_filename.txt] [-f html]\n"));
 	g_print ("\n");
 }
 
 int
 main (int argc, char *argv[])
 {
-	int opt_f = 0;
+	int opt_i = 0;
 	int opt_o = 0;
+	int opt_f = 0;
+	int opt_html = 0;
+	int opt_txt = 1;
 	char c;
 
 	char filename_in[255];
 	char filename_out[255];
+	char format_out[255];
 
-	while ((c = getopt (argc, argv, "f:o:")) != EOF)
+	/* default output is text file */
+	format_out[0] = 't';
+
+	while ((c = getopt (argc, argv, "i:o:f:")) != EOF)
 	{
 		switch (c)
 		{
-		case 'f':
-			opt_f = 1;
+		case 'i':
+			opt_i = 1;
 			if (optarg)
 				g_strlcpy (filename_in, optarg, 255);
 			break;
@@ -123,6 +165,11 @@ main (int argc, char *argv[])
 			if (optarg)
 				g_strlcpy (filename_out, optarg, 255);
 			break;
+		case 'f':
+			opt_f = 1;
+			if (optarg)
+				g_strlcpy (format_out, optarg, 255);
+			break;
 		default:
 			print_help ();
 			exit (0);
@@ -130,7 +177,7 @@ main (int argc, char *argv[])
 		}
 	}
 
-	if (opt_f == 0)
+	if (opt_i == 0)
 	{
 		print_help ();
 		exit (0);
@@ -146,9 +193,9 @@ main (int argc, char *argv[])
 	open_pic (filename_in);
 	apply ();
 	if (opt_o == 1)
-		save_text (filename_out);
+		save_text (filename_out, format_out);
 	else
-		save_text (NULL);
+		save_text (NULL, format_out);
 
 	/* unref the alocated memory */
 	if (pixbuf)
