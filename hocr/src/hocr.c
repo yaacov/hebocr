@@ -194,7 +194,8 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	/* need this to put in the text_buffer */
 	int len;
 	char chars[10];
-	char *tmp_chars;
+	char tmp_chars[10];
+	
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
 
@@ -609,6 +610,8 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			/* if quat mark check for doubel quat */
 			if (chars[0] == '\'')
 			{
+g_print ("ddd");
+				
 				len = strlen (text_buffer);
 				tmp_chars[0] = text_buffer[len - 1];
 
@@ -618,6 +621,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 					chars[0] = '\"';
 				}
 			}
+g_print ("%s", chars);
 			g_strlcat (text_buffer, chars, max_buffer_size);
 
 		}
