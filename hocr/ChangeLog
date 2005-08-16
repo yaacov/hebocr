@@ -1,3 +1,10 @@
+hocr (0.3.3)
+
+  * remove gnome, gtk dependencies from ocr code
+  * TODO: remove the glib deps and create a load image function
+  
+  -- Yaacov Zamir <kzamir@wall.co.il>  Tue, 16 Aug 2005 22:13
+	
 hocr (0.3.2)
 
   * make the command line compatible with gocr -i input_file -f format
