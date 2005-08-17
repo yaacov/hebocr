@@ -1,9 +1,10 @@
-hocr (0.3.3)
+hocr (0.4.0)
 
+  * hocr is a lib now
   * Yuval Tanny: patch to use get/set pixels functions,
     making the code much more readable and smaller.
   * remove gnome, gtk and glib dependencies from ocr code
-  * TODO: remove the glib deps and create a load image function
+  * TODO: create a load image function
   
   -- Yaacov Zamir <kzamir@wall.co.il>  Tue, 16 Aug 2005 22:13
 	
