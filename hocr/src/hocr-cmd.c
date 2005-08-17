@@ -156,6 +156,8 @@ print_help ()
 	g_print (_
 		 ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n"));
 	g_print ("\n");
+	
+	return 0;
 }
 
 int
@@ -164,8 +166,6 @@ main (int argc, char *argv[])
 	int opt_i = 0;
 	int opt_o = 0;
 	int opt_f = 0;
-	int opt_html = 0;
-	int opt_txt = 1;
 	char c;
 
 	char filename_in[255];

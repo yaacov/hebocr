@@ -53,4 +53,8 @@ get_font_base_class (int font_bottom, int font_baseline, int avg_font_hight);
 int
 get_font_hight_class (int font_hight, int avg_font_hight);
 
+/* -1 thin 0 normal 1 wide */
+int
+get_font_width_class (int font_width, int avg_font_width);
+
 #endif

@@ -32,7 +32,7 @@ int
 get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 			 int *line_end)
 {
-	int i, x, y;
+	int x, y;
 	double sum, sum1, sum2, sum3;
 	int inside_line = FALSE;
 
@@ -158,9 +158,6 @@ adjust_font_box (hocr_pixbuf * pix, box * font)
 int
 adjust_line_box (hocr_pixbuf * pix, box * line)
 {
-	int x, y;
-	int sum;
-
 	/* TODO: make this more intelegent */
 	line->x1 = 0;
 	line->x2 = pix->width;
@@ -178,7 +175,6 @@ fill_lines_array (hocr_pixbuf * pix, box column, box * lines,
 	int line_start;
 	int line_end;
 	int return_value;
-	int width;
 	int counter;
 
 	counter = 0;

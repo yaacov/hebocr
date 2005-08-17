@@ -35,7 +35,16 @@
 /**
  */
 
-int alef_mark (hocr_pixbuf * pix, box font);
+/* font shape markers array*/
+
+typedef int (*has_font_mark_function) (hocr_pixbuf * pix, box font);
+
+int
+init_has_font_mark_functions (has_font_mark_function * has_font_mark);
+
+/* the real functions */
+
+int has_alef_mark (hocr_pixbuf * pix, box font);
 int has_bet_mark (hocr_pixbuf * pix, box font);
 int has_gimel_mark (hocr_pixbuf * pix, box font);
 int has_dalet_mark (hocr_pixbuf * pix, box font);

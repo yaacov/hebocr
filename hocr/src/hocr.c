@@ -154,9 +154,8 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	int avg_font_hight_in_page;
 	int avg_font_width_in_page;
 
-	int i, j;
-	int x, y, y1, y2;
-	int width;
+	int i, j, k;
+	int y1, y2;
 
 	/* font position classes */
 	int base_class;
@@ -168,47 +167,67 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	int end_of_paragraph;
 
 	/* font shape markers */
-	int alef_mark;
-	int bet_mark;
-	int gimel_mark;
-	int dalet_mark;
-	int he_mark;
-	int vav_mark;
-	int zain_mark;
-	int het_mark;
-	int tet_mark;
-	int yud_mark;
-	int kaf_mark;
-	int kaf_sofit_mark;
-	int lamed_mark;
-	int mem_mark;
-	int mem_sofit_mark;
-	int nun_mark;
-	int nun_sofit_mark;
-	int sameh_mark;
-	int ayin_mark;
-	int pe_mark;
-	int pe_sofit_mark;
-	int tzadi_mark;
-	int tzadi_sofit_mark;
-	int kof_mark;
-	int resh_mark;
-	int shin_mark;
-	int tav_mark;
-
-	int quat_mark;
-	int double_quat_mark;
-	int exlem_mark;
-	int question_mark;
-	int makaf_mark;
-
-	int unknown;
-
+	/*
+	0 - unknown
+	1 - alef
+	2 - bet
+	3 - gimel
+	4 - dalet
+	5 - he
+	6 - vav
+	7 - zain
+	8 - het
+	9 - tet
+	10 - yud
+	11 - kaf
+	12 - kaf_sofit
+	13 - lamed
+	14 - mem
+	15 - mem_sofit
+	16 - nun
+	17 - nun_sofit
+	18 - sameh
+	19 - ayin
+	20 - pe
+	21 - pe_sofit
+	22 - tzadi
+	23 - tzadi_sofit
+	24 - kuf
+	25 - resh
+	26 - shin
+	27 - tav
+	28 - psik
+	29 - nekuda
+	30 - geresh
+	31 - gershayim
+	32 - siman kriaa
+	33 - siman shelaa
+	34 - makaf elyun
+	35 - num one
+	36 - num two
+	37 - num three
+	38 - num fore
+	39 - num five
+	40 - num six
+	41 - num seven
+	42 - num eight
+	43 - num nine
+	44 - num zero
+	*/
+	/* an array of font marks */
+	int font_mark[50];
+	
+	/* an array of function for detecting font marks */
+	has_font_mark_function has_font_mark[50];
+	
 	/* need this to put in the text_buffer */
 	int len;
 	int last_was_quot = 0;
 	char chars[10];
 
+	/* create an array of all has_font_mark_functions */
+	init_has_font_mark_functions (has_font_mark);
+	
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
 
@@ -297,51 +316,13 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 			/* TODO: this shuld be moved to the right place 
 			 * and not doen unnesseraly for all fonts */
-
-			alef_mark = has_alef_mark (pix, fonts[i][j]);
-			bet_mark = has_bet_mark (pix, fonts[i][j]);
-			gimel_mark = has_gimel_mark (pix, fonts[i][j]);
-			dalet_mark = has_dalet_mark (pix, fonts[i][j]);
-			he_mark = has_he_mark (pix, fonts[i][j]);
-			vav_mark = has_vav_mark (pix, fonts[i][j]);
-			zain_mark = has_zain_mark (pix, fonts[i][j]);
-			het_mark = has_het_mark (pix, fonts[i][j]);
-			tet_mark = has_tet_mark (pix, fonts[i][j]);
-			yud_mark = has_yud_mark (pix, fonts[i][j]);
-
-			kaf_mark = has_kaf_mark (pix, fonts[i][j]);
-			kaf_sofit_mark =
-				has_kaf_sofit_mark (pix, fonts[i][j]);
-			lamed_mark = has_lamed_mark (pix, fonts[i][j]);
-
-			mem_mark = has_mem_mark (pix, fonts[i][j]);
-			mem_sofit_mark =
-				has_mem_sofit_mark (pix, fonts[i][j]);
-			nun_mark = has_nun_mark (pix, fonts[i][j]);
-
-			nun_sofit_mark =
-				has_nun_sofit_mark (pix, fonts[i][j]);
-			sameh_mark = has_sameh_mark (pix, fonts[i][j]);
-			ayin_mark = has_ayin_mark (pix, fonts[i][j]);
-			pe_mark = has_pe_mark (pix, fonts[i][j]);
-			pe_sofit_mark = has_pe_sofit_mark (pix, fonts[i][j]);
-
-			tzadi_mark = has_tzadi_mark (pix, fonts[i][j]);
-			tzadi_sofit_mark =
-				has_tzadi_sofit_mark (pix, fonts[i][j]);
-			kof_mark = has_kof_mark (pix, fonts[i][j]);
-			resh_mark = has_resh_mark (pix, fonts[i][j]);
-			shin_mark = has_shin_mark (pix, fonts[i][j]);
-			tav_mark = has_tav_mark (pix, fonts[i][j]);
-
-			quat_mark = has_quat_mark (pix, fonts[i][j]);
-			double_quat_mark =
-				has_double_quat_mark (pix, fonts[i][j]);
-			exlem_mark = has_exlem_mark (pix, fonts[i][j]);
-			question_mark = has_question_mark (pix, fonts[i][j]);
-			makaf_mark = has_makaf_mark (pix, fonts[i][j]);
-
-			unknown = 0;
+			
+			for (k=1; k<35; k++)
+			{
+				font_mark[k] = (has_font_mark[k]) (pix, fonts[i][j]);
+			}
+			
+			font_mark[0] = 0;
 
 			/* if wide then arteffact */
 
@@ -349,7 +330,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			{
 				/* arteffact */
 				sprintf (chars, "--");
-				unknown = 1;
+				font_mark[0] = 1;
 			}
 
 			/* small fonts */
@@ -362,29 +343,28 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			}
 			else if (hight_class == -1 && top_class == 0)
 			{
-				if (makaf_mark == 1)
+				if (font_mark[34] == 1)
 				{
-
 					/* '-' */
 					sprintf (chars, "-");
 				}
-				else if (yud_mark == 1)
+				else if (font_mark[10] == 1)
 				{
 					/* yud */
 					sprintf (chars, "י");
 				}
-				else if (double_quat_mark == 1)
+				else if (font_mark[31] == 1)
 				{
 					sprintf (chars, "\"");
 				}
-				else if (quat_mark == 1)
+				else if (font_mark[30] == 1)
 				{
 					sprintf (chars, "\'");
 				}
 				else
 				{
 					sprintf (chars, "*");
-					unknown = 1;
+					font_mark[0] = 1;
 				}
 			}
 			else if ((hight_class == -1) && (top_class == 1)
@@ -422,28 +402,28 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			else if (hight_class == 1 && width_class == 0
 				 && top_class == 0)
 			{
-				if (resh_mark == 1 || dalet_mark == 1)
+				if (font_mark[12] == 1)
 				{
 					/* kaf sofit */
 					sprintf (chars, "ך");
 				}
-				else if (ayin_mark == 1)
+				else if (font_mark[19] == 1)
 				{
 					/*  ayin */
 					sprintf (chars, "ע");
 				}
-				else if (pe_sofit_mark == 1)
+				else if (font_mark[21] == 1)
 				{
 					/*  pe sofit */
 					sprintf (chars, "ף");
 				}
-				else if (tzadi_sofit_mark == 1)
+				else if (font_mark[23] == 1)
 				{
 					/* tzadi */
 
 					sprintf (chars, "ץ");
 				}
-				else if (kof_mark == 1)
+				else if (font_mark[24] == 1)
 				{
 					/* kuf */
 					sprintf (chars, "ק");
@@ -451,7 +431,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				else
 				{
 					sprintf (chars, "*");
-					unknown = 1;
+					font_mark[0] = 1;
 				}
 			}
 
@@ -461,47 +441,47 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			{
 				/* gimel 2, vav 5, zayin 6, tet 8, nun 15 */
 
-				if (exlem_mark == 1)
+				if (font_mark[32] == 1)
 				{
 					/* tet */
 					sprintf (chars, "!");
 				}
-				else if (question_mark == 1)
+				else if (font_mark[33] == 1)
 				{
 					/* gimel */
 					sprintf (chars, "?");
 				}
-				else if (gimel_mark == 1)
+				else if (font_mark[3] == 1)
 				{
 					/* gimel */
 					sprintf (chars, "ג");
 				}
-				else if (tet_mark == 1)
+				else if (font_mark[9] == 1)
 				{
 					/* tet */
 					sprintf (chars, "ט");
 				}
-				else if (ayin_mark == 1)
+				else if (font_mark[19] == 1)
 				{
 					/* ayin */
 					sprintf (chars, "ע");
 				}
-				else if (nun_mark == 1)
+				else if (font_mark[16] == 1)
 				{
 					/* nun */
 					sprintf (chars, "נ");
 				}
-				else if (vav_mark == 1)
+				else if (font_mark[6] == 1)
 				{
 					/* vav */
 					sprintf (chars, "ו");
 				}
-				else if (resh_mark == 1)
+				else if (font_mark[25] == 1)
 				{
 					/* resh */
 					sprintf (chars, "ר");
 				}
-				else if (zain_mark == 1)
+				else if (font_mark[7] == 1)
 				{
 					/* zayin */
 					sprintf (chars, "ז");
@@ -509,7 +489,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				else
 				{
 					sprintf (chars, "*");
-					unknown = 1;
+					font_mark[0] = 1;
 				}
 			}
 			/* regular fonts */
@@ -517,43 +497,43 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			else
 			{
 
-				if (alef_mark == 1)
+				if (font_mark[1] == 1)
 				{
 					sprintf (chars, "א");
 				}
-				else if (bet_mark == 1)
+				else if (font_mark[2] == 1)
 				{
 					sprintf (chars, "ב");
 				}
-				else if (gimel_mark == 1)
+				else if (font_mark[3] == 1)
 				{
 					sprintf (chars, "ג");
 				}
-				else if (dalet_mark == 1)
+				else if (font_mark[4] == 1)
 				{
 					sprintf (chars, "ד");
 				}
-				else if (he_mark == 1)
+				else if (font_mark[5] == 1)
 				{
 					sprintf (chars, "ה");
 				}
-				else if (het_mark == 1)
+				else if (font_mark[8] == 1)
 				{
 					sprintf (chars, "ח");
 				}
-				else if (tet_mark == 1)
+				else if (font_mark[9] == 1)
 				{
 					sprintf (chars, "ט");
 				}
-				else if (kaf_mark == 1)
+				else if (font_mark[11] == 1)
 				{
 					sprintf (chars, "כ");
 				}
-				else if (mem_mark == 1)
+				else if (font_mark[14] == 1)
 				{
 					sprintf (chars, "מ");
 				}
-				else if (mem_sofit_mark)
+				else if (font_mark[15] == 1)
 				{
 					sprintf (chars, "ם");
 				}
@@ -561,38 +541,38 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				//{
 				//      sprintf (chars, "נ");
 				//}
-				else if (sameh_mark == 1)
+				else if (font_mark[18] == 1)
 				{
 					sprintf (chars, "ס");
 				}
-				else if (ayin_mark)
+				else if (font_mark[19])
 				{
 					sprintf (chars, "ע");
 				}
-				else if (pe_mark == 1)
+				else if (font_mark[20] == 1)
 				{
 					sprintf (chars, "פ");
 				}
-				else if (tzadi_mark)
+				else if (font_mark[22])
 				{
 					sprintf (chars, "צ");
 				}
-				else if (resh_mark == 1)
+				else if (font_mark[25] == 1)
 				{
 					sprintf (chars, "ר");
 				}
-				else if (shin_mark == 1)
+				else if (font_mark[26] == 1)
 				{
 					sprintf (chars, "ש");
 				}
-				else if (tav_mark == 1)
+				else if (font_mark[27] == 1)
 				{
 					sprintf (chars, "ת");
 				}
 				else
 				{
 					sprintf (chars, "*");
-					unknown = 1;
+					font_mark[0] = 1;
 				}
 			}
 
@@ -626,7 +606,8 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 					strcat (text_buffer, chars);
 			}
 
-			if (unknown == 1)
+			/* color unknown fonts in the pixbuf */
+			if (font_mark[0] == 1)
 				color_box (pix, fonts[i][j], 1, 255);
 
 			/* check for end of word and end of line */

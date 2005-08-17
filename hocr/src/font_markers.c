@@ -34,6 +34,50 @@
  */
 
 int
+init_has_font_mark_functions (has_font_mark_function * has_font_mark)
+{
+
+	has_font_mark[1] = has_alef_mark;
+	has_font_mark[2] = has_bet_mark;
+	has_font_mark[3] = has_gimel_mark;
+	has_font_mark[4] = has_dalet_mark;
+	has_font_mark[5] = has_he_mark;
+	has_font_mark[6] = has_vav_mark;
+	has_font_mark[7] = has_zain_mark;
+	has_font_mark[8] = has_het_mark;
+	has_font_mark[9] = has_tet_mark;
+	has_font_mark[10] = has_yud_mark;
+	has_font_mark[11] = has_kaf_mark;
+	has_font_mark[12] = has_kaf_sofit_mark;
+	has_font_mark[13] = has_lamed_mark;
+	has_font_mark[14] = has_mem_mark;
+	has_font_mark[15] = has_mem_sofit_mark;
+	has_font_mark[16] = has_nun_mark;
+	has_font_mark[17] = has_nun_sofit_mark;
+	has_font_mark[18] = has_sameh_mark;
+	has_font_mark[19] = has_ayin_mark;
+	has_font_mark[20] = has_pe_mark;
+	has_font_mark[21] = has_pe_sofit_mark;
+	has_font_mark[22] = has_tzadi_mark;
+	has_font_mark[23] = has_tzadi_sofit_mark;
+	has_font_mark[24] = has_kof_mark;
+	has_font_mark[25] = has_resh_mark;
+	has_font_mark[26] = has_shin_mark;
+	has_font_mark[27] = has_tav_mark;
+	
+	has_font_mark[28] = has_tav_mark; /* place holder for nekuda */
+	has_font_mark[29] = has_tav_mark; /* place holder for psik */
+
+	has_font_mark[30] = has_quat_mark;
+	has_font_mark[31] = has_double_quat_mark;
+	has_font_mark[32] = has_exlem_mark;
+	has_font_mark[33] = has_question_mark;
+	has_font_mark[34] = has_makaf_mark;
+	
+	return 1;
+}
+
+int
 has_black_right_bottom_mark (hocr_pixbuf * pix, box font)
 {
 	int x, y;
@@ -208,14 +252,7 @@ int
 find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int x, y;
-
 	int sum;
-	int left_bar_x_start;
-	int left_bar_x_end;
-	int left_bar_x_width;
-	int new_color;
-	int current_color;
-	int counter = 0;
 
 	for (x = x1; x < x2; x++)
 	{
@@ -237,14 +274,7 @@ int
 find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
 	int x, y;
-
 	int sum;
-	int left_bar_x_start;
-	int left_bar_x_end;
-	int left_bar_x_width;
-	int new_color;
-	int current_color;
-	int counter = 0;
 
 	for (y = y1; y < y2; y++)
 	{
@@ -554,8 +584,6 @@ int
 find_tet_mark (hocr_pixbuf * pix, box font)
 {
 	int x, y;
-	int start;
-	int end;
 	int sum = 0;
 
 	/* look at middle of font */
@@ -1075,8 +1103,6 @@ has_yud_mark (hocr_pixbuf * pix, box font)
 	int number_of_bars;
 	int end_of_top_bar;
 	int start_of_top_bar;
-	int end_of_right_bar;
-	int start_of_right_bar;
 
 	if (find_horizontal_notch_to_left_up
 	    (pix, font.x1, font.y1, font.x1 + font.width / 2,
@@ -1139,7 +1165,41 @@ int
 has_kaf_sofit_mark (hocr_pixbuf * pix, box font)
 {
 
-	return 0;
+	int number_of_bars;
+	int end_of_top_bar;
+	int start_of_top_bar;
+	int end_of_right_bar;
+	int start_of_right_bar;
+
+	number_of_bars =
+		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
+				       &start_of_top_bar, &end_of_top_bar);
+
+	if (number_of_bars != 1)
+		return 0;
+
+	number_of_bars =
+		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
+				     &start_of_right_bar, &end_of_right_bar);
+
+	if (number_of_bars != 1)
+		return 0;
+
+	/* this is not top bar */
+	if (end_of_top_bar > (font.y1 + font.hight / 2))
+		return 0;
+
+	/* this is not right bar */
+	if (start_of_right_bar < (font.x2 - font.width / 2))
+		return 0;
+
+	/* if not he */
+	if (is_empty
+	    (pix, font.x1, end_of_top_bar + 4, start_of_right_bar - 4,
+	     font.y2) == 0)
+		return 0;
+
+	return 1;
 }
 
 int
@@ -1366,8 +1426,6 @@ int
 has_ayin_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
-	int end_of_top_bar;
-	int start_of_top_bar;
 	int end_of_right_bar;
 	int start_of_right_bar;
 
@@ -1457,8 +1515,6 @@ int
 has_pe_sofit_mark (hocr_pixbuf * pix, box font)
 {
 	int number_of_bars;
-	int end_of_top_bar;
-	int start_of_top_bar;
 	int end_of_right_bar;
 	int start_of_right_bar;
 

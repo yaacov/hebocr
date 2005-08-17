@@ -28,6 +28,7 @@
 
 #include <gnome.h>
 #include <gtkspell/gtkspell.h>
+#include <glib/gprintf.h>
 
 #include "callbacks.h"
 #include "interface.h"
