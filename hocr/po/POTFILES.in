@@ -1,7 +1,5 @@
 # List of source files containing translatable strings.
 
-examples/gui/hocr-gui.c
-examples/cmd/hocr-cmd.c
 examples/gui/interface.c
 examples/gui/callbacks.c
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-17 02:49+0300\n"
+"POT-Creation-Date: 2005-08-17 16:52+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,59 +16,43 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/hocr-cmd.c:87
-#, c-format
-msgid ""
-"hocr: can't open file %s\n"
-"\n"
-msgstr ""
-
-#: src/hocr-cmd.c:154
-#, c-format
-msgid "hocr %s - Hebrew OCR program\n"
-msgstr ""
-
-#: src/hocr-cmd.c:156
-msgid "USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n"
-msgstr ""
-
 #. set the window title
-#: src/interface.c:76 src/callbacks.c:133
+#: examples/gui/interface.c:76 examples/gui/callbacks.c:135
 msgid "hocr-gui"
 msgstr ""
 
-#: src/interface.c:94
+#: examples/gui/interface.c:94
 msgid "Open a new picture for the OCR"
 msgstr ""
 
-#: src/interface.c:101
+#: examples/gui/interface.c:101
 msgid "Convert picture to text"
 msgstr ""
 
-#: src/interface.c:108
+#: examples/gui/interface.c:108
 msgid "Save the text created by the OCR"
 msgstr ""
 
-#: src/interface.c:124
+#: examples/gui/interface.c:124
 msgid "Spell check the text"
 msgstr ""
 
-#: src/interface.c:153
+#: examples/gui/interface.c:153
 msgid "About this application"
 msgstr ""
 
-#: src/interface.c:167
+#: examples/gui/interface.c:167
 msgid "Quit this program"
 msgstr ""
 
-#: src/callbacks.c:239
+#: examples/gui/callbacks.c:241
 msgid "HOCR"
 msgstr ""
 
-#: src/callbacks.c:245
+#: examples/gui/callbacks.c:247
 msgid "HOCR - Hebrew character recognition software"
 msgstr ""
 
-#: src/callbacks.c:247
+#: examples/gui/callbacks.c:249
 msgid "translator_credits"
 msgstr ""
