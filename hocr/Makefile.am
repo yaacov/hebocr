@@ -1,9 +1,12 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src po tests
+SUBDIRS = src po tests examples
 
 EXTRA_DIST = \
-	autogen.sh hocr.spec.in hocr.spec hocr.desktop
+	autogen.sh hocr.spec.in hocr.spec hocr.desktop libhocr.pc.in libhocr.pc
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libhocr.pc
 
 hocrdocdir = ${prefix}/share/doc/hocr
 hocrdoc_DATA = \

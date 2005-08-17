@@ -34,9 +34,9 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <unistd.h>
+#include <stdlib.h>
 
-#include "callbacks.h"
-#include "interface.h"
 #include "hocr.h"
 
 GdkPixbuf *pixbuf = NULL;
@@ -85,7 +85,7 @@ open_pic (char *filename)
 	/* it is not a ppm or any other readble file then can't open :( */
 	if (!pixbuf)
 	{
-		g_print (_("hocr: can't open file %s\n\n"), filename);
+		g_print ("hocr: can't open file %s\n\n", filename);
 		exit (0);
 	}
 }
@@ -152,9 +152,8 @@ apply ()
 int
 print_help ()
 {
-	g_print (_("hocr %s - Hebrew OCR program\n"), VERSION);
-	g_print (_
-		 ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n"));
+	g_print ("hocr %s - Hebrew OCR program\n", VERSION);
+	g_print ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
 	g_print ("\n");
 	
 	return 0;

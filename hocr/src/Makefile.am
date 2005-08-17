@@ -1,30 +1,20 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	@PACKAGE_CFLAGS@
+libhocr_la_CFLAGS =\
+	 -Wall\
+     -g
 
-bin_PROGRAMS = hocr-gui hocr
+lib_LTLIBRARIES = libhocr.la
 
-hocr_gui_SOURCES = \
-	hocr-gui.c \
-	interface.c interface.h \
-	callbacks.c callbacks.h \
+libhocr_la_SOURCES = \
 	hocr.c hocr.h \
 	font_markers.c font_markers.h \
 	page_layout.c page_layout.h \
 	font_layout.c font_layout.h \
 	consts.h
 
-hocr_gui_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
+libhocr_la_LDFLAGS = -version-info $(VERSION_INFO)
 
-hocr_SOURCES = \
-	hocr-cmd.c \
-	hocr.c hocr.h \
-	font_markers.c font_markers.h \
-	page_layout.c page_layout.h \
-	font_layout.c font_layout.h \
-	consts.h
+libhocr_la_LIBADD = 
 
-hocr_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
+include_HEADERS = hocr.h
