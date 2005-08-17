@@ -1,5 +1,7 @@
 hocr (0.3.3)
 
+  * Yuval Tanny: patch to use get/set pixels functions,
+    making the code much more readable and smaller.
   * remove gnome, gtk dependencies from ocr code
   * TODO: remove the glib deps and create a load image function
   

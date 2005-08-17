@@ -60,10 +60,43 @@ hocr_pixbuf_get_rowstride (hocr_pixbuf * pix)
 	return pix->rowstride;
 }
 
+int
+hocr_pixbuf_get_brightness (hocr_pixbuf * pix)
+{
+	return pix->brightness;
+}
+
 unsigned char *
 hocr_pixbuf_get_pixels (hocr_pixbuf * pix)
 {
 	return pix->pixels;
+}
+
+int
+hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y)
+{
+	unsigned char* pixel;
+	
+	if (x < 0 || x > pix->width || y < 0 || y > pix->height)
+		return 0;
+
+	pixel = pix->pixels + x * pix->n_channels + y * pix->rowstride;
+	return (pixel[0] < pix->brightness) ? 1 : 0;
+}
+
+int
+hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel,
+		       int value)
+{
+	unsigned char* pixel;
+	
+	if (x < 0 || x > pix->width || y < 0 || y > pix->height)
+		return 0;
+
+	pixel = pix->pixels + x * pix->n_channels + y * pix->rowstride;
+	pixel[channel] = value;
+
+	return (pixel[channel] < pix->brightness) ? 1 : 0;
 }
 
 /* 
@@ -73,24 +106,14 @@ hocr_pixbuf_get_pixels (hocr_pixbuf * pix)
 int
 print_font (hocr_pixbuf * pix, box font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int new_color;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = font.y1; y < (font.y2 + 0); y++)
 	{
 		for (x = font.x1; x < (font.x2 + 1); x++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			new_color = (pixel[0] < 100) ? 1 : 0;
+			new_color = hocr_pixbuf_get_pixel (pix, x, y);
 			g_print ("%d", new_color);
 		}
 		g_print ("\n");
@@ -104,22 +127,13 @@ print_font (hocr_pixbuf * pix, box font)
 int
 color_box (hocr_pixbuf * pix, box rect, int chanell, int value)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = rect.y1; y < rect.y2; y++)
 		for (x = rect.x1; x < rect.x2; x++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			pixel[chanell] = value;
+			hocr_pixbuf_set_pixel (pix, x, y, chanell, value);
 		}
-
 	return 0;
 }
 

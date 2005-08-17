@@ -36,25 +36,15 @@
 int
 has_black_right_bottom_mark (hocr_pixbuf * pix, box font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	sum = 0;
 	/* check a 6*6 triangle */
 	for (x = font.x2; x > (font.x2 - 2); x--)
 		for (y = font.y2; y > (font.y2 - (x - (font.x1 - 2))); y--)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 
 	if (sum < 3)
@@ -66,24 +56,16 @@ has_black_right_bottom_mark (hocr_pixbuf * pix, box font)
 int
 has_black_left_bottom_mark (hocr_pixbuf * pix, box font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
+
 	/* look at bottom right */
 	sum = 0;
 	/* check a 6*6 triangle */
 	for (x = font.x1; x < (font.x1 + 4); x++)
 		for (y = font.y2; y > (font.y2 - ((font.x1 + 4) - x)); y--)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 
 	if (sum == 0)
@@ -94,24 +76,16 @@ has_black_left_bottom_mark (hocr_pixbuf * pix, box font)
 int
 has_black_left_top_mark (hocr_pixbuf * pix, box font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
+
 	/* look at bottom right */
 	sum = 0;
 	/* check a 6*6 triangle */
 	for (x = font.x1; x < (font.x1 + 4); x++)
 		for (y = font.y1; y < (font.y2 + ((font.x1 + 4) - x)); y++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 
 	if (sum == 0)
@@ -122,17 +96,8 @@ has_black_left_top_mark (hocr_pixbuf * pix, box font)
 int
 has_black_right_top_mark (hocr_pixbuf * pix, box font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	sum = 0;
 
@@ -140,8 +105,7 @@ has_black_right_top_mark (hocr_pixbuf * pix, box font)
 	for (x = font.x2; x > (font.x2 - 4); x--)
 		for (y = font.y1; y < (font.y2 + (x - (font.x2 - 4))); y++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 
 	if (sum == 0)
@@ -154,19 +118,10 @@ int
 count_vertical_bars (hocr_pixbuf * pix, box font, int y_pos, int *first_x,
 		     int *last_x)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int current_color;
 	int new_color;
 	int counter = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	y = y_pos;
@@ -179,8 +134,7 @@ count_vertical_bars (hocr_pixbuf * pix, box font, int y_pos, int *first_x,
 	/* go axros the font + one white place */
 	for (x = font.x1; x < (font.x2 + 4); x++)
 	{
-		pixel = pixels + x * n_channels + y * rowstride;
-		new_color = (pixel[0] < 100) ? 1 : 0;
+		new_color = hocr_pixbuf_get_pixel (pix, x, y);
 
 		if (new_color == 1 && *first_x == 0)
 			*first_x = x;
@@ -201,19 +155,10 @@ int
 count_horizontal_bars (hocr_pixbuf * pix, box font, int x_pos, int *first_y,
 		       int *last_y)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int current_color;
 	int new_color;
 	int counter = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	x = x_pos;
@@ -222,12 +167,11 @@ count_horizontal_bars (hocr_pixbuf * pix, box font, int x_pos, int *first_y,
 	current_color = 0;
 	*first_y = 0;
 	*last_y = 0;
-	
+
 	/* go axros the font + one white place */
 	for (y = font.y1; y < (font.y2 + 3); y++)
 	{
-		pixel = pixels + x * n_channels + y * rowstride;
-		new_color = (pixel[0] < 100) ? 1 : 0;
+		new_color = hocr_pixbuf_get_pixel (pix, x, y);
 
 		if (new_color == 1 && *first_y == 0)
 			*first_y = y;
@@ -247,24 +191,14 @@ count_horizontal_bars (hocr_pixbuf * pix, box font, int x_pos, int *first_y,
 int
 is_empty (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* check for black pixels */
 	for (x = x1; x < x2; x++)
 		for (y = y1; y < y2; y++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 
 	return (sum == 0) ? 1 : 0;
@@ -273,8 +207,6 @@ is_empty (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 int
 find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -285,21 +217,13 @@ find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 	int current_color;
 	int counter = 0;
 
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
-
 	for (x = x1; x < x2; x++)
 	{
 		sum = 0;
 
 		for (y = y1; y < y2; y++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 0 : 1;	/* count whites */
+			sum += (hocr_pixbuf_get_pixel (pix, x, y) == 0) ? 1 : 0;	/* count whites */
 		}
 
 		if (sum < 2)
@@ -312,8 +236,6 @@ find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 int
 find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -324,25 +246,17 @@ find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 	int current_color;
 	int counter = 0;
 
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
-
 	for (y = y1; y < y2; y++)
 	{
 		sum = 0;
 
 		for (x = x1; x < x2; x++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 
 		sum = sum / (x2 - x1);
-		
+
 		if (sum > 0)
 			return 0;
 	}
@@ -351,24 +265,13 @@ find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 }
 
 int
-find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1, int x2,
-				     int y2)
+find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1,
+				     int x2, int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
-
-
 
 	for (y = y1; y < y2; y++)
 	{
@@ -376,8 +279,7 @@ find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 		x = x2;
 		while (x > x1 && sum == 0)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
 			x--;
 		}
 
@@ -395,19 +297,10 @@ int
 find_horizontal_notch_to_left_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 				    int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = y1; y < y2; y++)
 	{
@@ -415,8 +308,7 @@ find_horizontal_notch_to_left_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 		x = x1;
 		while (x < x2 && sum == 0)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
 			x++;
 		}
 
@@ -434,19 +326,10 @@ int
 find_horizontal_notch_to_left_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 				  int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = y2; y > y1; y--)
 	{
@@ -454,8 +337,7 @@ find_horizontal_notch_to_left_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 		x = x1;
 		while (x < x2 && sum == 0)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
 			x++;
 		}
 
@@ -473,19 +355,10 @@ int
 find_horizontal_notch_to_right_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 				   int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (y = y2; y > y1; y--)
 	{
@@ -493,8 +366,7 @@ find_horizontal_notch_to_right_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 		x = x2;
 		while (x > x1 && sum == 0)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
 			x--;
 		}
 
@@ -512,19 +384,10 @@ int
 find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 				  int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x2; x > x1; x--)
 	{
@@ -532,12 +395,9 @@ find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 		y = y2 - 3;
 		while (y > y1 && sum < 2)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
-			pixel += n_channels;
-			sum += (pixel[0] < 100) ? 1 : 0;
-			pixel += n_channels;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum += hocr_pixbuf_get_pixel (pix, x + 1, y);
+			sum += hocr_pixbuf_get_pixel (pix, x + 2, y);
 			y--;
 		}
 
@@ -557,19 +417,10 @@ int
 find_vertical_notch_up_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 				int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x2; x > x1; x--)
 	{
@@ -577,8 +428,7 @@ find_vertical_notch_up_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 		y = y1;
 		while (y < y2 && sum == 0)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
 			y++;
 		}
 
@@ -596,19 +446,10 @@ int
 find_vertical_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1, int x2,
 				 int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
 	int max = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	for (x = x1; x < x2; x++)
 	{
@@ -616,8 +457,7 @@ find_vertical_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1, int x2,
 		y = y1;
 		while (y < y2 && sum == 0)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
 			y++;
 		}
 
@@ -635,8 +475,6 @@ int
 find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 					int x2, int y2)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 
 	int sum;
@@ -644,29 +482,20 @@ find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 	int is_on_up_slop = 1;
 	int max = 0;
 
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
-
 	for (x = x1; x < x2; x++)
 	{
 		sum = 0;
 		y = y1;
 		while (y < y2 && sum == 0)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x, y);
 			y++;
 		}
 
 		if (max > (y - y1) && is_on_up_slop == 0)
 		{
 			/* check for arteffacts */
-			pixel += n_channels;
-			sum = (pixel[0] < 100) ? 1 : 0;
+			sum = hocr_pixbuf_get_pixel (pix, x + 1, y);
 			if (sum == 0)
 				continue;
 
@@ -692,19 +521,10 @@ find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 int
 thin_lines (hocr_pixbuf * pix, box font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int start;
 	int end;
 	int sum = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	x = font.x1 + font.width / 2;
@@ -713,15 +533,13 @@ thin_lines (hocr_pixbuf * pix, box font)
 	/* go axros the font + one white place */
 	while (y < font.y2 && sum == 0)
 	{
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		y++;
 	}
 	start = y;
 	while (y < font.y2 && sum == 1)
 	{
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		y++;
 	}
 	end = y;
@@ -735,19 +553,10 @@ thin_lines (hocr_pixbuf * pix, box font)
 int
 find_tet_mark (hocr_pixbuf * pix, box font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int start;
 	int end;
 	int sum = 0;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	/* look at middle of font */
 	y = font.y1 + font.hight / 2;
@@ -756,8 +565,7 @@ find_tet_mark (hocr_pixbuf * pix, box font)
 	/* get inside the font */
 	while (sum == 0 && x > font.x1)
 	{
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		x--;
 	}
 	if (x == font.x1)
@@ -765,8 +573,7 @@ find_tet_mark (hocr_pixbuf * pix, box font)
 
 	while (sum == 1 && x > font.x1)
 	{
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		x--;
 	}
 	if (x == font.x1)
@@ -777,20 +584,17 @@ find_tet_mark (hocr_pixbuf * pix, box font)
 	{
 		/* try up */
 		y--;
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		if (sum == 0)
 			continue;
 		/* try left */
 		x--;
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		if (sum == 0)
 			continue;
 		/* try strait left */
 		y++;
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 	}
 	if (x == font.x1)
 		return 0;
@@ -802,32 +606,26 @@ find_tet_mark (hocr_pixbuf * pix, box font)
 	while (sum == 0 && x > font.x1 && y < font.y2)
 	{
 		/* look fot a break upword */
-		pixel -= n_channels - rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
-		pixel -= rowstride;
-		sum += (pixel[0] < 100) ? 1 : 0;
-		pixel -= rowstride;
-		sum += (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x - 1, y + 1);
+		sum += hocr_pixbuf_get_pixel (pix, x - 1, y - 1);
+		sum += hocr_pixbuf_get_pixel (pix, x - 1, y - 2);
 
 		if (sum == 0)
 			return 1;
 
 		/* try left */
 		x--;
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		if (sum == 0)
 			continue;
 		/* try down */
 		y++;
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 		if (sum == 0)
 			continue;
 		/* try strait down */
 		x++;
-		pixel = pixels + x * n_channels + y * rowstride;
-		sum = (pixel[0] < 100) ? 1 : 0;
+		sum = hocr_pixbuf_get_pixel (pix, x, y);
 	}
 
 	return 0;
@@ -1280,8 +1078,9 @@ has_yud_mark (hocr_pixbuf * pix, box font)
 	int end_of_right_bar;
 	int start_of_right_bar;
 
-	if (find_horizontal_notch_to_left_up (pix, font.x1, font.y1, font.x1 + font.width/2,
-				  font.y1 + font.hight /2) == 0)
+	if (find_horizontal_notch_to_left_up
+	    (pix, font.x1, font.y1, font.x1 + font.width / 2,
+	     font.y1 + font.hight / 2) == 0)
 		return 0;
 
 	/* horizontal bars */
@@ -1979,8 +1778,9 @@ has_quat_mark (hocr_pixbuf * pix, box font)
 	if (number_of_bars != 1)
 		return 0;
 
-	if (find_horizontal_notch_to_left_up (pix, font.x1, font.y1, font.x1 + font.width/2,
-				  font.y1 + font.hight /2) == 1)
+	if (find_horizontal_notch_to_left_up
+	    (pix, font.x1, font.y1, font.x1 + font.width / 2,
+	     font.y1 + font.hight / 2) == 1)
 		return 0;
 
 	return 1;

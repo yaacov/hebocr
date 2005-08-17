@@ -49,6 +49,7 @@ typedef struct
 	int height;
 	int width;
 	int rowstride;
+	int brightness;
 	unsigned char *pixels;
 } hocr_pixbuf;
 
@@ -56,7 +57,12 @@ int hocr_pixbuf_get_n_channels (hocr_pixbuf * pix);
 int hocr_pixbuf_get_height (hocr_pixbuf * pix);
 int hocr_pixbuf_get_width (hocr_pixbuf * pix);
 int hocr_pixbuf_get_rowstride (hocr_pixbuf * pix);
+int hocr_pixbuf_get_brightness (hocr_pixbuf * pix);
 unsigned char *hocr_pixbuf_get_pixels (hocr_pixbuf * pix);
+
+int hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y);
+
+int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel, int value);
 
 /* DOTO: add this functions */
 /* NOT IMPLEMENTED YET !! */

@@ -32,43 +32,32 @@ int
 get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 			 int *line_end)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int i, x, y;
 	double sum, sum1, sum2, sum3;
 	int inside_line = FALSE;
 
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
-
 	*line_end = 0;
 	*line_start = current_pos;
 
-	for (y = current_pos; y < height; y++)
+	for (y = current_pos; y < pix->height; y++)
 	{
 		/* get presentage coverage for this pixel line */
 		/* a line is too long for just one sume (it may be short {1/3 length} 
 		 * and aligned to center, right or left ) */
 		sum1 = sum2 = sum3 = 0;
-		for (x = 0; x < (width / 3); x++)
+		for (x = 0; x < (pix->width / 3); x++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum1 += (pixel[0] < 100) ? 1 : 0;
-			pixel = pixels + (x + width / 3) * n_channels +
-				y * rowstride;
-			sum2 += (pixel[0] < 100) ? 1 : 0;
-			pixel = pixels + (x + 2 * width / 3) * n_channels +
-				y * rowstride;
-			sum3 += (pixel[0] < 100) ? 1 : 0;
+			sum1 += hocr_pixbuf_get_pixel (pix, x, y);
+			sum2 += hocr_pixbuf_get_pixel (pix,
+						       x + pix->width / 3, y);
+			sum3 += hocr_pixbuf_get_pixel (pix,
+						       x + 2 * pix->width / 3,
+						       y);
 		}
 		/* check only the part with the most color on it */
 		sum = (sum1 > sum2) ? sum1 : sum2;
 		sum = (sum > sum3) ? sum : sum3;
-		sum = 1000 * sum / width;
+		sum = 1000 * sum / pix->width;
 
 		/* if presantage covarage is less then 1 we are between text lines */
 		if (sum >= NOT_IN_A_LINE && !inside_line)
@@ -93,20 +82,12 @@ int
 get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 			 int current_pos, int *font_start, int *font_end)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 	int inside_font = FALSE;
 	/* we have to calculate line hight, we do not get it from caller */
 	int line_hight = line_end - line_start;
 
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 	/* read line from right to left */
 	for (x = current_pos - 1; x > 0; x--)
 	{
@@ -114,8 +95,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 		sum = 0;
 		for (y = line_start; y < line_end; y++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 		sum = 1000 * sum / line_hight;
 
@@ -140,17 +120,8 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 int
 adjust_font_box (hocr_pixbuf * pix, box * font)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
-
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
 
 	sum = 0;
 	/* read line from right to left */
@@ -161,8 +132,7 @@ adjust_font_box (hocr_pixbuf * pix, box * font)
 		sum = 0;
 		for (x = font->x1; x < font->x2; x++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 	}
 	font->y1 = y - 1;
@@ -177,8 +147,7 @@ adjust_font_box (hocr_pixbuf * pix, box * font)
 		sum = 0;
 		for (x = font->x1; x < font->x2; x++)
 		{
-			pixel = pixels + x * n_channels + y * rowstride;
-			sum += (pixel[0] < 100) ? 1 : 0;
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 	}
 	font->y2 = y + 1;
@@ -189,21 +158,12 @@ adjust_font_box (hocr_pixbuf * pix, box * font)
 int
 adjust_line_box (hocr_pixbuf * pix, box * line)
 {
-	int width, height, rowstride, n_channels;
-	unsigned char *pixels, *pixel;
 	int x, y;
 	int sum;
 
-	/* get pixbuf stats */
-	n_channels = hocr_pixbuf_get_n_channels (pix);
-	height = hocr_pixbuf_get_height (pix);
-	width = hocr_pixbuf_get_width (pix);
-	rowstride = hocr_pixbuf_get_rowstride (pix);
-	pixels = hocr_pixbuf_get_pixels (pix);
-
 	/* TODO: make this more intelegent */
 	line->x1 = 0;
-	line->x2 = width;
+	line->x2 = pix->width;
 
 	return 1;
 }

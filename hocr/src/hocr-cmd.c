@@ -54,6 +54,7 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
 	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 	hocr_pix.pixels = (unsigned char*)(gdk_pixbuf_get_pixels (pixbuf));
+	hocr_pix.brightness = 100;
 	
 	g_strlcpy (text, "", 3500);
 	hocr_do_ocr (&hocr_pix, text, 3500);
