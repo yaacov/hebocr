@@ -22,8 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <glib.h>
-#include <glib/gprintf.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "consts.h"
@@ -114,12 +113,12 @@ print_font (hocr_pixbuf * pix, box font)
 		for (x = font.x1; x < (font.x2 + 1); x++)
 		{
 			new_color = hocr_pixbuf_get_pixel (pix, x, y);
-			g_print ("%d", new_color);
+			printf ("%d", new_color);
 		}
-		g_print ("\n");
+		printf ("\n");
 	}
 
-	g_print ("\n");
+	printf ("\n");
 
 	return 0;
 }
@@ -349,7 +348,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			if (width_class == 1)
 			{
 				/* arteffact */
-				g_sprintf (chars, "--");
+				sprintf (chars, "--");
 				unknown = 1;
 			}
 
@@ -359,7 +358,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				 && top_class == 1 && base_class == 1)
 			{
 				/* '-' */
-				g_sprintf (chars, "-");
+				sprintf (chars, "-");
 			}
 			else if (hight_class == -1 && top_class == 0)
 			{
@@ -367,24 +366,24 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				{
 
 					/* '-' */
-					g_sprintf (chars, "-");
+					sprintf (chars, "-");
 				}
 				else if (yud_mark == 1)
 				{
 					/* yud */
-					g_sprintf (chars, "י");
+					sprintf (chars, "י");
 				}
 				else if (double_quat_mark == 1)
 				{
-					g_sprintf (chars, "\"");
+					sprintf (chars, "\"");
 				}
 				else if (quat_mark == 1)
 				{
-					g_sprintf (chars, "\'");
+					sprintf (chars, "\'");
 				}
 				else
 				{
-					g_sprintf (chars, "*");
+					sprintf (chars, "*");
 					unknown = 1;
 				}
 			}
@@ -392,13 +391,13 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				 && (base_class == 0))
 			{
 				/* period */
-				g_sprintf (chars, ".");
+				sprintf (chars, ".");
 			}
 			else if ((hight_class == -1)
 				 && (top_class == 1) && (base_class == -1))
 			{
 				/* we assume comma */
-				g_sprintf (chars, ",");
+				sprintf (chars, ",");
 			}
 
 			/* high fonts desending from top */
@@ -406,7 +405,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			else if (hight_class == 1 && top_class == -1)
 			{
 				/* lamed */
-				g_sprintf (chars, "ל");
+				sprintf (chars, "ל");
 			}
 
 			/* high and thin fonts desending from buttom */
@@ -415,7 +414,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				 && top_class == 0)
 			{
 				/* nun sofit */
-				g_sprintf (chars, "ן");
+				sprintf (chars, "ן");
 			}
 
 			/* high fonts desending from buttom */
@@ -426,32 +425,32 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				if (resh_mark == 1 || dalet_mark == 1)
 				{
 					/* kaf sofit */
-					g_sprintf (chars, "ך");
+					sprintf (chars, "ך");
 				}
 				else if (ayin_mark == 1)
 				{
 					/*  ayin */
-					g_sprintf (chars, "ע");
+					sprintf (chars, "ע");
 				}
 				else if (pe_sofit_mark == 1)
 				{
 					/*  pe sofit */
-					g_sprintf (chars, "ף");
+					sprintf (chars, "ף");
 				}
 				else if (tzadi_sofit_mark == 1)
 				{
 					/* tzadi */
 
-					g_sprintf (chars, "ץ");
+					sprintf (chars, "ץ");
 				}
 				else if (kof_mark == 1)
 				{
 					/* kuf */
-					g_sprintf (chars, "ק");
+					sprintf (chars, "ק");
 				}
 				else
 				{
-					g_sprintf (chars, "*");
+					sprintf (chars, "*");
 					unknown = 1;
 				}
 			}
@@ -465,51 +464,51 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				if (exlem_mark == 1)
 				{
 					/* tet */
-					g_sprintf (chars, "!");
+					sprintf (chars, "!");
 				}
 				else if (question_mark == 1)
 				{
 					/* gimel */
-					g_sprintf (chars, "?");
+					sprintf (chars, "?");
 				}
 				else if (gimel_mark == 1)
 				{
 					/* gimel */
-					g_sprintf (chars, "ג");
+					sprintf (chars, "ג");
 				}
 				else if (tet_mark == 1)
 				{
 					/* tet */
-					g_sprintf (chars, "ט");
+					sprintf (chars, "ט");
 				}
 				else if (ayin_mark == 1)
 				{
 					/* ayin */
-					g_sprintf (chars, "ע");
+					sprintf (chars, "ע");
 				}
 				else if (nun_mark == 1)
 				{
 					/* nun */
-					g_sprintf (chars, "נ");
+					sprintf (chars, "נ");
 				}
 				else if (vav_mark == 1)
 				{
 					/* vav */
-					g_sprintf (chars, "ו");
+					sprintf (chars, "ו");
 				}
 				else if (resh_mark == 1)
 				{
 					/* resh */
-					g_sprintf (chars, "ר");
+					sprintf (chars, "ר");
 				}
 				else if (zain_mark == 1)
 				{
 					/* zayin */
-					g_sprintf (chars, "ז");
+					sprintf (chars, "ז");
 				}
 				else
 				{
-					g_sprintf (chars, "*");
+					sprintf (chars, "*");
 					unknown = 1;
 				}
 			}
@@ -520,93 +519,98 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 				if (alef_mark == 1)
 				{
-					g_sprintf (chars, "א");
+					sprintf (chars, "א");
 				}
 				else if (bet_mark == 1)
 				{
-					g_sprintf (chars, "ב");
+					sprintf (chars, "ב");
 				}
 				else if (gimel_mark == 1)
 				{
-					g_sprintf (chars, "ג");
+					sprintf (chars, "ג");
 				}
 				else if (dalet_mark == 1)
 				{
-					g_sprintf (chars, "ד");
+					sprintf (chars, "ד");
 				}
 				else if (he_mark == 1)
 				{
-					g_sprintf (chars, "ה");
+					sprintf (chars, "ה");
 				}
 				else if (het_mark == 1)
 				{
-					g_sprintf (chars, "ח");
+					sprintf (chars, "ח");
 				}
 				else if (tet_mark == 1)
 				{
-					g_sprintf (chars, "ט");
+					sprintf (chars, "ט");
 				}
 				else if (kaf_mark == 1)
 				{
-					g_sprintf (chars, "כ");
+					sprintf (chars, "כ");
 				}
 				else if (mem_mark == 1)
 				{
-					g_sprintf (chars, "מ");
+					sprintf (chars, "מ");
 				}
 				else if (mem_sofit_mark)
 				{
-					g_sprintf (chars, "ם");
+					sprintf (chars, "ם");
 				}
 				//else if (nun_mark == 1)
 				//{
-				//      g_sprintf (chars, "נ");
+				//      sprintf (chars, "נ");
 				//}
 				else if (sameh_mark == 1)
 				{
-					g_sprintf (chars, "ס");
+					sprintf (chars, "ס");
 				}
 				else if (ayin_mark)
 				{
-					g_sprintf (chars, "ע");
+					sprintf (chars, "ע");
 				}
 				else if (pe_mark == 1)
 				{
-					g_sprintf (chars, "פ");
+					sprintf (chars, "פ");
 				}
 				else if (tzadi_mark)
 				{
-					g_sprintf (chars, "צ");
+					sprintf (chars, "צ");
 				}
 				else if (resh_mark == 1)
 				{
-					g_sprintf (chars, "ר");
+					sprintf (chars, "ר");
 				}
 				else if (shin_mark == 1)
 				{
-					g_sprintf (chars, "ש");
+					sprintf (chars, "ש");
 				}
 				else if (tav_mark == 1)
 				{
-					g_sprintf (chars, "ת");
+					sprintf (chars, "ת");
 				}
 				else
 				{
-					g_sprintf (chars, "*");
+					sprintf (chars, "*");
 					unknown = 1;
 				}
 			}
 
+			
 			/* if quat mark check for doubel quat */
 			len = strlen (text_buffer);
+			
+			/* if buffer is full do not add more chars */
+			if (len >= max_buffer_size)
+				continue;
+			
 			if (chars[0] == '\'' && chars[1] == '\0'
 			    && last_was_quot == 0)
 			{
 				last_was_quot = 1;
 				if (fonts[i][j].width > 2
 				    && fonts[i][j].hight > 2)
-					g_strlcat (text_buffer, chars,
-						   max_buffer_size);
+					strcat (text_buffer, chars);
 			}
 			else if (chars[0] == '\'' && chars[1] == '\0'
 				 && last_was_quot == 1)
@@ -619,8 +623,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				last_was_quot = 0;
 				if (fonts[i][j].width > 2
 				    && fonts[i][j].hight > 2)
-					g_strlcat (text_buffer, chars,
-						   max_buffer_size);
+					strcat (text_buffer, chars);
 			}
 
 			if (unknown == 1)
@@ -629,17 +632,15 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			/* check for end of word and end of line */
 			if (end_of_word == 1)
 			{
-				g_strlcat (text_buffer, " ", max_buffer_size);
+				strcat (text_buffer, " ");
 			}
 			if (end_of_line == 1)
 			{
-				g_strlcat (text_buffer, "\n",
-					   max_buffer_size);
+				strcat (text_buffer, "\n");
 			}
 			if (end_of_paragraph == 1)
 			{
-				g_strlcat (text_buffer, "\n",
-					   max_buffer_size);
+				strcat (text_buffer, "\n");
 			}
 
 			/* visual aids to see font box on screen 
