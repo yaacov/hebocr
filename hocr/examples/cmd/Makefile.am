@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+EXTRA_DIST = hocr.1
+
 if WITH_CMD
 
 INCLUDES = \
