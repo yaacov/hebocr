@@ -1,3 +1,11 @@
+hocr (0.4.1)
+  
+  * add hocr man file
+  * add file input function for pbm formated files
+  * add documentation in the hocr.h file.
+  
+  -- Yaacov Zamir <kzamir@wall.co.il>  Thu, 18 Aug 2005 22:13
+  
 hocr (0.4.0)
 
   * hocr is a lib now

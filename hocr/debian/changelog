@@ -1,5 +1,11 @@
 hocr (0.4.0-1) unstable; urgency=low
 
+  * add man file for comman line.
+
+ -- Yaacov Zamir <kzamir@walla.co.il>  Wed, 17 Aug 2005 22:16:41 +0300
+ 
+hocr (0.4.0-1) unstable; urgency=low
+
   * hocr is a lib now.
 
  -- Yaacov Zamir <kzamir@walla.co.il>  Wed, 17 Aug 2005 22:16:41 +0300

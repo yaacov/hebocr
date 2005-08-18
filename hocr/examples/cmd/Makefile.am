@@ -18,4 +18,6 @@ hocr_SOURCES = \
 hocr_DEPENDENCIES = $(DEPS)
 hocr_LDADD = $(ldadd) $(INTLLIBS)
 
+man_MANS = hocr.1
+
 endif

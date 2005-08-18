@@ -1,0 +1,35 @@
+.\" .UC 4
+.TH "HOCR" "1" "18 Aug 2005" "Yaacov Zamir" "libhocr"
+.SH "NAME"
+hocr \- command line Hebrew OCR tool
+.PP 
+example programs for libhocr, a library that help use Hebrew character recognition.
+.PP 
+.SH "SYNOPSIS"
+.B hocr
+[\fIOPTION\fR] [\fB-i\fR] \fIpnm file\fR
+.fi
+.SH DESCRIPTION
+hocr is an optical character recognition program that can be used from
+the command line. It takes input in PBM
+format, and writes recognized utf-8 Hebrew text to \fBstdout\fR. input pbm file must be a binary black and white pnm file (magic "P4").
+.PP
+.SH OPTIONS
+.TP
+\fB\-h\fR
+show usage information
+.TP
+\fB\-i\fR \fIfile\fR
+read input from \fIfile\fR 
+.TP
+\fB\-o\fR \fIfile\fR
+send output to \fIfile\fR instead of \fBstdout\fR
+.TP
+.TP
+\fB\-f\fR \fIformat\fR
+output \fIformat\fR (html text)
+.TP
+.SH "SEE ALSO"
+gocr(1), ocrad(1)
+.SH "AUTHOR"
+Yaacov Zamir 2005.

@@ -63,9 +63,8 @@ unsigned char *hocr_pixbuf_get_pixels (hocr_pixbuf * pix);
 int hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y);
 int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel, int value);
 
-/* this function open pnm file 
- of type "P4" Portable Any Map:
- binary, black/white 
+/* hocr_pixbuf_new_from_file function can only open pnm file 
+ of type "P4" Portable Any Map (PNM) binary, black/white format
  */
 hocr_pixbuf *hocr_pixbuf_new_from_file (const char *filename);
 
