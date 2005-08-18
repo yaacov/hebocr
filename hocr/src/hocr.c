@@ -214,21 +214,19 @@ hocr_pixbuf_new_from_file (const char *filename)
 	new_pixbuf->width = hocr_pbm_getint (file);
 	new_pixbuf->height = hocr_pbm_getint (file);
 	new_pixbuf->rowstride = new_pixbuf->width * 3;
-printf ("%d %d %d", new_pixbuf->width, new_pixbuf->height, dippnes);
 
 	/* read gray_scale dippnes */
 	if (gray_scale)
 		dippnes = hocr_pbm_getint (file);
 	if (dippnes > 255)
 		return NULL;
-printf ("%d %d %d", new_pixbuf->width, new_pixbuf->height, dippnes);
 	
 	/* allocate memory for data */
 	new_pixbuf->pixels =
 		malloc (new_pixbuf->height * new_pixbuf->rowstride);
 	if (!(new_pixbuf->pixels))
 		return NULL;
-printf ("%d %d %d", new_pixbuf->width, new_pixbuf->height, dippnes);
+
 	/* read data */
 	for (y = 0; y < new_pixbuf->height; y++)
 	{
