@@ -93,8 +93,8 @@ namespace hocr
 		 */
 		int do_ocr (char *text_buffer, int max_buffer_size)
 		{
-			return hocr_do_ocr (h, htext_buffer,
-					    hmax_buffer_size);
+			return hocr_do_ocr (h, text_buffer,
+					    max_buffer_size);
 		}
 
 		////////////////////////////////////////
