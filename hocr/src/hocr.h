@@ -133,13 +133,13 @@ int hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y);
 int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel, int value);
 
 /* hocr_pixbuf_new_from_file function can only open pnm file 
- of type "P4" Portable Any Map (PNM) binary, black/white format
+ of type "P4/5" Portable Any Map (PNM) binary, black/white format
  */
 
 /**
  @brief creats a new hocr_pixbuf struct from file 
 
- @param filename path to a pbm file, file must be binary b/w pnm file ("P4").
+ @param filename path to a pbm file, file must be binary b/w pnm file ("P4/5").
  @return pointer to a newly allocate hocr_pixbuf, or null if can not open file.
  */
 hocr_pixbuf *hocr_pixbuf_new_from_file (const char *filename);

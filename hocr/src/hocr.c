@@ -144,23 +144,30 @@ hocr_pbm_getint (FILE * file)
 }
 
 int
-hocr_pbm_getbit (FILE * file)
+hocr_pbm_getbit (FILE * file, int gray_scale)
 {
 
 	static unsigned char byte = 0;
 	static unsigned char mask = 0;
 	int return_bit;
 
-	if (mask == 0)
+	if (gray_scale)
 	{
-		mask = 0x80;
-		byte = getc (file);
+		return_bit = getc (file);
 	}
+	else
+	{
+		if (mask == 0)
+		{
+			mask = 0x80;
+			byte = getc (file);
+		}
 
-	return_bit = (byte & mask) ? TRUE : FALSE;
+		return_bit = (byte & mask) ? 0 : 255;
 
-	mask >>= 1;
-
+		mask >>= 1;
+	}
+	
 	return return_bit;
 }
 
@@ -173,7 +180,9 @@ hocr_pixbuf_new_from_file (const char *filename)
 	char char_read;
 	hocr_pixbuf *new_pixbuf;
 	FILE *file = NULL;
-
+	int gray_scale = FALSE;
+	int dippnes;
+	
 	/* open file */
 	file = fopen (filename, "r");
 	if (!file)
@@ -189,7 +198,11 @@ hocr_pixbuf_new_from_file (const char *filename)
 	if (char_read != 'P')
 		return NULL;
 	char_read = hocr_pbm_getc (file);
-	if (char_read != '4')
+	if (char_read == '4')
+		gray_scale = FALSE;
+	if (char_read == '5')
+		gray_scale = TRUE;
+	else
 		return NULL;
 
 	/* read header */
@@ -202,6 +215,11 @@ hocr_pixbuf_new_from_file (const char *filename)
 	new_pixbuf->height = hocr_pbm_getint (file);
 	new_pixbuf->rowstride = new_pixbuf->width * 3;
 
+	/* read gray_scale dippnes */
+	dippnes = hocr_pbm_getint (file);
+	if (dippnes > 255)
+		return NULL;
+	
 	/* allocate memory for data */
 	new_pixbuf->pixels =
 		malloc (new_pixbuf->height * new_pixbuf->rowstride);
@@ -213,7 +231,7 @@ hocr_pixbuf_new_from_file (const char *filename)
 	{
 		for (x = 0; x < new_pixbuf->width; x++)
 		{
-			bit_read = (hocr_pbm_getbit (file)) ? 0 : 255;
+			bit_read = hocr_pbm_getbit (file, gray_scale);
 			pixel = new_pixbuf->pixels +
 				x * new_pixbuf->n_channels +
 				y * new_pixbuf->rowstride;
@@ -372,7 +390,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
-	
+
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
