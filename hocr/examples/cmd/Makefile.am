@@ -5,7 +5,7 @@ if WITH_CMD
 INCLUDES = \
         -DPACKAGE_DATA_DIR=\""$(datadir)"\" \
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-        @cmd_CFLAGS@ -I$(top_srcdir)/src
+        I$(top_srcdir)/src
 
 DEPS= $(top_builddir)/src/libhocr.la
 ldadd= $(top_builddir)/src/libhocr.la -lm
@@ -16,6 +16,6 @@ hocr_SOURCES = \
 	hocr-cmd.c
 
 hocr_DEPENDENCIES = $(DEPS)
-hocr_LDADD = $(ldadd) @cmd_LIBS@ $(INTLLIBS)
+hocr_LDADD = $(ldadd) $(INTLLIBS)
 
 endif
