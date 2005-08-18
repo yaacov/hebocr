@@ -25,6 +25,11 @@
 #ifndef __HOCR_H__
 #define __HOCR_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef TRUE
 #define TRUE -1
 #endif
@@ -163,5 +168,9 @@ int hocr_pixbuf_unref (hocr_pixbuf * pix);
  @return 1
  */
 int hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

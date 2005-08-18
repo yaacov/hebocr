@@ -1,4 +1,10 @@
-hocr (0.4.1)
+hocr (0.4.3)
+  
+  * add C++ bindings
+  
+  -- Yaacov Zamir <kzamir@wall.co.il>  Thu, 18 Aug 2005 22:13
+
+hocr (0.4.3)
   
   * add hocr man file
   * add file input function for pbm formated files

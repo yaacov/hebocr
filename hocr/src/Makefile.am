@@ -17,4 +17,4 @@ libhocr_la_LDFLAGS = -version-info $(VERSION_INFO)
 
 libhocr_la_LIBADD = 
 
-include_HEADERS = hocr.h
+include_HEADERS = hocr.h hocrpp.h
