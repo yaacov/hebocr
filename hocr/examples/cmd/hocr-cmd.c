@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "hocr.h"
 
@@ -78,9 +79,9 @@ content=\"text/html; charset=UTF-8\">\n \
 int
 print_help ()
 {
-	g_print ("hocr %s - Hebrew OCR program\n", VERSION);
-	g_print ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
-	g_print ("\n");
+	printf ("hocr %s - Hebrew OCR program\n", VERSION);
+	printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
+	printf ("\n");
 	
 	return 0;
 }
@@ -110,17 +111,17 @@ main (int argc, char *argv[])
 		case 'i':
 			opt_i = 1;
 			if (optarg)
-				g_strlcpy (filename_in, optarg, 255);
+				strcpy (filename_in, optarg);
 			break;
 		case 'o':
 			opt_o = 1;
 			if (optarg)
-				g_strlcpy (filename_out, optarg, 255);
+				strcpy (filename_out, optarg);
 			break;
 		case 'f':
 			opt_f = 1;
 			if (optarg)
-				g_strlcpy (format_out, optarg, 255);
+				strcpy (format_out, optarg);
 			break;
 		default:
 			print_help ();
@@ -139,7 +140,7 @@ main (int argc, char *argv[])
 	pix = hocr_pixbuf_new_from_file (filename_in);
 
 	/* do ocr */
-	g_strlcpy (text, "", 3500);
+	strcpy (text, "");
 	hocr_do_ocr (pix, text, 3500);
 	
 	/* unref memory */
