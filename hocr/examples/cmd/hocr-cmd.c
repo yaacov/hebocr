@@ -104,7 +104,7 @@ main (int argc, char *argv[])
 	/* default output is text file */
 	format_out[0] = 't';
 
-	while ((c = getopt (argc, argv, "i:o:f:")) != EOF)
+	while ((c = getopt (argc, argv, "hi:o:f:")) != EOF)
 	{
 		switch (c)
 		{
@@ -123,6 +123,10 @@ main (int argc, char *argv[])
 			if (optarg)
 				strcpy (format_out, optarg);
 			break;
+		case 'h':
+			print_help ();
+			exit (0);
+			break;
 		default:
 			print_help ();
 			exit (0);
@@ -139,6 +143,12 @@ main (int argc, char *argv[])
 	/* create a new pixbuf from pbm file */
 	pix = hocr_pixbuf_new_from_file (filename_in);
 
+	if (!pix)
+	{
+		printf ("hocr: can\'t read file %s\n", filename_in);
+		exit (0);
+	}
+	
 	/* do ocr */
 	strcpy (text, "");
 	hocr_do_ocr (pix, text, 3500);
