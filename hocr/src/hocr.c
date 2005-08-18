@@ -181,7 +181,7 @@ hocr_pixbuf_new_from_file (const char *filename)
 	hocr_pixbuf *new_pixbuf;
 	FILE *file = NULL;
 	int gray_scale = FALSE;
-	int dippnes;
+	int dippnes = 1;
 	
 	/* open file */
 	file = fopen (filename, "r");
@@ -216,7 +216,8 @@ hocr_pixbuf_new_from_file (const char *filename)
 	new_pixbuf->rowstride = new_pixbuf->width * 3;
 
 	/* read gray_scale dippnes */
-	dippnes = hocr_pbm_getint (file);
+	if (gray_scale)
+		dippnes = hocr_pbm_getint (file);
 	if (dippnes > 255)
 		return NULL;
 	
