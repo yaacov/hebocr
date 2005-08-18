@@ -61,14 +61,15 @@ int hocr_pixbuf_get_brightness (hocr_pixbuf * pix);
 unsigned char *hocr_pixbuf_get_pixels (hocr_pixbuf * pix);
 
 int hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y);
-
 int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel, int value);
 
-/* DOTO: add this functions */
-/* NOT IMPLEMENTED YET !! */
-hocr_pixbuf *hocr_pixbuf_new_from_file (char *filename);
+/* this function open pnm file 
+ of type "P4" Portable Any Map:
+ binary, black/white 
+ */
+hocr_pixbuf *hocr_pixbuf_new_from_file (const char *filename);
+
 int hocr_pixbuf_unref (hocr_pixbuf * pix);
-/* NOT IMPLEMENTED YET !! */
 
 /* user only use this function */
 int hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size);

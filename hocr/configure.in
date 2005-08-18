@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(hocr, 0.4.0)
+AM_INIT_AUTOMAKE(hocr, 0.4.1)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 VERSION_INFO=0:0:0
@@ -53,18 +53,6 @@ build_cmd=yes
 
 AC_ARG_ENABLE(cmd, [  --disable-cmd	build hocr program [default=yes]], build_cmd="$enableval", build_cmd=yes)
 
-cmd_pkg_modules="gtk+-2.0"
-PKG_CHECK_MODULES(cmd, [$cmd_pkg_modules], cmd=yes, cmd=no)
-AC_SUBST(cmd_CFLAGS)
-AC_SUBST(cmd_LIBS)
-
-if test "x$cmd" = "xyes"; then
-          AC_MSG_RESULT(yes)
-else
-		  AC_MSG_RESULT(no)
-		  build_cmd=no
-fi
-
 AM_CONDITIONAL(WITH_CMD, test "x$build_cmd" = "xyes")
 
 dnl =======================================================================================
@@ -98,7 +86,5 @@ $PACKAGE-$VERSION
 	
 	you need ${gui_pkg_modules} development libs 
 		to build the gui interface.
-	you need ${cmd_pkg_modules} development libs 
-		to build the command line interface.
 "
 

@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "consts.h"
 #include "page_layout.h"
@@ -74,12 +75,13 @@ hocr_pixbuf_get_pixels (hocr_pixbuf * pix)
 int
 hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y)
 {
-	unsigned char* pixel;
-	
+	unsigned char *pixel;
+
 	if (x < 0 || x > pix->width || y < 0 || y > pix->height)
 		return 0;
 
 	pixel = pix->pixels + x * pix->n_channels + y * pix->rowstride;
+
 	return (pixel[0] < pix->brightness) ? 1 : 0;
 }
 
@@ -87,8 +89,8 @@ int
 hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel,
 		       int value)
 {
-	unsigned char* pixel;
-	
+	unsigned char *pixel;
+
 	if (x < 0 || x > pix->width || y < 0 || y > pix->height)
 		return 0;
 
@@ -96,6 +98,145 @@ hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel,
 	pixel[channel] = value;
 
 	return (pixel[channel] < pix->brightness) ? 1 : 0;
+}
+
+/* hocr_pixbuf file utils */
+
+unsigned char
+hocr_pbm_getc (FILE * file)
+{
+	unsigned char ch;
+	int comment = FALSE;
+
+	do
+	{
+		ch = getc (file);
+		if (ch == '\n')
+			comment = FALSE;
+		else if (ch == '#')
+			comment = TRUE;
+	}
+	while (comment);
+
+	return ch;
+}
+
+int
+hocr_pbm_getint (FILE * file)
+{
+	unsigned char ch;
+	int i = 0;
+
+	do
+	{
+		ch = hocr_pbm_getc (file);
+	}
+	while (ch == ' ' || ch == '\n' || ch == '\t');
+
+	do
+	{
+		i = (i * 10) + (ch - '0');
+		ch = hocr_pbm_getc (file);
+	}
+	while (ch >= '0' && ch <= '9');
+
+	return i;
+}
+
+int
+hocr_pbm_getbit (FILE * file)
+{
+
+	static unsigned char byte = 0;
+	static unsigned char mask = 0;
+	int return_bit;
+
+	if (mask == 0)
+	{
+		mask = 0x80;
+		byte = getc (file);
+	}
+
+	return_bit = (byte & mask) ? TRUE : FALSE;
+
+	mask >>= 1;
+
+	return return_bit;
+}
+
+hocr_pixbuf *
+hocr_pixbuf_new_from_file (const char *filename)
+{
+	int x, y;
+	unsigned char *pixel;
+	int bit_read;
+	char char_read;
+	hocr_pixbuf *new_pixbuf;
+	FILE *file = NULL;
+
+	/* open file */
+	file = fopen (filename, "r");
+	if (!file)
+		return NULL;
+
+	/* allocate memory for pixbuf */
+	new_pixbuf = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
+	if (!new_pixbuf)
+		return NULL;
+
+	/* read magic number "P4" for pbm file */
+	char_read = hocr_pbm_getc (file);
+	if (char_read != 'P')
+		return NULL;
+	char_read = hocr_pbm_getc (file);
+	if (char_read != '4')
+		return NULL;
+
+	/* read header */
+	new_pixbuf->n_channels = 3;
+	new_pixbuf->brightness = 100;
+	new_pixbuf->pixels = NULL;
+
+	/* read width and height */
+	new_pixbuf->width = hocr_pbm_getint (file);
+	new_pixbuf->height = hocr_pbm_getint (file);
+	new_pixbuf->rowstride = new_pixbuf->width * 3;
+
+	/* allocate memory for data */
+	new_pixbuf->pixels =
+		malloc (new_pixbuf->height * new_pixbuf->rowstride);
+	if (!(new_pixbuf->pixels))
+		return NULL;
+
+	/* read data */
+	for (y = 0; y < new_pixbuf->height; y++)
+	{
+		for (x = 0; x < new_pixbuf->width; x++)
+		{
+			bit_read = (hocr_pbm_getbit (file)) ? 0 : 255;
+			pixel = new_pixbuf->pixels +
+				x * new_pixbuf->n_channels +
+				y * new_pixbuf->rowstride;
+			pixel[0] = bit_read;
+			pixel[1] = bit_read;
+			pixel[2] = bit_read;
+		}
+	}
+
+	/* return the new pixbuf to user */
+	return new_pixbuf;
+}
+
+int
+hocr_pixbuf_unref (hocr_pixbuf * pix)
+{
+	if (pix->pixels)
+		free (pix->pixels);
+
+	if (pix)
+		free (pix);
+
+	return 1;
 }
 
 /* 
@@ -133,6 +274,7 @@ color_box (hocr_pixbuf * pix, box rect, int chanell, int value)
 		{
 			hocr_pixbuf_set_pixel (pix, x, y, chanell, value);
 		}
+
 	return 0;
 }
 
@@ -168,58 +310,58 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 	/* font shape markers */
 	/*
-	0 - unknown
-	1 - alef
-	2 - bet
-	3 - gimel
-	4 - dalet
-	5 - he
-	6 - vav
-	7 - zain
-	8 - het
-	9 - tet
-	10 - yud
-	11 - kaf
-	12 - kaf_sofit
-	13 - lamed
-	14 - mem
-	15 - mem_sofit
-	16 - nun
-	17 - nun_sofit
-	18 - sameh
-	19 - ayin
-	20 - pe
-	21 - pe_sofit
-	22 - tzadi
-	23 - tzadi_sofit
-	24 - kuf
-	25 - resh
-	26 - shin
-	27 - tav
-	28 - psik
-	29 - nekuda
-	30 - geresh
-	31 - gershayim
-	32 - siman kriaa
-	33 - siman shelaa
-	34 - makaf elyun
-	35 - num one
-	36 - num two
-	37 - num three
-	38 - num fore
-	39 - num five
-	40 - num six
-	41 - num seven
-	42 - num eight
-	43 - num nine
-	44 - num zero
-	*/
+	 * 0 - unknown
+	 * 1 - alef
+	 * 2 - bet
+	 * 3 - gimel
+	 * 4 - dalet
+	 * 5 - he
+	 * 6 - vav
+	 * 7 - zain
+	 * 8 - het
+	 * 9 - tet
+	 * 10 - yud
+	 * 11 - kaf
+	 * 12 - kaf_sofit
+	 * 13 - lamed
+	 * 14 - mem
+	 * 15 - mem_sofit
+	 * 16 - nun
+	 * 17 - nun_sofit
+	 * 18 - sameh
+	 * 19 - ayin
+	 * 20 - pe
+	 * 21 - pe_sofit
+	 * 22 - tzadi
+	 * 23 - tzadi_sofit
+	 * 24 - kuf
+	 * 25 - resh
+	 * 26 - shin
+	 * 27 - tav
+	 * 28 - psik
+	 * 29 - nekuda
+	 * 30 - geresh
+	 * 31 - gershayim
+	 * 32 - siman kriaa
+	 * 33 - siman shelaa
+	 * 34 - makaf elyun
+	 * 35 - num one
+	 * 36 - num two
+	 * 37 - num three
+	 * 38 - num four
+	 * 39 - num five
+	 * 40 - num six
+	 * 41 - num seven
+	 * 42 - num eight
+	 * 43 - num nine
+	 * 44 - num zero
+	 */
 	/* an array of font marks */
 	int font_mark[50];
-	
+
 	/* an array of function for detecting font marks */
 	has_font_mark_function has_font_mark[50];
-	
+
 	/* need this to put in the text_buffer */
 	int len;
 	int last_was_quot = 0;
@@ -227,10 +369,10 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 	/* create an array of all has_font_mark_functions */
 	init_has_font_mark_functions (has_font_mark);
-	
+
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
-
+	
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
@@ -316,12 +458,13 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 
 			/* TODO: this shuld be moved to the right place 
 			 * and not doen unnesseraly for all fonts */
-			
-			for (k=1; k<35; k++)
+
+			for (k = 1; k < 35; k++)
 			{
-				font_mark[k] = (has_font_mark[k]) (pix, fonts[i][j]);
+				font_mark[k] =
+					(has_font_mark[k]) (pix, fonts[i][j]);
 			}
-			
+
 			font_mark[0] = 0;
 
 			/* if wide then arteffact */
@@ -576,14 +719,14 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				}
 			}
 
-			
+
 			/* if quat mark check for doubel quat */
 			len = strlen (text_buffer);
-			
+
 			/* if buffer is full do not add more chars */
 			if (len >= max_buffer_size)
 				continue;
-			
+
 			if (chars[0] == '\'' && chars[1] == '\0'
 			    && last_was_quot == 0)
 			{

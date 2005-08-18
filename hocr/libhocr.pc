@@ -5,6 +5,6 @@ includedir=${prefix}/include
 
 Name: libhocr
 Description: A c library for hebrew optical character recognition
-Version: 0.4.0
+Version: 0.4.1
 Libs: -L${libdir} -lm -lhocr
 Cflags: -I${includedir}

@@ -29,80 +29,16 @@
 #  include <config.h>
 #endif
 
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <glib/gstdio.h>
-#include <gtk/gtk.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "hocr.h"
 
-GdkPixbuf *pixbuf = NULL;
-GtkTextBuffer *text_buffer = NULL;
-
 int
-do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
+save_text (char *filename, char *format_out, char *text)
 {
-	hocr_pixbuf hocr_pix;
-	char text[3500];
-	GtkTextIter iter;
-
-	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
-	hocr_pix.height = gdk_pixbuf_get_height (pixbuf);
-	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
-	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	hocr_pix.pixels = (unsigned char*)(gdk_pixbuf_get_pixels (pixbuf));
-	hocr_pix.brightness = 100;
-	
-	g_strlcpy (text, "", 3500);
-	hocr_do_ocr (&hocr_pix, text, 3500);
-
-	gtk_text_buffer_get_end_iter (text_buffer, &iter);
-	gtk_text_buffer_insert (text_buffer, &iter, text, -1);
-
-	return 1;
-}
-
-void
-open_pic (char *filename)
-{
-	char tmp[255];
-
-	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-
-	/* if this file is unreadble try to assume it is ppm */
-	/* TODO: ugly, usr pixbuf loader to set ppm file type */
-	if (!pixbuf)
-	{
-		g_snprintf (tmp, 255, "/tmp/hocr-testfile-%s.ppn", filename);
-		g_rename (filename, tmp);
-		pixbuf = gdk_pixbuf_new_from_file (tmp, NULL);
-		g_rename (tmp, filename);
-	}
-
-	/* it is not a ppm or any other readble file then can't open :( */
-	if (!pixbuf)
-	{
-		g_print ("hocr: can't open file %s\n\n", filename);
-		exit (0);
-	}
-}
-
-int
-save_text (char *filename, char *format_out)
-{
-	gchar *text;
-	gboolean include_hidden_chars = FALSE;
-	GtkTextIter start;
-	GtkTextIter end;
 	FILE *file;
-
-	gtk_text_buffer_get_bounds (text_buffer, &start, &end);
-
-	text = gtk_text_buffer_get_text (text_buffer, &start, &end,
-					 include_hidden_chars);
 
 	/* if format string begin with 'h' assume html output */
 	if (filename)
@@ -111,42 +47,32 @@ save_text (char *filename, char *format_out)
 		file = fopen (filename, "w");
 
 		if (format_out[0] == 'h')
-			g_fprintf (file,
+			fprintf (file,
 				   "<html>\n<meta http-equiv=\"Content-Type\" \
 content=\"text/html; charset=UTF-8\">\n \
 <body dir=\"rtl\"><pre>\n");
 
-		g_fprintf (file, "%s", text);
+		fprintf (file, "%s", text);
 
 		if (format_out[0] == 'h')
-			g_fprintf (file, "</pre></body>\n</html>\n");
+			fprintf (file, "</pre></body>\n</html>\n");
 		fclose (file);
 	}
 	else
 	{
 		/* no file name - print to std output */
 		if (format_out[0] == 'h')
-			g_printf ("<html>\n<meta http-equiv=\"Content-Type\" \
+			printf ("<html>\n<meta http-equiv=\"Content-Type\" \
 content=\"text/html; charset=UTF-8\">\n \
 <body dir=\"rtl\"><pre>\n");
 
-		g_printf ("%s", text);
+		printf ("%s", text);
 
 		if (format_out[0] == 'h')
-			g_printf ("</pre></body>\n</html>\n");
+			printf ("</pre></body>\n</html>\n");
 	}
 
-	g_free (text);
 	return 0;
-}
-
-void
-apply ()
-{
-	if (pixbuf)
-	{
-		do_ocr (pixbuf, text_buffer);
-	}
 }
 
 int
@@ -171,6 +97,9 @@ main (int argc, char *argv[])
 	char filename_out[255];
 	char format_out[255];
 
+	hocr_pixbuf * pix;
+	char text[3500];
+	
 	/* default output is text file */
 	format_out[0] = 't';
 
@@ -206,33 +135,21 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
-	gtk_set_locale ();
-	gtk_init (&argc, &argv);
+	/* create a new pixbuf from pbm file */
+	pix = hocr_pixbuf_new_from_file (filename_in);
 
-	/* this is a gtk program - create widgets */
-	text_buffer = gtk_text_buffer_new (NULL);
-
-	/* open a file do ocr and dump the results */
-	open_pic (filename_in);
-	apply ();
+	/* do ocr */
+	g_strlcpy (text, "", 3500);
+	hocr_do_ocr (pix, text, 3500);
+	
+	/* unref memory */
+	hocr_pixbuf_unref (pix);
+	
+	/* print out the text */
 	if (opt_o == 1)
-		save_text (filename_out, format_out);
+		save_text (filename_out, format_out, text);
 	else
-		save_text (NULL, format_out);
-
-	/* unref the alocated memory */
-	if (pixbuf)
-	{
-		g_object_unref (pixbuf);
-		pixbuf = NULL;
-	}
-
-	if (text_buffer)
-	{
-		g_object_unref (text_buffer);
-		pixbuf = NULL;
-	}
-
-	/* exit */
+		save_text (NULL, format_out, text);
+	
 	return 0;
 }
