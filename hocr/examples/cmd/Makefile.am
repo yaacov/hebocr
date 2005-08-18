@@ -5,7 +5,7 @@ if WITH_CMD
 INCLUDES = \
         -DPACKAGE_DATA_DIR=\""$(datadir)"\" \
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-        I$(top_srcdir)/src
+        -I$(top_srcdir)/src
 
 DEPS= $(top_builddir)/src/libhocr.la
 ldadd= $(top_builddir)/src/libhocr.la -lm
