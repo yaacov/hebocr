@@ -1,0 +1,21 @@
+This directory contains:
+
+[file] README_examples - this file.
+
+[file] COPYING_examples - this directory contain qhocr, qhocr has different
+	license then the rest of the library, read this file.
+
+[dir]  cmd 
+	the source files for the hocr command line tool,
+	this example explains how to use the hocr library without any
+	need for external library, this code is very portable.
+[dir]  gui
+	the source files fot the hocr-gui Gnome graphical utility,
+	this example explains how to use the hocr library in conection
+	with the GTK toolkit, it is usefull way to access multiple picture 
+	file types, and create good looking interfaces.
+[dir]  qhocr
+	the source files fot the qhocr QT-4 graphical interface,
+	this example explains how to use the hocr library in conection
+	with the QT-4 toolkit, it is usefull way to access multiple picture 
+	file types, and create good looking interfaces.

@@ -31,7 +31,7 @@ You will need also a C++ compiler, all the compilers supported by Qt4 are OK.
 
 To compile the program you will need to execute on a console:
 
-    qmake
+	qmake
 	make
 	
 

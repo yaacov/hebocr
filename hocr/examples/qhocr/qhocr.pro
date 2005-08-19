@@ -3,7 +3,17 @@ UI_DIR       = .tmp
 MOC_DIR      = .tmp
 OBJECTS_DIR  = .tmp
 
-LIBS += ../../src/.libs/libhocr.a
+win32{
+SOURCES    +=  \
+  ../../src/font_layout.c \
+  ../../src/font_markers.c \
+  ../../src/page_layout.c \
+  ../../src/hocr.c 
+}
+
+unix{
+LIBS += ../../src/.libs/libhocr.so
+}
 
 TEMPLATE	 = app
 
@@ -12,7 +22,7 @@ FORMS		+= \
 
 INCLUDEPATH	+= \
 	src \
-	../../src
+	../../scr	
 
 HEADERS		+= \
 	src/mainwindow.h 

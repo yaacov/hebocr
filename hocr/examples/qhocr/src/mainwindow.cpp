@@ -4,8 +4,9 @@
 #include <QTextStream>
 #include <QTextCodec>
 
-#include "mainwindow.h"
 #include <hocr.h>
+
+#include "mainwindow.h"
 
 MainWindow::MainWindow( QWidget *parent ):QMainWindow( parent )
 {

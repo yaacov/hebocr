@@ -1,3 +1,10 @@
+hocr (0.4.4)
+  
+  * add Diego Iastrubni <elcuco@kde.org> qhocr to the examples directory.
+    see examles/README_examples and examples/COPYING_examples.
+  
+  -- Yaacov Zamir <kzamir@wall.co.il>  Fri, 19 Aug 2005 02:13
+
 hocr (0.4.3)
   
   * add C++ bindings
