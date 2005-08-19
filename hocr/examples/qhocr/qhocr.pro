@@ -3,7 +3,7 @@ UI_DIR       = .tmp
 MOC_DIR      = .tmp
 OBJECTS_DIR  = .tmp
 
-LIBS += -lhocr
+LIBS += ../../src/.libs/libhocr.so
 
 TEMPLATE	 = app
 
