@@ -22,7 +22,7 @@ FORMS		+= \
 
 INCLUDEPATH	+= \
 	src \
-	../../scr	
+	../../src	
 
 HEADERS		+= \
 	src/mainwindow.h 

@@ -29,7 +29,7 @@ void MainWindow::on_loadButton_clicked()
                     this,
                     "Choose a scanned (300dpi) image",
                     "",
-                    "Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)");
+                    "Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif *.pnm)");
 	
 	if (s.isEmpty())
 		return;
