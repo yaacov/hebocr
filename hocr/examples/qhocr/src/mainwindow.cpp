@@ -5,7 +5,7 @@
 #include <QTextCodec>
 
 #include "mainwindow.h"
-#include "../../src/hocr.h"
+#include <hocr.h>
 
 MainWindow::MainWindow( QWidget *parent ):QMainWindow( parent )
 {
