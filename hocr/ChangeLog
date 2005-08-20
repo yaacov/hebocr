@@ -1,23 +1,23 @@
-hocr (0.4.4)
+hocr (0.4.5)
   
   * Yuval Tanny: idea to make line detection more accurate
     by adding min/max line_coverage consts and a minimum
 	finding logic between lines.
   
-  -- Yaacov Zamir <kzamir@wall.co.il>  Fri, 19 Aug 2005 02:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 21 Aug 2005 02:13
   
 hocr (0.4.4)
   
   * add Diego Iastrubni <elcuco@kde.org> qhocr to the examples directory.
     see examles/README_examples and examples/COPYING_examples.
   
-  -- Yaacov Zamir <kzamir@wall.co.il>  Fri, 19 Aug 2005 02:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Fri, 19 Aug 2005 02:13
 
 hocr (0.4.3)
   
   * add C++ bindings
   
-  -- Yaacov Zamir <kzamir@wall.co.il>  Thu, 18 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 18 Aug 2005 22:13
 
 hocr (0.4.3)
   
@@ -25,7 +25,7 @@ hocr (0.4.3)
   * add file input function for pbm formated files
   * add documentation in the hocr.h file.
   
-  -- Yaacov Zamir <kzamir@wall.co.il>  Thu, 18 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 18 Aug 2005 22:13
   
 hocr (0.4.0)
 
@@ -35,7 +35,7 @@ hocr (0.4.0)
   * remove gnome, gtk and glib dependencies from ocr code
   * TODO: create a load image function
   
-  -- Yaacov Zamir <kzamir@wall.co.il>  Tue, 16 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 16 Aug 2005 22:13
 	
 hocr (0.3.2)
 
@@ -43,7 +43,7 @@ hocr (0.3.2)
   * add html output to command line
   * add sane support by assuming input is ppm if not explicitly set
 
-  -- Yaacov Zamir <kzamir@wall.co.il>  Tue, 16 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 16 Aug 2005 22:13
   
 hocr (0.3.1)
 
@@ -51,14 +51,14 @@ hocr (0.3.1)
   * Dovix: add menu entry and a spec file for rpm creating
   * add command line interface for Dan Kenigsberg
 
-  -- Yaacov Zamir <kzamir@wall.co.il>  Sun, 14 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:13
   
 hocr (0.3.0)
 
   * close crash bug
   * add zoom in and out
 
-  -- Yaacov Zamir <kzamir@wall.co.il>  Sun, 14 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:13
    
 hocr (0.2.0)
 
@@ -67,4 +67,4 @@ hocr (0.2.0)
   * Add patch by Yuval Tanny: make gui interface more usable by coloring the unreadble 
     signs and putting picture and text on the same window.
 
-  -- Yaacov Zamir <kzamir@wall.co.il>  Sun, 14 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:13
