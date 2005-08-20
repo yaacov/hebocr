@@ -33,48 +33,63 @@ get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 			 int *line_end)
 {
 	int x, y;
-	double sum, sum1, sum2, sum3;
+	int last_raw_sum;
+	int sum = 0;
 	int inside_line = FALSE;
+	int inside_next_line = FALSE;
 
+	int width, width_1_3, width_2_3;
+	
 	*line_end = 0;
 	*line_start = current_pos;
 
+	width = pix->width;
+	width_1_3 = width / 3;
+	width_2_3 = 2 * width / 3;
+	
 	for (y = current_pos; y < pix->height; y++)
 	{
 		/* get presentage coverage for this pixel line */
-		/* a line is too long for just one sume (it may be short {1/3 length} 
-		 * and aligned to center, right or left ) */
-		sum1 = sum2 = sum3 = 0;
-		for (x = 0; x < (pix->width / 3); x++)
+		last_raw_sum = sum;
+		sum = 0;
+		for (x = 0; x < width_1_3; x++)
 		{
-			sum1 += hocr_pixbuf_get_pixel (pix, x, y);
-			sum2 += hocr_pixbuf_get_pixel (pix,
-						       x + pix->width / 3, y);
-			sum3 += hocr_pixbuf_get_pixel (pix,
-						       x + 2 * pix->width / 3,
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
+			sum += hocr_pixbuf_get_pixel (pix,
+						       x + width_1_3, y);
+			sum += hocr_pixbuf_get_pixel (pix,
+						       x + width_2_3,
 						       y);
 		}
+		
 		/* check only the part with the most color on it */
-		sum = (sum1 > sum2) ? sum1 : sum2;
-		sum = (sum > sum3) ? sum : sum3;
-		sum = 1000 * sum / pix->width;
+		sum = 1000 * sum / width;
 
-		/* if presantage covarage is less then 1 we are between text lines */
+		/* if presantage above minmun for not in a line then we are in aline */
 		if (sum >= NOT_IN_A_LINE && !inside_line)
 		{
 			*line_start = y;
 			inside_line = TRUE;
 		}
-		else if (sum <= NOT_IN_A_LINE && inside_line)
+		/* if presantage below maximum for in a line then we need to find 
+		   the end of the line by looking to the end of the down slop */
+		else if (sum <= IN_A_LINE && 
+				 inside_line && 
+				 (y - *line_start) > MIN_LINE_HIGHT &&
+				 (last_raw_sum - sum) <= 0)
 		{
 			*line_end = y;
+			
 			/* if here and this line has logical width then found a new line */
+			/* FIXME: do we want to read BIG fonts ? 
+			          see consts.h for details about MAX_LINE_HIGHT */
 			if ((*line_end - *line_start) > MAX_LINE_HIGHT)
 				return 1;
-			if ((*line_end - *line_start) > MIN_LINE_HIGHT)
-				return 0;
+			
+			return 0;
 		}
 	}
+	
 	return 1;
 }
 

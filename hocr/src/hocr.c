@@ -395,11 +395,13 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
+		/* visual aids to see line box on screen */
+		/* color_box (pix, lines[i], 1, 0); */
 		fill_fonts_array (pix, lines[i],
 				  fonts[i],
 				  &(num_of_fonts[i]), MAX_FONTS_IN_LINE);
 	}
-
+	
 	/* get size statistics for all fonts for all the lines */
 	num_of_fonts_in_page = 0;
 	avg_font_hight_in_page = 0;
@@ -786,9 +788,9 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				strcat (text_buffer, "\n");
 			}
 
-			/* visual aids to see font box on screen 
-			 * color_box (pix, fonts[i][j], 1, 0);
-			 * print_font (pix, fonts[i][j]); */
+			/* visual aids to see font box on screen */
+			/* color_box (pix, lines[i], 1, 0); */
+			/* print_font (pix, fonts[i][j]); */
 		}
 
 	}

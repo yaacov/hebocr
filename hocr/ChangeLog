@@ -1,5 +1,13 @@
 hocr (0.4.4)
   
+  * Yuval Tanny: idea to make line detection more accurate
+    by adding min/max line_coverage consts and a minimum
+	finding logic between lines.
+  
+  -- Yaacov Zamir <kzamir@wall.co.il>  Fri, 19 Aug 2005 02:13
+  
+hocr (0.4.4)
+  
   * add Diego Iastrubni <elcuco@kde.org> qhocr to the examples directory.
     see examles/README_examples and examples/COPYING_examples.
   
