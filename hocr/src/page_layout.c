@@ -36,7 +36,6 @@ get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 	int last_raw_sum;
 	int sum = 0;
 	int inside_line = FALSE;
-	int inside_next_line = FALSE;
 
 	int width, width_1_3, width_2_3;
 	
