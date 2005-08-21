@@ -87,7 +87,7 @@ $PACKAGE-$VERSION
 	you need ${gui_pkg_modules} development libs 
 		to build the gui interface.
 
-	you need QT-4 development library to build qhocr
-		you can build qhocr manualy using qmake.
+	you need QT-4 development library to build hocr-qt
+		you can build hocr-qt manualy using qmake.
 "
 

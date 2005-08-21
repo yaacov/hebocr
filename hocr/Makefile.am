@@ -3,7 +3,7 @@
 SUBDIRS = src po tests examples
 
 EXTRA_DIST = \
-	autogen.sh hocr.spec.in hocr.spec hocr.desktop libhocr.pc.in libhocr.pc
+	autogen.sh hocr.spec.in hocr.spec hocr.desktop libhocr.pc.in libhocr.pc BUGS HACKING
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libhocr.pc
