@@ -15,7 +15,9 @@ hocrdoc_DATA = \
 	COPYING \
 	NEWS \
 	ChangeLog \
-	INSTALL
+	INSTALL \
+	HACKING \
+	BUGS
 	
 hocrdesktopdir = ${prefix}/share/applications
 hocrdesktop_DATA = \

@@ -328,53 +328,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	int end_of_paragraph;
 
 	/* font shape markers */
-	/*
-	 * 0 - unknown
-	 * 1 - alef
-	 * 2 - bet
-	 * 3 - gimel
-	 * 4 - dalet
-	 * 5 - he
-	 * 6 - vav
-	 * 7 - zain
-	 * 8 - het
-	 * 9 - tet
-	 * 10 - yud
-	 * 11 - kaf
-	 * 12 - kaf_sofit
-	 * 13 - lamed
-	 * 14 - mem
-	 * 15 - mem_sofit
-	 * 16 - nun
-	 * 17 - nun_sofit
-	 * 18 - sameh
-	 * 19 - ayin
-	 * 20 - pe
-	 * 21 - pe_sofit
-	 * 22 - tzadi
-	 * 23 - tzadi_sofit
-	 * 24 - kuf
-	 * 25 - resh
-	 * 26 - shin
-	 * 27 - tav
-	 * 28 - psik
-	 * 29 - nekuda
-	 * 30 - geresh
-	 * 31 - gershayim
-	 * 32 - siman kriaa
-	 * 33 - siman shelaa
-	 * 34 - makaf elyun
-	 * 35 - num one
-	 * 36 - num two
-	 * 37 - num three
-	 * 38 - num four
-	 * 39 - num five
-	 * 40 - num six
-	 * 41 - num seven
-	 * 42 - num eight
-	 * 43 - num nine
-	 * 44 - num zero
-	 */
+
 	/* an array of font marks */
 	int font_mark[50];
 

@@ -2,7 +2,10 @@ hocr (0.4.5)
   
   * Yuval Tanny: idea to make line detection more accurate
     by adding min/max line_coverage consts and a minimum
-	finding logic between lines.
+    finding logic between lines.
+    
+  * add a HACKING and BUGS files to set guidelines for patches in
+    the future.
   
   -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 21 Aug 2005 02:13
   
