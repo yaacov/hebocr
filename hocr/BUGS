@@ -1,0 +1,33 @@
+ 
+   This file is used as a scratch pad by developers.  It is a list of known
+issues that need to be addressed.
+
+-------------------------------------------------------------------------------
+TODO:
+----------------
+
+bugs:
+
+   - find out why programs crash on some inputs.
+   - give some feedback when input is unreadble.
+
+code cleaning:
+
+   - find ugly hacks and replace with maintanble code.
+   - create a dynamic structure for text buffer, and remove the all fixed size strings.
+   - replace all functions and struct names to use hocr_ namespace convention.
+   - find a way not to use constants and remove the consts.h file.
+   - find a way to make the do_ocr function more readable.
+
+features:
+
+   - add support for new shapes (numbers, english letters)
+   - add support for nikud.
+   - add support for more then one shape for each font.
+
+documentation:
+
+   - add a file explaining the hocr_pixbuf struct and how to use it with:
+     (see hocr-gui and qhocr for more details)
+	a) gdk_pixbuf from the GTK+ toolkit
+        b) QImage from the QT toolkit
