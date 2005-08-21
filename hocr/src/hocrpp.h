@@ -58,12 +58,12 @@ namespace hocr
 		{
 			h = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
 			
-			new_pixbuf->n_channels = 3;
-			new_pixbuf->brightness = 100;
-			new_pixbuf->pixels = NULL;
-			new_pixbuf->width = 0;
-			new_pixbuf->height = 0;
-			new_pixbuf->rowstride = 0;
+			h->n_channels = 3;
+			h->brightness = 100;
+			h->pixels = NULL;
+			h->width = 0;
+			h->height = 0;
+			h->rowstride = 0;
 		}
 		
 		/**
@@ -79,7 +79,7 @@ namespace hocr
 		/**
 		 @brief Hocr destructor.
 		 */
-		 ~Hdate ()
+		 ~Hocr ()
 		{
 			hocr_pixbuf_unref (h);
 		}
@@ -205,7 +205,7 @@ namespace hocr
 		 */
 		int set_rowstride (int n)
 		{
-			h->rawstride = n;
+			h->rowstride = n;
 			
 			return n;
 		}
@@ -223,6 +223,10 @@ namespace hocr
 
 		/**
 		 @brief set pointer to raw pixpuf data
+		
+		 Use with care, this pointer will be automaticaly free
+		 at end of scope !! do not refernce to objects you need
+		 alive after scope ends !! may cuse memory loss !!
 		
 		 @return pointer to raw pixpuf data
 		 */

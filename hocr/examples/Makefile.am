@@ -2,21 +2,9 @@
 
 EXTRA_DIST = README_examples \
 	COPYING_examples \
-	qhocr/COPYING \
-	qhocr/COPYING.gpl \
-	qhocr/COPYING.bsd \
-	qhocr/AUTHORS \
-	qhocr/INSTALL \
-	qhocr/ChangeLog \
-	qhocr/README \
-	qhocr/qhocr.pro \
-	qhocr/mingw-build.bat \
-	qhocr/mingw-clean.bat \
-	qhocr/mingw-clean.bat \
-	qhocr/src/main.cpp \
-	qhocr/src/mainwindow.cpp \
-	qhocr/src/mainwindow.h \
-	qhocr/src/mainwindow.h \
-	qhocr/ui/mainwindow.ui
+	hocr-qt/hocr_qt.pro \
+	hocr-qt/hocr_qt.cpp \
+	hocr-qt/hocr_qt.h \
+	hocr-qt/main.cpp
 
 SUBDIRS = gui cmd

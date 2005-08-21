@@ -14,8 +14,8 @@ This directory contains:
 	this example explains how to use the hocr library in conection
 	with the GTK toolkit, it is usefull way to access multiple picture 
 	file types, and create good looking interfaces.
-[dir]  qhocr
-	the source files fot the qhocr QT-4 graphical interface,
-	this example explains how to use the hocr library in conection
+[dir]  hocr-qt
+	the source files for the hocr-qt QT-4 graphical interface,
+	this example explains how to use the hocr c++ library in conection
 	with the QT-4 toolkit, it is usefull way to access multiple picture 
 	file types, and create good looking interfaces.

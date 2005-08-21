@@ -6,6 +6,8 @@ hocr (0.4.5)
     
   * add a HACKING and BUGS files to set guidelines for patches in
     the future.
+	
+  * add hocr-qt example and remove qhocr and the bsd things.
   
   -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 21 Aug 2005 02:13
   
