@@ -56,8 +56,8 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	
 	if (!text)
 	{
-		printf ("hocr: can\'t allocate memory for text out\n");
-		exit (0);
+		printf ("hocr-gnome: can\'t allocate memory for text out\n");
+		return 0;
 	}
 	
 	hocr_do_ocr (&hocr_pix, text);
