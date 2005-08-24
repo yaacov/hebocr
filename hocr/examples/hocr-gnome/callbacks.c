@@ -41,7 +41,7 @@ int
 do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 {
 	hocr_pixbuf hocr_pix;
-	char text[3500];
+	hocr_text_buffer* text;
 	GtkTextIter iter;
 	
 	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
@@ -51,11 +51,22 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	hocr_pix.pixels = (unsigned char*)(gdk_pixbuf_get_pixels (pixbuf));
 	hocr_pix.brightness = 100;
 	
-	g_strlcpy (text, "", 3500);
-	hocr_do_ocr (&hocr_pix, text, 3500);
+	/* create text buffer */
+	text = hocr_text_buffer_new ();
+	
+	if (!text)
+	{
+		printf ("hocr: can\'t allocate memory for text out\n");
+		exit (0);
+	}
+	
+	hocr_do_ocr (&hocr_pix, text);
 
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
-	gtk_text_buffer_insert (text_buffer, &iter, text, -1);
+	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
+	
+	/* unref text_buffer */
+	hocr_text_buffer_unref (text);
 	
 	return 1;
 }

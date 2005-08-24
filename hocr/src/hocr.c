@@ -33,6 +33,84 @@
 #include "hocr.h"
 
 /* 
+ internal text_buffer stractures 
+ */
+
+hocr_text_buffer *
+hocr_text_buffer_new ()
+{
+	hocr_text_buffer *new_text_buffer;
+
+	/* allocate memory for pixbuf */
+	new_text_buffer =
+		(hocr_text_buffer *) malloc (sizeof (hocr_text_buffer));
+
+	if (!new_text_buffer)
+		return 0;
+
+	new_text_buffer->size = 0;
+	new_text_buffer->allocated_size = MEMORY_CHANK_FOR_TEXT_BUFFER;
+
+	new_text_buffer->text =
+		(char *) malloc (sizeof (char) *
+				 new_text_buffer->allocated_size);
+
+	if (!new_text_buffer->text)
+	{
+		free (new_text_buffer);
+		return 0;
+	}
+	
+	(new_text_buffer->text)[0] = '\0';
+
+	return new_text_buffer;
+}
+
+int
+hocr_text_buffer_unref (hocr_text_buffer * text_buffer)
+{
+	if (text_buffer)
+		free (text_buffer);
+
+	return 1;
+}
+
+int
+hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
+			     const char *new_text)
+{
+	int len;
+	char *new_allocated_text;
+
+	len = strlen (new_text);
+
+	/* check for allocated space and try to get more memory */
+	if ((text_buffer->size + len) >= text_buffer->allocated_size)
+	{
+		new_allocated_text =
+			realloc (text_buffer->text,
+				 text_buffer->allocated_size +
+				 MEMORY_CHANK_FOR_TEXT_BUFFER);
+
+		if (new_allocated_text)
+		{
+			text_buffer->text = new_allocated_text;
+			text_buffer->allocated_size +=
+				MEMORY_CHANK_FOR_TEXT_BUFFER;
+		}
+		else
+		{
+			return text_buffer->size;
+		}
+	}
+
+	strcat (text_buffer->text, new_text);
+	text_buffer->size = strlen (text_buffer->text);
+	
+	return text_buffer->size;
+}
+
+/* 
  internal pixbuf stractures 
  */
 
@@ -167,7 +245,7 @@ hocr_pbm_getbit (FILE * file, int gray_scale)
 
 		mask >>= 1;
 	}
-	
+
 	return return_bit;
 }
 
@@ -182,7 +260,7 @@ hocr_pixbuf_new_from_file (const char *filename)
 	FILE *file = NULL;
 	int gray_scale = FALSE;
 	int dippnes = 1;
-	
+
 	/* open file */
 	file = fopen (filename, "r");
 	if (!file)
@@ -220,7 +298,7 @@ hocr_pixbuf_new_from_file (const char *filename)
 		dippnes = hocr_pbm_getint (file);
 	if (dippnes > 255)
 		return NULL;
-	
+
 	/* allocate memory for data */
 	new_pixbuf->pixels =
 		malloc (new_pixbuf->height * new_pixbuf->rowstride);
@@ -263,7 +341,7 @@ hocr_pixbuf_unref (hocr_pixbuf * pix)
  */
 
 int
-print_font (hocr_pixbuf * pix, box font)
+print_font (hocr_pixbuf * pix, hocr_box font)
 {
 	int x, y;
 	int new_color;
@@ -284,7 +362,7 @@ print_font (hocr_pixbuf * pix, box font)
 }
 
 int
-color_box (hocr_pixbuf * pix, box rect, int chanell, int value)
+color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value)
 {
 	int x, y;
 
@@ -301,12 +379,12 @@ color_box (hocr_pixbuf * pix, box rect, int chanell, int value)
  */
 
 int
-hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
+hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 {
-	box column;
-	/* box column; is a place holder to a time when we add column support */
-	box lines[MAX_LINES];
-	box fonts[MAX_LINES][MAX_FONTS_IN_LINE];
+	hocr_box column;
+	/* hocr_box column; is a place holder to a time when we add column support */
+	hocr_box lines[MAX_LINES];
+	hocr_box fonts[MAX_LINES][MAX_FONTS_IN_LINE];
 
 	int num_of_fonts[MAX_LINES];
 	int num_of_lines;
@@ -336,8 +414,8 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	has_font_mark_function has_font_mark[50];
 
 	/* need this to put in the text_buffer */
-	int len;
 	int last_was_quot = 0;
+	/* FIXME: what size is the new string to add ? */
 	char chars[10];
 
 	/* create an array of all has_font_mark_functions */
@@ -349,13 +427,13 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
-		/* visual aids to see line box on screen */
-		/* color_box (pix, lines[i], 1, 0); */
+		/* visual aids to see line hocr_box on screen */
+		/* color_hocr_box (pix, lines[i], 1, 0); */
 		fill_fonts_array (pix, lines[i],
 				  fonts[i],
 				  &(num_of_fonts[i]), MAX_FONTS_IN_LINE);
 	}
-	
+
 	/* get size statistics for all fonts for all the lines */
 	num_of_fonts_in_page = 0;
 	avg_font_hight_in_page = 0;
@@ -447,7 +525,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 			if (width_class == 1)
 			{
 				/* arteffact */
-				sprintf (chars, "--");
+				sprintf (chars, "__");
 				font_mark[0] = 1;
 			}
 
@@ -481,7 +559,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				}
 				else
 				{
-					sprintf (chars, "*");
+					sprintf (chars, "_");
 					font_mark[0] = 1;
 				}
 			}
@@ -548,7 +626,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				}
 				else
 				{
-					sprintf (chars, "*");
+					sprintf (chars, "_");
 					font_mark[0] = 1;
 				}
 			}
@@ -606,7 +684,7 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				}
 				else
 				{
-					sprintf (chars, "*");
+					sprintf (chars, "_");
 					font_mark[0] = 1;
 				}
 			}
@@ -689,18 +767,10 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				}
 				else
 				{
-					sprintf (chars, "*");
+					sprintf (chars, "_");
 					font_mark[0] = 1;
 				}
 			}
-
-
-			/* if quat mark check for doubel quat */
-			len = strlen (text_buffer);
-
-			/* if buffer is full do not add more chars */
-			if (len >= max_buffer_size)
-				continue;
 
 			if (chars[0] == '\'' && chars[1] == '\0'
 			    && last_was_quot == 0)
@@ -708,42 +778,42 @@ hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size)
 				last_was_quot = 1;
 				if (fonts[i][j].width > 2
 				    && fonts[i][j].hight > 2)
-					strcat (text_buffer, chars);
+					hocr_text_buffer_add_string (text_buffer, chars);
 			}
 			else if (chars[0] == '\'' && chars[1] == '\0'
 				 && last_was_quot == 1)
 			{
 				last_was_quot = 0;
-				text_buffer[len - 1] = '\"';
+				text_buffer->text[text_buffer->size - 1] = '\"';
 			}
 			else
 			{
 				last_was_quot = 0;
 				if (fonts[i][j].width > 2
 				    && fonts[i][j].hight > 2)
-					strcat (text_buffer, chars);
+					hocr_text_buffer_add_string (text_buffer, chars);
 			}
 
 			/* color unknown fonts in the pixbuf */
 			if (font_mark[0] == 1)
-				color_box (pix, fonts[i][j], 1, 255);
+				color_hocr_box (pix, fonts[i][j], 1, 255);
 
 			/* check for end of word and end of line */
 			if (end_of_word == 1)
 			{
-				strcat (text_buffer, " ");
+				hocr_text_buffer_add_string (text_buffer, " ");
 			}
 			if (end_of_line == 1)
 			{
-				strcat (text_buffer, "\n");
+				hocr_text_buffer_add_string (text_buffer, "\n");
 			}
 			if (end_of_paragraph == 1)
 			{
-				strcat (text_buffer, "\n");
+				hocr_text_buffer_add_string (text_buffer, "\n");
 			}
 
-			/* visual aids to see font box on screen */
-			/* color_box (pix, lines[i], 1, 0); */
+			/* visual aids to see font hocr_box on screen */
+			/* color_hocr_box (pix, lines[i], 1, 0); */
 			/* print_font (pix, fonts[i][j]); */
 		}
 

@@ -78,7 +78,7 @@ init_has_font_mark_functions (has_font_mark_function * has_font_mark)
 }
 
 int
-has_black_right_bottom_mark (hocr_pixbuf * pix, box font)
+has_black_right_bottom_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int x, y;
 	int sum;
@@ -98,7 +98,7 @@ has_black_right_bottom_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_black_left_bottom_mark (hocr_pixbuf * pix, box font)
+has_black_left_bottom_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int x, y;
 	int sum;
@@ -118,7 +118,7 @@ has_black_left_bottom_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_black_left_top_mark (hocr_pixbuf * pix, box font)
+has_black_left_top_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int x, y;
 	int sum;
@@ -138,7 +138,7 @@ has_black_left_top_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_black_right_top_mark (hocr_pixbuf * pix, box font)
+has_black_right_top_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int x, y;
 	int sum;
@@ -159,7 +159,7 @@ has_black_right_top_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-count_vertical_bars (hocr_pixbuf * pix, box font, int y_pos, int *first_x,
+count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos, int *first_x,
 		     int *last_x)
 {
 	int x, y;
@@ -196,7 +196,7 @@ count_vertical_bars (hocr_pixbuf * pix, box font, int y_pos, int *first_x,
 }
 
 int
-count_horizontal_bars (hocr_pixbuf * pix, box font, int x_pos, int *first_y,
+count_horizontal_bars (hocr_pixbuf * pix, hocr_box font, int x_pos, int *first_y,
 		       int *last_y)
 {
 	int x, y;
@@ -549,7 +549,7 @@ find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 }
 
 int
-thin_lines (hocr_pixbuf * pix, box font)
+thin_lines (hocr_pixbuf * pix, hocr_box font)
 {
 	int x, y;
 	int start;
@@ -581,7 +581,7 @@ thin_lines (hocr_pixbuf * pix, box font)
 }
 
 int
-find_tet_mark (hocr_pixbuf * pix, box font)
+find_tet_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int x, y;
 	int sum = 0;
@@ -663,7 +663,7 @@ find_tet_mark (hocr_pixbuf * pix, box font)
  */
 
 int
-has_alef_mark (hocr_pixbuf * pix, box font)
+has_alef_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int y_top;
@@ -697,7 +697,7 @@ has_alef_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_bet_mark (hocr_pixbuf * pix, box font)
+has_bet_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -753,7 +753,7 @@ has_bet_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_gimel_mark (hocr_pixbuf * pix, box font)
+has_gimel_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -816,7 +816,7 @@ has_gimel_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_dalet_mark (hocr_pixbuf * pix, box font)
+has_dalet_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -866,7 +866,7 @@ has_dalet_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_he_mark (hocr_pixbuf * pix, box font)
+has_he_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -902,7 +902,7 @@ has_he_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_vav_mark (hocr_pixbuf * pix, box font)
+has_vav_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -960,7 +960,7 @@ has_vav_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_zain_mark (hocr_pixbuf * pix, box font)
+has_zain_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -989,7 +989,7 @@ has_zain_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_het_mark (hocr_pixbuf * pix, box font)
+has_het_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1046,7 +1046,7 @@ has_het_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_tet_mark (hocr_pixbuf * pix, box font)
+has_tet_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1098,7 +1098,7 @@ has_tet_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_yud_mark (hocr_pixbuf * pix, box font)
+has_yud_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1121,7 +1121,7 @@ has_yud_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_kaf_mark (hocr_pixbuf * pix, box font)
+has_kaf_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1162,7 +1162,7 @@ has_kaf_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_kaf_sofit_mark (hocr_pixbuf * pix, box font)
+has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 {
 
 	int number_of_bars;
@@ -1203,14 +1203,14 @@ has_kaf_sofit_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_lamed_mark (hocr_pixbuf * pix, box font)
+has_lamed_mark (hocr_pixbuf * pix, hocr_box font)
 {
 
 	return 0;
 }
 
 int
-has_mem_mark (hocr_pixbuf * pix, box font)
+has_mem_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1275,7 +1275,7 @@ has_mem_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_mem_sofit_mark (hocr_pixbuf * pix, box font)
+has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1320,7 +1320,7 @@ has_mem_sofit_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_nun_mark (hocr_pixbuf * pix, box font)
+has_nun_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1359,14 +1359,14 @@ has_nun_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_nun_sofit_mark (hocr_pixbuf * pix, box font)
+has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 {
 
 	return 0;
 }
 
 int
-has_sameh_mark (hocr_pixbuf * pix, box font)
+has_sameh_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1423,7 +1423,7 @@ has_sameh_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_ayin_mark (hocr_pixbuf * pix, box font)
+has_ayin_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1465,7 +1465,7 @@ has_ayin_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_pe_mark (hocr_pixbuf * pix, box font)
+has_pe_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1512,7 +1512,7 @@ has_pe_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_pe_sofit_mark (hocr_pixbuf * pix, box font)
+has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1551,7 +1551,7 @@ has_pe_sofit_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_tzadi_mark (hocr_pixbuf * pix, box font)
+has_tzadi_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1591,7 +1591,7 @@ has_tzadi_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_tzadi_sofit_mark (hocr_pixbuf * pix, box font)
+has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1639,7 +1639,7 @@ has_tzadi_sofit_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_kof_mark (hocr_pixbuf * pix, box font)
+has_kof_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1684,7 +1684,7 @@ has_kof_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_resh_mark (hocr_pixbuf * pix, box font)
+has_resh_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1738,7 +1738,7 @@ has_resh_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_shin_mark (hocr_pixbuf * pix, box font)
+has_shin_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1773,7 +1773,7 @@ has_shin_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_tav_mark (hocr_pixbuf * pix, box font)
+has_tav_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1822,7 +1822,7 @@ has_tav_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_quat_mark (hocr_pixbuf * pix, box font)
+has_quat_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1843,7 +1843,7 @@ has_quat_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_double_quat_mark (hocr_pixbuf * pix, box font)
+has_double_quat_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1859,7 +1859,7 @@ has_double_quat_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_exlem_mark (hocr_pixbuf * pix, box font)
+has_exlem_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	int number_of_bars;
 	int start, end;
@@ -1880,7 +1880,7 @@ has_exlem_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_question_mark (hocr_pixbuf * pix, box font)
+has_question_mark (hocr_pixbuf * pix, hocr_box font)
 {
 
 	int number_of_bars;
@@ -1902,7 +1902,7 @@ has_question_mark (hocr_pixbuf * pix, box font)
 }
 
 int
-has_makaf_mark (hocr_pixbuf * pix, box font)
+has_makaf_mark (hocr_pixbuf * pix, hocr_box font)
 {
 	if (font.hight > 5)
 		return 0;

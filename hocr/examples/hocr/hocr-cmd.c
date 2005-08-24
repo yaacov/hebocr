@@ -99,7 +99,7 @@ main (int argc, char *argv[])
 	char format_out[255];
 
 	hocr_pixbuf * pix;
-	char text[3500];
+	hocr_text_buffer* text_buffer;
 	
 	/* default output is text file */
 	format_out[0] = 't';
@@ -149,18 +149,27 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 	
-	/* do ocr */
-	strcpy (text, "");
-	hocr_do_ocr (pix, text, 3500);
+	/* create text buffer */
+	text_buffer = hocr_text_buffer_new ();
 	
-	/* unref memory */
-	hocr_pixbuf_unref (pix);
+	if (!text_buffer)
+	{
+		printf ("hocr: can\'t allocate memory for text out\n");
+		exit (0);
+	}
+	
+	/* do ocr */
+	hocr_do_ocr (pix, text_buffer);
 	
 	/* print out the text */
 	if (opt_o == 1)
-		save_text (filename_out, format_out, text);
+		save_text (filename_out, format_out, text_buffer->text);
 	else
-		save_text (NULL, format_out, text);
+		save_text (NULL, format_out, text_buffer->text);
+	
+	/* unref memory */
+	hocr_pixbuf_unref (pix);
+	hocr_text_buffer_unref (text_buffer);
 	
 	return 0;
 }

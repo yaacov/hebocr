@@ -7,4 +7,4 @@ EXTRA_DIST = README_examples \
 	hocr-qt/hocr_qt.h \
 	hocr-qt/main.cpp
 
-SUBDIRS = gui cmd
+SUBDIRS = hocr hocr-gnome

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(hocr, 0.4.5)
+AM_INIT_AUTOMAKE(hocr, 0.4.6)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 VERSION_INFO=0:0:0
@@ -31,7 +31,7 @@ dnl ============================================================================
 
 build_gui=yes
 
-AC_ARG_ENABLE(gui, [  ---disable-gui	build hocr-gui program [default=yes]], build_gui="$enableval", build_gui=yes)
+AC_ARG_ENABLE(gui, [  ---disable-gnome	build hocr-gnome program [default=yes]], build_gui="$enableval", build_gui=yes)
 
 gui_pkg_modules="libgnomeui-2.0 gtkspell-2.0"
 PKG_CHECK_MODULES(gui, [$gui_pkg_modules], gui=yes, gui=no)
@@ -49,9 +49,9 @@ AM_CONDITIONAL(WITH_GUI, test "x$build_gui" = "xyes")
 
 dnl =======================================================================================
 
-build_cmd=yes
+build_hocr=yes
 
-AC_ARG_ENABLE(cmd, [  --disable-cmd	build hocr program [default=yes]], build_cmd="$enableval", build_cmd=yes)
+AC_ARG_ENABLE(cmd, [  --disable-hocr	build hocr program [default=yes]], build_cmd="$enableval", build_cmd=yes)
 
 AM_CONDITIONAL(WITH_CMD, test "x$build_cmd" = "xyes")
 
@@ -70,8 +70,8 @@ src/Makefile
 po/Makefile.in
 tests/Makefile
 examples/Makefile
-examples/gui/Makefile
-examples/cmd/Makefile
+examples/hocr-gnome/Makefile
+examples/hocr/Makefile
 ])
 
 dnl ===========================================================================================
@@ -82,10 +82,10 @@ $PACKAGE-$VERSION
 	compiler:			${CC}
 	
 	build hocr			${build_cmd}
-	build hocr-gui			${build_gui}
+	build hocr-gnome		${build_gui}
 	
 	you need ${gui_pkg_modules} development libs 
-		to build the gui interface.
+		to build the gnome interface.
 
 	you need QT-4 development library to build hocr-qt
 		you can build hocr-qt manualy using qmake.

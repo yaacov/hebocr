@@ -37,6 +37,14 @@ extern "C"
 #ifndef FALSE
 #define FALSE 0
 #endif
+	
+typedef enum
+{
+	HOCR_OK = 0,
+	HOCR_NO_LINES_FOUND = 1,
+	HOCR_NO_FONTS_FOUND = 2,
+	HOCR_OUT_OF_MEMORY = 4
+} hocr_error;
 
 typedef struct
 {
@@ -46,10 +54,71 @@ typedef struct
 	int y2;
 	int hight;
 	int width;
-} box;
+} hocr_box;
+
+/** text buffer structore used by hocr
+ 
+ This struct contain dynamicaly allocated string, You MUST
+ use hocr_text_buffer_new and hocr_text_buffer_unref functions 
+ to create this string and nuref it.
+*/
+typedef struct
+{
+	/** get the text buffer. */
+	char *text;
+	/** get number of chars in the text string. */
+	int size;
+	/** get number of chars allocated in memory. */
+	int allocated_size;
+} hocr_text_buffer;
+
+/**
+ @brief creats a new hocr_text_buffer struct from file 
+
+ @return pointer to a newly allocate hocr_text_buffer, or null if can not open file.
+ */
+hocr_text_buffer *hocr_text_buffer_new ();
+
+/**
+ @brief free a hocr_text_buffer struct from memory
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @return 1
+ */
+int hocr_text_buffer_unref (hocr_text_buffer * text_buffer);
+
+/**
+ @brief add a string to hocr_text_buffer struct
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @param new_text pointer to the string to be added to the buffer.
+ @return new size of text
+ */
+int hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
+				 const char *new_text);
 
 /** pixbuf structore used by hocr
+	
+	hocr_pixbuf can be used with common image structores,
+	see this examples for use with gtk and qt toolkits -
+				 
+	how to use with gdk_pixbuf:
+				 
+    hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+	hocr_pix.height = gdk_pixbuf_get_height (pixbuf);
+	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
+	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	hocr_pix.pixels = (unsigned char*)(gdk_pixbuf_get_pixels (pixbuf));
+	hocr_pix.brightness = 100;
+				 
+	how to use with QImage:
 
+	hocr_pix.pixels = img.bits ();
+	hocr_pix.height = img.size ().height ();
+	hocr_pix.width = img.size ().width ();
+	hocr_pix.rowstride = img.bytesPerLine ();
+	hocr_pix.n_channels = img.depth () / 8;
+	hocr_pix.brightness = 100;
 */
 typedef struct
 {
@@ -135,11 +204,8 @@ int hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y);
  @param value the value to set the chanell to
  @return the color set
  */
-int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel, int value);
-
-/* hocr_pixbuf_new_from_file function can only open pnm file 
- of type "P4/5" Portable Any Map (PNM) binary, black/white format
- */
+int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y,
+			   int channel, int value);
 
 /**
  @brief creats a new hocr_pixbuf struct from file 
@@ -157,17 +223,14 @@ hocr_pixbuf *hocr_pixbuf_new_from_file (const char *filename);
  */
 int hocr_pixbuf_unref (hocr_pixbuf * pix);
 
-/* user only use this function */
-
 /**
  @brief do ocr on a hocr_pixbuf and return the result text to text_buffer
 
  @param pix pointer to hocr_pixbuf struct.
- @param text_buffer pointer to an already allocated text buffer for the results
- @param max_buffer_size site of allocated memory for text_buffer.
+ @param text_buffer pointer to an already allocated hocr_text_buffer for the results
  @return 1
  */
-int hocr_do_ocr (hocr_pixbuf * pix, char *text_buffer, int max_buffer_size);
+int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer);
 
 #ifdef __cplusplus
 }

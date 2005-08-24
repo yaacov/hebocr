@@ -32,10 +32,10 @@
  */
 
 int
-find_font_baseline (box * fonts, int avg_hight, int index, int num_of_fonts);
+find_font_baseline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts);
 
 int
-find_font_topline (box * fonts, int avg_hight, int index, int num_of_fonts);
+find_font_topline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts);
 
 /*
  font position classes

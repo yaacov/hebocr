@@ -15,7 +15,9 @@ code cleaning:
 
    - find ugly hacks and replace with maintanble code.
    - create a dynamic structure for text buffer, and remove the all fixed size strings.
+     [DONE kobi]
    - replace all functions and struct names to use hocr_ namespace convention.
+     [DONE kobi]
    - find a way not to use constants and remove the consts.h file.
    - find a way to make the do_ocr function more readable.
 
@@ -27,7 +29,8 @@ features:
 
 documentation:
 
-   - add a file explaining the hocr_pixbuf struct and how to use it with:
+   - add a documentation explaining the hocr_pixbuf struct and how to use it with:
      (see hocr-gui and qhocr for more details)
 	a) gdk_pixbuf from the GTK+ toolkit
         b) QImage from the QT toolkit
+	[DONE kobi]

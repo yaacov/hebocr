@@ -132,7 +132,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 }
 
 int
-adjust_font_box (hocr_pixbuf * pix, box * font)
+adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 {
 	int x, y;
 	int sum;
@@ -170,7 +170,7 @@ adjust_font_box (hocr_pixbuf * pix, box * font)
 }
 
 int
-adjust_line_box (hocr_pixbuf * pix, box * line)
+adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box * line)
 {
 	/* TODO: make this more intelegent */
 	line->x1 = 0;
@@ -180,7 +180,7 @@ adjust_line_box (hocr_pixbuf * pix, box * line)
 }
 
 int
-fill_lines_array (hocr_pixbuf * pix, box column, box * lines,
+fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
 		  int *num_of_lines, int max_lines)
 {
 	/* FIXME: column is just a place holder, it does nothing now ! */
@@ -204,7 +204,7 @@ fill_lines_array (hocr_pixbuf * pix, box column, box * lines,
 		lines[counter].y2 = line_end;
 		lines[counter].hight = (line_end - line_start);
 
-		adjust_line_box (pix, &(lines[counter]));
+		adjust_line_hocr_box (pix, &(lines[counter]));
 
 		lines[counter].width =
 			(lines[counter].x2 - lines[counter].x1);
@@ -224,7 +224,7 @@ fill_lines_array (hocr_pixbuf * pix, box column, box * lines,
 }
 
 int
-fill_fonts_array (hocr_pixbuf * pix, box line, box * fonts,
+fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 		  int *num_of_fonts, int max_fonts)
 {
 	/* for gliphs detection */
@@ -252,7 +252,7 @@ fill_fonts_array (hocr_pixbuf * pix, box line, box * fonts,
 		fonts[counter].width = (font_start - font_end);
 
 		/* adjust font hight top and bottom borders */
-		adjust_font_box (pix, &(fonts[counter]));
+		adjust_font_hocr_box (pix, &(fonts[counter]));
 		fonts[counter].hight = fonts[counter].y2 - fonts[counter].y1;
 
 		counter++;

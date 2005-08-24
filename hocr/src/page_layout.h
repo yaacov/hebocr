@@ -63,7 +63,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
  @param font pointer to the fonts extentions
  */
 int
-adjust_font_box (hocr_pixbuf * pix, box * font);
+adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font);
 
 /**
  @brief adjust line x borders
@@ -72,32 +72,32 @@ adjust_font_box (hocr_pixbuf * pix, box * font);
  @param line pointer to the lines extentions
  */
 int
-adjust_line_box (hocr_pixbuf * pix, box * line);
+adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box * line);
 
 /**
- @brief fils an array of boxes with this page lines
+ @brief fils an array of hocr_boxes with this page lines
 
  @param pix pointer the page hocr_pixbuf
- @param column the column box extentions
+ @param column the column hocr_box extentions
  @param lines the array of lines to be filled
  @param num_of_lines return the number of lines in this column
  @param max_lines maximum size of lines array
  */
 int
-fill_lines_array (hocr_pixbuf * pix, box column, box * lines,
+fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
 		  int *num_of_lines, int max_lines);
 
 		  /**
- @brief fils an array of boxs with this page fonts
+ @brief fils an array of hocr_boxs with this page fonts
 
  @param pix pointer the page hocr_pixbuf
- @param line the line box extentions
+ @param line the line hocr_box extentions
  @param fonts the array of fonts to be filled
  @param num_of_fonts return the number of fonts in this line
  @param max_fonts maximum size of fonts array
  */
 int
-fill_fonts_array (hocr_pixbuf * pix, box line, box * fonts,
+fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 		  int *num_of_fonts, int max_fonts);
 		  
 #endif
