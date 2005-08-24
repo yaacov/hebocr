@@ -40,10 +40,10 @@ extern "C"
 	
 typedef enum
 {
-	HOCR_OK = 0,
-	HOCR_NO_LINES_FOUND = 1,
-	HOCR_NO_FONTS_FOUND = 2,
-	HOCR_OUT_OF_MEMORY = 4
+	HOCR_ERROR_OK = 0,
+	HOCR_ERROR_NO_LINES_FOUND = 1,
+	HOCR_ERROR_NO_FONTS_FOUND = 2,
+	HOCR_ERROR_OUT_OF_MEMORY = 4
 } hocr_error;
 
 typedef struct
@@ -228,9 +228,10 @@ int hocr_pixbuf_unref (hocr_pixbuf * pix);
 
  @param pix pointer to hocr_pixbuf struct.
  @param text_buffer pointer to an already allocated hocr_text_buffer for the results
+ @param error pointer to hocr_error enum that will return exit status.
  @return 1
  */
-int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer);
+int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer, hocr_error* error);
 
 #ifdef __cplusplus
 }

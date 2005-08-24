@@ -26,6 +26,8 @@
  font markers
  */
 
+#include <string.h>
+
 #include "hocr.h"
 #include "consts.h"
 #include "font_markers.h"
@@ -34,48 +36,90 @@
  */
 
 int
-init_has_font_mark_functions (has_font_mark_function * has_font_mark)
+init_has_font_mark_functions_hebrew_alfabet (has_font_mark_function *
+					     has_font_mark,
+					     int *number_of_fonts,
+					     char **fonts)
 {
 
+	*number_of_fonts = 34;
+
 	has_font_mark[1] = has_alef_mark;
+	strcpy (fonts[1],"א");
 	has_font_mark[2] = has_bet_mark;
+	strcpy (fonts[2],"ב");
 	has_font_mark[3] = has_gimel_mark;
+	strcpy (fonts[3],"ג");
 	has_font_mark[4] = has_dalet_mark;
+	strcpy (fonts[4],"ד");
 	has_font_mark[5] = has_he_mark;
+	strcpy (fonts[5],"ה");
 	has_font_mark[6] = has_vav_mark;
+	strcpy (fonts[6],"ו");
 	has_font_mark[7] = has_zain_mark;
+	strcpy (fonts[7],"ז");
 	has_font_mark[8] = has_het_mark;
+	strcpy (fonts[8],"ח");
 	has_font_mark[9] = has_tet_mark;
+	strcpy (fonts[9],"ט");
 	has_font_mark[10] = has_yud_mark;
+	strcpy (fonts[10],"י");
 	has_font_mark[11] = has_kaf_mark;
+	strcpy (fonts[11],"כ");
 	has_font_mark[12] = has_kaf_sofit_mark;
+	strcpy (fonts[12],"ך");
 	has_font_mark[13] = has_lamed_mark;
+	strcpy (fonts[13],"ל");
 	has_font_mark[14] = has_mem_mark;
+	strcpy (fonts[14],"מ");
 	has_font_mark[15] = has_mem_sofit_mark;
+	strcpy (fonts[15],"ם");
 	has_font_mark[16] = has_nun_mark;
+	strcpy (fonts[16],"נ");
 	has_font_mark[17] = has_nun_sofit_mark;
+	strcpy (fonts[17],"ן");
 	has_font_mark[18] = has_sameh_mark;
+	strcpy (fonts[18],"ס");
 	has_font_mark[19] = has_ayin_mark;
+	strcpy (fonts[19],"ע");
 	has_font_mark[20] = has_pe_mark;
+	strcpy (fonts[20],"פ");
 	has_font_mark[21] = has_pe_sofit_mark;
+	strcpy (fonts[21],"ף");
 	has_font_mark[22] = has_tzadi_mark;
+	strcpy (fonts[22],"צ");
 	has_font_mark[23] = has_tzadi_sofit_mark;
+	strcpy (fonts[23],"ץ");
 	has_font_mark[24] = has_kof_mark;
+	strcpy (fonts[24],"ק");
 	has_font_mark[25] = has_resh_mark;
+	strcpy (fonts[25],"ר");
 	has_font_mark[26] = has_shin_mark;
+	strcpy (fonts[26],"ש");
 	has_font_mark[27] = has_tav_mark;
-	
-	has_font_mark[28] = has_tav_mark; /* place holder for nekuda */
-	has_font_mark[29] = has_tav_mark; /* place holder for psik */
+	strcpy (fonts[27],"ת");
+
+	has_font_mark[28] = has_tav_mark;	/* place holder for nekuda */
+	strcpy (fonts[28],".");
+	has_font_mark[29] = has_tav_mark;	/* place holder for psik */
+	strcpy (fonts[29],",");
 
 	has_font_mark[30] = has_quat_mark;
+	strcpy (fonts[30],"\'");
 	has_font_mark[31] = has_double_quat_mark;
+	strcpy (fonts[31],"\"");
 	has_font_mark[32] = has_exlem_mark;
+	strcpy (fonts[32],"!");
 	has_font_mark[33] = has_question_mark;
+	strcpy (fonts[33],"?");
 	has_font_mark[34] = has_makaf_mark;
-	
+	strcpy (fonts[34],"-");
+
 	return 1;
 }
+
+/**
+ */
 
 int
 has_black_right_bottom_mark (hocr_pixbuf * pix, hocr_box font)
@@ -159,8 +203,8 @@ has_black_right_top_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos, int *first_x,
-		     int *last_x)
+count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos,
+		     int *first_x, int *last_x)
 {
 	int x, y;
 	int current_color;
@@ -196,8 +240,8 @@ count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos, int *first_x,
 }
 
 int
-count_horizontal_bars (hocr_pixbuf * pix, hocr_box font, int x_pos, int *first_y,
-		       int *last_y)
+count_horizontal_bars (hocr_pixbuf * pix, hocr_box font, int x_pos,
+		       int *first_y, int *last_y)
 {
 	int x, y;
 	int current_color;
@@ -663,7 +707,9 @@ find_tet_mark (hocr_pixbuf * pix, hocr_box font)
  */
 
 int
-has_alef_mark (hocr_pixbuf * pix, hocr_box font)
+has_alef_mark (hocr_pixbuf * pix, hocr_box font,
+	       int is_last_font_in_word,
+	       int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int y_top;
@@ -697,7 +743,9 @@ has_alef_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_bet_mark (hocr_pixbuf * pix, hocr_box font)
+has_bet_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -753,7 +801,9 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_gimel_mark (hocr_pixbuf * pix, hocr_box font)
+has_gimel_mark (hocr_pixbuf * pix, hocr_box font,
+		int is_last_font_in_word,
+		int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -816,7 +866,9 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_dalet_mark (hocr_pixbuf * pix, hocr_box font)
+has_dalet_mark (hocr_pixbuf * pix, hocr_box font,
+		int is_last_font_in_word,
+		int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -866,7 +918,9 @@ has_dalet_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_he_mark (hocr_pixbuf * pix, hocr_box font)
+has_he_mark (hocr_pixbuf * pix, hocr_box font,
+	     int is_last_font_in_word,
+	     int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -902,7 +956,9 @@ has_he_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_vav_mark (hocr_pixbuf * pix, hocr_box font)
+has_vav_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -960,7 +1016,9 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_zain_mark (hocr_pixbuf * pix, hocr_box font)
+has_zain_mark (hocr_pixbuf * pix, hocr_box font,
+	       int is_last_font_in_word,
+	       int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -989,7 +1047,9 @@ has_zain_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_het_mark (hocr_pixbuf * pix, hocr_box font)
+has_het_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int start, end;
@@ -1046,7 +1106,9 @@ has_het_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_tet_mark (hocr_pixbuf * pix, hocr_box font)
+has_tet_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int start, end;
@@ -1098,7 +1160,9 @@ has_tet_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_yud_mark (hocr_pixbuf * pix, hocr_box font)
+has_yud_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1121,7 +1185,9 @@ has_yud_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_kaf_mark (hocr_pixbuf * pix, hocr_box font)
+has_kaf_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1162,7 +1228,11 @@ has_kaf_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font)
+has_kaf_sofit_mark (hocr_pixbuf * pix,
+		    hocr_box font,
+		    int is_last_font_in_word,
+		    int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width)
 {
 
 	int number_of_bars;
@@ -1203,14 +1273,18 @@ has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_lamed_mark (hocr_pixbuf * pix, hocr_box font)
+has_lamed_mark (hocr_pixbuf * pix, hocr_box font,
+		int is_last_font_in_word,
+		int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 
 	return 0;
 }
 
 int
-has_mem_mark (hocr_pixbuf * pix, hocr_box font)
+has_mem_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1275,7 +1349,11 @@ has_mem_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font)
+has_mem_sofit_mark (hocr_pixbuf * pix,
+		    hocr_box font,
+		    int is_last_font_in_word,
+		    int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1320,7 +1398,9 @@ has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_nun_mark (hocr_pixbuf * pix, hocr_box font)
+has_nun_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1359,14 +1439,20 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font)
+has_nun_sofit_mark (hocr_pixbuf * pix,
+		    hocr_box font,
+		    int is_last_font_in_word,
+		    int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width)
 {
 
 	return 0;
 }
 
 int
-has_sameh_mark (hocr_pixbuf * pix, hocr_box font)
+has_sameh_mark (hocr_pixbuf * pix, hocr_box font,
+		int is_last_font_in_word,
+		int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1423,7 +1509,9 @@ has_sameh_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_ayin_mark (hocr_pixbuf * pix, hocr_box font)
+has_ayin_mark (hocr_pixbuf * pix, hocr_box font,
+	       int is_last_font_in_word,
+	       int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1465,7 +1553,9 @@ has_ayin_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_pe_mark (hocr_pixbuf * pix, hocr_box font)
+has_pe_mark (hocr_pixbuf * pix, hocr_box font,
+	     int is_last_font_in_word,
+	     int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1512,7 +1602,10 @@ has_pe_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font)
+has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font,
+		   int is_last_font_in_word,
+		   int y_top_of_line,
+		   int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1551,7 +1644,9 @@ has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_tzadi_mark (hocr_pixbuf * pix, hocr_box font)
+has_tzadi_mark (hocr_pixbuf * pix, hocr_box font,
+		int is_last_font_in_word,
+		int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1591,7 +1686,11 @@ has_tzadi_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font)
+has_tzadi_sofit_mark (hocr_pixbuf * pix,
+		      hocr_box font,
+		      int is_last_font_in_word,
+		      int y_top_of_line,
+		      int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1639,7 +1738,9 @@ has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_kof_mark (hocr_pixbuf * pix, hocr_box font)
+has_kof_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1684,7 +1785,9 @@ has_kof_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_resh_mark (hocr_pixbuf * pix, hocr_box font)
+has_resh_mark (hocr_pixbuf * pix, hocr_box font,
+	       int is_last_font_in_word,
+	       int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1738,7 +1841,9 @@ has_resh_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_shin_mark (hocr_pixbuf * pix, hocr_box font)
+has_shin_mark (hocr_pixbuf * pix, hocr_box font,
+	       int is_last_font_in_word,
+	       int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int start, end;
@@ -1773,7 +1878,9 @@ has_shin_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_tav_mark (hocr_pixbuf * pix, hocr_box font)
+has_tav_mark (hocr_pixbuf * pix, hocr_box font,
+	      int is_last_font_in_word,
+	      int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int start, end;
@@ -1822,7 +1929,9 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_quat_mark (hocr_pixbuf * pix, hocr_box font)
+has_quat_mark (hocr_pixbuf * pix, hocr_box font,
+	       int is_last_font_in_word,
+	       int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int start, end;
@@ -1843,7 +1952,11 @@ has_quat_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_double_quat_mark (hocr_pixbuf * pix, hocr_box font)
+has_double_quat_mark (hocr_pixbuf * pix,
+		      hocr_box font,
+		      int is_last_font_in_word,
+		      int y_top_of_line,
+		      int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int start, end;
@@ -1859,7 +1972,9 @@ has_double_quat_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_exlem_mark (hocr_pixbuf * pix, hocr_box font)
+has_exlem_mark (hocr_pixbuf * pix, hocr_box font,
+		int is_last_font_in_word,
+		int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	int number_of_bars;
 	int start, end;
@@ -1880,7 +1995,10 @@ has_exlem_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_question_mark (hocr_pixbuf * pix, hocr_box font)
+has_question_mark (hocr_pixbuf * pix, hocr_box font,
+		   int is_last_font_in_word,
+		   int y_top_of_line,
+		   int y_buttom_of_line, int avg_font_width)
 {
 
 	int number_of_bars;
@@ -1902,7 +2020,9 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_makaf_mark (hocr_pixbuf * pix, hocr_box font)
+has_makaf_mark (hocr_pixbuf * pix, hocr_box font,
+		int is_last_font_in_word,
+		int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	if (font.hight > 5)
 		return 0;

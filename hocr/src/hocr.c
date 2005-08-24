@@ -60,7 +60,7 @@ hocr_text_buffer_new ()
 		free (new_text_buffer);
 		return 0;
 	}
-	
+
 	(new_text_buffer->text)[0] = '\0';
 
 	return new_text_buffer;
@@ -88,9 +88,9 @@ hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
 	if ((text_buffer->size + len) >= text_buffer->allocated_size)
 	{
 		new_allocated_text =
-			realloc (text_buffer->text,
-				 text_buffer->allocated_size +
-				 MEMORY_CHANK_FOR_TEXT_BUFFER);
+			realloc (text_buffer->text, sizeof (char) *
+				 (text_buffer->allocated_size +
+				  MEMORY_CHANK_FOR_TEXT_BUFFER));
 
 		if (new_allocated_text)
 		{
@@ -106,7 +106,7 @@ hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
 
 	strcat (text_buffer->text, new_text);
 	text_buffer->size = strlen (text_buffer->text);
-	
+
 	return text_buffer->size;
 }
 
@@ -379,7 +379,8 @@ color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value)
  */
 
 int
-hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
+hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
+	     hocr_error * error)
 {
 	hocr_box column;
 	/* hocr_box column; is a place holder to a time when we add column support */
@@ -409,6 +410,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 
 	/* an array of font marks */
 	int font_mark[50];
+	int number_of_fonts_in_font_lib;
+	char font_strings[50][10];
 
 	/* an array of function for detecting font marks */
 	has_font_mark_function has_font_mark[50];
@@ -419,7 +422,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 	char chars[10];
 
 	/* create an array of all has_font_mark_functions */
-	init_has_font_mark_functions (has_font_mark);
+	init_has_font_mark_functions_hebrew_alfabet (has_font_mark,
+						     &number_of_fonts_in_font_lib,
+						     font_strings);
 
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
@@ -442,6 +447,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
+			/* visual aids to see line hocr_box on screen */
+			/* color_hocr_box (pix, fonts[i][j], 2, 0); */
+
 			num_of_fonts_in_page++;
 			avg_font_width_in_page += fonts[i][j].width;
 			avg_font_hight_in_page += fonts[i][j].hight;
@@ -459,6 +467,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
+
 			y1 = find_font_topline (fonts[i],
 						avg_font_hight_in_page,
 						j, num_of_fonts[i]);
@@ -515,7 +524,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 			for (k = 1; k < 35; k++)
 			{
 				font_mark[k] =
-					(has_font_mark[k]) (pix, fonts[i][j]);
+					(has_font_mark[k]) (pix, fonts[i][j],
+							    end_of_word,
+							    lines[i].y1,
+							    lines[i].y2,
+							    avg_font_width_in_page);
 			}
 
 			font_mark[0] = 0;
@@ -778,20 +791,23 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 				last_was_quot = 1;
 				if (fonts[i][j].width > 2
 				    && fonts[i][j].hight > 2)
-					hocr_text_buffer_add_string (text_buffer, chars);
+					hocr_text_buffer_add_string
+						(text_buffer, chars);
 			}
 			else if (chars[0] == '\'' && chars[1] == '\0'
 				 && last_was_quot == 1)
 			{
 				last_was_quot = 0;
-				text_buffer->text[text_buffer->size - 1] = '\"';
+				text_buffer->text[text_buffer->size - 1] =
+					'\"';
 			}
 			else
 			{
 				last_was_quot = 0;
 				if (fonts[i][j].width > 2
 				    && fonts[i][j].hight > 2)
-					hocr_text_buffer_add_string (text_buffer, chars);
+					hocr_text_buffer_add_string
+						(text_buffer, chars);
 			}
 
 			/* color unknown fonts in the pixbuf */
@@ -801,15 +817,18 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 			/* check for end of word and end of line */
 			if (end_of_word == 1)
 			{
-				hocr_text_buffer_add_string (text_buffer, " ");
+				hocr_text_buffer_add_string (text_buffer,
+							     " ");
 			}
 			if (end_of_line == 1)
 			{
-				hocr_text_buffer_add_string (text_buffer, "\n");
+				hocr_text_buffer_add_string (text_buffer,
+							     "\n");
 			}
 			if (end_of_paragraph == 1)
 			{
-				hocr_text_buffer_add_string (text_buffer, "\n");
+				hocr_text_buffer_add_string (text_buffer,
+							     "\n");
 			}
 
 			/* visual aids to see font hocr_box on screen */
@@ -818,6 +837,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer)
 		}
 
 	}
+
+	if (error)
+		error = HOCR_ERROR_OK;
 
 	return 0;
 }

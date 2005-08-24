@@ -37,46 +37,115 @@
 
 /* font shape markers array*/
 
-typedef int (*has_font_mark_function) (hocr_pixbuf * pix, hocr_box font);
+typedef int (*has_font_mark_function) (hocr_pixbuf * pix, hocr_box font,
+				       int is_last_font_in_word,
+				       int y_top_of_line,
+				       int y_buttom_of_line,
+				       int avg_font_width);
 
-int
-init_has_font_mark_functions (has_font_mark_function * has_font_mark);
+int init_has_font_mark_functions_hebrew_alfabet (has_font_mark_function *
+						 has_font_mark,
+						 int *number_of_fonts,
+						 char ** fonts);
 
 /* the real functions */
 
-int has_alef_mark (hocr_pixbuf * pix, hocr_box font);
-int has_bet_mark (hocr_pixbuf * pix, hocr_box font);
-int has_gimel_mark (hocr_pixbuf * pix, hocr_box font);
-int has_dalet_mark (hocr_pixbuf * pix, hocr_box font);
-int has_he_mark (hocr_pixbuf * pix, hocr_box font);
-int has_vav_mark (hocr_pixbuf * pix, hocr_box font);
-int has_zain_mark (hocr_pixbuf * pix, hocr_box font);
-int has_het_mark (hocr_pixbuf * pix, hocr_box font);
-int has_tet_mark (hocr_pixbuf * pix, hocr_box font);
-int has_yud_mark (hocr_pixbuf * pix, hocr_box font);
-int has_kaf_mark (hocr_pixbuf * pix, hocr_box font);
-int has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font);
-int has_lamed_mark (hocr_pixbuf * pix, hocr_box font);
-int has_mem_mark (hocr_pixbuf * pix, hocr_box font);
-int has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font);
-int has_nun_mark (hocr_pixbuf * pix, hocr_box font);
-int has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font);
-int has_sameh_mark (hocr_pixbuf * pix, hocr_box font);
-int has_ayin_mark (hocr_pixbuf * pix, hocr_box font);
-int has_pe_mark (hocr_pixbuf * pix, hocr_box font);
-int has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font);
-int has_tzadi_mark (hocr_pixbuf * pix, hocr_box font);
-int has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font);
-int has_kof_mark (hocr_pixbuf * pix, hocr_box font);
-int has_resh_mark (hocr_pixbuf * pix, hocr_box font);
-int has_shin_mark (hocr_pixbuf * pix, hocr_box font);
-int has_tav_mark (hocr_pixbuf * pix, hocr_box font);
+int has_alef_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		   int y_top_of_line, int y_buttom_of_line,
+		   int avg_font_width);
+int has_bet_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_gimel_mark (hocr_pixbuf * pix, hocr_box font,
+		    int is_last_font_in_word, int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width);
+int has_dalet_mark (hocr_pixbuf * pix, hocr_box font,
+		    int is_last_font_in_word, int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width);
+int has_he_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		 int y_top_of_line, int y_buttom_of_line, int avg_font_width);
+int has_vav_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_zain_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		   int y_top_of_line, int y_buttom_of_line,
+		   int avg_font_width);
+int has_het_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_tet_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_yud_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_kaf_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font,
+			int is_last_font_in_word, int y_top_of_line,
+			int y_buttom_of_line, int avg_font_width);
+int has_lamed_mark (hocr_pixbuf * pix, hocr_box font,
+		    int is_last_font_in_word, int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width);
+int has_mem_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font,
+			int is_last_font_in_word, int y_top_of_line,
+			int y_buttom_of_line, int avg_font_width);
+int has_nun_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font,
+			int is_last_font_in_word, int y_top_of_line,
+			int y_buttom_of_line, int avg_font_width);
+int has_sameh_mark (hocr_pixbuf * pix, hocr_box font,
+		    int is_last_font_in_word, int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width);
+int has_ayin_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		   int y_top_of_line, int y_buttom_of_line,
+		   int avg_font_width);
+int has_pe_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		 int y_top_of_line, int y_buttom_of_line, int avg_font_width);
+int has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font,
+		       int is_last_font_in_word, int y_top_of_line,
+		       int y_buttom_of_line, int avg_font_width);
+int has_tzadi_mark (hocr_pixbuf * pix, hocr_box font,
+		    int is_last_font_in_word, int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width);
+int has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font,
+			  int is_last_font_in_word, int y_top_of_line,
+			  int y_buttom_of_line, int avg_font_width);
+int has_kof_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
+int has_resh_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		   int y_top_of_line, int y_buttom_of_line,
+		   int avg_font_width);
+int has_shin_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		   int y_top_of_line, int y_buttom_of_line,
+		   int avg_font_width);
+int has_tav_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width);
 
-int has_quat_mark (hocr_pixbuf * pix, hocr_box font);
-int has_double_quat_mark (hocr_pixbuf * pix, hocr_box font);
-int has_exlem_mark (hocr_pixbuf * pix, hocr_box font);
-int has_question_mark (hocr_pixbuf * pix, hocr_box font);
-int has_makaf_mark (hocr_pixbuf * pix, hocr_box font);
+int has_quat_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		   int y_top_of_line, int y_buttom_of_line,
+		   int avg_font_width);
+int has_double_quat_mark (hocr_pixbuf * pix, hocr_box font,
+			  int is_last_font_in_word, int y_top_of_line,
+			  int y_buttom_of_line, int avg_font_width);
+int has_exlem_mark (hocr_pixbuf * pix, hocr_box font,
+		    int is_last_font_in_word, int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width);
+int has_question_mark (hocr_pixbuf * pix, hocr_box font,
+		       int is_last_font_in_word, int y_top_of_line,
+		       int y_buttom_of_line, int avg_font_width);
+int has_makaf_mark (hocr_pixbuf * pix, hocr_box font,
+		    int is_last_font_in_word, int y_top_of_line,
+		    int y_buttom_of_line, int avg_font_width);
+
 
 /**
  */
