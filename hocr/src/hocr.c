@@ -33,6 +33,16 @@
 #include "hocr.h"
 
 /* 
+ internal line_eq stractures 
+ */
+
+int
+hocr_line_eq_get_y (hocr_line_eq line, int x)
+{
+	return (int)(line.a * (double)x + line.b);
+}
+
+/* 
  internal text_buffer stractures 
  */
 
@@ -409,17 +419,17 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* font shape markers */
 
 	/* an array of font marks */
-	int font_mark[50];
+	int font_mark[MAX_FONTS_IN_FONT_LIB];
 	int number_of_fonts_in_font_lib;
-	char font_strings[50][10];
+	char font_strings[MAX_FONTS_IN_FONT_LIB][MAX_NUM_OF_CHARS_IN_FONT];
 
 	/* an array of function for detecting font marks */
-	has_font_mark_function has_font_mark[50];
+	has_font_mark_function has_font_mark[MAX_FONTS_IN_FONT_LIB];
 
 	/* need this to put in the text_buffer */
 	int last_was_quot = 0;
 	/* FIXME: what size is the new string to add ? */
-	char chars[10];
+	char chars[MAX_NUM_OF_CHARS_IN_FONT];
 
 	/* create an array of all has_font_mark_functions */
 	init_has_font_mark_functions_hebrew_alfabet (has_font_mark,
@@ -521,7 +531,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			/* TODO: this shuld be moved to the right place 
 			 * and not doen unnesseraly for all fonts */
 
-			for (k = 1; k < 35; k++)
+			for (k = 1; k <= number_of_fonts_in_font_lib; k++)
 			{
 				font_mark[k] =
 					(has_font_mark[k]) (pix, fonts[i][j],

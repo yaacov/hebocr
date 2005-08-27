@@ -64,6 +64,10 @@
 /* how much memory will hocr_text_buffer will allocate when it nead memory */
 #define MEMORY_CHANK_FOR_TEXT_BUFFER 500
 
+/* for font shape library */
+#define MAX_FONTS_IN_FONT_LIB 50
+#define MAX_NUM_OF_CHARS_IN_FONT 10
+
 /* end of consts part
  */
 #endif

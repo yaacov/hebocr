@@ -38,12 +38,23 @@ extern "C"
 #define FALSE 0
 #endif
 	
+/** line equation structore used by hocr
+ 
+ a and b in the equation are Y = a X + b
+ */
+typedef struct
+{
+	double a;
+	double b;
+} hocr_line_eq;
+
 typedef enum
 {
 	HOCR_ERROR_OK = 0,
 	HOCR_ERROR_NO_LINES_FOUND = 1,
 	HOCR_ERROR_NO_FONTS_FOUND = 2,
-	HOCR_ERROR_OUT_OF_MEMORY = 4
+	HOCR_ERROR_OUT_OF_MEMORY = 4,
+	HOCR_ERROR_NOT_HORIZONTAL_LINE = 8
 } hocr_error;
 
 typedef struct

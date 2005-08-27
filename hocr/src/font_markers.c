@@ -39,7 +39,7 @@ int
 init_has_font_mark_functions_hebrew_alfabet (has_font_mark_function *
 					     has_font_mark,
 					     int *number_of_fonts,
-					     char **fonts)
+					     char fonts[MAX_FONTS_IN_FONT_LIB][MAX_NUM_OF_CHARS_IN_FONT])
 {
 
 	*number_of_fonts = 34;
