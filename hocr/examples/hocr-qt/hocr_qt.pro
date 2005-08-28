@@ -1,16 +1,17 @@
+MOC_DIR      = src
+OBJECTS_DIR  = src
+TMP_DIR      = src
 
 TEMPLATE = app
 
-win32
-{
-	INCLUDEPATH += ../../src
-	LIBS += ../../src/.libs/libhocr.a
-}
+RESOURCES   += \
+	hocr_qt.qrc
 
-unix
-{
-	LIBS += -lhocr
-}
+# on systems with no dynamic linking use this lines
+##INCLUDEPATH += ../../src
+##LIBS += ../../src/.libs/libhocr.a
 
-HEADERS += hocr_qt.h
-SOURCES += main.cpp hocr_qt.cpp
+LIBS += -lhocr
+
+HEADERS += src/hocr_qt.h
+SOURCES += src/main.cpp src/hocr_qt.cpp

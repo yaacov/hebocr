@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.42.2"
+   inkscape:export-filename="zoomin.png"
+   inkscape:export-xdpi="9.8841763"
+   inkscape:export-ydpi="9.8841763"
+   sodipodi:docbase="/home/kobi/Projects/hocr/examples/hocr-qt/icons"
+   sodipodi:docname="about.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35000000"
+     inkscape:cx="375.00000"
+     inkscape:cy="557.52443"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="754"
+     inkscape:window-height="513"
+     inkscape:window-x="129"
+     inkscape:window-y="84" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="arc"
+       style="fill:#ff0000;fill-opacity:0.86740333;stroke:#000000;stroke-width:20.653721;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="path2108"
+       sodipodi:cx="355.71429"
+       sodipodi:cy="525.21930"
+       sodipodi:rx="161.42857"
+       sodipodi:ry="164.28572"
+       d="M 517.14287 525.21930 A 161.42857 164.28572 0 1 1  194.28572,525.21930 A 161.42857 164.28572 0 1 1  517.14287 525.21930 z"
+       transform="matrix(1.429538,0.000000,0.000000,1.323114,-134.2214,-346.8484)"
+       inkscape:export-filename="/home/kobi/Projects/hocr/examples/hocr-qt/icons/about.png"
+       inkscape:export-xdpi="8.2019672"
+       inkscape:export-ydpi="8.2019672" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#ffffff;fill-opacity:1.0000000;stroke:#000000;stroke-width:40.449055;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="path2032"
+       sodipodi:cx="355.71429"
+       sodipodi:cy="525.21930"
+       sodipodi:rx="161.42857"
+       sodipodi:ry="164.28572"
+       d="M 517.14287 525.21930 A 161.42857 164.28572 0 1 1  194.28572,525.21930 A 161.42857 164.28572 0 1 1  517.14287 525.21930 z"
+       transform="matrix(0.904398,0.000000,0.000000,0.825124,51.14971,-82.43736)"
+       inkscape:export-filename="/home/kobi/Projects/hocr/examples/hocr-qt/icons/about.png"
+       inkscape:export-xdpi="8.2019672"
+       inkscape:export-ydpi="8.2019672" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1.0000000;stroke:#000000;stroke-width:16.210846;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="rect2034"
+       width="147.80847"
+       height="97.142860"
+       x="123.23862"
+       y="303.79077"
+       inkscape:export-filename="/home/kobi/Projects/hocr/examples/hocr-qt/icons/about.png"
+       inkscape:export-xdpi="8.2019672"
+       inkscape:export-ydpi="8.2019672" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1.0000000;stroke:#000000;stroke-width:15.758349;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="rect2040"
+       width="97.353096"
+       height="139.37039"
+       x="321.32343"
+       y="101.24842"
+       inkscape:export-filename="/home/kobi/Projects/hocr/examples/hocr-qt/icons/about.png"
+       inkscape:export-xdpi="8.2019672"
+       inkscape:export-ydpi="8.2019672" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1.0000000;stroke:#000000;stroke-width:15.758349;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="rect2042"
+       width="97.353096"
+       height="139.37039"
+       x="328.46634"
+       y="448.39130"
+       inkscape:export-filename="/home/kobi/Projects/hocr/examples/hocr-qt/icons/about.png"
+       inkscape:export-xdpi="8.2019672"
+       inkscape:export-ydpi="8.2019672" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1.0000000;stroke:#000000;stroke-width:16.784369;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="rect2044"
+       width="152.60216"
+       height="100.86678"
+       x="480.84180"
+       y="297.64307"
+       inkscape:export-filename="/home/kobi/Projects/hocr/examples/hocr-qt/icons/about.png"
+       inkscape:export-xdpi="8.2019672"
+       inkscape:export-ydpi="8.2019672" />
+  </g>
+</svg>

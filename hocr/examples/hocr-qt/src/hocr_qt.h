@@ -53,6 +53,7 @@ class hocr_qt:public QMainWindow
 		
 	void createActions ();
 	void createToolBars();
+	void createMenus();
 
 	void scaleImage (double factor);
 
@@ -68,7 +69,11 @@ class hocr_qt:public QMainWindow
 	QToolBar *fileToolBar;
 	QToolBar *zoomToolBar;
 	QToolBar *exitToolBar;
- 	  
+ 	 
+	QMenu *menuFile;
+	QMenu *menuView;
+	QMenu *menuHelp;
+	
 	QAction *openAct;
 	QAction *applyAct;
 	QAction *saveAct;

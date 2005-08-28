@@ -41,6 +41,7 @@ hocr_qt::hocr_qt ()
 	textEdit->setAlignment (Qt::AlignRight);
 
 	createActions ();
+	createMenus ();
 	createToolBars ();
 
 	setCentralWidget (scrollArea);
@@ -111,36 +112,50 @@ hocr_qt::about ()
 void
 hocr_qt::createActions ()
 {
-	openAct = new QAction (tr ("&Open..."), this);
+	openAct =
+		new QAction (QIcon (":/icons/open.png"), tr ("&Open..."),
+			     this);
 	openAct->setShortcut (tr ("Ctrl+O"));
 	connect (openAct, SIGNAL (triggered ()), this, SLOT (open ()));
 
-	applyAct = new QAction (tr ("&Apply"), this);
+	applyAct =
+		new QAction (QIcon (":/icons/apply.png"), tr ("&Apply"),
+			     this);
 	applyAct->setShortcut (tr ("Ctrl+A"));
 	connect (applyAct, SIGNAL (triggered ()), this, SLOT (apply ()));
 
-	saveAct = new QAction (tr ("&Save"), this);
+	saveAct =
+		new QAction (QIcon (":/icons/save.png"), tr ("&Save"), this);
 	saveAct->setShortcut (tr ("Ctrl+S"));
 	connect (saveAct, SIGNAL (triggered ()), this, SLOT (save ()));
 
-	zoomInAct = new QAction (tr ("Zoom &In (25%)"), this);
+	zoomInAct =
+		new QAction (QIcon (":/icons/zoomin.png"),
+			     tr ("Zoom &In (25%)"), this);
 	zoomInAct->setShortcut (tr ("Ctrl++"));
 	connect (zoomInAct, SIGNAL (triggered ()), this, SLOT (zoomIn ()));
 
-	zoomOutAct = new QAction (tr ("Zoom &Out (25%)"), this);
+	zoomOutAct =
+		new QAction (QIcon (":/icons/zoomout.png"),
+			     tr ("Zoom &Out (25%)"), this);
 	zoomOutAct->setShortcut (tr ("Ctrl+-"));
 	connect (zoomOutAct, SIGNAL (triggered ()), this, SLOT (zoomOut ()));
 
-	normalSizeAct = new QAction (tr ("&Normal Size"), this);
+	normalSizeAct =
+		new QAction (QIcon (":/icons/zoomnormal.png"),
+			     tr ("&Normal Size"), this);
 	normalSizeAct->setShortcut (tr ("Ctrl+S"));
 	connect (normalSizeAct, SIGNAL (triggered ()), this,
 		 SLOT (normalSize ()));
 
-	aboutAct = new QAction (tr ("A&bout"), this);
+	aboutAct =
+		new QAction (QIcon (":/icons/about.png"), tr ("A&bout"),
+			     this);
 	aboutAct->setShortcut (tr ("Ctrl+B"));
 	connect (aboutAct, SIGNAL (triggered ()), this, SLOT (about ()));
 
-	exitAct = new QAction (tr ("E&xit"), this);
+	exitAct =
+		new QAction (QIcon (":/icons/quit.png"), tr ("E&xit"), this);
 	exitAct->setShortcut (tr ("Ctrl+Q"));
 	connect (exitAct, SIGNAL (triggered ()), this, SLOT (close ()));
 }
@@ -163,6 +178,26 @@ hocr_qt::createToolBars ()
 
 	exitToolBar->addAction (aboutAct);
 	exitToolBar->addAction (exitAct);
+}
+
+void
+hocr_qt::createMenus ()
+{
+	menuFile = menuBar ()->addMenu (tr ("&File"));
+	menuFile->addAction (openAct);
+	menuFile->addAction (applyAct);
+	menuFile->addAction (saveAct);
+	menuFile->addSeparator ();
+	menuFile->addAction (exitAct);
+
+	menuView = menuBar ()->addMenu (tr ("&View"));
+	menuView->addAction (zoomInAct);
+	menuView->addAction (zoomOutAct);
+	menuView->addSeparator ();
+	menuView->addAction (normalSizeAct);
+
+	menuHelp = menuBar ()->addMenu (tr ("&Help"));
+	menuHelp->addAction (aboutAct);
 }
 
 void
@@ -234,10 +269,10 @@ hocr_qt::save ()
 	saveFile (fileName);
 }
 
-bool hocr_qt::saveFile (const QString & fileName)
+bool
+hocr_qt::saveFile (const QString & fileName)
 {
-	QFile
-	file (fileName);
+	QFile file (fileName);
 	if (!file.open (QFile::WriteOnly | QFile::Text))
 	{
 		QMessageBox::warning (this, tr ("Application"),
@@ -247,8 +282,7 @@ bool hocr_qt::saveFile (const QString & fileName)
 		return false;
 	}
 
-	QTextStream
-	out (&file);
+	QTextStream out (&file);
 	QApplication::setOverrideCursor (Qt::WaitCursor);
 	out << textEdit->toPlainText ();
 	QApplication::restoreOverrideCursor ();
