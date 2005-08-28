@@ -35,11 +35,13 @@ class QTextEdit;
 	
 class hocr_qt:public QMainWindow
 {
-    Q_OBJECT public:
+    Q_OBJECT
+
+      public:
 	hocr_qt ();
 
-	private slots:
-		
+	  private slots:
+	
 	void open ();
 	void apply ();
 	void save ();
@@ -49,22 +51,22 @@ class hocr_qt:public QMainWindow
 	void normalSize ();
 	void about ();
 
-    private:
-		
+      private:
+	
 	void createActions ();
 	void createToolBars();
 	void createMenus();
-
+	
 	void scaleImage (double factor);
-
+	
 	void adjustScrollBar (QScrollBar * scrollBar, double factor);
 	QLabel *imageLabel;
 	QScrollArea *scrollArea;
 	double scaleFactor;
-
+	
 	QDockWidget * dockedText;
 	QTextEdit *textEdit;
-    QString curFile;
+	QString curFile;
 	  
 	QToolBar *fileToolBar;
 	QToolBar *zoomToolBar;
