@@ -144,7 +144,7 @@ hocr_qt::createActions ()
 	normalSizeAct =
 		new QAction (QIcon (":/icons/zoomnormal.png"),
 			     tr ("&Normal Size"), this);
-	normalSizeAct->setShortcut (tr ("Ctrl+S"));
+	normalSizeAct->setShortcut (tr ("Ctrl+N"));
 	connect (normalSizeAct, SIGNAL (triggered ()), this,
 		 SLOT (normalSize ()));
 
