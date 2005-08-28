@@ -1,5 +1,5 @@
 # List of source files containing translatable strings.
 
-examples/gui/interface.c
-examples/gui/callbacks.c
+examples/hocr-gnome/interface.c
+examples/hocr-gnome/callbacks.c
 
