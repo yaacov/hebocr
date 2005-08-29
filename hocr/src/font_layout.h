@@ -32,29 +32,33 @@
  */
 
 int
-find_font_baseline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts);
+find_font_baseline_eq (hocr_box line, hocr_box * fonts,
+		       hocr_line_eq * base_line, hocr_line_eq * top_line,
+		       int num_of_fonts);
 
 int
-find_font_topline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts);
+find_font_baseline (hocr_box * fonts, int avg_hight, int index,
+		    int num_of_fonts);
+
+int
+find_font_topline (hocr_box * fonts, int avg_hight, int index,
+		   int num_of_fonts);
 
 /*
  font position classes
  */
 
 /* -1 assend 0 normal 1 sunk */
-int
-get_font_top_class (int font_top, int font_topline, int avg_font_hight);
+int get_font_top_class (int font_top, int font_topline, int avg_font_hight);
 
 /* -1 assend 0 normal 1 sunk */
 int
 get_font_base_class (int font_bottom, int font_baseline, int avg_font_hight);
 
 /* -1 short 0 normal 1 ling */
-int
-get_font_hight_class (int font_hight, int avg_font_hight);
+int get_font_hight_class (int font_hight, int avg_font_hight);
 
 /* -1 thin 0 normal 1 wide */
-int
-get_font_width_class (int font_width, int avg_font_width);
+int get_font_width_class (int font_width, int avg_font_width);
 
 #endif

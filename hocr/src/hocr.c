@@ -39,7 +39,7 @@
 int
 hocr_line_eq_get_y (hocr_line_eq line, int x)
 {
-	return (int)(line.a * (double)x + line.b);
+	return (int) (line.a * (double) x + line.b);
 }
 
 /* 
@@ -372,7 +372,7 @@ print_font (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value)
+color_hocr_box_full (hocr_pixbuf * pix, hocr_box rect, int chanell, int value)
 {
 	int x, y;
 
@@ -381,6 +381,41 @@ color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value)
 		{
 			hocr_pixbuf_set_pixel (pix, x, y, chanell, value);
 		}
+
+	return 0;
+}
+
+int
+color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value)
+{
+	int x, y;
+
+	for (y = rect.y1; y < rect.y2; y++)
+	{
+		hocr_pixbuf_set_pixel (pix, rect.x1, y, chanell, value);
+		hocr_pixbuf_set_pixel (pix, rect.x2, y, chanell, value);
+	}
+
+	for (x = rect.x1; x < rect.x2; x++)
+	{
+		hocr_pixbuf_set_pixel (pix, x, rect.y1, chanell, value);
+		hocr_pixbuf_set_pixel (pix, x, rect.y2, chanell, value);
+	}
+
+	return 0;
+}
+
+int
+color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
+		    int chanell, int value)
+{
+	int x, y;
+
+	for (x = x1; x < x2; x++)
+	{
+		y = hocr_line_eq_get_y (*line, x);
+		hocr_pixbuf_set_pixel (pix, x, y, chanell, value);
+	}
 
 	return 0;
 }
@@ -442,11 +477,21 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
+		hocr_line_eq base_line;
+		hocr_line_eq top_line;
+
 		/* visual aids to see line hocr_box on screen */
 		/* color_hocr_box (pix, lines[i], 1, 0); */
 		fill_fonts_array (pix, lines[i],
 				  fonts[i],
 				  &(num_of_fonts[i]), MAX_FONTS_IN_LINE);
+
+		find_font_baseline_eq (lines[i], fonts[i], &base_line, &top_line,
+				       num_of_fonts[i]);
+		color_hocr_line_eq (pix, &base_line, lines[i].x1, lines[i].x2,
+				    2, 0);
+		color_hocr_line_eq (pix, &top_line, lines[i].x1, lines[i].x2,
+				    2, 0);
 	}
 
 	/* get size statistics for all fonts for all the lines */
@@ -822,7 +867,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 			/* color unknown fonts in the pixbuf */
 			if (font_mark[0] == 1)
-				color_hocr_box (pix, fonts[i][j], 1, 255);
+				color_hocr_box_full (pix, fonts[i][j], 1,
+						     255);
 
 			/* check for end of word and end of line */
 			if (end_of_word == 1)
@@ -842,7 +888,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			}
 
 			/* visual aids to see font hocr_box on screen */
-			/* color_hocr_box (pix, lines[i], 1, 0); */
+			color_hocr_box (pix, fonts[i][j], 1, 0);
 			/* print_font (pix, fonts[i][j]); */
 		}
 

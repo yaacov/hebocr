@@ -27,11 +27,124 @@
 #include "font_layout.h"
 
 int
-find_font_baseline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts)
+find_font_baseline_eq (hocr_box line, hocr_box * fonts,
+		       hocr_line_eq * base_line, hocr_line_eq * top_line,
+		       int num_of_fonts)
+{
+	int number_of_fonts_to_avg = 8;
+
+	int i;
+	int counter;
+	int y_start_base, y_end_base;
+	int x_start_base, x_end_base;
+	int y_start_top, y_end_top;
+	int x_start_top, x_end_top;
+
+	/* if short line assume horizonatal */
+	if (num_of_fonts < number_of_fonts_to_avg)
+	{
+		base_line->a = 0;
+		base_line->b = line.y2;
+		top_line->a = 0;
+		top_line->b = line.y1;
+		return 1;
+	}
+
+	/* get avarage base of first 8 fonts */
+	y_start_base = 0;
+	x_start_base = 0;
+	y_start_top = 0;
+	x_start_top = 0;
+	counter = 0;
+	for (i = 0; i < number_of_fonts_to_avg; i++)
+	{
+		if (fonts[i].hight > MIN_LINE_HIGHT)
+		{
+			y_start_base += fonts[i].y2;
+			x_start_base += fonts[i].x2;
+			y_start_top += fonts[i].y1;
+			x_start_top += fonts[i].x1;
+			counter++;
+		}
+	}
+	if (counter == 0)
+	{
+		base_line->a = 0;
+		base_line->b = line.y2;
+		top_line->a = 0;
+		top_line->b = line.y1;
+		return 1;
+	}
+
+	y_start_base = y_start_base / counter;
+	x_start_base = x_start_base / counter;
+	y_start_top = y_start_top / counter;
+	x_start_top = x_start_top / counter;
+	
+	/* get avarage base of last 8 fonts */
+	y_end_base = 0;
+	x_end_base = 0;
+	y_end_top = 0;
+	x_end_top = 0;
+	counter = 0;
+	for (i = (num_of_fonts - number_of_fonts_to_avg); i < num_of_fonts;
+	     i++)
+	{
+		if (fonts[i].hight > MIN_LINE_HIGHT)
+		{
+			y_end_base += fonts[i].y2;
+			x_end_base += fonts[i].x2;
+			y_end_top += fonts[i].y1;
+			x_end_top += fonts[i].x1;
+			counter++;
+		}
+	}
+	if (counter == 0)
+	{
+		base_line->a = 0;
+		base_line->b = line.y2;
+		top_line->a = 0;
+		top_line->b = line.y1;
+		return 1;
+	}
+
+	y_end_base = y_end_base / counter;
+	x_end_base = x_end_base / counter;
+	y_end_top = y_end_top / counter;
+	x_end_top = x_end_top / counter;
+
+	/* if short line assume horizonatal */
+	if ((x_start_base - y_end_base) < 30)
+	{
+		base_line->a = 0;
+		base_line->b = line.y2;
+		top_line->a = 0;
+		top_line->b = line.y1;
+		return 1;
+	}
+
+	base_line->a =
+		(double) (y_end_base -
+			  y_start_base) / (double) (y_end_base -
+							 x_start_base);
+	base_line->b = y_start_base - base_line->a * x_start_base;
+
+	top_line->a =
+		(double) (y_end_top -
+			  y_start_top) / (double) (y_end_top -
+							 x_start_top);
+		top_line->b = y_start_top - top_line->a * x_start_top;
+	
+	return 0;
+}
+
+int
+find_font_baseline (hocr_box * fonts, int avg_hight, int index,
+		    int num_of_fonts)
 {
 	if (fonts[index].hight < 2 || fonts[index].width < 2)
 		return 0;
-	
+
 	/* font in the middle of line */
 	if (index > 1 && index < (num_of_fonts - 2))
 	{
@@ -84,11 +197,12 @@ find_font_baseline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts
 }
 
 int
-find_font_topline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts)
+find_font_topline (hocr_box * fonts, int avg_hight, int index,
+		   int num_of_fonts)
 {
 	if (fonts[index].hight < 2 || fonts[index].width < 2)
 		return 0;
-	
+
 	/* font in the middle of line */
 	if (index > 1 && index < (num_of_fonts - 2))
 	{
