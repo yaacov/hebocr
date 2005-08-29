@@ -87,7 +87,7 @@ int
 fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
 		  int *num_of_lines, int max_lines);
 
-		  /**
+/**
  @brief fils an array of hocr_boxs with this page fonts
 
  @param pix pointer the page hocr_pixbuf

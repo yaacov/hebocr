@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
 libhocr_la_CFLAGS =\
-	 -Wall\
-     -g
+	-Wall\
+	-g
 
 lib_LTLIBRARIES = libhocr.la
 
