@@ -134,6 +134,9 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	int x, y;
 	int sum;
 
+	/* adjust right font border */
+	font->x2 ++;
+	
 	/* check if font box is too big */
 
 	sum = 0;
