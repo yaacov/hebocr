@@ -69,7 +69,7 @@
 #define MAX_NUM_OF_CHARS_IN_FONT 10
 
 /* how many fonts to avg when geussing line equation */
-#define NUM_OF_FONTS_TO_AVG 4
+#define NUM_OF_FONTS_TO_AVG 8
 
 /* end of consts part
  */

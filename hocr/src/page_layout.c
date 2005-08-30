@@ -194,6 +194,22 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	}
 	font->y2 = y - 1;
 
+	/* check for nikud under the font */
+	sum = 1;
+	/* read line from right to left */
+	for (y = font->y2 - 1;
+	     y > font->y1 && sum != 0; y--)
+	{
+		/* get presentage coverage for this pixel line */
+		sum = 0;
+		for (x = font->x1; x < font->x2; x++)
+		{
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
+		}
+	}
+	if (y > font->y1 + MIN_DISTANCE_BETWEEN_LINES)
+		font->y2 = y - 1;
+	
 	return 1;
 }
 

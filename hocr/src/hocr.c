@@ -430,6 +430,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	hocr_box column;
 	/* hocr_box column; is a place holder to a time when we add column support */
 	hocr_box lines[MAX_LINES];
+	hocr_line_eq line_eqs[MAX_LINES][2];
 	hocr_box fonts[MAX_LINES][MAX_FONTS_IN_LINE];
 
 	int num_of_fonts[MAX_LINES];
@@ -510,18 +511,15 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* get lines equations for non horizontal lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
-		hocr_line_eq base_line;
-		hocr_line_eq top_line;
-
-		find_font_baseline_eq (lines[i], fonts[i], &base_line, &top_line,
+		find_font_baseline_eq (lines[i], fonts[i], &(line_eqs[i][0]), &(line_eqs[i][1]),
 				       avg_font_hight_in_page, num_of_fonts[i]);
 		
-		color_hocr_line_eq (pix, &base_line, lines[i].x1, lines[i].x2,
+		color_hocr_line_eq (pix, &(line_eqs[i][0]), lines[i].x1, lines[i].x2,
 				    2, 0);
-		color_hocr_line_eq (pix, &top_line, lines[i].x1, lines[i].x2,
+		color_hocr_line_eq (pix, &(line_eqs[i][1]), lines[i].x1, lines[i].x2,
 				    2, 0);
 	}
-	
+
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
