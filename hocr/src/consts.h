@@ -59,7 +59,7 @@
 #define LONG_FONT 1200
 #define THIN_FONT 900
 
-#define FONT_ASSEND 100
+#define FONT_ASSEND 200
 
 /* how much memory will hocr_text_buffer will allocate when it nead memory */
 #define MEMORY_CHANK_FOR_TEXT_BUFFER 500
@@ -67,6 +67,9 @@
 /* for font shape library */
 #define MAX_FONTS_IN_FONT_LIB 50
 #define MAX_NUM_OF_CHARS_IN_FONT 10
+
+/* how many fonts to avg when geussing line equation */
+#define NUM_OF_FONTS_TO_AVG 4
 
 /* end of consts part
  */

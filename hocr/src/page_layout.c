@@ -38,14 +38,14 @@ get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 	int inside_line = FALSE;
 
 	int width, width_1_3, width_2_3;
-	
+
 	*line_end = 0;
 	*line_start = current_pos;
 
 	width = pix->width;
 	width_1_3 = width / 3;
 	width_2_3 = 2 * width / 3;
-	
+
 	for (y = current_pos; y < pix->height; y++)
 	{
 		/* get presentage coverage for this pixel line */
@@ -54,13 +54,10 @@ get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 		for (x = 0; x < width_1_3; x++)
 		{
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
-			sum += hocr_pixbuf_get_pixel (pix,
-						       x + width_1_3, y);
-			sum += hocr_pixbuf_get_pixel (pix,
-						       x + width_2_3,
-						       y);
+			sum += hocr_pixbuf_get_pixel (pix, x + width_1_3, y);
+			sum += hocr_pixbuf_get_pixel (pix, x + width_2_3, y);
 		}
-		
+
 		/* check only the part with the most color on it */
 		sum = 1000 * sum / width;
 
@@ -71,24 +68,24 @@ get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
 			inside_line = TRUE;
 		}
 		/* if presantage below maximum for in a line then we need to find 
-		   the end of the line by looking to the end of the down slop */
-		else if (sum <= IN_A_LINE && 
-				 inside_line && 
-				 (y - *line_start) > MIN_LINE_HIGHT &&
-				 (last_raw_sum - sum) <= 0)
+		 * the end of the line by looking to the end of the down slop */
+		else if (sum <= IN_A_LINE &&
+			 inside_line &&
+			 (y - *line_start) > MIN_LINE_HIGHT &&
+			 (last_raw_sum - sum) <= 0)
 		{
 			*line_end = y;
-			
+
 			/* if here and this line has logical width then found a new line */
 			/* FIXME: do we want to read BIG fonts ? 
-			          see consts.h for details about MAX_LINE_HIGHT */
+			 * see consts.h for details about MAX_LINE_HIGHT */
 			if ((*line_end - *line_start) > MAX_LINE_HIGHT)
 				return 1;
-			
+
 			return 0;
 		}
 	}
-	
+
 	return 1;
 }
 
@@ -137,10 +134,12 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	int x, y;
 	int sum;
 
+	/* check if font box is too big */
+
 	sum = 0;
 	/* read line from right to left */
-	for (y = (font->y1 - MIN_DISTANCE_BETWEEN_LINES);
-	     y < (font->y2 + MIN_DISTANCE_BETWEEN_LINES) && sum == 0; y++)
+	for (y = font->y1;
+	     y < font->y2 && sum == 0; y++)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
@@ -152,10 +151,9 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	font->y1 = y - 1;
 
 	sum = 0;
-
 	/* read line from right to left */
-	for (y = (font->y2 + MIN_DISTANCE_BETWEEN_LINES);
-	     y > (font->y1 - MIN_DISTANCE_BETWEEN_LINES) && sum == 0; y--)
+	for (y = font->y2;
+	     y > font->y1 && sum == 0; y--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
@@ -165,6 +163,36 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 		}
 	}
 	font->y2 = y + 1;
+
+	/* check if font box is too small */
+
+	sum = 1;
+	/* read line from right to left */
+	for (y = font->y1;
+	     y > (font->y1 - 2 * MIN_DISTANCE_BETWEEN_LINES) && sum != 0; y--)
+	{
+		/* get presentage coverage for this pixel line */
+		sum = 0;
+		for (x = font->x1; x < font->x2; x++)
+		{
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
+		}
+	}
+	font->y1 = y + 1;
+
+	sum = 1;
+	/* read line from right to left */
+	for (y = font->y2;
+	     y < (font->y2 + 2 * MIN_DISTANCE_BETWEEN_LINES) && sum != 0; y++)
+	{
+		/* get presentage coverage for this pixel line */
+		sum = 0;
+		for (x = font->x1; x < font->x2; x++)
+		{
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
+		}
+	}
+	font->y2 = y - 1;
 
 	return 1;
 }

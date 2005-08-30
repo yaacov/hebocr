@@ -29,112 +29,111 @@
 int
 find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 		       hocr_line_eq * base_line, hocr_line_eq * top_line,
-		       int num_of_fonts)
+		       int avg_font_hight, int num_of_fonts)
 {
-	int number_of_fonts_to_avg = 8;
-
 	int i;
 	int counter;
 	int y_start_base, y_end_base;
-	int x_start_base, x_end_base;
+	int x_start, x_end;
 	int y_start_top, y_end_top;
-	int x_start_top, x_end_top;
 
-	/* if short line assume horizonatal */
-	if (num_of_fonts < number_of_fonts_to_avg)
+	/* if no fonts then just return the line */
+	if (num_of_fonts == 0)
 	{
 		base_line->a = 0;
 		base_line->b = line.y2;
 		top_line->a = 0;
 		top_line->b = line.y1;
-		return 1;
+		return 0;
 	}
 
-	/* get avarage base of first 8 fonts */
+	/* if short line just return horizonatal lines */
 	y_start_base = 0;
-	x_start_base = 0;
 	y_start_top = 0;
-	x_start_top = 0;
-	counter = 0;
-	for (i = 0; i < number_of_fonts_to_avg; i++)
+	for (i = 0; i < num_of_fonts; i++)
 	{
-		if (fonts[i].hight > MIN_LINE_HIGHT)
+		y_start_base += fonts[i].y2;
+		y_start_top += fonts[i].y1;
+	}
+	base_line->a = 0;
+	base_line->b = y_start_base / num_of_fonts;
+	top_line->a = 0;
+	top_line->b = y_start_top / num_of_fonts;
+
+	/* avg over first NUM_OF_FONTS_TO_AVG fonts */
+	y_start_base = 0;
+	y_start_top = 0;
+	x_start = 0;
+	y_end_base = 0;
+	y_end_top = 0;
+	x_end = 0;
+
+	counter = 0;
+	i = 0;
+	while (counter < NUM_OF_FONTS_TO_AVG && i < num_of_fonts)
+	{
+		if (fonts[i].hight <
+		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
+		    && fonts[i].hight >
+		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
 		{
 			y_start_base += fonts[i].y2;
-			x_start_base += fonts[i].x2;
+			x_start += fonts[i].x2;
 			y_start_top += fonts[i].y1;
-			x_start_top += fonts[i].x1;
 			counter++;
 		}
-	}
-	if (counter == 0)
-	{
-		base_line->a = 0;
-		base_line->b = line.y2;
-		top_line->a = 0;
-		top_line->b = line.y1;
-		return 1;
+		i++;
 	}
 
-	y_start_base = y_start_base / counter;
-	x_start_base = x_start_base / counter;
-	y_start_top = y_start_top / counter;
-	x_start_top = x_start_top / counter;
-	
-	/* get avarage base of last 8 fonts */
-	y_end_base = 0;
-	x_end_base = 0;
-	y_end_top = 0;
-	x_end_top = 0;
+	/* if can't find NUM_OF_FONTS_TO_AVG use the horizontal lines */
+	if (counter < NUM_OF_FONTS_TO_AVG)
+		return 0;
+
+	y_start_base /= counter;
+	y_start_top /= counter;
+	x_start /= counter;
+
+	/* avg over first NUM_OF_FONTS_TO_AVG fonts */
 	counter = 0;
-	for (i = (num_of_fonts - number_of_fonts_to_avg); i < num_of_fonts;
-	     i++)
+	i = num_of_fonts - 1;
+	while (counter < NUM_OF_FONTS_TO_AVG && i >= 0)
 	{
-		if (fonts[i].hight > MIN_LINE_HIGHT)
+		if (fonts[i].hight <
+		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
+		    && fonts[i].hight >
+		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
 		{
 			y_end_base += fonts[i].y2;
-			x_end_base += fonts[i].x2;
 			y_end_top += fonts[i].y1;
-			x_end_top += fonts[i].x1;
+			x_end += fonts[i].x2;
 			counter++;
 		}
-	}
-	if (counter == 0)
-	{
-		base_line->a = 0;
-		base_line->b = line.y2;
-		top_line->a = 0;
-		top_line->b = line.y1;
-		return 1;
+		i--;
 	}
 
-	y_end_base = y_end_base / counter;
-	x_end_base = x_end_base / counter;
-	y_end_top = y_end_top / counter;
-	x_end_top = x_end_top / counter;
+	/* if can't find NUM_OF_FONTS_TO_AVG use the horizontal lines */
+	if (counter < NUM_OF_FONTS_TO_AVG)
+		return 0;
 
-	/* if short line assume horizonatal */
-	if ((x_start_base - y_end_base) < 30)
-	{
-		base_line->a = 0;
-		base_line->b = line.y2;
-		top_line->a = 0;
-		top_line->b = line.y1;
-		return 1;
-	}
+	y_end_base /= counter;
+	y_end_top /= counter;
+	x_end /= counter;
 
+	/* do not divide by zero */
+	if ((x_end - x_start) == 0)
+		return 0;
+
+	/* make line equation */
 	base_line->a =
 		(double) (y_end_base -
-			  y_start_base) / (double) (y_end_base -
-							 x_start_base);
-	base_line->b = y_start_base - base_line->a * x_start_base;
+			  y_start_base) / (double) (x_end - x_start);
+	base_line->b = y_start_base - base_line->a * x_start;
 
 	top_line->a =
 		(double) (y_end_top -
-			  y_start_top) / (double) (y_end_top -
-							 x_start_top);
-		top_line->b = y_start_top - top_line->a * x_start_top;
-	
+			  y_start_top) / (double) (x_end - x_start);
+	top_line->b = y_start_top - top_line->a * x_start;
+
 	return 0;
 }
 
