@@ -133,11 +133,9 @@ int has_tav_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
 int has_nekuda_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
 		  int y_top_of_line, int y_buttom_of_line,
 		  int avg_font_width);
-
 int has_psik_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
 		  int y_top_of_line, int y_buttom_of_line,
 		  int avg_font_width);
-		  
 int has_quat_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
 		   int y_top_of_line, int y_buttom_of_line,
 		   int avg_font_width);

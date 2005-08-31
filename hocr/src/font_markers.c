@@ -99,11 +99,10 @@ init_has_font_mark_functions_hebrew_alfabet (has_font_mark_function *
 	has_font_mark[27] = has_tav_mark;
 	strcpy (fonts[27],"ת");
 
-	has_font_mark[28] = has_nekuda_mark;	/* place holder for nekuda */
+	has_font_mark[28] = has_nekuda_mark;
 	strcpy (fonts[28],".");
-	has_font_mark[29] = has_psik_mark;	/* place holder for psik */
+	has_font_mark[29] = has_psik_mark;
 	strcpy (fonts[29],",");
-
 	has_font_mark[30] = has_quat_mark;
 	strcpy (fonts[30],"\'");
 	has_font_mark[31] = has_double_quat_mark;
