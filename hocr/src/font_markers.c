@@ -99,9 +99,9 @@ init_has_font_mark_functions_hebrew_alfabet (has_font_mark_function *
 	has_font_mark[27] = has_tav_mark;
 	strcpy (fonts[27],"ת");
 
-	has_font_mark[28] = has_tav_mark;	/* place holder for nekuda */
+	has_font_mark[28] = has_nekuda_mark;	/* place holder for nekuda */
 	strcpy (fonts[28],".");
-	has_font_mark[29] = has_tav_mark;	/* place holder for psik */
+	has_font_mark[29] = has_psik_mark;	/* place holder for psik */
 	strcpy (fonts[29],",");
 
 	has_font_mark[30] = has_quat_mark;
@@ -1926,6 +1926,20 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font,
 		return 0;
 
 	return 1;
+}
+
+int has_nekuda_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width)
+{
+	return 0;
+}
+
+int has_psik_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		  int y_top_of_line, int y_buttom_of_line,
+		  int avg_font_width)
+{
+	return 0;
 }
 
 int
