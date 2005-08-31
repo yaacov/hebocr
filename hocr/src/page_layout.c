@@ -172,7 +172,7 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	sum = 1;
 	/* read line from right to left */
 	for (y = font->y1;
-	     y > (font->y1 - 2 * MIN_DISTANCE_BETWEEN_LINES) && sum != 0; y--)
+	     y > (font->y1 - MIN_LINE_HIGHT) && sum != 0; y--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
@@ -186,7 +186,7 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	sum = 1;
 	/* read line from right to left */
 	for (y = font->y2;
-	     y < (font->y2 + 2 * MIN_DISTANCE_BETWEEN_LINES) && sum != 0; y++)
+	     y < (font->y2 + MIN_LINE_HIGHT) && sum != 0; y++)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
