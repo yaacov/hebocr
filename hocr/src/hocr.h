@@ -57,6 +57,13 @@ typedef enum
 	HOCR_ERROR_NOT_HORIZONTAL_LINE = 8
 } hocr_error;
 
+typedef enum
+{
+	HOCR_OUTPUT_JUST_OCR = 0,
+	HOCR_OUTPUT_WITH_GRAPHICS = 1,
+	HOCR_OUTPUT_WITH_DEBUG_TEXT = 2,
+} hocr_output;
+
 typedef struct
 {
 	int x1;
@@ -242,7 +249,7 @@ int hocr_pixbuf_unref (hocr_pixbuf * pix);
  @param error pointer to hocr_error enum that will return exit status.
  @return 1
  */
-int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer, hocr_error* error);
+int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer, hocr_output out_flags, hocr_error* error);
 
 #ifdef __cplusplus
 }

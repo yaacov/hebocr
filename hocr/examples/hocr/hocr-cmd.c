@@ -159,7 +159,7 @@ main (int argc, char *argv[])
 	}
 	
 	/* do ocr */
-	hocr_do_ocr (pix, text_buffer, 0);
+	hocr_do_ocr (pix, text_buffer, HOCR_OUTPUT_JUST_OCR, 0);
 	
 	/* print out the text */
 	if (opt_o == 1)

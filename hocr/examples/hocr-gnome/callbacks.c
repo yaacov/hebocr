@@ -60,7 +60,7 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 		return 0;
 	}
 	
-	hocr_do_ocr (&hocr_pix, text, NULL);
+	hocr_do_ocr (&hocr_pix, text, HOCR_OUTPUT_WITH_DEBUG_TEXT | HOCR_OUTPUT_WITH_GRAPHICS, NULL);
 
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);

@@ -425,7 +425,7 @@ color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
 
 int
 hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
-	     hocr_error * error)
+	     hocr_output out_flags, hocr_error * error)
 {
 	hocr_box column;
 	/* hocr_box column; is a place holder to a time when we add column support */
@@ -462,14 +462,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	has_font_mark_function has_font_mark[MAX_FONTS_IN_FONT_LIB];
 
 	/* simple font choosing logic (' ' -> " etc... )
-	
-	/* need this to put in the text_buffer */
+	 * 
+	 * /* need this to put in the text_buffer */
 	int last_was_quot = 0;
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
 
 	/* page layout recognition */
-	
+
 	/* get all lines in this column */
 	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
 
@@ -511,27 +511,54 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	}
 
 	/* visualization loop */
-	
+
 	/* color the results of page layout functions */
-	for (i = 0; i < num_of_lines; i++)
-	{
-		/* color line boxes */
-		color_hocr_line_eq (pix, &(line_eqs[i][0]), lines[i].x1,
-				    lines[i].x2, 2, 0);
-		color_hocr_line_eq (pix, &(line_eqs[i][1]), lines[i].x1,
-				    lines[i].x2, 2, 0);
-
-		/* color individual font boxes */
-		for (j = 0; j < num_of_fonts[i]; j++)
+	if (out_flags & HOCR_OUTPUT_WITH_GRAPHICS)
+		for (i = 0; i < num_of_lines; i++)
 		{
-			color_hocr_box (pix, fonts[i][j], 1, 0);
-			/* print_font (pix, fonts[i][j]); */
+			/* color line boxes */
+			color_hocr_line_eq (pix, &(line_eqs[i][0]),
+					    lines[i].x1, lines[i].x2, 2, 0);
+			color_hocr_line_eq (pix, &(line_eqs[i][1]),
+					    lines[i].x1, lines[i].x2, 2, 0);
+
+			/* color individual font boxes */
+			for (j = 0; j < num_of_fonts[i]; j++)
+			{
+				color_hocr_box (pix, fonts[i][j], 1, 0);
+			}
 		}
-	}
 
-	return 0; /* the ocr thing need rewriting just leave it for now */
+	/* print out debug text for each font */
+	if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
+		for (i = 0; i < num_of_lines; i++)
+		{
+			/* print individual font boxes */
+			for (j = 0; j < num_of_fonts[i]; j++)
+			{
+				printf ("Font %d %d\n", i, j);
+				
+				/* print the font, this take a lot of time, remove if not needed */
+				print_font (pix, fonts[i][j]);
+				
+				/* print out font position above/below line */
+				
+				/* print out font x, y size compared to other fonts in page */ 
+				
+				/* print out font position in word, e.g. is last
+				   or is before non letter (psik, nekuda ...) */
+				
+				/* print out font x/y ratio */
+				
+				/* print out font markers */
+				
+				printf ("=======================\n");
+			}
+		}
+		
+	return 0;		/* the ocr thing need rewriting just leave it for now */
 
-	/* do OCR */
+	/* font shape OCR */
 
 	/* create an array of all has_font_mark_functions */
 	init_has_font_mark_functions_hebrew_alfabet (has_font_mark,
