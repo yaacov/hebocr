@@ -461,9 +461,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* an array of function for detecting font marks */
 	has_font_mark_function has_font_mark[MAX_FONTS_IN_FONT_LIB];
 
-	/* simple font choosing logic (' ' -> " etc... )
-	 * 
-	 * /* need this to put in the text_buffer */
+	/* simple font choosing logic (' ' -> " etc... ) */
+
+	/* need this to put in the text_buffer */
 	int last_was_quot = 0;
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
@@ -537,25 +537,59 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			for (j = 0; j < num_of_fonts[i]; j++)
 			{
 				printf ("Font %d %d\n", i, j);
-				
+
 				/* print the font, this take a lot of time, remove if not needed */
 				print_font (pix, fonts[i][j]);
-				
+
 				/* print out font position above/below line */
-				
-				/* print out font x, y size compared to other fonts in page */ 
-				
+				base_class =
+					get_font_base_class (fonts[i][j],
+							     line_eqs[i][0],
+							     avg_font_hight_in_page);
+				top_class =
+					get_font_top_class (fonts[i][j],
+							    line_eqs[i][1],
+							    avg_font_hight_in_page);
+
+				printf ("base class %d, top class %d\n",
+					base_class, top_class);
+
+				/* print out font x, y size compared to other fonts in page */
+				hight_class =
+					get_font_hight_class (fonts[i][j].
+							      hight,
+							      avg_font_hight_in_page);
+				width_class =
+					get_font_width_class (fonts[i][j].
+							      width,
+							      avg_font_width_in_page);
+
+				printf ("hight class %d, width class %d\n",
+					hight_class, width_class);
+
 				/* print out font position in word, e.g. is last
-				   or is before non letter (psik, nekuda ...) */
+				 * or is before non letter (psik, nekuda ...) */
+				end_of_line = (j + 1) == num_of_fonts[i];
+				end_of_word = end_of_line
+					|| (fonts[i][j].x1 -
+					    fonts[i][j + 1].x2) >
+					MIN_DISTANCE_BETWEEN_WORDS
+					||
+					get_font_top_class (fonts[i][j + 1],
+							    line_eqs[i][1],
+							    avg_font_hight_in_page)
+					== -1;
 				
-				/* print out font x/y ratio */
-				
+				printf ("end of line %d, end of word %d\n",
+					end_of_line, end_of_word);
+					
 				/* print out font markers */
-				
+
+				/* print out next font */
 				printf ("=======================\n");
 			}
 		}
-		
+
 	return 0;		/* the ocr thing need rewriting just leave it for now */
 
 	/* font shape OCR */
@@ -581,20 +615,18 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			/* font position and size markers 
 			 */
 			base_class =
-				get_font_base_class (fonts[i][j].y2,
-						     y2,
+				get_font_base_class (fonts[i][j],
+						     line_eqs[i][0],
 						     avg_font_hight_in_page);
 			top_class =
-				get_font_top_class (fonts[i][j].y1,
-						    y1,
+				get_font_top_class (fonts[i][j],
+						    line_eqs[i][1],
 						    avg_font_hight_in_page);
 			hight_class =
-				get_font_hight_class (fonts[i][j].
-						      hight,
+				get_font_hight_class (fonts[i][j].hight,
 						      avg_font_hight_in_page);
 			width_class =
-				get_font_width_class (fonts[i][j].
-						      width,
+				get_font_width_class (fonts[i][j].width,
 						      avg_font_width_in_page);
 
 			/* line markers */

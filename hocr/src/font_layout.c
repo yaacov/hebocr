@@ -137,132 +137,15 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	return 0;
 }
 
-int
-find_font_baseline (hocr_box * fonts, int avg_hight, int index,
-		    int num_of_fonts)
-{
-	if (fonts[index].hight < 2 || fonts[index].width < 2)
-		return 0;
-
-	/* font in the middle of line */
-	if (index > 1 && index < (num_of_fonts - 2))
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y2;
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y2;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y2;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y2;
-	}
-	else
-		/* is this the first or second font in the line */
-	if (index < 2 && num_of_fonts > 3)
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y2;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y2;
-	}
-	else
-		/* is this the last font in the line */
-	if (index > 1)
-	{
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y2;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y2;
-	}
-
-	/* if no other regular font is near then base on yourself */
-	return fonts[index].y2;
-}
-
-int
-find_font_topline (hocr_box * fonts, int avg_hight, int index,
-		   int num_of_fonts)
-{
-	if (fonts[index].hight < 2 || fonts[index].width < 2)
-		return 0;
-
-	/* font in the middle of line */
-	if (index > 1 && index < (num_of_fonts - 2))
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y1;
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y1;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y1;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y1;
-	}
-	else
-		/* is this the first or second font in the line */
-	if (index < 2 && num_of_fonts > 3)
-	{
-		/* is font on the left regular size */
-		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
-		    == 0)
-			return fonts[index + 1].y1;
-		/* is second font on the left regular size */
-		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
-		    == 0)
-			return fonts[index + 2].y1;
-	}
-	else
-		/* is this the last font in the line */
-	if (index > 1)
-	{
-		/* is font on the right regular size */
-		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
-		    == 0)
-			return fonts[index - 1].y1;
-		/* is second font on the right regular size */
-		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
-		    == 0)
-			return fonts[index - 2].y1;
-	}
-
-
-	/* if no other regular font is near then base on yourself */
-	return fonts[index].y1;
-}
-
 /*
  font position classes
  */
 
 /* -1 assend 0 normal 1 sunk */
 int
-get_font_top_class (int font_top, int font_topline, int avg_font_hight)
+get_font_top_class (hocr_box font, hocr_line_eq top_line, int avg_font_hight)
 {
-	int assend = font_topline - font_top;
+	int assend = font.y1 - hocr_line_eq_get_y (top_line, font.x1);
 
 	if (assend < (-FONT_ASSEND * avg_font_hight / 1000))
 		return 1;
@@ -274,9 +157,10 @@ get_font_top_class (int font_top, int font_topline, int avg_font_hight)
 
 /* -1 assend 0 normal 1 sunk */
 int
-get_font_base_class (int font_bottom, int font_baseline, int avg_font_hight)
+get_font_base_class (hocr_box font, hocr_line_eq base_line,
+		     int avg_font_hight)
 {
-	int assend = font_baseline - font_bottom;
+	int assend = font.y2 - hocr_line_eq_get_y (base_line, font.x1);
 
 	if (assend < (-FONT_ASSEND * avg_font_hight / 1000))
 		return -1;

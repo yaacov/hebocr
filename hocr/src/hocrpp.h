@@ -57,7 +57,7 @@ namespace hocr
 		Hocr ()
 		{
 			h = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
-			
+
 			h->n_channels = 3;
 			h->brightness = 100;
 			h->pixels = NULL;
@@ -65,7 +65,7 @@ namespace hocr
 			h->height = 0;
 			h->rowstride = 0;
 		}
-		
+
 		/**
 		 @brief Hocr constructor.
 			
@@ -87,14 +87,28 @@ namespace hocr
 		/**
 		 @brief do ocr on a hocr_pixbuf and return the result text to text_buffer
 
-		 @param text_buffer pointer to an already allocated text buffer for the results
-		 @param max_buffer_size site of allocated memory for text_buffer.
+		 @param text a string to get the output text in.
 		 @return 1
 		 */
-		int do_ocr (char *text_buffer, int max_buffer_size)
+		int do_ocr (String text)
 		{
-			return hocr_do_ocr (h, text_buffer,
-					    max_buffer_size);
+			hocr_text_buffer *text_buffer = 0;
+
+			/* create text buffer */
+			text_buffer = hocr_text_buffer_new ();
+
+			if (!text_buffer)
+			{
+				return 0;
+			}
+			
+			hocr_do_ocr (h, text_buffer, HOCR_OUTPUT_JUST_OCR, 0);
+
+			text = h->text;
+			
+			hocr_text_buffer_unref (text_buffer);
+			
+			return 1;
 		}
 
 		////////////////////////////////////////
@@ -161,7 +175,7 @@ namespace hocr
 
 		//////////////////////////////////////////////
 		//////////////////////////////////////////////
-		
+
 		/**
 		 @brief set number of channels
 		
@@ -170,7 +184,7 @@ namespace hocr
 		int set_n_channels (int n)
 		{
 			h->n_channels = n;
-			
+
 			return n;
 		}
 
@@ -182,7 +196,7 @@ namespace hocr
 		int set_height (int n)
 		{
 			h->height = n;
-			
+
 			return n;
 		}
 
@@ -194,7 +208,7 @@ namespace hocr
 		int set_width (int n)
 		{
 			h->width = n;
-			
+
 			return n;
 		}
 
@@ -206,7 +220,7 @@ namespace hocr
 		int set_rowstride (int n)
 		{
 			h->rowstride = n;
-			
+
 			return n;
 		}
 		/**
@@ -217,7 +231,7 @@ namespace hocr
 		int set_brightness (int n)
 		{
 			h->brightness = n;
-			
+
 			return n;
 		}
 
@@ -230,16 +244,16 @@ namespace hocr
 		
 		 @return pointer to raw pixpuf data
 		 */
-		unsigned char *set_pixels (unsigned char * p)
+		unsigned char *set_pixels (unsigned char *p)
 		{
 			h->pixels = p;
-			
+
 			return p;
 		}
-		
+
 		//////////////////////////////////////////////
 		//////////////////////////////////////////////
-		
+
 		/**
 		 @brief get color of pixel
 		
@@ -276,6 +290,6 @@ namespace hocr
 
 	};
 
-}	// name space
+}				// name space
 
 #endif
