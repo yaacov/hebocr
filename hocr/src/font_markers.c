@@ -2082,6 +2082,115 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 		return 1;
 	}
 	
+	/* all other fonts */
+	if (hight_class == 0 && width_class == 0)
+	{
+		if (has_alef_mark (pix, font))
+		{
+			sprintf (font_string, "א");
+			return 0;
+		}
+		
+		if (has_bet_mark (pix, font))
+		{
+			sprintf (font_string, "ב");
+			return 0;
+		}
+		
+		if (has_gimel_mark (pix, font))
+		{
+			sprintf (font_string, "ג");
+			return 0;
+		}
+		
+		if (has_dalet_mark (pix, font))
+		{
+			sprintf (font_string, "ד");
+			return 0;
+		}
+		
+		if (has_he_mark (pix, font))
+		{
+			sprintf (font_string, "ה");
+			return 0;
+		}
+		
+		if (has_het_mark (pix, font))
+		{
+			sprintf (font_string, "ח");
+			return 0;
+		}
+		
+		if (has_tet_mark (pix, font))
+		{
+			sprintf (font_string, "ט");
+			return 0;
+		}
+		
+		if (has_kaf_mark (pix, font))
+		{
+			sprintf (font_string, "כ");
+			return 0;
+		}
+		
+		if (has_mem_mark (pix, font))
+		{
+			sprintf (font_string, "מ");
+			return 0;
+		}
+		
+		if (has_mem_sofit_mark (pix, font))
+		{
+			sprintf (font_string, "ם");
+			return 0;
+		}
+		
+		if (has_sameh_mark (pix, font))
+		{
+			sprintf (font_string, "ס");
+			return 0;
+		}
+		
+		if (has_ayin_mark (pix, font))
+		{
+			sprintf (font_string, "ע");
+			return 0;
+		}
+		
+		if (has_pe_mark (pix, font))
+		{
+			sprintf (font_string, "פ");
+			return 0;
+		}
+		
+		if (has_tzadi_mark (pix, font))
+		{
+			sprintf (font_string, "צ");
+			return 0;
+		}
+		
+		if (has_resh_mark (pix, font))
+		{
+			sprintf (font_string, "ר");
+			return 0;
+		}
+		
+		if (has_shin_mark (pix, font))
+		{
+			sprintf (font_string, "ש");
+			return 0;
+		}
+		
+		if (has_tav_mark (pix, font))
+		{
+			sprintf (font_string, "ת");
+			return 0;
+		}
+		
+		sprintf (font_string, "_");
+		return 1;
+	}
+	
 	/* this font is unknown */
 	sprintf (font_string, "_");
 
