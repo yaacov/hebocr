@@ -1859,16 +1859,18 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font)
 	int number_of_bars;
 	int start, end;
 
-	if (find_horizontal_path
-	    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x2,
-	     font.y2 - 3) == 0)
-		return 0;
-
 	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 6,
+		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
 				     &start, &end);
 
 	if (number_of_bars != 2)
+		return 0;
+
+	number_of_bars =
+		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
+				     &start, &end);
+
+	if (number_of_bars != 1)
 		return 0;
 
 	return 1;
@@ -1877,6 +1879,16 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font)
 int
 has_makaf_mark (hocr_pixbuf * pix, hocr_box font)
 {
+	int number_of_bars;
+	int start, end;
+
+	number_of_bars =
+		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
+				     &start, &end);
+
+	if (number_of_bars != 1)
+		return 0;
+	
 	if (font.width > font.hight)
 		return 1;
 
@@ -2023,6 +2035,12 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 			return 0;
 		}
 
+		if (has_question_mark (pix, font))
+		{
+			sprintf (font_string, "?");
+			return 0;
+		}
+		
 		if (has_yud_mark (pix, font))
 		{
 			sprintf (font_string, "י");
