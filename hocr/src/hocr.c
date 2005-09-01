@@ -427,16 +427,14 @@ int
 hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	     hocr_output out_flags, hocr_error * error)
 {
-	hocr_box column;
-	/* hocr_box column; is a place holder to a time when we add column support */
 	hocr_box lines[MAX_LINES];
 	hocr_line_eq line_eqs[MAX_LINES][2];
 	hocr_box fonts[MAX_LINES][MAX_FONTS_IN_LINE];
 
 	int num_of_fonts[MAX_LINES];
 	int num_of_lines;
-	int num_of_fonts_in_page;
 
+	int num_of_fonts_in_page;
 	int avg_font_hight_in_page;
 	int avg_font_width_in_page;
 
@@ -453,26 +451,21 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	int add_space;
 	int end_of_paragraph;
 
-	/* font shape markers */
-
-	/* an array of font marks */
-	int font_mark[MAX_FONTS_IN_FONT_LIB];
-	int number_of_fonts_in_font_lib;
-	char font_strings[MAX_FONTS_IN_FONT_LIB][MAX_NUM_OF_CHARS_IN_FONT];
-	/* an array of function for detecting font marks */
-	has_font_mark_function has_font_mark[MAX_FONTS_IN_FONT_LIB];
-
-	/* simple font choosing logic (' ' -> " etc... ) */
-
-	/* need this to put in the text_buffer */
-	int last_was_quot = 0;
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
 
 	/* page layout recognition */
 
 	/* get all lines in this column */
-	fill_lines_array (pix, column, lines, &num_of_lines, MAX_LINES);
+	fill_lines_array (pix, lines, &num_of_lines, MAX_LINES);
+
+	if (num_of_lines == 0)
+	{
+		/* is it O.K. to have no lines in the page ? */
+		if (error)
+			*error = HOCR_ERROR_NO_LINES_FOUND;
+		return 1;
+	}
 
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
@@ -501,6 +494,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		avg_font_width_in_page /= num_of_fonts_in_page;
 		avg_font_hight_in_page /= num_of_fonts_in_page;
 	}
+	else
+	{
+		/* is it O.K. to have no fonts in the page ? */
+		if (error)
+			*error = HOCR_ERROR_NO_FONTS_FOUND;
+		return 1;
+	}
 
 	/* get lines equations for non horizontal lines */
 	for (i = 0; i < num_of_lines; i++)
@@ -509,9 +509,15 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				       &(line_eqs[i][1]),
 				       avg_font_hight_in_page,
 				       num_of_fonts[i]);
-	}
 
-	/* visualization loop */
+		/* if line is very not horizontal return error */
+		if (line_eqs[i][0].a > (1.0 / 3.0))
+		{
+			if (error)
+				*error = HOCR_ERROR_NOT_HORIZONTAL_LINE;
+			return 1;
+		}
+	}
 
 	/* color the results of page layout functions */
 	if (out_flags & HOCR_OUTPUT_WITH_GRAPHICS)
@@ -530,90 +536,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			}
 		}
 
-	/* print out debug text for each font */
-	if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
-		for (i = 0; i < num_of_lines; i++)
-		{
-			/* print individual font boxes */
-			for (j = 0; j < num_of_fonts[i]; j++)
-			{
-				printf ("Font %d %d\n", i, j);
+	/* page layout is complite start of font recognition */
 
-				/* print the font, this take a lot of time, remove if not needed */
-				print_font (pix, fonts[i][j]);
-
-				/* print out font position above/below line */
-				base_class =
-					get_font_base_class (fonts[i][j],
-							     line_eqs[i][0],
-							     avg_font_hight_in_page);
-				top_class =
-					get_font_top_class (fonts[i][j],
-							    line_eqs[i][1],
-							    avg_font_hight_in_page);
-
-				printf ("base class %d, top class %d\n",
-					base_class, top_class);
-
-				/* print out font x, y size compared to other fonts in page */
-				hight_class =
-					get_font_hight_class (fonts[i][j].
-							      hight,
-							      avg_font_hight_in_page);
-				width_class =
-					get_font_width_class (fonts[i][j].
-							      width,
-							      avg_font_width_in_page);
-
-				printf ("hight class %d, width class %d\n",
-					hight_class, width_class);
-
-				/* print out font position in word, e.g. is last
-				 * or is before non letter (psik, nekuda ...) */
-				end_of_line = (j + 1) == num_of_fonts[i];
-				add_space = (fonts[i][j].x1 -
-					     fonts[i][j + 1].x2) >
-					MIN_DISTANCE_BETWEEN_WORDS;
-				end_of_word = ((end_of_line || add_space)
-					       && !(top_class == -1))
-					||
-					(get_font_top_class
-					 (fonts[i][j + 1], line_eqs[i][1],
-					  avg_font_hight_in_page) == -1);
-
-				printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
-
-				/* print out font markers */
-
-				/* print out next font */
-				printf ("=======================\n");
-			}
-		}
-
-	return 0;		/* the ocr thing need rewriting just leave it for now */
-
-	/* font shape OCR */
-
-	/* create an array of all has_font_mark_functions */
-	init_has_font_mark_functions_hebrew_alfabet (has_font_mark,
-						     &number_of_fonts_in_font_lib,
-						     font_strings);
-
-	/* get all fonts for all the lines */
+	/* get all you know of each font */
 	for (i = 0; i < num_of_lines; i++)
 	{
 		for (j = 0; j < num_of_fonts[i]; j++)
 		{
-
-			y1 = find_font_topline (fonts[i],
-						avg_font_hight_in_page,
-						j, num_of_fonts[i]);
-			y2 = find_font_baseline (fonts[i],
-						 avg_font_hight_in_page,
-						 j, num_of_fonts[i]);
-
-			/* font position and size markers 
-			 */
+			/* get font position above/below line */
 			base_class =
 				get_font_base_class (fonts[i][j],
 						     line_eqs[i][0],
@@ -622,356 +552,93 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				get_font_top_class (fonts[i][j],
 						    line_eqs[i][1],
 						    avg_font_hight_in_page);
+
+			/* get font x, y size compared to other fonts in page */
 			hight_class =
-				get_font_hight_class (fonts[i][j].hight,
+				get_font_hight_class (fonts[i][j].
+						      hight,
 						      avg_font_hight_in_page);
 			width_class =
-				get_font_width_class (fonts[i][j].width,
+				get_font_width_class (fonts[i][j].
+						      width,
 						      avg_font_width_in_page);
 
-			/* line markers */
-			end_of_line = (j == (num_of_fonts[i] - 1)) ? 1 : 0;
-			end_of_paragraph = 0;
-			if (end_of_line == 0)
+			/* get font position in word, e.g. is last
+			 * or is before non letter (psik, nekuda ...) */
+			end_of_line = (j + 1) == num_of_fonts[i];
+			add_space = !end_of_line && (fonts[i][j].x1 -
+						     fonts[i][j +
+							      1].x2) >
+				MIN_DISTANCE_BETWEEN_WORDS;
+			/* FIXME: !(top_class == -1) only covers words that end
+			 * with ",.-" but what if word ends with "?!:" ... ? */
+			end_of_word = ((end_of_line || add_space)
+				       && !(top_class == -1))
+				||
+				(get_font_top_class
+				 (fonts[i][j + 1], line_eqs[i][1],
+				  avg_font_hight_in_page) == -1);
+
+			/* get font markers */
+			hocr_guess_font (pix, fonts[i][j], base_class,
+					 hocr_line_eq_get_y (line_eqs[i][0],
+							     fonts[i][j].x2),
+					 hocr_line_eq_get_y (line_eqs[i][1],
+							     fonts[i][j].x1),
+					 top_class, hight_class, width_class,
+					 end_of_word, chars,
+					 MAX_NUM_OF_CHARS_IN_FONT);
+
+			/* output font to text buffer */
+			hocr_text_buffer_add_string (text_buffer, chars);
+
+			/* if user want printout print all you know about this char */
+			if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
 			{
-				end_of_word =
-					(fonts[i][j].x1 -
-					 fonts[i][j + 1].x2) >
-					MIN_DISTANCE_BETWEEN_WORDS;
-			}
-			else
-			{
-				if ((i < num_of_lines - 1)
-				    && ((lines[i + 1].y1 - lines[i].y2) >
-					(int) (1.5 *
-					       (double)
-					       avg_font_hight_in_page)))
-					end_of_paragraph = 1;
+				printf ("Font %d %d\n", i, j);
 
-				end_of_word = 1;
-			}
+				/* print the font, this take a lot of time, remove if not needed */
+				print_font (pix, fonts[i][j]);
 
-			/* font shape markers */
+				printf ("base class %d, top class %d\n",
+					base_class, top_class);
 
-			/* TODO: this shuld be moved to the right place 
-			 * and not doen unnesseraly for all fonts */
+				/* print out font x, y size compared to other fonts in page */
+				printf ("hight class %d, width class %d\n",
+					hight_class, width_class);
 
-			for (k = 1; k <= number_of_fonts_in_font_lib; k++)
-			{
-				font_mark[k] =
-					(has_font_mark[k]) (pix, fonts[i][j],
-							    end_of_word,
-							    lines[i].y1,
-							    lines[i].y2,
-							    avg_font_width_in_page);
-			}
+				/* print out font position in word, e.g. is last
+				 * or is before non letter (psik, nekuda ...) */
+				printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
 
-			font_mark[0] = 0;
+				/* print out end of font */
+				printf ("font is %s\n", chars);
 
-			/* if wide then arteffact */
-
-			if (width_class == 1)
-			{
-				/* arteffact */
-				sprintf (chars, "__");
-				font_mark[0] = 1;
-			}
-
-			/* small fonts */
-
-			else if (hight_class == -1
-				 && top_class == 1 && base_class == 1)
-			{
-				/* '-' */
-				sprintf (chars, "-");
-			}
-			else if (hight_class == -1 && top_class == 0)
-			{
-				if (font_mark[34] == 1)
-				{
-					/* '-' */
-					sprintf (chars, "-");
-				}
-				else if (font_mark[10] == 1)
-				{
-					/* yud */
-					sprintf (chars, "י");
-				}
-				else if (font_mark[31] == 1)
-				{
-					sprintf (chars, "\"");
-				}
-				else if (font_mark[30] == 1)
-				{
-					sprintf (chars, "\'");
-				}
-				else
-				{
-					sprintf (chars, "_");
-					font_mark[0] = 1;
-				}
-			}
-			else if ((hight_class == -1) && (top_class == 1)
-				 && (base_class == 0))
-			{
-				/* period */
-				sprintf (chars, ".");
-			}
-			else if ((hight_class == -1)
-				 && (top_class == 1) && (base_class == -1))
-			{
-				/* we assume comma */
-				sprintf (chars, ",");
-			}
-
-			/* high fonts desending from top */
-
-			else if (hight_class == 1 && top_class == -1)
-			{
-				/* lamed */
-				sprintf (chars, "ל");
-			}
-
-			/* high and thin fonts desending from buttom */
-
-			else if (hight_class == 1 && width_class == -1
-				 && top_class == 0)
-			{
-				/* nun sofit */
-				sprintf (chars, "ן");
-			}
-
-			/* high fonts desending from buttom */
-
-			else if (hight_class == 1 && width_class == 0
-				 && top_class == 0)
-			{
-				if (font_mark[12] == 1)
-				{
-					/* kaf sofit */
-					sprintf (chars, "ך");
-				}
-				else if (font_mark[19] == 1)
-				{
-					/*  ayin */
-					sprintf (chars, "ע");
-				}
-				else if (font_mark[21] == 1)
-				{
-					/*  pe sofit */
-					sprintf (chars, "ף");
-				}
-				else if (font_mark[23] == 1)
-				{
-					/* tzadi */
-
-					sprintf (chars, "ץ");
-				}
-				else if (font_mark[24] == 1)
-				{
-					/* kuf */
-					sprintf (chars, "ק");
-				}
-				else
-				{
-					sprintf (chars, "_");
-					font_mark[0] = 1;
-				}
-			}
-
-			/* thin fonts */
-
-			else if (width_class == -1)
-			{
-				/* gimel 2, vav 5, zayin 6, tet 8, nun 15 */
-
-				if (font_mark[32] == 1)
-				{
-					/* tet */
-					sprintf (chars, "!");
-				}
-				else if (font_mark[33] == 1)
-				{
-					/* gimel */
-					sprintf (chars, "?");
-				}
-				else if (font_mark[3] == 1)
-				{
-					/* gimel */
-					sprintf (chars, "ג");
-				}
-				else if (font_mark[9] == 1)
-				{
-					/* tet */
-					sprintf (chars, "ט");
-				}
-				else if (font_mark[19] == 1)
-				{
-					/* ayin */
-					sprintf (chars, "ע");
-				}
-				else if (font_mark[16] == 1)
-				{
-					/* nun */
-					sprintf (chars, "נ");
-				}
-				else if (font_mark[6] == 1)
-				{
-					/* vav */
-					sprintf (chars, "ו");
-				}
-				else if (font_mark[25] == 1)
-				{
-					/* resh */
-					sprintf (chars, "ר");
-				}
-				else if (font_mark[7] == 1)
-				{
-					/* zayin */
-					sprintf (chars, "ז");
-				}
-				else
-				{
-					sprintf (chars, "_");
-					font_mark[0] = 1;
-				}
-			}
-			/* regular fonts */
-			/* TODO: sort fonts by statistical number of appearences in text */
-			else
-			{
-
-				if (font_mark[1] == 1)
-				{
-					sprintf (chars, "א");
-				}
-				else if (font_mark[2] == 1)
-				{
-					sprintf (chars, "ב");
-				}
-				else if (font_mark[3] == 1)
-				{
-					sprintf (chars, "ג");
-				}
-				else if (font_mark[4] == 1)
-				{
-					sprintf (chars, "ד");
-				}
-				else if (font_mark[5] == 1)
-				{
-					sprintf (chars, "ה");
-				}
-				else if (font_mark[8] == 1)
-				{
-					sprintf (chars, "ח");
-				}
-				else if (font_mark[9] == 1)
-				{
-					sprintf (chars, "ט");
-				}
-				else if (font_mark[11] == 1)
-				{
-					sprintf (chars, "כ");
-				}
-				else if (font_mark[14] == 1)
-				{
-					sprintf (chars, "מ");
-				}
-				else if (font_mark[15] == 1)
-				{
-					sprintf (chars, "ם");
-				}
-				//else if (nun_mark == 1)
-				//{
-				//      sprintf (chars, "נ");
-				//}
-				else if (font_mark[18] == 1)
-				{
-					sprintf (chars, "ס");
-				}
-				else if (font_mark[19])
-				{
-					sprintf (chars, "ע");
-				}
-				else if (font_mark[20] == 1)
-				{
-					sprintf (chars, "פ");
-				}
-				else if (font_mark[22])
-				{
-					sprintf (chars, "צ");
-				}
-				else if (font_mark[25] == 1)
-				{
-					sprintf (chars, "ר");
-				}
-				else if (font_mark[26] == 1)
-				{
-					sprintf (chars, "ש");
-				}
-				else if (font_mark[27] == 1)
-				{
-					sprintf (chars, "ת");
-				}
-				else
-				{
-					sprintf (chars, "_");
-					font_mark[0] = 1;
-				}
-			}
-
-			if (chars[0] == '\'' && chars[1] == '\0'
-			    && last_was_quot == 0)
-			{
-				last_was_quot = 1;
-				if (fonts[i][j].width > 2
-				    && fonts[i][j].hight > 2)
-					hocr_text_buffer_add_string
-						(text_buffer, chars);
-			}
-			else if (chars[0] == '\'' && chars[1] == '\0'
-				 && last_was_quot == 1)
-			{
-				last_was_quot = 0;
-				text_buffer->text[text_buffer->size - 1] =
-					'\"';
-			}
-			else
-			{
-				last_was_quot = 0;
-				if (fonts[i][j].width > 2
-				    && fonts[i][j].hight > 2)
-					hocr_text_buffer_add_string
-						(text_buffer, chars);
+				printf ("=======================\n");
 			}
 
 			/* color unknown fonts in the pixbuf */
-			if (font_mark[0] == 1)
+			if (chars[0] == '_')
 				color_hocr_box_full (pix, fonts[i][j], 1,
 						     255);
 
 			/* check for end of word and end of line */
-			if (end_of_word == 1)
+			if (add_space)
 			{
 				hocr_text_buffer_add_string (text_buffer,
 							     " ");
 			}
-			if (end_of_line == 1)
-			{
-				hocr_text_buffer_add_string (text_buffer,
-							     "\n");
-			}
-			if (end_of_paragraph == 1)
+			if (end_of_line)
 			{
 				hocr_text_buffer_add_string (text_buffer,
 							     "\n");
 			}
 		}
-
 	}
 
+	/* if you are here than it's O.K. ? */
 	if (error)
-		error = HOCR_ERROR_OK;
+		*error = HOCR_ERROR_OK;
 
-	return 0;
+	return 0;		/* the ocr thing need rewriting just leave it for now */
 }

@@ -37,6 +37,14 @@
 
 /* font shape markers array*/
 
+int hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
+		     int base, int top,
+		     int top_class,
+		     int hight_class,
+		     int width_class,
+		     int end_of_word, char *font_string,
+		     int max_chars_in_font_string);
+
 typedef int (*has_font_mark_function) (hocr_pixbuf * pix, hocr_box font,
 				       int is_last_font_in_word,
 				       int y_top_of_line,
@@ -46,7 +54,9 @@ typedef int (*has_font_mark_function) (hocr_pixbuf * pix, hocr_box font,
 int init_has_font_mark_functions_hebrew_alfabet (has_font_mark_function *
 						 has_font_mark,
 						 int *number_of_fonts,
-						 char fonts[MAX_FONTS_IN_FONT_LIB][MAX_NUM_OF_CHARS_IN_FONT]);
+						 char
+						 fonts[MAX_FONTS_IN_FONT_LIB]
+						 [MAX_NUM_OF_CHARS_IN_FONT]);
 
 /* the real functions */
 
@@ -130,12 +140,12 @@ int has_tav_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
 		  int y_top_of_line, int y_buttom_of_line,
 		  int avg_font_width);
 
-int has_nekuda_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
-		  int y_top_of_line, int y_buttom_of_line,
-		  int avg_font_width);
+int has_nekuda_mark (hocr_pixbuf * pix, hocr_box font,
+		     int is_last_font_in_word, int y_top_of_line,
+		     int y_buttom_of_line, int avg_font_width);
 int has_psik_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
-		  int y_top_of_line, int y_buttom_of_line,
-		  int avg_font_width);
+		   int y_top_of_line, int y_buttom_of_line,
+		   int avg_font_width);
 int has_quat_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
 		   int y_top_of_line, int y_buttom_of_line,
 		   int avg_font_width);

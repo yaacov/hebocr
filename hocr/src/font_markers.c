@@ -27,6 +27,7 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 
 #include "hocr.h"
 #include "consts.h"
@@ -39,80 +40,82 @@ int
 init_has_font_mark_functions_hebrew_alfabet (has_font_mark_function *
 					     has_font_mark,
 					     int *number_of_fonts,
-					     char fonts[MAX_FONTS_IN_FONT_LIB][MAX_NUM_OF_CHARS_IN_FONT])
+					     char
+					     fonts[MAX_FONTS_IN_FONT_LIB]
+					     [MAX_NUM_OF_CHARS_IN_FONT])
 {
 
 	*number_of_fonts = 34;
 
 	has_font_mark[1] = has_alef_mark;
-	strcpy (fonts[1],"א");
+	strcpy (fonts[1], "א");
 	has_font_mark[2] = has_bet_mark;
-	strcpy (fonts[2],"ב");
+	strcpy (fonts[2], "ב");
 	has_font_mark[3] = has_gimel_mark;
-	strcpy (fonts[3],"ג");
+	strcpy (fonts[3], "ג");
 	has_font_mark[4] = has_dalet_mark;
-	strcpy (fonts[4],"ד");
+	strcpy (fonts[4], "ד");
 	has_font_mark[5] = has_he_mark;
-	strcpy (fonts[5],"ה");
+	strcpy (fonts[5], "ה");
 	has_font_mark[6] = has_vav_mark;
-	strcpy (fonts[6],"ו");
+	strcpy (fonts[6], "ו");
 	has_font_mark[7] = has_zain_mark;
-	strcpy (fonts[7],"ז");
+	strcpy (fonts[7], "ז");
 	has_font_mark[8] = has_het_mark;
-	strcpy (fonts[8],"ח");
+	strcpy (fonts[8], "ח");
 	has_font_mark[9] = has_tet_mark;
-	strcpy (fonts[9],"ט");
+	strcpy (fonts[9], "ט");
 	has_font_mark[10] = has_yud_mark;
-	strcpy (fonts[10],"י");
+	strcpy (fonts[10], "י");
 	has_font_mark[11] = has_kaf_mark;
-	strcpy (fonts[11],"כ");
+	strcpy (fonts[11], "כ");
 	has_font_mark[12] = has_kaf_sofit_mark;
-	strcpy (fonts[12],"ך");
+	strcpy (fonts[12], "ך");
 	has_font_mark[13] = has_lamed_mark;
-	strcpy (fonts[13],"ל");
+	strcpy (fonts[13], "ל");
 	has_font_mark[14] = has_mem_mark;
-	strcpy (fonts[14],"מ");
+	strcpy (fonts[14], "מ");
 	has_font_mark[15] = has_mem_sofit_mark;
-	strcpy (fonts[15],"ם");
+	strcpy (fonts[15], "ם");
 	has_font_mark[16] = has_nun_mark;
-	strcpy (fonts[16],"נ");
+	strcpy (fonts[16], "נ");
 	has_font_mark[17] = has_nun_sofit_mark;
-	strcpy (fonts[17],"ן");
+	strcpy (fonts[17], "ן");
 	has_font_mark[18] = has_sameh_mark;
-	strcpy (fonts[18],"ס");
+	strcpy (fonts[18], "ס");
 	has_font_mark[19] = has_ayin_mark;
-	strcpy (fonts[19],"ע");
+	strcpy (fonts[19], "ע");
 	has_font_mark[20] = has_pe_mark;
-	strcpy (fonts[20],"פ");
+	strcpy (fonts[20], "פ");
 	has_font_mark[21] = has_pe_sofit_mark;
-	strcpy (fonts[21],"ף");
+	strcpy (fonts[21], "ף");
 	has_font_mark[22] = has_tzadi_mark;
-	strcpy (fonts[22],"צ");
+	strcpy (fonts[22], "צ");
 	has_font_mark[23] = has_tzadi_sofit_mark;
-	strcpy (fonts[23],"ץ");
+	strcpy (fonts[23], "ץ");
 	has_font_mark[24] = has_kof_mark;
-	strcpy (fonts[24],"ק");
+	strcpy (fonts[24], "ק");
 	has_font_mark[25] = has_resh_mark;
-	strcpy (fonts[25],"ר");
+	strcpy (fonts[25], "ר");
 	has_font_mark[26] = has_shin_mark;
-	strcpy (fonts[26],"ש");
+	strcpy (fonts[26], "ש");
 	has_font_mark[27] = has_tav_mark;
-	strcpy (fonts[27],"ת");
+	strcpy (fonts[27], "ת");
 
 	has_font_mark[28] = has_nekuda_mark;
-	strcpy (fonts[28],".");
+	strcpy (fonts[28], ".");
 	has_font_mark[29] = has_psik_mark;
-	strcpy (fonts[29],",");
+	strcpy (fonts[29], ",");
 	has_font_mark[30] = has_quat_mark;
-	strcpy (fonts[30],"\'");
+	strcpy (fonts[30], "\'");
 	has_font_mark[31] = has_double_quat_mark;
-	strcpy (fonts[31],"\"");
+	strcpy (fonts[31], "\"");
 	has_font_mark[32] = has_exlem_mark;
-	strcpy (fonts[32],"!");
+	strcpy (fonts[32], "!");
 	has_font_mark[33] = has_question_mark;
-	strcpy (fonts[33],"?");
+	strcpy (fonts[33], "?");
 	has_font_mark[34] = has_makaf_mark;
-	strcpy (fonts[34],"-");
+	strcpy (fonts[34], "-");
 
 	return 1;
 }
@@ -1927,16 +1930,16 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font,
 	return 1;
 }
 
-int has_nekuda_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
-		  int y_top_of_line, int y_buttom_of_line,
-		  int avg_font_width)
+int
+has_nekuda_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+		 int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	return 0;
 }
 
-int has_psik_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
-		  int y_top_of_line, int y_buttom_of_line,
-		  int avg_font_width)
+int
+has_psik_mark (hocr_pixbuf * pix, hocr_box font, int is_last_font_in_word,
+	       int y_top_of_line, int y_buttom_of_line, int avg_font_width)
 {
 	return 0;
 }
@@ -2044,4 +2047,294 @@ has_makaf_mark (hocr_pixbuf * pix, hocr_box font,
 		return 1;
 	else
 		return 0;
+}
+
+int
+hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
+		 int base, int top,
+		 int top_class,
+		 int hight_class,
+		 int width_class,
+		 int end_of_word, char *font_string,
+		 int max_chars_in_font_string)
+{
+	/* an array of font marks */
+	int font_mark[MAX_FONTS_IN_FONT_LIB];
+	int number_of_fonts_in_font_lib;
+	char font_strings[MAX_FONTS_IN_FONT_LIB][MAX_NUM_OF_CHARS_IN_FONT];
+
+	char *chars = font_string;
+
+	/* an array of function for detecting font marks */
+	has_font_mark_function has_font_mark[MAX_FONTS_IN_FONT_LIB];
+
+	int i, j, k;
+
+	/* font shape OCR */
+
+	/* font shape markers */
+	init_has_font_mark_functions_hebrew_alfabet (has_font_mark,
+						     &number_of_fonts_in_font_lib,
+						     font_strings);
+
+	/* TODO: this shuld be moved to the right place 
+	 * and not doen unnesseraly for all fonts */
+	for (k = 1; k <= number_of_fonts_in_font_lib; k++)
+	{
+		font_mark[k] =
+			(has_font_mark[k]) (pix, font,
+					    end_of_word,
+					    top,
+					    base,
+					    font.width + width_class * 7);
+	}
+
+	/* if wide then arteffact */
+
+	if (width_class == 1)
+	{
+		/* arteffact */
+		sprintf (chars, "__");
+	}
+
+	/* small fonts */
+
+	else if (hight_class == -1 && top_class == 1 && base_class == 1)
+	{
+		/* '-' */
+		sprintf (chars, "-");
+	}
+	else if (hight_class == -1 && top_class == 0)
+	{
+		if (font_mark[34] == 1)
+		{
+			/* '-' */
+			sprintf (chars, "-");
+		}
+		else if (font_mark[10] == 1)
+		{
+			/* yud */
+			sprintf (chars, "י");
+		}
+		else if (font_mark[31] == 1)
+		{
+			sprintf (chars, "\"");
+		}
+		else if (font_mark[30] == 1)
+		{
+			sprintf (chars, "\'");
+		}
+		else
+		{
+			sprintf (chars, "_");
+			font_mark[0] = 1;
+		}
+	}
+	else if ((hight_class == -1) && (top_class == 1) && (base_class == 0))
+	{
+		/* period */
+		sprintf (chars, ".");
+	}
+	else if ((hight_class == -1)
+		 && (top_class == 1) && (base_class == -1))
+	{
+		/* we assume comma */
+		sprintf (chars, ",");
+	}
+
+	/* high fonts desending from top */
+
+	else if (hight_class == 1 && top_class == -1)
+	{
+		/* lamed */
+		sprintf (chars, "ל");
+	}
+
+	/* high and thin fonts desending from buttom */
+
+	else if (hight_class == 1 && width_class == -1 && top_class == 0)
+	{
+		/* nun sofit */
+		sprintf (chars, "ן");
+	}
+
+	/* high fonts desending from buttom */
+
+	else if (hight_class == 1 && width_class == 0 && top_class == 0)
+	{
+		if (font_mark[12] == 1)
+		{
+			/* kaf sofit */
+			sprintf (chars, "ך");
+		}
+		else if (font_mark[19] == 1)
+		{
+			/*  ayin */
+			sprintf (chars, "ע");
+		}
+		else if (font_mark[21] == 1)
+		{
+			/*  pe sofit */
+			sprintf (chars, "ף");
+		}
+		else if (font_mark[23] == 1)
+		{
+			/* tzadi */
+
+			sprintf (chars, "ץ");
+		}
+		else if (font_mark[24] == 1)
+		{
+			/* kuf */
+			sprintf (chars, "ק");
+		}
+		else
+		{
+			sprintf (chars, "_");
+			font_mark[0] = 1;
+		}
+	}
+
+	/* thin fonts */
+
+	else if (width_class == -1)
+	{
+		/* gimel 2, vav 5, zayin 6, tet 8, nun 15 */
+
+		if (font_mark[32] == 1)
+		{
+			/* tet */
+			sprintf (chars, "!");
+		}
+		else if (font_mark[33] == 1)
+		{
+			/* gimel */
+			sprintf (chars, "?");
+		}
+		else if (font_mark[3] == 1)
+		{
+			/* gimel */
+			sprintf (chars, "ג");
+		}
+		else if (font_mark[9] == 1)
+		{
+			/* tet */
+			sprintf (chars, "ט");
+		}
+		else if (font_mark[19] == 1)
+		{
+			/* ayin */
+			sprintf (chars, "ע");
+		}
+		else if (font_mark[16] == 1)
+		{
+			/* nun */
+			sprintf (chars, "נ");
+		}
+		else if (font_mark[6] == 1)
+		{
+			/* vav */
+			sprintf (chars, "ו");
+		}
+		else if (font_mark[25] == 1)
+		{
+			/* resh */
+			sprintf (chars, "ר");
+		}
+		else if (font_mark[7] == 1)
+		{
+			/* zayin */
+			sprintf (chars, "ז");
+		}
+		else
+		{
+			sprintf (chars, "_");
+			font_mark[0] = 1;
+		}
+	}
+	/* regular fonts */
+	/* TODO: sort fonts by statistical number of appearences in text */
+	else
+	{
+
+		if (font_mark[1] == 1)
+		{
+			sprintf (chars, "א");
+		}
+		else if (font_mark[2] == 1)
+		{
+			sprintf (chars, "ב");
+		}
+		else if (font_mark[3] == 1)
+		{
+			sprintf (chars, "ג");
+		}
+		else if (font_mark[4] == 1)
+		{
+			sprintf (chars, "ד");
+		}
+		else if (font_mark[5] == 1)
+		{
+			sprintf (chars, "ה");
+		}
+		else if (font_mark[8] == 1)
+		{
+			sprintf (chars, "ח");
+		}
+		else if (font_mark[9] == 1)
+		{
+			sprintf (chars, "ט");
+		}
+		else if (font_mark[11] == 1)
+		{
+			sprintf (chars, "כ");
+		}
+		else if (font_mark[14] == 1)
+		{
+			sprintf (chars, "מ");
+		}
+		else if (font_mark[15] == 1)
+		{
+			sprintf (chars, "ם");
+		}
+		//else if (nun_mark == 1)
+		//{
+		//      sprintf (chars, "נ");
+		//}
+		else if (font_mark[18] == 1)
+		{
+			sprintf (chars, "ס");
+		}
+		else if (font_mark[19])
+		{
+			sprintf (chars, "ע");
+		}
+		else if (font_mark[20] == 1)
+		{
+			sprintf (chars, "פ");
+		}
+		else if (font_mark[22])
+		{
+			sprintf (chars, "צ");
+		}
+		else if (font_mark[25] == 1)
+		{
+			sprintf (chars, "ר");
+		}
+		else if (font_mark[26] == 1)
+		{
+			sprintf (chars, "ש");
+		}
+		else if (font_mark[27] == 1)
+		{
+			sprintf (chars, "ת");
+		}
+		else
+		{
+			sprintf (chars, "_");
+			font_mark[0] = 1;
+		}
+	}
+
+	return 0;
 }

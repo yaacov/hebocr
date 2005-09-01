@@ -84,7 +84,7 @@ adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box * line);
  @param max_lines maximum size of lines array
  */
 int
-fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
+fill_lines_array (hocr_pixbuf * pix, hocr_box * lines,
 		  int *num_of_lines, int max_lines);
 
 /**

@@ -227,11 +227,9 @@ adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box * line)
 }
 
 int
-fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
+fill_lines_array (hocr_pixbuf * pix, hocr_box * lines,
 		  int *num_of_lines, int max_lines)
 {
-	/* FIXME: column is just a place holder, it does nothing now ! */
-
 	/* for line detection */
 	int line_start;
 	int line_end;
