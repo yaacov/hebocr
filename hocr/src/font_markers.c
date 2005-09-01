@@ -1067,7 +1067,7 @@ has_yud_mark (hocr_pixbuf * pix, hocr_box font)
 
 	if (find_horizontal_notch_to_left_up
 	    (pix, font.x1, font.y1, font.x1 + font.width / 2,
-	     font.y1 + 2* font.hight / 3) == 0)
+	     font.y1 + 2 * font.hight / 3) == 0)
 		return 0;
 
 	/* horizontal bars */
@@ -1837,18 +1837,19 @@ has_exlem_mark (hocr_pixbuf * pix, hocr_box font)
 	int number_of_bars;
 	int start, end;
 
-	if (find_horizontal_path
-	    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x2,
-	     font.y2 - 3) == 0)
-		return 0;
-
 	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 6,
+		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
 				     &start, &end);
 
 	if (number_of_bars != 1)
 		return 0;
 
+	return 1;
+}
+
+int
+has_dots_mark (hocr_pixbuf * pix, hocr_box font)
+{
 	return 1;
 }
 
@@ -1888,7 +1889,7 @@ has_makaf_mark (hocr_pixbuf * pix, hocr_box font)
 
 	if (number_of_bars != 1)
 		return 0;
-	
+
 	if (font.width > font.hight)
 		return 1;
 
@@ -1904,6 +1905,10 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 		 int end_of_word, char *font_string,
 		 int max_chars_in_font_string)
 {
+	int number_of_bars;
+	int start, end;
+	hocr_box under_the_font;
+
 	/* if font is too small this is artefact */
 	if (font.hight < MIN_FONT_SIZE && font.width < MIN_FONT_SIZE)
 	{
@@ -1977,10 +1982,40 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 	/* below top and above base lines fonts */
 	if (hight_class == -1 && top_class == -1 && base_class == -1)
 	{
-		if (has_makaf_mark (pix, font))
+		/* look for the dot of ? : ! under the font */
+		under_the_font.x1 = font.x1;
+		under_the_font.y1 = font.y2;
+		under_the_font.x2 = font.x2;
+		under_the_font.y2 = base;
+
+		number_of_bars =
+			count_horizontal_bars (pix, under_the_font,
+					       font.x1 + font.width / 2,
+					       &start, &end);
+
+		/* found a dot under the font */
+		if (number_of_bars != 0)
 		{
-			sprintf (font_string, "-");
-			return 0;
+
+			if (has_dots_mark (pix, font))
+			{
+				sprintf (font_string, ":");
+				return 0;
+			}
+
+			sprintf (font_string, "_");
+			return 1;
+		}
+		else
+		{
+			if (has_makaf_mark (pix, font))
+			{
+				sprintf (font_string, "-");
+				return 0;
+			}
+
+			sprintf (font_string, "_");
+			return 1;
 		}
 
 		sprintf (font_string, "_");
@@ -2013,50 +2048,66 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 		return 1;
 	}
 
-	/* below top and below base lines fonts */
-	if (hight_class == -1 && top_class == -1 && base_class == 1)
-	{
-		if (has_psik_mark (pix, font))
-		{
-			sprintf (font_string, ",");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
 	/* on top and above base lines fonts */
 	if (hight_class == -1 && top_class == 0 && base_class == -1)
 	{
-		if (has_makaf_mark (pix, font))
-		{
-			sprintf (font_string, "-");
-			return 0;
-		}
+		/* look for the dot of ? : ! under the font */
+		under_the_font.x1 = font.x1;
+		under_the_font.y1 = font.y2;
+		under_the_font.x2 = font.x2;
+		under_the_font.y2 = base + 3;
 
-		if (has_question_mark (pix, font))
-		{
-			sprintf (font_string, "?");
-			return 0;
-		}
-		
-		if (has_yud_mark (pix, font))
-		{
-			sprintf (font_string, "י");
-			return 0;
-		}
+		number_of_bars =
+			count_horizontal_bars (pix, under_the_font,
+					       font.x1 + font.width / 2,
+					       &start, &end);
 
-		if (has_quat_mark (pix, font))
+		/* found a dot under the font */
+		if (number_of_bars != 0)
 		{
-			sprintf (font_string, "\'");
-			return 0;
-		}
+			if (has_question_mark (pix, font))
+			{
+				sprintf (font_string, "?");
+				return 0;
+			}
 
-		if (has_double_quat_mark (pix, font))
+			if (has_exlem_mark (pix, font))
+			{
+				sprintf (font_string, "!");
+				return 0;
+			}
+
+			sprintf (font_string, "_");
+			return 1;
+		}
+		else
 		{
-			sprintf (font_string, "\"");
-			return 0;
+			if (has_makaf_mark (pix, font))
+			{
+				sprintf (font_string, "-");
+				return 0;
+			}
+
+			if (has_yud_mark (pix, font))
+			{
+				sprintf (font_string, "י");
+				return 0;
+			}
+
+			if (has_quat_mark (pix, font))
+			{
+				sprintf (font_string, "\'");
+				return 0;
+			}
+
+			if (has_double_quat_mark (pix, font))
+			{
+				sprintf (font_string, "\"");
+				return 0;
+			}
+
+			sprintf (font_string, "_");
+			return 1;
 		}
 
 		sprintf (font_string, "_");
@@ -2071,35 +2122,35 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 			sprintf (font_string, "ג");
 			return 0;
 		}
-		
+
 		if (has_vav_mark (pix, font))
 		{
 			sprintf (font_string, "ו");
 			return 0;
 		}
-		
+
 		if (has_zain_mark (pix, font))
 		{
 			sprintf (font_string, "ז");
 			return 0;
 		}
-		
+
 		if (has_tet_mark (pix, font))
 		{
 			sprintf (font_string, "ט");
 			return 0;
 		}
-		
+
 		if (has_nun_mark (pix, font))
 		{
 			sprintf (font_string, "נ");
 			return 0;
 		}
-		
+
 		sprintf (font_string, "_");
 		return 1;
 	}
-	
+
 	/* all other fonts */
 	if (hight_class == 0 && width_class == 0)
 	{
@@ -2108,107 +2159,107 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 			sprintf (font_string, "א");
 			return 0;
 		}
-		
+
 		if (has_bet_mark (pix, font))
 		{
 			sprintf (font_string, "ב");
 			return 0;
 		}
-		
+
 		if (has_gimel_mark (pix, font))
 		{
 			sprintf (font_string, "ג");
 			return 0;
 		}
-		
+
 		if (has_dalet_mark (pix, font))
 		{
 			sprintf (font_string, "ד");
 			return 0;
 		}
-		
+
 		if (has_he_mark (pix, font))
 		{
 			sprintf (font_string, "ה");
 			return 0;
 		}
-		
+
 		if (has_het_mark (pix, font))
 		{
 			sprintf (font_string, "ח");
 			return 0;
 		}
-		
+
 		if (has_tet_mark (pix, font))
 		{
 			sprintf (font_string, "ט");
 			return 0;
 		}
-		
+
 		if (has_kaf_mark (pix, font))
 		{
 			sprintf (font_string, "כ");
 			return 0;
 		}
-		
+
 		if (has_mem_mark (pix, font))
 		{
 			sprintf (font_string, "מ");
 			return 0;
 		}
-		
+
 		if (has_mem_sofit_mark (pix, font))
 		{
 			sprintf (font_string, "ם");
 			return 0;
 		}
-		
+
 		if (has_sameh_mark (pix, font))
 		{
 			sprintf (font_string, "ס");
 			return 0;
 		}
-		
+
 		if (has_ayin_mark (pix, font))
 		{
 			sprintf (font_string, "ע");
 			return 0;
 		}
-		
+
 		if (has_pe_mark (pix, font))
 		{
 			sprintf (font_string, "פ");
 			return 0;
 		}
-		
+
 		if (has_tzadi_mark (pix, font))
 		{
 			sprintf (font_string, "צ");
 			return 0;
 		}
-		
+
 		if (has_resh_mark (pix, font))
 		{
 			sprintf (font_string, "ר");
 			return 0;
 		}
-		
+
 		if (has_shin_mark (pix, font))
 		{
 			sprintf (font_string, "ש");
 			return 0;
 		}
-		
+
 		if (has_tav_mark (pix, font))
 		{
 			sprintf (font_string, "ת");
 			return 0;
 		}
-		
+
 		sprintf (font_string, "_");
 		return 1;
 	}
-	
+
 	/* this font is unknown */
 	sprintf (font_string, "_");
 

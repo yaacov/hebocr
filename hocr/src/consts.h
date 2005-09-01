@@ -42,7 +42,7 @@
 #define NORMAL_FONT_WIDTH 20
 #define NORMAL_FONT_HIGHT 30
 
-#define MAX_LINE_HIGHT 50
+#define MAX_LINE_HIGHT 60
 #define MIN_LINE_HIGHT 20
 
 /* FIXME: this is in pixel convert to 1/1000 ? */

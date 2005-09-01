@@ -436,6 +436,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	int num_of_fonts_in_page;
 	int avg_font_hight_in_page;
+	int avg_line_hight_in_page;
 	int avg_font_width_in_page;
 
 	int i, j, k;
@@ -468,12 +469,28 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		return 1;
 	}
 
+	/* get avg_line_hight_in_page */
+	avg_line_hight_in_page = 0;
+	for (i = 0; i < num_of_lines; i++)
+	{
+		avg_line_hight_in_page += lines[i].hight;
+	}
+	avg_line_hight_in_page = avg_line_hight_in_page / num_of_lines;
+
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
-		fill_fonts_array (pix, lines[i],
-				  fonts[i],
-				  &(num_of_fonts[i]), MAX_FONTS_IN_LINE);
+		if (i == 0 || lines[i].y1 > (lines[i-1].y2 + MIN_DISTANCE_BETWEEN_LINES))
+		{
+			fill_fonts_array (pix, lines[i],
+					  fonts[i],
+					  &(num_of_fonts[i]),
+					  MAX_FONTS_IN_LINE);
+		}
+		else
+		{
+			num_of_fonts[i] = 0;
+		}
 	}
 
 	/* get size statistics for all fonts for all the lines */
@@ -506,6 +523,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* get lines equations for non horizontal lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
+		if (num_of_fonts[i] == 0)
+			continue;
+
 		find_font_baseline_eq (lines[i], fonts[i], &(line_eqs[i][0]),
 				       &(line_eqs[i][1]),
 				       avg_font_hight_in_page,
@@ -524,11 +544,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	if (out_flags & HOCR_OUTPUT_WITH_GRAPHICS)
 		for (i = 0; i < num_of_lines; i++)
 		{
+			if (num_of_fonts[i] == 0)
+				continue;
+
 			/* color line boxes */
 			color_hocr_line_eq (pix, &(line_eqs[i][0]),
 					    lines[i].x1, lines[i].x2, 2, 0);
 			color_hocr_line_eq (pix, &(line_eqs[i][1]),
-					    lines[i].x1, lines[i].x2, 2, 0);
+					    lines[i].x1, lines[i].x2, 2, 100);
 
 			/* color individual font boxes */
 			for (j = 0; j < num_of_fonts[i]; j++)
