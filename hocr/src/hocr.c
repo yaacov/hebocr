@@ -110,14 +110,14 @@ hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
 		}
 		else
 		{
-			return text_buffer->size;
+			return HOCR_ERROR_OUT_OF_MEMORY;
 		}
 	}
 
 	strcat (text_buffer->text, new_text);
 	text_buffer->size = strlen (text_buffer->text);
 
-	return text_buffer->size;
+	return HOCR_ERROR_OK;
 }
 
 /* 
@@ -579,6 +579,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				 (fonts[i][j + 1], line_eqs[i][1],
 				  avg_font_hight_in_page) == -1);
 
+			/**
+			 */
+
 			/* get font markers */
 			hocr_guess_font (pix, fonts[i][j], base_class,
 					 hocr_line_eq_get_y (line_eqs[i][0],
@@ -589,8 +592,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					 end_of_word, chars,
 					 MAX_NUM_OF_CHARS_IN_FONT);
 
-			/* output font to text buffer */
-			hocr_text_buffer_add_string (text_buffer, chars);
+			/* output font to text buffer, stop if out of memory for the text buffer */
+			if (hocr_text_buffer_add_string (text_buffer, chars)
+			    == HOCR_ERROR_OUT_OF_MEMORY)
+			{
+				if (error)
+					*error = HOCR_ERROR_OUT_OF_MEMORY;
+			}
 
 			/* if user want printout print all you know about this char */
 			if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
