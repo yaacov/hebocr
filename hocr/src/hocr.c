@@ -451,7 +451,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	int add_space;
 	int end_of_paragraph;
 	int last_was_quat;
-	
+
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
 
@@ -594,29 +594,49 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					 MAX_NUM_OF_CHARS_IN_FONT);
 
 			/* if chars is ' wait to the next char and if it is ' too
-			   add " once */
-			if (chars[0] == '\'' && chars[1] == 0 && last_was_quat)
+			 * add " once */
+			if (chars[0] == '\'' && chars[1] == 0)
 			{
-				sprintf (chars, "\"");
-				last_was_quat = FALSE;	
+				if (last_was_quat)
+				{
+					sprintf (chars, "\"");
+					last_was_quat = FALSE;
+
+				}
+				else
+				{
+					sprintf (chars, "");
+					last_was_quat = TRUE;
+				}
 			}
-			else if (chars[0] == '\'' && chars[1] == 0)
-			{
-				sprintf (chars, "");
-				last_was_quat = TRUE;				
-			} 
 			else
 			{
+				if (last_was_quat)
+				{
+					/* output ' to text buffer, stop if out of memory for the text buffer */
+					if (hocr_text_buffer_add_string
+					    (text_buffer,
+					     "\'") ==
+					    HOCR_ERROR_OUT_OF_MEMORY)
+					{
+						if (error)
+							*error = HOCR_ERROR_OUT_OF_MEMORY;
+					}
+				}
+
 				last_was_quat = FALSE;
 			}
-			
-			/* output font to text buffer, stop if out of memory for the text buffer */
-			if (hocr_text_buffer_add_string (text_buffer, chars)
-			    == HOCR_ERROR_OUT_OF_MEMORY)
-			{
-				if (error)
-					*error = HOCR_ERROR_OUT_OF_MEMORY;
-			}
+
+			/* if no font dont try to insert it */
+			if (chars[0])
+				/* output font to text buffer, stop if out of memory for the text buffer */
+				if (hocr_text_buffer_add_string
+				    (text_buffer,
+				     chars) == HOCR_ERROR_OUT_OF_MEMORY)
+				{
+					if (error)
+						*error = HOCR_ERROR_OUT_OF_MEMORY;
+				}
 
 			/* if user want printout print all you know about this char */
 			if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
