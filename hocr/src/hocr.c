@@ -450,6 +450,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	int width_class;
 	int end_of_line;
 	int end_of_word;
+	int add_space;
 	int end_of_paragraph;
 
 	/* font shape markers */
@@ -570,19 +571,18 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				/* print out font position in word, e.g. is last
 				 * or is before non letter (psik, nekuda ...) */
 				end_of_line = (j + 1) == num_of_fonts[i];
-				end_of_word = end_of_line
-					|| (fonts[i][j].x1 -
-					    fonts[i][j + 1].x2) >
-					MIN_DISTANCE_BETWEEN_WORDS
+				add_space = (fonts[i][j].x1 -
+					     fonts[i][j + 1].x2) >
+					MIN_DISTANCE_BETWEEN_WORDS;
+				end_of_word = ((end_of_line || add_space)
+					       && !(top_class == -1))
 					||
-					get_font_top_class (fonts[i][j + 1],
-							    line_eqs[i][1],
-							    avg_font_hight_in_page)
-					== -1;
-				
-				printf ("end of line %d, end of word %d\n",
-					end_of_line, end_of_word);
-					
+					(get_font_top_class
+					 (fonts[i][j + 1], line_eqs[i][1],
+					  avg_font_hight_in_page) == -1);
+
+				printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
+
 				/* print out font markers */
 
 				/* print out next font */
