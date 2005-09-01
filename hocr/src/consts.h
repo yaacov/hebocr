@@ -61,6 +61,8 @@
 
 #define FONT_ASSEND 200
 
+#define MIN_FONT_SIZE 3
+
 /* how much memory will hocr_text_buffer will allocate when it nead memory */
 #define MEMORY_CHANK_FOR_TEXT_BUFFER 500
 
