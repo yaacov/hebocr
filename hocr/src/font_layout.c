@@ -127,11 +127,16 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	base_line->a =
 		(double) (y_end_base -
 			  y_start_base) / (double) (x_end - x_start);
-	base_line->b = y_start_base - base_line->a * x_start;
-
+	
 	top_line->a =
 		(double) (y_end_top -
 			  y_start_top) / (double) (x_end - x_start);
+	
+	/* FIXME: assume line is horizonatal and parallel ? */
+	base_line->a = (base_line->a < top_line->a)?base_line->a:top_line->a;
+	top_line->a = base_line->a;
+	
+	base_line->b = y_start_base - base_line->a * x_start;
 	top_line->b = y_start_top - top_line->a * x_start;
 
 	return 0;

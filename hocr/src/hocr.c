@@ -456,6 +456,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
 
+	/* init the error to OK */
+	if (error)
+		*error = HOCR_ERROR_OK;
+	
 	/* page layout recognition */
 
 	/* get all lines in this column */
@@ -465,7 +469,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	{
 		/* is it O.K. to have no lines in the page ? */
 		if (error)
-			*error = HOCR_ERROR_NO_LINES_FOUND;
+			*error = *error | HOCR_ERROR_NOT_HORIZONTAL_LINE;
 		return 1;
 	}
 
@@ -480,17 +484,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* get all fonts for all the lines */
 	for (i = 0; i < num_of_lines; i++)
 	{
-		if (i == 0 || lines[i].y1 > (lines[i-1].y2 + MIN_DISTANCE_BETWEEN_LINES))
-		{
-			fill_fonts_array (pix, lines[i],
-					  fonts[i],
-					  &(num_of_fonts[i]),
-					  MAX_FONTS_IN_LINE);
-		}
-		else
-		{
-			num_of_fonts[i] = 0;
-		}
+		fill_fonts_array (pix, lines[i],
+				  fonts[i],
+				  &(num_of_fonts[i]), MAX_FONTS_IN_LINE);
 	}
 
 	/* get size statistics for all fonts for all the lines */
@@ -499,11 +495,16 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	avg_font_width_in_page = 0;
 	for (i = 0; i < num_of_lines; i++)
 	{
-		for (j = 0; j < num_of_fonts[i]; j++)
+		if (lines[i].hight > (avg_line_hight_in_page - 1.5 * MIN_DISTANCE_BETWEEN_LINES))
 		{
-			num_of_fonts_in_page++;
-			avg_font_width_in_page += fonts[i][j].width;
-			avg_font_hight_in_page += fonts[i][j].hight;
+			for (j = 0; j < num_of_fonts[i]; j++)
+			{
+
+				num_of_fonts_in_page++;
+				avg_font_width_in_page += fonts[i][j].width;
+				avg_font_hight_in_page += fonts[i][j].hight;
+
+			}
 		}
 	}
 
@@ -516,7 +517,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	{
 		/* is it O.K. to have no fonts in the page ? */
 		if (error)
-			*error = HOCR_ERROR_NO_FONTS_FOUND;
+			*error = *error | HOCR_ERROR_NOT_HORIZONTAL_LINE;
 		return 1;
 	}
 
@@ -532,11 +533,19 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				       num_of_fonts[i]);
 
 		/* if line is very not horizontal return error */
-		if (line_eqs[i][0].a > (1.0 / 3.0))
+		if ((line_eqs[i][0].a * line_eqs[i][0].a) > (1.0 / 9.0))
 		{
 			if (error)
-				*error = HOCR_ERROR_NOT_HORIZONTAL_LINE;
-			return 1;
+				*error = *error | HOCR_ERROR_NOT_HORIZONTAL_LINE;
+			
+			num_of_fonts[i] = 0;
+		}
+
+		/* if this line is not high it is nikud line */
+		if ((line_eqs[i][0].b - line_eqs[i][1].b) <
+		    (avg_font_hight_in_page - MIN_DISTANCE_BETWEEN_LINES))
+		{
+			num_of_fonts[i] = 0;
 		}
 	}
 
@@ -704,10 +713,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			}
 		}
 	}
-
-	/* if you are here than it's O.K. ? */
-	if (error)
-		*error = HOCR_ERROR_OK;
 
 	return 0;		/* the ocr thing need rewriting just leave it for now */
 }

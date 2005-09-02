@@ -1837,11 +1837,7 @@ has_exlem_mark (hocr_pixbuf * pix, hocr_box font)
 	int number_of_bars;
 	int start, end;
 
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
-				     &start, &end);
-
-	if (number_of_bars != 1)
+	if (font.hight / font.width <= 1)
 		return 0;
 
 	return 1;
@@ -1860,18 +1856,7 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font)
 	int number_of_bars;
 	int start, end;
 
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
-				     &start, &end);
-
-	if (number_of_bars != 2)
-		return 0;
-
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start, &end);
-
-	if (number_of_bars != 1)
+	if (font.hight / font.width > 1)
 		return 0;
 
 	return 1;
@@ -1905,7 +1890,7 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 		 int end_of_word, char *font_string,
 		 int max_chars_in_font_string)
 {
-	int number_of_bars;
+	int number_of_bars, number_of_bars2;
 	int start, end;
 	hocr_box under_the_font;
 
@@ -2061,6 +2046,14 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 			count_horizontal_bars (pix, under_the_font,
 					       font.x1 + font.width / 2,
 					       &start, &end);
+
+		number_of_bars2 =
+			count_horizontal_bars (pix, under_the_font,
+					       font.x1 + font.width / 3,
+					       &start, &end);
+
+		if (number_of_bars < number_of_bars2)
+			number_of_bars = number_of_bars2;
 
 		/* found a dot under the font */
 		if (number_of_bars != 0)
