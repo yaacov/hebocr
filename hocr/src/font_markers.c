@@ -1785,6 +1785,9 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font)
 int
 has_nekuda_mark (hocr_pixbuf * pix, hocr_box font)
 {
+	if ((double)font.hight / (double) font.width > 1.8)
+		return 0;
+	
 	return 1;
 }
 
@@ -2016,6 +2019,12 @@ hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 			return 0;
 		}
 
+		if (has_psik_mark (pix, font))
+		{
+			sprintf (font_string, ",");
+			return 0;
+		}
+		
 		sprintf (font_string, "_");
 		return 1;
 	}
