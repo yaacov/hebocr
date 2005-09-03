@@ -22,8 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TODO: this all file is just a quick hack to get things done
-         need to rewrite the whole thing NOT using gnome */
+#define STRING_MAX_SIZE 255
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -37,6 +36,17 @@
 #include "hocr.h"
 
 int
+print_help ()
+{
+	printf ("hocr %s - Hebrew OCR program\n", VERSION);
+	printf ("http://hocr.berlios.de\n");
+	printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
+	printf ("\n");
+
+	return 0;
+}
+
+int
 save_text (char *filename, char *format_out, char *text)
 {
 	FILE *file;
@@ -47,9 +57,16 @@ save_text (char *filename, char *format_out, char *text)
 		/* save to file */
 		file = fopen (filename, "w");
 
+		/* can't open file */
+		if (!file)
+		{
+			printf ("hocr: can\'t save file as %s\n", filename);
+			exit (0);
+		}
+
 		if (format_out[0] == 'h')
 			fprintf (file,
-				   "<html>\n<meta http-equiv=\"Content-Type\" \
+				 "<html>\n<meta http-equiv=\"Content-Type\" \
 content=\"text/html; charset=UTF-8\">\n \
 <body dir=\"rtl\"><pre>\n");
 
@@ -77,16 +94,6 @@ content=\"text/html; charset=UTF-8\">\n \
 }
 
 int
-print_help ()
-{
-	printf ("hocr %s - Hebrew OCR program\n", VERSION);
-	printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
-	printf ("\n");
-	
-	return 0;
-}
-
-int
 main (int argc, char *argv[])
 {
 	int opt_i = 0;
@@ -94,13 +101,14 @@ main (int argc, char *argv[])
 	int opt_f = 0;
 	char c;
 
-	char filename_in[255];
-	char filename_out[255];
-	char format_out[255];
+	char filename_in[STRING_MAX_SIZE];
+	char filename_out[STRING_MAX_SIZE];
+	char format_out[STRING_MAX_SIZE];
 
-	hocr_pixbuf * pix;
-	hocr_text_buffer* text_buffer;
-	
+	hocr_error error;
+	hocr_pixbuf *pix;
+	hocr_text_buffer *text_buffer;
+
 	/* default output is text file */
 	format_out[0] = 't';
 
@@ -109,19 +117,25 @@ main (int argc, char *argv[])
 		switch (c)
 		{
 		case 'i':
-			opt_i = 1;
-			if (optarg)
+			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
+			{
 				strcpy (filename_in, optarg);
+				opt_i = 1;
+			}
 			break;
 		case 'o':
-			opt_o = 1;
-			if (optarg)
+			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
+			{
 				strcpy (filename_out, optarg);
+				opt_o = 1;
+			}
 			break;
 		case 'f':
-			opt_f = 1;
-			if (optarg)
+			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
+			{
 				strcpy (format_out, optarg);
+				opt_f = 1;
+			}
 			break;
 		case 'h':
 			print_help ();
@@ -148,28 +162,64 @@ main (int argc, char *argv[])
 		printf ("hocr: can\'t read file %s\n", filename_in);
 		exit (0);
 	}
-	
+
 	/* create text buffer */
 	text_buffer = hocr_text_buffer_new ();
-	
+
 	if (!text_buffer)
 	{
 		printf ("hocr: can\'t allocate memory for text out\n");
 		exit (0);
 	}
-	
+
 	/* do ocr */
-	hocr_do_ocr (pix, text_buffer, HOCR_OUTPUT_JUST_OCR, 0);
-	
+	hocr_do_ocr (pix, text_buffer, HOCR_OUTPUT_JUST_OCR, &error);
+
+	/* did do_ocr return an error ? */
+	if (error != HOCR_ERROR_OK)
+	{
+		switch (error)
+		{
+		case HOCR_ERROR_NO_LINES_FOUND:
+			printf ("hocr: can\'t find readble lines in input\n");
+
+			/* unref memory and exit */
+			hocr_pixbuf_unref (pix);
+			hocr_text_buffer_unref (text_buffer);
+			exit (0);
+
+			break;
+		case HOCR_ERROR_NO_FONTS_FOUND:
+			printf ("hocr: can\'t find readble fonts in input\n");
+
+			/* unref memory and exit */
+			hocr_pixbuf_unref (pix);
+			hocr_text_buffer_unref (text_buffer);
+			exit (0);
+
+			break;
+		case HOCR_ERROR_OUT_OF_MEMORY:
+			printf ("hocr: out of memory while reading\n");
+			break;
+		case HOCR_ERROR_NOT_HORIZONTAL_LINE:
+			printf ("hocr: found non horizontal line in text\n");
+			break;
+		default:
+			printf ("hocr: unknown error while reading\n");
+			exit (0);
+			break;
+		}
+	}
+
 	/* print out the text */
 	if (opt_o == 1)
 		save_text (filename_out, format_out, text_buffer->text);
 	else
 		save_text (NULL, format_out, text_buffer->text);
-	
+
 	/* unref memory */
 	hocr_pixbuf_unref (pix);
 	hocr_text_buffer_unref (text_buffer);
-	
+
 	return 0;
 }
