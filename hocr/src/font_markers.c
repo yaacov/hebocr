@@ -510,14 +510,7 @@ has_quat_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 int
 has_double_quat_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 {
-	int number_of_bars;
-	int start, end;
-
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
-
-	if (number_of_bars != 2)
+	if (marks[3] != 2)
 		return 0;
 
 	return 1;
@@ -529,7 +522,7 @@ has_exlem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	int number_of_bars;
 	int start, end;
 
-	if (font.hight / font.width <= 1)
+	if ((double)font.hight / (double)font.width <= 1.0)
 		return 0;
 
 	return 1;
@@ -548,7 +541,7 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	int number_of_bars;
 	int start, end;
 
-	if (font.hight / font.width > 1)
+	if ((double)font.hight / (double)font.width > 1)
 		return 0;
 
 	return 1;
@@ -557,14 +550,7 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 int
 has_makaf_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 {
-	int number_of_bars;
-	int start, end;
-
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
-
-	if (number_of_bars != 1)
+	if (marks[3] != 1)
 		return 0;
 
 	if (font.width > font.hight)
