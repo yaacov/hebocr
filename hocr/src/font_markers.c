@@ -352,7 +352,7 @@ has_yud_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	//if (find_horizontal_notch_to_left_up
 	//    (pix, font.x1, font.y1, font.x1 + font.width / 2,
 	//     font.y1 + 2 * font.hight / 3) == 0)
-	//	return 0;
+	//      return 0;
 
 	/* horizontal bars */
 	number_of_bars =
@@ -504,13 +504,16 @@ int
 has_quat_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 {
 
+	if (marks[5] != 1)
+		return 0;
+	
 	return 1;
 }
 
 int
 has_double_quat_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 {
-	if (marks[3] != 2)
+	if (marks[5] != 2)
 		return 0;
 
 	return 1;
@@ -522,7 +525,7 @@ has_exlem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	int number_of_bars;
 	int start, end;
 
-	if ((double)font.hight / (double)font.width <= 1.0)
+	if ((double) font.hight / (double) font.width <= 1.0)
 		return 0;
 
 	return 1;
@@ -541,7 +544,7 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	int number_of_bars;
 	int start, end;
 
-	if ((double)font.hight / (double)font.width > 1)
+	if ((double) font.hight / (double) font.width > 1)
 		return 0;
 
 	return 1;
@@ -550,7 +553,7 @@ has_question_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 int
 has_makaf_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 {
-	if (marks[3] != 1)
+	if (marks[5] != 1)
 		return 0;
 
 	if (font.width > font.hight)
@@ -573,18 +576,25 @@ print_marks (hocr_pixbuf * pix, hocr_box font, int *marks)
 				       &end);
 	marks[2] =
 		count_horizontal_bars (pix, font,
-				       font.x1 + 2 * font.width / 3, &start,
+				       font.x1 + 1 * font.width / 2, &start,
+				       &end);
+	marks[3] =
+		count_horizontal_bars (pix, font,
+				       font.x1 + 1 * font.width / 3, &start,
 				       &end);
 
-	marks[3] =
+	marks[4] =
 		count_vertical_bars (pix, font, font.y1 + 1 * font.hight / 3,
 				     &start, &end);
-	marks[4] =
+	marks[5] =
+		count_vertical_bars (pix, font, font.y1 + 1 * font.hight / 2,
+				     &start, &end);
+	marks[6] =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
 				     &start, &end);
 
-	marks[5] = count_obliqe_bars_minus (pix, font, &start, &end);
-	marks[6] = count_obliqe_bars_plus (pix, font, &start, &end);
+	marks[7] = count_obliqe_bars_minus (pix, font, &start, &end);
+	marks[8] = count_obliqe_bars_plus (pix, font, &start, &end);
 
 	return 0;
 }

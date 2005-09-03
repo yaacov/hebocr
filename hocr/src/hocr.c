@@ -697,7 +697,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				/* print marks */
 				print_marks (pix, fonts[i][j], marks);
 
-				printf ("font markers: %d %d %d %d %d %d.\n",
+				printf ("font markers: %d%d %d%d %d%d\n",
 					marks[1], marks[2], marks[3],
 					marks[4], marks[5], marks[6]);
 
