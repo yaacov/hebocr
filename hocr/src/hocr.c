@@ -701,7 +701,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 						chars[0] = '\"';
 						j++;
 
-						/* check for end of line etc.. after seconde ' */
+						/* check for end of line etc.. after next ' */
 
 						/* get font position in word, e.g. is last
 						 * or is before non letter (psik, nekuda ...) */

@@ -4,6 +4,9 @@ hocr (0.4.6)
   
   * add a buffer length check before copeing strings, thanks to Ido Kaner.
   
+  * add column support
+  
+  
   -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 23 Aug 2005 02:13
 
 hocr (0.4.5)
