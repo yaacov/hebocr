@@ -50,7 +50,7 @@ get_next_column_extention (hocr_pixbuf * pix, int current_pos,
 		sum = 0;
 		for (y = 0; y < hight_1_3; y++)
 		{
-			for (i = 0; i < MIN_DISTANCE_BETWEEN_WORDS; i++)
+			for (i = 0; i < 2 * MIN_DISTANCE_BETWEEN_WORDS; i++)
 			{
 				sum += hocr_pixbuf_get_pixel (pix, x + i, y);
 				sum += hocr_pixbuf_get_pixel (pix, x + i,
@@ -70,8 +70,7 @@ get_next_column_extention (hocr_pixbuf * pix, int current_pos,
 		/* if presantage below maximum for in a line then we need to find 
 		 * the end of the line by looking to the end of the down slop */
 		else if ((x <= MIN_DISTANCE_BETWEEN_WORDS || sum == 0) &&
-			 inside_column &&
-			 (*column_end - x) > MIN_COLUMN_WIDTH)
+			 inside_column)
 		{
 			*column_start = x;
 			return 0;
@@ -335,16 +334,26 @@ fill_columns_array (hocr_pixbuf * pix, hocr_box * columns,
 
 	while (return_value == 0 && counter < max_columns)
 	{
-		/* insert this line to lines array */
-		columns[counter].y1 = 0;
-		columns[counter].y2 = pix->height;
-		columns[counter].x1 = column_start;
-		columns[counter].x2 = column_end;
-		columns[counter].width = (column_end - column_start);
-		columns[counter].hight =
-			(columns[counter].y2 - columns[counter].y1);
+		/* a thin column is not a "real" column */
+		if ((column_end - column_start) > MIN_COLUMN_WIDTH)
+		{
+			/* insert this line to lines array */
+			columns[counter].y1 = 0;
+			columns[counter].y2 = pix->height;
+			columns[counter].x1 = column_start;
+			columns[counter].x2 = column_end;
+			columns[counter].width = (column_end - column_start);
+			columns[counter].hight =
+				(columns[counter].y2 - columns[counter].y1);
 
-		counter++;
+			counter++;
+		}
+		/* a thin column is probably a part of the last column */
+		else
+		{
+			columns[counter].x1 = column_start;
+			columns[counter].width = (column_end - column_start);
+		}
 
 		/* get some lee way from the end of last line */
 		column_end += MIN_DISTANCE_BETWEEN_LINES;
