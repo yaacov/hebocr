@@ -2,7 +2,7 @@ hocr (0.4.6)
   
   * examples now named: hocr, hocr-gnome, hocr-qt
   
-  * 
+  * add a buffer length check before copeing strings, thanks to Ido Kaner.
   
   -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 23 Aug 2005 02:13
 

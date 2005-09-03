@@ -456,10 +456,12 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
 
+	int marks[25];
+
 	/* init the error to OK */
 	if (error)
 		*error = HOCR_ERROR_OK;
-	
+
 	/* page layout recognition */
 
 	/* get all lines in this column */
@@ -495,7 +497,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	avg_font_width_in_page = 0;
 	for (i = 0; i < num_of_lines; i++)
 	{
-		if (lines[i].hight > (avg_line_hight_in_page - 1.5 * MIN_DISTANCE_BETWEEN_LINES))
+		if (lines[i].hight >
+		    (avg_line_hight_in_page -
+		     1.5 * MIN_DISTANCE_BETWEEN_LINES))
 		{
 			for (j = 0; j < num_of_fonts[i]; j++)
 			{
@@ -536,8 +540,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		if ((line_eqs[i][0].a * line_eqs[i][0].a) > (1.0 / 9.0))
 		{
 			if (error)
-				*error = *error | HOCR_ERROR_NOT_HORIZONTAL_LINE;
-			
+				*error = *error |
+					HOCR_ERROR_NOT_HORIZONTAL_LINE;
+
 			num_of_fonts[i] = 0;
 		}
 
@@ -688,6 +693,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				/* print out font position in word, e.g. is last
 				 * or is before non letter (psik, nekuda ...) */
 				printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
+
+				/* print marks */
+				print_marks (pix, fonts[i][j], marks);
+
+				printf ("font markers: %d %d %d %d %d %d.\n",
+					marks[1], marks[2], marks[3],
+					marks[4], marks[5], marks[6]);
 
 				/* print out end of font */
 				printf ("font is %s\n", chars);

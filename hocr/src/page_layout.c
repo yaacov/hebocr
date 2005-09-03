@@ -96,6 +96,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 	int x, y;
 	int sum;
 	int inside_font = FALSE;
+
 	/* we have to calculate line hight, we do not get it from caller */
 	int line_hight = line_end - line_start;
 
@@ -134,19 +135,18 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	int x, y;
 	int sum;
 
-	/* adjust right font border */
-	font->x2 ++;
+	font->x2++;
+	font->width++;
 	
 	/* check if font box is too big */
 
 	sum = 0;
 	/* read line from right to left */
-	for (y = font->y1;
-	     y < font->y2 && sum == 0; y++)
+	for (y = font->y1; y < font->y2 && sum == 0; y++)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
-		for (x = font->x1; x < font->x2; x++)
+		for (x = font->x1; x <= font->x2; x++)
 		{
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
@@ -155,12 +155,11 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 
 	sum = 0;
 	/* read line from right to left */
-	for (y = font->y2;
-	     y > font->y1 && sum == 0; y--)
+	for (y = font->y2; y > font->y1 && sum == 0; y--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
-		for (x = font->x1; x < font->x2; x++)
+		for (x = font->x1; x <= font->x2; x++)
 		{
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
@@ -171,12 +170,11 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 
 	sum = 1;
 	/* read line from right to left */
-	for (y = font->y1;
-	     y > (font->y1 - MIN_LINE_HIGHT) && sum != 0; y--)
+	for (y = font->y1; y > (font->y1 - MIN_LINE_HIGHT) && sum != 0; y--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
-		for (x = font->x1; x < font->x2; x++)
+		for (x = font->x1; x <= font->x2; x++)
 		{
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
@@ -185,12 +183,11 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 
 	sum = 1;
 	/* read line from right to left */
-	for (y = font->y2;
-	     y < (font->y2 + MIN_LINE_HIGHT) && sum != 0; y++)
+	for (y = font->y2; y < (font->y2 + MIN_LINE_HIGHT) && sum != 0; y++)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
-		for (x = font->x1; x < font->x2; x++)
+		for (x = font->x1; x <= font->x2; x++)
 		{
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
@@ -200,19 +197,26 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	/* check for nikud under the font */
 	sum = 1;
 	/* read line from right to left */
-	for (y = font->y2 - 1;
-	     y > font->y1 && sum != 0; y--)
+	for (y = font->y2 - 1; y > font->y1 && sum != 0; y--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
-		for (x = font->x1; x < font->x2; x++)
+		for (x = font->x1; x <= font->x2; x++)
 		{
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 	}
-	if (y > font->y1 + MIN_DISTANCE_BETWEEN_LINES)
+	/* some times bet and caf look like resh with patach
+	 * but patach is smaller ~3/4 than lower bar of kaf and bet */
+	sum = 0;
+	for (x = font->x1; x <= font->x2; x++)
+	{
+		sum += hocr_pixbuf_get_pixel (pix, x, font->y2 - 3);
+	}
+
+	if (y > font->y1 + MIN_DISTANCE_BETWEEN_LINES && sum < 2 * font->width / 3)
 		font->y2 = y - 1;
-	
+
 	return 1;
 }
 

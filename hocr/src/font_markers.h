@@ -45,6 +45,8 @@ int hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
 		     int end_of_word, char *font_string,
 		     int max_chars_in_font_string);
 
+int print_marks (hocr_pixbuf * pix, hocr_box font, int* marks);
+
 /**
  */
 
