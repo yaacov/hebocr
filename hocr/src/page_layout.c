@@ -36,15 +36,15 @@ get_next_column_extention (hocr_pixbuf * pix, int current_pos,
 
 	int hight, hight_1_3, hight_2_3;
 
-	*column_end = 0;
-	*column_start = current_pos;
+	*column_end = current_pos;
+	*column_start = 0;
 
 	hight = pix->height;
 	hight_1_3 = hight / 3;
 	hight_2_3 = 2 * hight / 3;
 
 	for (x = current_pos - MIN_DISTANCE_BETWEEN_WORDS; x > 0;
-	     x -= MIN_DISTANCE_BETWEEN_WORDS)
+	     x -= MIN_DISTANCE_BETWEEN_WORDS / 2)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
@@ -61,14 +61,15 @@ get_next_column_extention (hocr_pixbuf * pix, int current_pos,
 		}
 
 		/* if presantage above minmun for not in a line then we are in aline */
-		if (!inside_column && sum > 0)
+		if (!inside_column
+		    && (x <= MIN_DISTANCE_BETWEEN_WORDS || sum > 0))
 		{
 			*column_end = x + MIN_DISTANCE_BETWEEN_WORDS;
 			inside_column = TRUE;
 		}
 		/* if presantage below maximum for in a line then we need to find 
 		 * the end of the line by looking to the end of the down slop */
-		else if (sum == 0 &&
+		else if ((x <= MIN_DISTANCE_BETWEEN_WORDS || sum == 0) &&
 			 inside_column &&
 			 (*column_end - x) > MIN_COLUMN_WIDTH)
 		{
@@ -91,7 +92,7 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 
 	int width, width_1_3, width_2_3;
 
-	*line_end = 0;
+	*line_end = column.y2;
 	*line_start = current_pos;
 
 	width = column.width;
@@ -286,9 +287,32 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 int
 adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box column, hocr_box * line)
 {
-	/* TODO: make this more intelegent */
-	line->x1 = column.x1;
-	line->x2 = column.x2;
+	int sum;
+	int x, y;
+
+	sum = 0;
+	for (x = column.x1; x < column.x2 && sum == 0; x++)
+	{
+		/* get presentage coverage for this pixel line */
+		sum = 0;
+		for (y = line->y1; y < line->y2; y++)
+		{
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
+		}
+	}
+	line->x1 = x - 2;
+
+	sum = 0;
+	for (x = column.x2; x > column.x1 && sum == 0; x--)
+	{
+		/* get presentage coverage for this pixel line */
+		sum = 0;
+		for (y = line->y1; y < line->y2; y++)
+		{
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
+		}
+	}
+	line->x2 = x + 2;
 
 	return 1;
 }
@@ -395,7 +419,8 @@ fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 						line.x2,
 						&font_start, &font_end);
 
-	while (return_value == 0 && font_start > line.x1 && counter < max_fonts)
+	while (return_value == 0 && font_start > line.x1
+	       && counter < max_fonts)
 	{
 		/* insert this font to fonts array */
 		fonts[counter].x1 = font_end;	/* this is right to left sweep */

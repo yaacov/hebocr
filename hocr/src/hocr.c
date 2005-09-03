@@ -616,6 +616,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		}
 
 	/* page layout is complite start of font recognition */
+return 0;
 
 	/* get all you know of each font */
 	for (c = 0; c < num_of_columns_in_page; c++)
