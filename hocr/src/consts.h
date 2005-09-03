@@ -31,6 +31,7 @@
    better to use dynamic aloocation */
 
 /* in units */
+#define MAX_COLUMNS 4
 #define MAX_LINES 200
 #define MAX_FONTS_IN_LINE 200
 
@@ -42,6 +43,7 @@
 #define NORMAL_FONT_WIDTH 20
 #define NORMAL_FONT_HIGHT 30
 
+#define MIN_COLUMN_WIDTH 100
 #define MAX_LINE_HIGHT 60
 #define MIN_LINE_HIGHT 20
 

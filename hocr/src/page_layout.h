@@ -39,7 +39,7 @@
  @param line_end return y end of next line
  */
 int
-get_next_line_extention (hocr_pixbuf * pix, int current_pos, int *line_start,
+get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos, int *line_start,
 			 int *line_end);
 
 /**
@@ -72,7 +72,7 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font);
  @param line pointer to the lines extentions
  */
 int
-adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box * line);
+adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box column, hocr_box * line);
 
 /**
  @brief fils an array of hocr_boxes with this page lines
@@ -84,9 +84,21 @@ adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box * line);
  @param max_lines maximum size of lines array
  */
 int
-fill_lines_array (hocr_pixbuf * pix, hocr_box * lines,
+fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
 		  int *num_of_lines, int max_lines);
 
+/**
+ @brief fils an array of hocr_boxes with this page columns
+
+ @param pix pointer the page hocr_pixbuf
+ @param columns the array of columns to be filled
+ @param num_of_columns return the number of columns in this page
+ @param max_columns maximum size of columns array
+ */
+int
+fill_columns_array (hocr_pixbuf * pix, hocr_box * columns,
+		  int *num_of_columns, int max_columns);
+		  
 /**
  @brief fils an array of hocr_boxs with this page fonts
 

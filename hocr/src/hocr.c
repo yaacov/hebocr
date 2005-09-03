@@ -427,18 +427,23 @@ int
 hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	     hocr_output out_flags, hocr_error * error)
 {
-	hocr_box lines[MAX_LINES];
-	hocr_line_eq line_eqs[MAX_LINES][2];
-	hocr_box fonts[MAX_LINES][MAX_FONTS_IN_LINE];
+	hocr_box columns[MAX_COLUMNS];
+	hocr_box lines[MAX_COLUMNS][MAX_LINES];
+	hocr_line_eq line_eqs[MAX_COLUMNS][MAX_LINES][2];
+	hocr_box fonts[MAX_COLUMNS][MAX_LINES][MAX_FONTS_IN_LINE];
 
-	int num_of_fonts[MAX_LINES];
-	int num_of_lines;
+	int num_of_fonts[MAX_COLUMNS][MAX_LINES];
+	int num_of_lines[MAX_COLUMNS];
 
+	int num_of_columns_in_page;
+	int num_of_lines_in_page;
 	int num_of_fonts_in_page;
+
 	int avg_font_hight_in_page;
 	int avg_line_hight_in_page;
 	int avg_font_width_in_page;
 
+	int c;
 	int i, j, k;
 	int y1, y2;
 
@@ -464,10 +469,21 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	/* page layout recognition */
 
-	/* get all lines in this column */
-	fill_lines_array (pix, lines, &num_of_lines, MAX_LINES);
+	/* get all columns in this page */
+	fill_columns_array (pix, columns, &num_of_columns_in_page,
+			    MAX_COLUMNS);
 
-	if (num_of_lines == 0)
+	/* get all lines in this column */
+	num_of_lines_in_page = 0;
+	for (c = 0; c < num_of_columns_in_page; c++)
+	{
+		num_of_lines[c] = 0;
+		fill_lines_array (pix, columns[c], lines[c],
+				  &(num_of_lines[c]), MAX_LINES);
+		num_of_lines_in_page += num_of_lines[c];
+	}
+
+	if (num_of_lines_in_page == 0)
 	{
 		/* is it O.K. to have no lines in the page ? */
 		if (error)
@@ -477,37 +493,50 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	/* get avg_line_hight_in_page */
 	avg_line_hight_in_page = 0;
-	for (i = 0; i < num_of_lines; i++)
+	for (c = 0; c < num_of_columns_in_page; c++)
 	{
-		avg_line_hight_in_page += lines[i].hight;
+		for (i = 0; i < num_of_lines[c]; i++)
+		{
+			avg_line_hight_in_page += lines[c][i].hight;
+		}
 	}
-	avg_line_hight_in_page = avg_line_hight_in_page / num_of_lines;
+	avg_line_hight_in_page =
+		avg_line_hight_in_page / num_of_lines_in_page;
 
 	/* get all fonts for all the lines */
-	for (i = 0; i < num_of_lines; i++)
+	for (c = 0; c < num_of_columns_in_page; c++)
 	{
-		fill_fonts_array (pix, lines[i],
-				  fonts[i],
-				  &(num_of_fonts[i]), MAX_FONTS_IN_LINE);
+		for (i = 0; i < num_of_lines[c]; i++)
+		{
+			fill_fonts_array (pix, lines[c][i],
+					  fonts[c][i],
+					  &(num_of_fonts[c][i]),
+					  MAX_FONTS_IN_LINE);
+		}
 	}
 
 	/* get size statistics for all fonts for all the lines */
 	num_of_fonts_in_page = 0;
 	avg_font_hight_in_page = 0;
 	avg_font_width_in_page = 0;
-	for (i = 0; i < num_of_lines; i++)
+	for (c = 0; c < num_of_columns_in_page; c++)
 	{
-		if (lines[i].hight >
-		    (avg_line_hight_in_page -
-		     1.5 * MIN_DISTANCE_BETWEEN_LINES))
+		for (i = 0; i < num_of_lines[c]; i++)
 		{
-			for (j = 0; j < num_of_fonts[i]; j++)
+			if (lines[c][i].hight >
+			    (avg_line_hight_in_page -
+			     1.5 * MIN_DISTANCE_BETWEEN_LINES))
 			{
+				for (j = 0; j < num_of_fonts[c][i]; j++)
+				{
 
-				num_of_fonts_in_page++;
-				avg_font_width_in_page += fonts[i][j].width;
-				avg_font_hight_in_page += fonts[i][j].hight;
+					num_of_fonts_in_page++;
+					avg_font_width_in_page +=
+						fonts[c][i][j].width;
+					avg_font_hight_in_page +=
+						fonts[c][i][j].hight;
 
+				}
 			}
 		}
 	}
@@ -526,202 +555,225 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	}
 
 	/* get lines equations for non horizontal lines */
-	for (i = 0; i < num_of_lines; i++)
+	for (c = 0; c < num_of_columns_in_page; c++)
 	{
-		if (num_of_fonts[i] == 0)
-			continue;
-
-		find_font_baseline_eq (lines[i], fonts[i], &(line_eqs[i][0]),
-				       &(line_eqs[i][1]),
-				       avg_font_hight_in_page,
-				       num_of_fonts[i]);
-
-		/* if line is very not horizontal return error */
-		if ((line_eqs[i][0].a * line_eqs[i][0].a) > (1.0 / 9.0))
+		for (i = 0; i < num_of_lines[c]; i++)
 		{
-			if (error)
-				*error = *error |
-					HOCR_ERROR_NOT_HORIZONTAL_LINE;
+			if (num_of_fonts[c][i] == 0)
+				continue;
 
-			num_of_fonts[i] = 0;
-		}
+			find_font_baseline_eq (lines[c][i], fonts[c][i],
+					       &(line_eqs[c][i][0]),
+					       &(line_eqs[c][i][1]),
+					       avg_font_hight_in_page,
+					       num_of_fonts[c][i]);
 
-		/* if this line is not high it is nikud line */
-		if ((line_eqs[i][0].b - line_eqs[i][1].b) <
-		    (avg_font_hight_in_page - MIN_DISTANCE_BETWEEN_LINES))
-		{
-			num_of_fonts[i] = 0;
+			/* if line is very not horizontal return error */
+			if ((line_eqs[c][i][0].a * line_eqs[c][i][0].a) >
+			    (1.0 / 9.0))
+			{
+				if (error)
+					*error = *error |
+						HOCR_ERROR_NOT_HORIZONTAL_LINE;
+
+				num_of_fonts[c][i] = 0;
+			}
+
+			/* if this line is not high it is nikud line */
+			if ((line_eqs[c][i][0].b - line_eqs[c][i][1].b) <
+			    (avg_font_hight_in_page -
+			     MIN_DISTANCE_BETWEEN_LINES))
+			{
+				num_of_fonts[c][i] = 0;
+			}
 		}
 	}
 
 	/* color the results of page layout functions */
 	if (out_flags & HOCR_OUTPUT_WITH_GRAPHICS)
-		for (i = 0; i < num_of_lines; i++)
+		for (c = 0; c < num_of_columns_in_page; c++)
 		{
-			if (num_of_fonts[i] == 0)
-				continue;
-
-			/* color line boxes */
-			color_hocr_line_eq (pix, &(line_eqs[i][0]),
-					    lines[i].x1, lines[i].x2, 2, 0);
-			color_hocr_line_eq (pix, &(line_eqs[i][1]),
-					    lines[i].x1, lines[i].x2, 2, 100);
-
-			/* color individual font boxes */
-			for (j = 0; j < num_of_fonts[i]; j++)
+			for (i = 0; i < num_of_lines[c]; i++)
 			{
-				color_hocr_box (pix, fonts[i][j], 1, 0);
+				if (num_of_fonts[c][i] == 0)
+					continue;
+
+				/* color line boxes */
+				color_hocr_line_eq (pix, &(line_eqs[c][i][0]),
+						    lines[c][i].x1,
+						    lines[c][i].x2, 2, 0);
+				color_hocr_line_eq (pix, &(line_eqs[c][i][1]),
+						    lines[c][i].x1,
+						    lines[c][i].x2, 2, 100);
+
+				/* color individual font boxes */
+				for (j = 0; j < num_of_fonts[c][i]; j++)
+				{
+					color_hocr_box (pix, fonts[c][i][j],
+							1, 0);
+				}
 			}
 		}
 
 	/* page layout is complite start of font recognition */
 
 	/* get all you know of each font */
-	for (i = 0; i < num_of_lines; i++)
+	for (c = 0; c < num_of_columns_in_page; c++)
 	{
-		for (j = 0; j < num_of_fonts[i]; j++)
+		for (i = 0; i < num_of_lines[c]; i++)
 		{
-			/* get font position above/below line */
-			base_class =
-				get_font_base_class (fonts[i][j],
-						     line_eqs[i][0],
-						     avg_font_hight_in_page);
-			top_class =
-				get_font_top_class (fonts[i][j],
-						    line_eqs[i][1],
-						    avg_font_hight_in_page);
+			for (j = 0; j < num_of_fonts[c][i]; j++)
+			{
+				/* get font position above/below line */
+				base_class =
+					get_font_base_class (fonts[c][i][j],
+							     line_eqs[c][i]
+							     [0],
+							     avg_font_hight_in_page);
+				top_class =
+					get_font_top_class (fonts[c][i][j],
+							    line_eqs[c][i][1],
+							    avg_font_hight_in_page);
 
-			/* get font x, y size compared to other fonts in page */
-			hight_class =
-				get_font_hight_class (fonts[i][j].
-						      hight,
-						      avg_font_hight_in_page);
-			width_class =
-				get_font_width_class (fonts[i][j].
-						      width,
-						      avg_font_width_in_page);
+				/* get font x, y size compared to other fonts in page */
+				hight_class =
+					get_font_hight_class (fonts[c][i][j].
+							      hight,
+							      avg_font_hight_in_page);
+				width_class =
+					get_font_width_class (fonts[c][i][j].
+							      width,
+							      avg_font_width_in_page);
 
-			/* get font position in word, e.g. is last
-			 * or is before non letter (psik, nekuda ...) */
-			end_of_line = (j + 1) == num_of_fonts[i];
-			add_space = !end_of_line && (fonts[i][j].x1 -
-						     fonts[i][j +
-							      1].x2) >
-				MIN_DISTANCE_BETWEEN_WORDS;
-			/* FIXME: !(top_class == -1) only covers words that end
-			 * with ",.-" but what if word ends with "?!:" ... ? */
-			end_of_word = ((end_of_line || add_space)
-				       && !(top_class == -1))
-				||
-				(get_font_top_class
-				 (fonts[i][j + 1], line_eqs[i][1],
-				  avg_font_hight_in_page) == -1);
+				/* get font position in word, e.g. is last
+				 * or is before non letter (psik, nekuda ...) */
+				end_of_line = (j + 1) == num_of_fonts[c][i];
+				add_space = !end_of_line
+					&& (fonts[c][i][j].x1 -
+					    fonts[c][i][j + 1].x2) >
+					MIN_DISTANCE_BETWEEN_WORDS;
+				/* FIXME: !(top_class == -1) only covers words that end
+				 * with ",.-" but what if word ends with "?!:" ... ? */
+				end_of_word = ((end_of_line || add_space)
+					       && !(top_class == -1))
+					||
+					(get_font_top_class
+					 (fonts[c][i][j + 1],
+					  line_eqs[c][i][1],
+					  avg_font_hight_in_page) == -1);
 
 			/**
 			 */
 
-			/* get font markers */
-			hocr_guess_font (pix, fonts[i][j], base_class,
-					 hocr_line_eq_get_y (line_eqs[i][0],
-							     fonts[i][j].x2),
-					 hocr_line_eq_get_y (line_eqs[i][1],
-							     fonts[i][j].x1),
-					 top_class, hight_class, width_class,
-					 end_of_word, chars,
-					 MAX_NUM_OF_CHARS_IN_FONT);
+				/* get font markers */
+				hocr_guess_font (pix, fonts[c][i][j],
+						 base_class,
+						 hocr_line_eq_get_y (line_eqs
+								     [c][i]
+								     [0],
+								     fonts[c]
+								     [i][j].
+								     x2),
+						 hocr_line_eq_get_y (line_eqs
+								     [c][i]
+								     [1],
+								     fonts[c]
+								     [i][j].
+								     x1),
+						 top_class, hight_class,
+						 width_class, end_of_word,
+						 chars,
+						 MAX_NUM_OF_CHARS_IN_FONT);
 
-			/* if chars is ' wait to the next char and if it is ' too
-			 * add " once */
-			if (chars[0] == '\'' && chars[1] == 0)
-			{
-				if (last_was_quat)
+				/* if chars is ' wait to the next char and if it is ' too
+				 * add " once */
+				if (chars[0] == '\'' && chars[1] == 0)
 				{
-					sprintf (chars, "\"");
-					last_was_quat = FALSE;
+					if (last_was_quat)
+					{
+						sprintf (chars, "\"");
+						last_was_quat = FALSE;
 
+					}
+					else
+					{
+						sprintf (chars, "");
+						last_was_quat = TRUE;
+					}
 				}
 				else
 				{
-					sprintf (chars, "");
-					last_was_quat = TRUE;
+					if (last_was_quat)
+					{
+						/* output ' to text buffer, stop if out of memory for the text buffer */
+						if (hocr_text_buffer_add_string (text_buffer, "\'") == HOCR_ERROR_OUT_OF_MEMORY)
+						{
+							if (error)
+								*error = HOCR_ERROR_OUT_OF_MEMORY;
+						}
+					}
+
+					last_was_quat = FALSE;
 				}
-			}
-			else
-			{
-				if (last_was_quat)
-				{
-					/* output ' to text buffer, stop if out of memory for the text buffer */
+
+				/* if no font dont try to insert it */
+				if (chars[0])
+					/* output font to text buffer, stop if out of memory for the text buffer */
 					if (hocr_text_buffer_add_string
 					    (text_buffer,
-					     "\'") ==
+					     chars) ==
 					    HOCR_ERROR_OUT_OF_MEMORY)
 					{
 						if (error)
 							*error = HOCR_ERROR_OUT_OF_MEMORY;
 					}
-				}
 
-				last_was_quat = FALSE;
-			}
-
-			/* if no font dont try to insert it */
-			if (chars[0])
-				/* output font to text buffer, stop if out of memory for the text buffer */
-				if (hocr_text_buffer_add_string
-				    (text_buffer,
-				     chars) == HOCR_ERROR_OUT_OF_MEMORY)
+				/* if user want printout print all you know about this char */
+				if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
 				{
-					if (error)
-						*error = HOCR_ERROR_OUT_OF_MEMORY;
+					printf ("Font %d %d %d\n", c, i, j);
+
+					/* print the font, this take a lot of time, remove if not needed */
+					print_font (pix, fonts[c][i][j]);
+
+					printf ("base class %d, top class %d\n", base_class, top_class);
+
+					/* print out font x, y size compared to other fonts in page */
+					printf ("hight class %d, width class %d\n", hight_class, width_class);
+
+					/* print out font position in word, e.g. is last
+					 * or is before non letter (psik, nekuda ...) */
+					printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
+
+					/* print marks */
+					print_marks (pix, fonts[c][i][j],
+						     marks);
+
+					printf ("font markers: %d%d %d%d %d%d\n", marks[1], marks[2], marks[3], marks[4], marks[5], marks[6]);
+
+					/* print out end of font */
+					printf ("font is %s\n", chars);
+
+					printf ("=======================\n");
 				}
 
-			/* if user want printout print all you know about this char */
-			if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
-			{
-				printf ("Font %d %d\n", i, j);
+				/* color unknown fonts in the pixbuf */
+				if (chars[0] == '_')
+					color_hocr_box_full (pix,
+							     fonts[c][i][j],
+							     1, 255);
 
-				/* print the font, this take a lot of time, remove if not needed */
-				print_font (pix, fonts[i][j]);
-
-				printf ("base class %d, top class %d\n",
-					base_class, top_class);
-
-				/* print out font x, y size compared to other fonts in page */
-				printf ("hight class %d, width class %d\n",
-					hight_class, width_class);
-
-				/* print out font position in word, e.g. is last
-				 * or is before non letter (psik, nekuda ...) */
-				printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
-
-				/* print marks */
-				print_marks (pix, fonts[i][j], marks);
-
-				printf ("font markers: %d%d %d%d %d%d\n",
-					marks[1], marks[2], marks[3],
-					marks[4], marks[5], marks[6]);
-
-				/* print out end of font */
-				printf ("font is %s\n", chars);
-
-				printf ("=======================\n");
-			}
-
-			/* color unknown fonts in the pixbuf */
-			if (chars[0] == '_')
-				color_hocr_box_full (pix, fonts[i][j], 1,
-						     255);
-
-			/* check for end of word and end of line */
-			if (add_space)
-			{
-				hocr_text_buffer_add_string (text_buffer,
-							     " ");
-			}
-			if (end_of_line)
-			{
-				hocr_text_buffer_add_string (text_buffer,
-							     "\n");
+				/* check for end of word and end of line */
+				if (add_space)
+				{
+					hocr_text_buffer_add_string
+						(text_buffer, " ");
+				}
+				if (end_of_line)
+				{
+					hocr_text_buffer_add_string
+						(text_buffer, "\n");
+				}
 			}
 		}
 	}
