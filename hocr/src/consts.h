@@ -52,7 +52,7 @@
 #define MIN_DISTANCE_BETWEEN_WORDS 10
 
 /* in 1/1000 cover units */
-#define NOT_IN_A_LINE 23
+#define NOT_IN_A_LINE 43
 #define IN_A_LINE 62
 
 #define NOT_IN_A_FONT 30

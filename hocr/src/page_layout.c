@@ -167,7 +167,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 		/* if presantage covarage is less then 1 we are between text fonts */
 		if (sum >= NOT_IN_A_FONT && !inside_font)
 		{
-			*font_start = x;
+			*font_start = x - 1;
 			inside_font = TRUE;
 		}
 		else if (sum <= NOT_IN_A_FONT && inside_font)

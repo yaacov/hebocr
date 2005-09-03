@@ -37,15 +37,13 @@
 
 /* font shape markers array*/
 
-int hocr_guess_font (hocr_pixbuf * pix, hocr_box font, int base_class,
-		     int base, int top,
-		     int top_class,
-		     int hight_class,
-		     int width_class,
-		     int end_of_word, char *font_string,
-		     int max_chars_in_font_string);
+int hocr_guess_font (hocr_pixbuf * pix, hocr_box font,
+		     hocr_line_eq base_line_eq, hocr_line_eq top_line_eq,
+		     int avg_font_hight_in_page, int avg_font_width_in_page,
+			 int end_of_word,
+		     char *font_string, int max_chars_in_font_string);
 
-int print_marks (hocr_pixbuf * pix, hocr_box font, int* marks);
+int print_marks (hocr_pixbuf * pix, hocr_box font, int *marks);
 
 /**
  */

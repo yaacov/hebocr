@@ -441,6 +441,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	int avg_font_hight_in_page;
 	int avg_line_hight_in_page;
+	int avg_diff_between_lines_in_page;
 	int avg_font_width_in_page;
 
 	int c;
@@ -448,18 +449,15 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	int y1, y2;
 
 	/* font position classes */
-	int base_class;
-	int top_class;
-	int hight_class;
-	int width_class;
+	int diff_between_lines;
 	int end_of_line;
 	int end_of_word;
 	int add_space;
 	int end_of_paragraph;
-	int last_was_quat;
 
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
+	char next_font_chars[MAX_NUM_OF_CHARS_IN_FONT];
 
 	int marks[25];
 
@@ -493,15 +491,22 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	/* get avg_line_hight_in_page */
 	avg_line_hight_in_page = 0;
+	avg_diff_between_lines_in_page = 0;
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
 			avg_line_hight_in_page += lines[c][i].hight;
+			if (i < (num_of_lines[c] - 1))
+				avg_diff_between_lines_in_page +=
+					(lines[c][i + 1].y1 - lines[c][i].y2);
 		}
 	}
 	avg_line_hight_in_page =
 		avg_line_hight_in_page / num_of_lines_in_page;
+	avg_diff_between_lines_in_page =
+		avg_diff_between_lines_in_page / (num_of_lines_in_page -
+						  num_of_columns_in_page);
 
 	/* get all fonts for all the lines */
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -616,7 +621,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		}
 
 	/* page layout is complite start of font recognition */
-return 0;
 
 	/* get all you know of each font */
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -625,26 +629,10 @@ return 0;
 		{
 			for (j = 0; j < num_of_fonts[c][i]; j++)
 			{
-				/* get font position above/below line */
-				base_class =
-					get_font_base_class (fonts[c][i][j],
-							     line_eqs[c][i]
-							     [0],
-							     avg_font_hight_in_page);
-				top_class =
-					get_font_top_class (fonts[c][i][j],
-							    line_eqs[c][i][1],
-							    avg_font_hight_in_page);
-
-				/* get font x, y size compared to other fonts in page */
-				hight_class =
-					get_font_hight_class (fonts[c][i][j].
-							      hight,
-							      avg_font_hight_in_page);
-				width_class =
-					get_font_width_class (fonts[c][i][j].
-							      width,
-							      avg_font_width_in_page);
+				/* if it is small don't bother */
+				if (fonts[c][i][j].hight < MIN_FONT_SIZE
+				    && fonts[c][i][j].width < MIN_FONT_SIZE)
+					continue;
 
 				/* get font position in word, e.g. is last
 				 * or is before non letter (psik, nekuda ...) */
@@ -655,66 +643,111 @@ return 0;
 					MIN_DISTANCE_BETWEEN_WORDS;
 				/* FIXME: !(top_class == -1) only covers words that end
 				 * with ",.-" but what if word ends with "?!:" ... ? */
-				end_of_word = ((end_of_line || add_space)
-					       && !(top_class == -1))
+				end_of_word =
+					((end_of_line || add_space)
+					 && !(get_font_top_class
+					      (fonts[c][i][j + 1],
+					       line_eqs[c][i][1],
+					       avg_font_hight_in_page)
+					      == -1))
 					||
 					(get_font_top_class
 					 (fonts[c][i][j + 1],
 					  line_eqs[c][i][1],
 					  avg_font_hight_in_page) == -1);
 
+				end_of_paragraph = FALSE;
+				if (i < (num_of_lines[c] - 1))
+				{
+					end_of_paragraph =
+						2 *
+						avg_diff_between_lines_in_page
+						<
+						(lines[c][i + 1].y1 -
+						 lines[c][i].y2);
+				}
+
 			/**
 			 */
 
 				/* get font markers */
 				hocr_guess_font (pix, fonts[c][i][j],
-						 base_class,
-						 hocr_line_eq_get_y (line_eqs
-								     [c][i]
-								     [0],
-								     fonts[c]
-								     [i][j].
-								     x2),
-						 hocr_line_eq_get_y (line_eqs
-								     [c][i]
-								     [1],
-								     fonts[c]
-								     [i][j].
-								     x1),
-						 top_class, hight_class,
-						 width_class, end_of_word,
+						 line_eqs[c][i][0],
+						 line_eqs[c][i][1],
+						 avg_font_hight_in_page,
+						 avg_font_width_in_page,
+						 end_of_word,
 						 chars,
 						 MAX_NUM_OF_CHARS_IN_FONT);
 
-				/* if chars is ' wait to the next char and if it is ' too
+				/* if chars is ' check the next char and if it is ' too
 				 * add " once */
-				if (chars[0] == '\'' && chars[1] == 0)
+				if (!end_of_line && chars[0] == '\''
+				    && chars[1] == 0)
 				{
-					if (last_was_quat)
-					{
-						sprintf (chars, "\"");
-						last_was_quat = FALSE;
+					/* get next font markers */
+					hocr_guess_font (pix,
+							 fonts[c][i][j + 1],
+							 line_eqs[c][i][0],
+							 line_eqs[c][i][1],
+							 avg_font_hight_in_page,
+							 avg_font_width_in_page,
+							 end_of_word, next_font_chars,
+							 MAX_NUM_OF_CHARS_IN_FONT);
 
-					}
-					else
+					/* if next font is ' replace both fonts with one " */
+					if (next_font_chars[0] == '\'' && next_font_chars[1] == 0)
 					{
-						sprintf (chars, "");
-						last_was_quat = TRUE;
-					}
-				}
-				else
-				{
-					if (last_was_quat)
-					{
-						/* output ' to text buffer, stop if out of memory for the text buffer */
-						if (hocr_text_buffer_add_string (text_buffer, "\'") == HOCR_ERROR_OUT_OF_MEMORY)
+						chars[0] = '\"';
+						j++;
+
+						/* check for end of line etc.. after seconde ' */
+
+						/* get font position in word, e.g. is last
+						 * or is before non letter (psik, nekuda ...) */
+						end_of_line =
+							(j + 1) ==
+							num_of_fonts[c][i];
+						add_space = !end_of_line
+							&& (fonts[c][i][j].
+							    x1 -
+							    fonts[c][i][j +
+									1].
+							    x2) >
+							MIN_DISTANCE_BETWEEN_WORDS;
+						/* FIXME: !(top_class == -1) only covers words that end
+						 * with ",.-" but what if word ends with "?!:" ... ? */
+						end_of_word =
+							((end_of_line
+							  || add_space)
+							 &&
+							 !(get_font_top_class
+							   (fonts[c][i]
+							    [j + 1],
+							    line_eqs[c][i][1],
+							    avg_font_hight_in_page)
+							   == -1))
+							||
+							(get_font_top_class
+							 (fonts[c][i][j + 1],
+							  line_eqs[c][i][1],
+							  avg_font_hight_in_page)
+							 == -1);
+
+						end_of_paragraph = FALSE;
+						if (i < (num_of_lines[c] - 1))
 						{
-							if (error)
-								*error = HOCR_ERROR_OUT_OF_MEMORY;
+							end_of_paragraph =
+								2 *
+								avg_diff_between_lines_in_page
+								<
+								(lines[c]
+								 [i + 1].y1 -
+								 lines[c][i].
+								 y2);
 						}
-					}
 
-					last_was_quat = FALSE;
+					}
 				}
 
 				/* if no font dont try to insert it */
@@ -736,11 +769,6 @@ return 0;
 
 					/* print the font, this take a lot of time, remove if not needed */
 					print_font (pix, fonts[c][i][j]);
-
-					printf ("base class %d, top class %d\n", base_class, top_class);
-
-					/* print out font x, y size compared to other fonts in page */
-					printf ("hight class %d, width class %d\n", hight_class, width_class);
 
 					/* print out font position in word, e.g. is last
 					 * or is before non letter (psik, nekuda ...) */
@@ -774,9 +802,18 @@ return 0;
 				{
 					hocr_text_buffer_add_string
 						(text_buffer, "\n");
+
+					/* if end of a paragraph add a new line :) */
+					if (end_of_paragraph)
+					{
+						hocr_text_buffer_add_string
+							(text_buffer, "\n");
+					}
 				}
 			}
 		}
+		/* new column */
+		hocr_text_buffer_add_string (text_buffer, "\n");
 	}
 
 	return 0;		/* the ocr thing need rewriting just leave it for now */
