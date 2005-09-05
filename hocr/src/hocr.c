@@ -425,7 +425,8 @@ color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
 
 int
 hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
-	     hocr_output out_flags, hocr_error * error)
+	     hocr_output out_flags, hocr_ocr_type ocr_type,
+	     hocr_error * error)
 {
 	hocr_box columns[MAX_COLUMNS];
 	hocr_box lines[MAX_COLUMNS][MAX_LINES];
@@ -467,10 +468,25 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	/* page layout recognition */
 
-	/* get all columns in this page */
-	fill_columns_array (pix, columns, &num_of_columns_in_page,
-			    MAX_COLUMNS);
-
+	/* if user want to check for columns get all columns in this page */
+	if (ocr_type & HOCR_OCR_TYPE_COLUMNS)
+	{
+		fill_columns_array (pix, columns, &num_of_columns_in_page,
+				    MAX_COLUMNS);
+	}
+	else
+	{
+		num_of_columns_in_page = 1;
+		
+		columns[0].x1 = 1;
+		columns[0].y1 = 1;
+		columns[0].x2 = pix->width - 1;
+		columns[0].y2 = pix->height - 1 ;
+		
+		columns[0].width = pix->width - 2;
+		columns[0].hight = pix->height - 2;
+	}
+	
 	/* get all lines in this column */
 	num_of_lines_in_page = 0;
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -485,7 +501,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	{
 		/* is it O.K. to have no lines in the page ? */
 		if (error)
-			*error = *error | HOCR_ERROR_NOT_HORIZONTAL_LINE;
+			*error = *error | HOCR_ERROR_NO_LINES_FOUND;
 		return 1;
 	}
 
@@ -619,7 +635,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				}
 			}
 		}
-
+		
 	/* page layout is complite start of font recognition */
 
 	/* get all you know of each font */
@@ -692,11 +708,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 							 line_eqs[c][i][1],
 							 avg_font_hight_in_page,
 							 avg_font_width_in_page,
-							 end_of_word, next_font_chars,
+							 end_of_word,
+							 next_font_chars,
 							 MAX_NUM_OF_CHARS_IN_FONT);
 
 					/* if next font is ' replace both fonts with one " */
-					if (next_font_chars[0] == '\'' && next_font_chars[1] == 0)
+					if (next_font_chars[0] == '\''
+					    && next_font_chars[1] == 0)
 					{
 						chars[0] = '\"';
 						j++;

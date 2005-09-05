@@ -41,33 +41,39 @@ int
 do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 {
 	hocr_pixbuf hocr_pix;
-	hocr_text_buffer* text;
+	hocr_output ocr_output;
+	hocr_ocr_type ocr_type;
+	hocr_text_buffer *text;
 	GtkTextIter iter;
-	
+
 	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
 	hocr_pix.height = gdk_pixbuf_get_height (pixbuf);
 	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
 	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	hocr_pix.pixels = (unsigned char*)(gdk_pixbuf_get_pixels (pixbuf));
+	hocr_pix.pixels = (unsigned char *) (gdk_pixbuf_get_pixels (pixbuf));
 	hocr_pix.brightness = 100;
-	
+
 	/* create text buffer */
 	text = hocr_text_buffer_new ();
-	
+
 	if (!text)
 	{
 		printf ("hocr-gnome: can\'t allocate memory for text out\n");
 		return 0;
 	}
+
+	/* TODO: get ocr type from user */ 
+	ocr_type = HOCR_OCR_TYPE_COLUMNS | HOCR_OCR_TYPE_NIKUD;
+	ocr_output = HOCR_OUTPUT_WITH_GRAPHICS;
 	
-	hocr_do_ocr (&hocr_pix, text, HOCR_OUTPUT_WITH_GRAPHICS, NULL);
+	hocr_do_ocr (&hocr_pix, text, ocr_output, ocr_type, NULL);
 
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
-	
+
 	/* unref text_buffer */
 	hocr_text_buffer_unref (text);
-	
+
 	return 1;
 }
 
@@ -78,16 +84,16 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 	char *filename;
 	gboolean have_preview;
 	GdkPixbuf *prev_pixbuf = NULL;
-	
+
 	preview = GTK_WIDGET (data);
 	filename = gtk_file_chooser_get_preview_filename (file_chooser);
-	
+
 	prev_pixbuf =
 		gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
 	have_preview = (prev_pixbuf != NULL);
-	
+
 	g_free (filename);
-	
+
 	if (prev_pixbuf)
 	{
 		gtk_image_set_from_pixbuf (GTK_IMAGE (preview), prev_pixbuf);
@@ -105,7 +111,7 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 	gint result;
 	char *filename;
 	char title[255];
-	
+
 	GtkWidget *preview_frame = gtk_frame_new ("preview");
 	GtkWidget *preview = gtk_image_new ();
 	GtkWidget *my_file_chooser =
@@ -120,10 +126,10 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 
 	gtk_widget_show (preview);
 	gtk_container_add (GTK_CONTAINER (preview_frame), preview);
-	
+
 	gtk_file_chooser_set_preview_widget
 		(GTK_FILE_CHOOSER (my_file_chooser), preview_frame);
-	
+
 	g_signal_connect (my_file_chooser, "update-preview",
 			  G_CALLBACK (update_preview_cb), preview);
 
@@ -139,13 +145,13 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 			g_object_unref (pixbuf);
 			pixbuf = NULL;
 		}
-		
+
 		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-		
+
 		/* set the window title */
-		g_snprintf (title,255,"%s - %s", _("hocr-gui"), filename);
+		g_snprintf (title, 255, "%s - %s", _("hocr-gui"), filename);
 		gtk_window_set_title (GTK_WINDOW (window1), title);
-		
+
 		g_free (filename);
 
 		on_toolbutton_zoom_fit_clicked (NULL, NULL);
@@ -213,7 +219,7 @@ on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	GtkTextBuffer *text_buffer;
 	int width, height;
-	
+
 	height = gdk_pixbuf_get_height (vis_pixbuf);
 	width = gdk_pixbuf_get_width (vis_pixbuf);
 
@@ -383,7 +389,7 @@ on_window1_delete_event (GtkWidget * widget,
 		g_object_unref (vis_pixbuf);
 		vis_pixbuf = NULL;
 	}
-	
+
 	gtk_main_quit ();
 	return FALSE;
 }
