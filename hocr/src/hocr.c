@@ -477,16 +477,16 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	else
 	{
 		num_of_columns_in_page = 1;
-		
+
 		columns[0].x1 = 1;
 		columns[0].y1 = 1;
 		columns[0].x2 = pix->width - 1;
-		columns[0].y2 = pix->height - 1 ;
-		
+		columns[0].y2 = pix->height - 1;
+
 		columns[0].width = pix->width - 2;
 		columns[0].hight = pix->height - 2;
 	}
-	
+
 	/* get all lines in this column */
 	num_of_lines_in_page = 0;
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -635,7 +635,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				}
 			}
 		}
-		
+
 	/* page layout is complite start of font recognition */
 
 	/* get all you know of each font */
@@ -653,10 +653,12 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				/* get font position in word, e.g. is last
 				 * or is before non letter (psik, nekuda ...) */
 				end_of_line = (j + 1) == num_of_fonts[c][i];
+
 				add_space = !end_of_line
 					&& (fonts[c][i][j].x1 -
 					    fonts[c][i][j + 1].x2) >
 					MIN_DISTANCE_BETWEEN_WORDS;
+
 				/* FIXME: !(top_class == -1) only covers words that end
 				 * with ",.-" but what if word ends with "?!:" ... ? */
 				end_of_word =
@@ -672,16 +674,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					  line_eqs[c][i][1],
 					  avg_font_hight_in_page) == -1);
 
-				end_of_paragraph = FALSE;
-				if (i < (num_of_lines[c] - 1))
-				{
-					end_of_paragraph =
-						2 *
-						avg_diff_between_lines_in_page
-						<
-						(lines[c][i + 1].y1 -
-						 lines[c][i].y2);
-				}
+				end_of_paragraph =
+					2 * avg_diff_between_lines_in_page <
+					(lines[c][i + 1].y1 - lines[c][i].y2);
+
 
 			/**
 			 */
@@ -834,5 +830,5 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		hocr_text_buffer_add_string (text_buffer, "\n");
 	}
 
-	return 0;		/* the ocr thing need rewriting just leave it for now */
+	return 0;
 }
