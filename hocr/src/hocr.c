@@ -26,10 +26,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "consts.h"
+#include "magic_numbers.h"
 #include "page_layout.h"
 #include "font_layout.h"
-#include "font_markers.h"
+#include "font_recognition.h"
 #include "hocr.h"
 
 /* 
@@ -419,6 +419,9 @@ color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
 
 	return 0;
 }
+
+/*
+ */
 
 /*
  */

@@ -28,8 +28,8 @@
 
 #include "hocr.h"
 
-#ifndef __FONT_MARKERS_H__
-#define __FONT_MARKERS_H__
+#ifndef __FONT_RECOGNITION_H__
+#define __FONT_RECOGNITION_H__
 
 
 /**

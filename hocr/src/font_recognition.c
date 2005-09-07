@@ -30,8 +30,8 @@
 #include <stdio.h>
 
 #include "hocr.h"
-#include "consts.h"
-#include "font_markers.h"
+#include "magic_numbers.h"
+#include "font_recognition.h"
 
 /**
  */

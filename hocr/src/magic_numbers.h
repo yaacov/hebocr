@@ -1,5 +1,5 @@
 /***************************************************************************
- *            consts.c
+ *            magic_numbers.c
  *
  *  Mon Aug 15 13:33:16 2005
  *  Copyright  2005  Yaacov Zamir
@@ -23,8 +23,8 @@
  */
 
 
-#ifndef __CONSTS_H__
-#define __CONSTS_H__
+#ifndef __MAGIC_NUMBERS_H__
+#define __MAGIC_NUMBERS_H__
 
 /* FIXME: this is a hack for normal pages 
    no more then 200 lines and 200 fonts per line

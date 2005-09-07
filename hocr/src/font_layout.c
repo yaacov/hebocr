@@ -23,7 +23,7 @@
  */
 
 #include "hocr.h"
-#include "consts.h"
+#include "magic_numbers.h"
 #include "font_layout.h"
 
 int
