@@ -1,5 +1,5 @@
 /***************************************************************************
- *            font_markers.h
+ *            font_recognition.h
  *
  *  Fri Aug 12 20:33:02 2005
  *  Copyright  2005  Yaacov Zamir
