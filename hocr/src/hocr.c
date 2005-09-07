@@ -445,6 +445,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	int avg_font_hight_in_page;
 	int avg_line_hight_in_page;
+	int avg_line_x_start_in_column[MAX_COLUMNS];
 	int avg_diff_between_lines_in_page;
 	int avg_font_width_in_page;
 
@@ -457,6 +458,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	int end_of_line;
 	int end_of_word;
 	int add_space;
+	int start_of_paragraph;
 	int end_of_paragraph;
 
 	/* FIXME: what size is the new string to add ? */
@@ -513,12 +515,21 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	avg_diff_between_lines_in_page = 0;
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
+		avg_line_x_start_in_column[c] = 0;
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
+			avg_line_x_start_in_column[c] += lines[c][i].x2;
+
 			avg_line_hight_in_page += lines[c][i].hight;
 			if (i < (num_of_lines[c] - 1))
 				avg_diff_between_lines_in_page +=
 					(lines[c][i + 1].y1 - lines[c][i].y2);
+		}
+		if (num_of_lines[c] != 0)
+		{
+			avg_line_x_start_in_column[c] =
+				avg_line_x_start_in_column[c] /
+				num_of_lines[c];
 		}
 	}
 	avg_line_hight_in_page =
@@ -677,14 +688,26 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					  line_eqs[c][i][1],
 					  avg_font_hight_in_page) == -1);
 
+				start_of_paragraph = j == 0 &&
+					lines[c][i].x2 <
+					avg_line_x_start_in_column[c];
+
 				end_of_paragraph =
 					2 * avg_diff_between_lines_in_page <
 					(lines[c][i + 1].y1 - lines[c][i].y2);
+			 
+			 	/* do i need to add somthing before font */
 
+				/* if this is start of pargraph, add the start of paragraph
+				 * before the font */
+				if (start_of_paragraph)
+				{
+					hocr_text_buffer_add_string
+						(text_buffer, "   ");
+				}
 
-			/**
-			 */
-
+				/* add font */
+				
 				/* get font markers */
 				hocr_guess_font (pix, fonts[c][i][j],
 						 line_eqs[c][i][0],
@@ -751,6 +774,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 							  avg_font_hight_in_page)
 							 == -1);
 
+						start_of_paragraph = j == 0 &&
+							lines[c][i].x2 <
+							avg_line_x_start_in_column
+							[c];
+
 						end_of_paragraph = FALSE;
 						if (i < (num_of_lines[c] - 1))
 						{
@@ -809,12 +837,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 							     fonts[c][i][j],
 							     1, 255);
 
+				/* do i need to add somthing after font */
 				/* check for end of word and end of line */
 				if (add_space)
 				{
 					hocr_text_buffer_add_string
 						(text_buffer, " ");
 				}
+
 				if (end_of_line)
 				{
 					hocr_text_buffer_add_string

@@ -47,18 +47,38 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 		return 0;
 	}
 
-	/* if short line just return horizonatal lines */
+	/* if short line just return horizonatal lines, try to fit it to the fonts */
 	y_start_base = 0;
 	y_start_top = 0;
+	counter = 0;
+	
 	for (i = 0; i < num_of_fonts; i++)
 	{
-		y_start_base += fonts[i].y2;
-		y_start_top += fonts[i].y1;
+		if (fonts[i].hight <
+		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
+		    && fonts[i].hight >
+		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
+		{
+			y_start_base += fonts[i].y2;
+			y_start_top += fonts[i].y1;
+			counter++;
+		}
 	}
-	base_line->a = 0;
-	base_line->b = y_start_base / num_of_fonts;
-	top_line->a = 0;
-	top_line->b = y_start_top / num_of_fonts;
+	
+	if (counter == 0)
+	{
+		base_line->a = 0;
+		base_line->b = fonts[0].y2;
+		top_line->a = 0;
+		top_line->b = fonts[0].y1;
+	}
+	else
+	{
+		base_line->a = 0;
+		base_line->b = y_start_base / counter;
+		top_line->a = 0;
+		top_line->b = y_start_top / counter;
+	}
 
 	/* avg over first NUM_OF_FONTS_TO_AVG fonts */
 	y_start_base = 0;
@@ -127,15 +147,16 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	base_line->a =
 		(double) (y_end_base -
 			  y_start_base) / (double) (x_end - x_start);
-	
+
 	top_line->a =
 		(double) (y_end_top -
 			  y_start_top) / (double) (x_end - x_start);
-	
+
 	/* FIXME: assume line is horizonatal and parallel ? */
-	base_line->a = (base_line->a < top_line->a)?base_line->a:top_line->a;
+	base_line->a =
+		(base_line->a < top_line->a) ? base_line->a : top_line->a;
 	top_line->a = base_line->a;
-	
+
 	base_line->b = y_start_base - base_line->a * x_start;
 	top_line->b = y_start_top - top_line->a * x_start;
 
