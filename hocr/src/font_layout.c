@@ -33,6 +33,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 {
 	int i;
 	int counter;
+	int start_counter;
 	int y_start_base, y_end_base;
 	int x_start, x_end;
 	int y_start_top, y_end_top;
@@ -44,40 +45,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 		base_line->b = line.y2;
 		top_line->a = 0;
 		top_line->b = line.y1;
-		return 0;
-	}
-
-	/* if short line just return horizonatal lines, try to fit it to the fonts */
-	y_start_base = 0;
-	y_start_top = 0;
-	counter = 0;
-	
-	for (i = 0; i < num_of_fonts; i++)
-	{
-		if (fonts[i].hight <
-		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
-		    && fonts[i].hight >
-		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
-		{
-			y_start_base += fonts[i].y2;
-			y_start_top += fonts[i].y1;
-			counter++;
-		}
-	}
-	
-	if (counter == 0)
-	{
-		base_line->a = 0;
-		base_line->b = fonts[0].y2;
-		top_line->a = 0;
-		top_line->b = fonts[0].y1;
-	}
-	else
-	{
-		base_line->a = 0;
-		base_line->b = y_start_base / counter;
-		top_line->a = 0;
-		top_line->b = y_start_top / counter;
+		return 1;
 	}
 
 	/* avg over first NUM_OF_FONTS_TO_AVG fonts */
@@ -89,31 +57,60 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	x_end = 0;
 
 	counter = 0;
+	start_counter = 0;
 	i = 0;
-	while (counter < NUM_OF_FONTS_TO_AVG && i < num_of_fonts)
+	while (i < num_of_fonts)
 	{
 		if (fonts[i].hight <
 		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
 		    && fonts[i].hight >
 		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
 		{
-			y_start_base += fonts[i].y2;
-			x_start += fonts[i].x2;
-			y_start_top += fonts[i].y1;
+			/* take only first NUM_OF_FONTS_TO_AVG to avg */
+			if (counter < NUM_OF_FONTS_TO_AVG)
+			{
+				y_start_base += fonts[i].y2;
+				x_start += fonts[i].x2;
+				y_start_top += fonts[i].y1;
+				start_counter ++;
+			}
+			
+			/* check how many regular fonts in this line */
 			counter++;
 		}
 		i++;
 	}
 
-	/* if can't find NUM_OF_FONTS_TO_AVG use the horizontal lines */
-	if (counter < NUM_OF_FONTS_TO_AVG)
-		return 0;
+	/* if can't any font use the first font for horizontal lines */
+	if (start_counter == 0)
+	{
+		base_line->a = 0;
+		base_line->b = fonts[0].y2;
+		top_line->a = 0;
+		top_line->b = fonts[0].y1;
 
-	y_start_base /= counter;
-	y_start_top /= counter;
-	x_start /= counter;
+		return 1;
+	}
 
-	/* avg over first NUM_OF_FONTS_TO_AVG fonts */
+	/* if here then counter is not zero */
+	y_start_base /= start_counter;
+	y_start_top /= start_counter;
+	x_start /= start_counter;
+
+	/* if can't find NUM_OF_FONTS_TO_AVG regular fonts at start and
+	   NUM_OF_FONTS_TO_AVG at end use the horizontal lines */
+	if (counter < 2 * NUM_OF_FONTS_TO_AVG)
+	{
+		base_line->a = 0;
+		base_line->b = y_start_base;
+		top_line->a = 0;
+		top_line->b = y_start_top;
+
+		return 1;
+	}
+
+	/* avg over last NUM_OF_FONTS_TO_AVG fonts */
+	/* FIXME: can I put this in the first loop */
 	counter = 0;
 	i = num_of_fonts - 1;
 	while (counter < NUM_OF_FONTS_TO_AVG && i >= 0)
@@ -132,16 +129,32 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	}
 
 	/* if can't find NUM_OF_FONTS_TO_AVG use the horizontal lines */
+	/* FIXME: we know we can, so why check again ? */
 	if (counter < NUM_OF_FONTS_TO_AVG)
-		return 0;
-
+	{
+		base_line->a = 0;
+		base_line->b = y_start_base;
+		top_line->a = 0;
+		top_line->b = y_start_top;
+		
+		return 1;
+	}
+	
 	y_end_base /= counter;
 	y_end_top /= counter;
 	x_end /= counter;
 
-	/* do not divide by zero */
+	/* delta x is small return horizontal line */
+	/* FIXME: we know it is not, so why check again ? */
 	if ((x_end - x_start) == 0)
-		return 0;
+	{
+		base_line->a = 0;
+		base_line->b = y_start_base;
+		top_line->a = 0;
+		top_line->b = y_start_top;
+		
+		return 1;
+	}
 
 	/* make line equation */
 	base_line->a =

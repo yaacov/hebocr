@@ -4,9 +4,15 @@ hocr (0.4.6)
   
   * add a buffer length check before copeing strings, thanks to Ido Kaner.
   
-  * add column support
+  * add column and paragraph support
   
+  * fix line equation for short lines
   
+  * add custom strings for line/paragraph/column start/end. for
+    creation of better xml outputs.
+  
+  *
+   
   -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 23 Aug 2005 02:13
 
 hocr (0.4.5)
