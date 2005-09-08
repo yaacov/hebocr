@@ -72,10 +72,12 @@ typedef enum
 	HOCR_OUTPUT_WITH_DEBUG_TEXT = 2,
 } hocr_output;
 
+/* FIXME: static length arrays for strings ?! help ! */
 typedef struct
 {
-	char page_start_string[50];
-	char page_end_string[50];
+	/* FIXME: page start and page end strings are long strings ? */
+	char page_start_string[550];
+	char page_end_string[550];
 	char column_start_string[50];
 	char column_end_string[50];
 	char paragraph_start_string[50];

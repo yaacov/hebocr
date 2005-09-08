@@ -47,7 +47,7 @@ print_help ()
 }
 
 int
-save_text (char *filename, char *format_out, char *text)
+save_text (char *filename, char *text)
 {
 	FILE *file;
 
@@ -63,31 +63,13 @@ save_text (char *filename, char *format_out, char *text)
 			printf ("hocr: can\'t save file as %s\n", filename);
 			exit (0);
 		}
-
-		if (format_out[0] == 'h')
-			fprintf (file,
-				 "<html>\n<meta http-equiv=\"Content-Type\" \
-content=\"text/html; charset=UTF-8\">\n \
-<body dir=\"rtl\"><pre>\n");
-
 		fprintf (file, "%s", text);
-
-		if (format_out[0] == 'h')
-			fprintf (file, "</pre></body>\n</html>\n");
 		fclose (file);
 	}
 	else
 	{
 		/* no file name - print to std output */
-		if (format_out[0] == 'h')
-			printf ("<html>\n<meta http-equiv=\"Content-Type\" \
-content=\"text/html; charset=UTF-8\">\n \
-<body dir=\"rtl\"><pre>\n");
-
 		printf ("%s", text);
-
-		if (format_out[0] == 'h')
-			printf ("</pre></body>\n</html>\n");
 	}
 
 	return 0;
@@ -108,6 +90,8 @@ main (int argc, char *argv[])
 	hocr_error error;
 	hocr_pixbuf *pix;
 	hocr_text_buffer *text_buffer;
+
+	hocr_format_strings format_strings;
 
 	/* default output is text file */
 	format_out[0] = 't';
@@ -173,8 +157,34 @@ main (int argc, char *argv[])
 	}
 
 	/* do ocr */
-	hocr_do_ocr (pix, text_buffer, 0, HOCR_OUTPUT_JUST_OCR,
-		     HOCR_OCR_TYPE_REGULAR, &error);
+	if (opt_f && (format_out[0] == 'H' || format_out[0] == 'h'))
+		/* html output */
+	{
+		strcpy (format_strings.page_start_string,
+			"<html>\n<meta http-equiv=\"Content-Type\"\
+content=\"text/html; charset=UTF-8\">\n\
+<body dir=\"rtl\">\n\
+<table>\n<tr>\n");
+		strcpy (format_strings.page_end_string,
+			"</tr>\n</table>\n</body>\n</html>\n");
+		strcpy (format_strings.column_start_string, "<td>\n");
+		strcpy (format_strings.column_end_string, "</td>\n");
+		strcpy (format_strings.paragraph_start_string, "<p>\n");
+		strcpy (format_strings.paragraph_end_string, "</p>\n");
+		strcpy (format_strings.line_start_string, "");
+		strcpy (format_strings.line_end_string, "</br>");
+		strcpy (format_strings.unknown_start_string, "<b>");
+		strcpy (format_strings.unknown_end_string, "</b>");
+
+		hocr_do_ocr (pix, text_buffer, &format_strings,
+			     HOCR_OUTPUT_JUST_OCR, HOCR_OCR_TYPE_COLUMNS,
+			     &error);
+	}
+	else			/* text */
+	{
+		hocr_do_ocr (pix, text_buffer, 0, HOCR_OUTPUT_JUST_OCR,
+			     HOCR_OCR_TYPE_REGULAR, &error);
+	}
 
 	/* did do_ocr return an error ? */
 	if (error != HOCR_ERROR_OK)
@@ -214,9 +224,9 @@ main (int argc, char *argv[])
 
 	/* print out the text */
 	if (opt_o == 1)
-		save_text (filename_out, format_out, text_buffer->text);
+		save_text (filename_out, text_buffer->text);
 	else
-		save_text (NULL, format_out, text_buffer->text);
+		save_text (NULL, text_buffer->text);
 
 	/* unref memory */
 	hocr_pixbuf_unref (pix);
