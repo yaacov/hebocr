@@ -490,8 +490,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			user_format_strings->line_start_string);
 		strcpy (format_strings.line_end_string,
 			user_format_strings->line_end_string);
-		strcpy (format_strings.indent_string,
-			user_format_strings->indent_string);
+		strcpy (format_strings.unknown_start_string,
+			user_format_strings->unknown_start_string);
+		strcpy (format_strings.unknown_end_string,
+			user_format_strings->unknown_end_string);
 	}
 	else
 		/* if user did not give any format strings use defaults */
@@ -499,12 +501,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		strcpy (format_strings.page_start_string, "");
 		strcpy (format_strings.page_end_string, "");
 		strcpy (format_strings.column_start_string, "");
-		strcpy (format_strings.column_end_string, "\n");
+		strcpy (format_strings.column_end_string, "");
 		strcpy (format_strings.paragraph_start_string, "");
-		strcpy (format_strings.paragraph_end_string, "\n");
+		strcpy (format_strings.paragraph_end_string, "");
 		strcpy (format_strings.line_start_string, "");
-		strcpy (format_strings.line_end_string, "\n");
-		strcpy (format_strings.indent_string, "  ");
+		strcpy (format_strings.line_end_string, "");
+		strcpy (format_strings.unknown_start_string, "");
+		strcpy (format_strings.unknown_end_string, "");
 	}
 
 	/* init the error to OK */
@@ -692,8 +695,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			}
 		}
 
-	/* page layout is complite start of font recognition */
+	/**
+	 */
 
+	/* page layout is complite start of font recognition */
+		
+	/* TODO: make new word/line detection by avg values and
+		not by magic numbers */
+		
 	/* start of a page */
 
 	/* add start of page format string */
@@ -712,12 +721,19 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		/* FIXME: allways use paragraphs at column start ? */
 		add_paragraph = TRUE;
 
+		/* add indentation */
+		/* FIXME: indent != paragraph start ? */
+		add_indent =
+			lines[c][0].x2 <
+			(avg_line_x_start_in_column
+			 [c] - avg_font_width_in_page * 2);
+
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
 			/* start of a line / paragraph */
 
 			/* add start of paragraph format string */
-			if (add_paragraph)
+			if (add_paragraph || add_indent)
 				hocr_text_buffer_add_string
 					(text_buffer,
 					 format_strings.
@@ -728,16 +744,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				(text_buffer,
 				 format_strings.line_start_string);
 
-			/* add indentation */
-			add_indent =
-				lines[c][i].x2 <
-				(avg_line_x_start_in_column
-				 [c] - avg_font_width_in_page * 2);
-
 			if (add_indent)
 				hocr_text_buffer_add_string
-					(text_buffer,
-					 format_strings.indent_string);
+					(text_buffer, "  ");
 
 			for (j = 0; j < num_of_fonts[c][i]; j++)
 			{
@@ -749,10 +758,12 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				/* get font position in word, e.g. is last
 				 * or is before non letter (psik, nekuda ...) */
 				end_of_line = (j + 1) == num_of_fonts[c][i];
+
 				add_space = !end_of_line
 					&& (fonts[c][i][j].x1 -
 					    fonts[c][i][j + 1].x2) >
 					MIN_DISTANCE_BETWEEN_WORDS;
+
 				/* FIXME: !(top_class == -1) only covers words that end
 				 * with ",.-" but what if word ends with "?!:" ... ? */
 				end_of_word =
@@ -767,6 +778,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					 (fonts[c][i][j + 1],
 					  line_eqs[c][i][1],
 					  avg_font_hight_in_page) == -1);
+
 				/* do i need to add somthing before font */
 				/* add font */
 				/* get font markers */
@@ -778,6 +790,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 						 end_of_word,
 						 chars,
 						 MAX_NUM_OF_CHARS_IN_FONT);
+
 				/* if chars is ' check the next char and if it is ' too
 				 * add " once */
 				if (!end_of_line && chars[0] == '\''
@@ -793,12 +806,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 							 end_of_word,
 							 next_font_chars,
 							 MAX_NUM_OF_CHARS_IN_FONT);
+
 					/* if next font is ' replace both fonts with one " */
 					if (next_font_chars[0] == '\''
 					    && next_font_chars[1] == 0)
 					{
 						chars[0] = '\"';
 						j++;
+
 						/* check for end of line etc.. after next ' */
 						/* get font position in word, e.g. is last
 						 * or is before non letter (psik, nekuda ...) */
@@ -812,6 +827,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 									1].
 							    x2) >
 							MIN_DISTANCE_BETWEEN_WORDS;
+
 						/* FIXME: !(top_class == -1) only covers words that end
 						 * with ",.-" but what if word ends with "?!:" ... ? */
 						end_of_word =
@@ -833,6 +849,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					}
 				}
 
+				/* add unknown font start format string */
+				if (chars[0] && chars[0] == '_')
+				{
+					hocr_text_buffer_add_string
+					(text_buffer,
+					 format_strings.unknown_start_string);
+				}
+				
 				/* if no font dont try to insert it */
 				if (chars[0])
 					/* output font to text buffer, stop if out of memory for the text buffer */
@@ -848,6 +872,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 				/* do i need to add somthing after font */
 
+				/* add unknown font end format string */
+				if (chars[0] && chars[0] == '_')
+				{
+					hocr_text_buffer_add_string
+					(text_buffer,
+					 format_strings.unknown_end_string);
+				}
+				
 				/* check for end of word and end of line */
 				if (add_space)
 				{
@@ -859,10 +891,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				 */
 
 				/* color unknown fonts in the pixbuf */
-				if (chars[0] == '_')
+				if (chars[0] && chars[0] == '_')
 					color_hocr_box_full (pix,
 							     fonts[c][i][j],
 							     1, 255);
+
 				/* if user want printout print all you know about this char */
 				if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
 				{
@@ -883,6 +916,16 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			}
 			/* end of line / paragraph */
 
+			/* add indentation */
+			/* FIXME: indent != paragraph start ? */
+			if (i < (num_of_lines[c] - 1))
+			{
+				add_indent =
+					lines[c][i + 1].x2 <
+					(avg_line_x_start_in_column
+					 [c] - avg_font_width_in_page * 2);
+			}
+
 			/* check for paragraph start if not at end of column */
 			if (i < (num_of_lines[c] - 2))
 			{
@@ -898,14 +941,25 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			hocr_text_buffer_add_string
 				(text_buffer, format_strings.line_end_string);
 
-			/* add end of paragraph format string */
+			/* add end of line and an empty line found as new paragraph */
+			hocr_text_buffer_add_string
+					(text_buffer, "\n");
+			
 			if (add_paragraph)
+				hocr_text_buffer_add_string
+					(text_buffer, "\n");
+
+			/* add end of paragraph format string */
+			if (add_paragraph || add_indent)
 				hocr_text_buffer_add_string
 					(text_buffer,
 					 format_strings.paragraph_end_string);
 		}
 		/* end of column */
 
+		hocr_text_buffer_add_string
+					(text_buffer, "\n");
+		
 		/* FIXME: allways use paragraphs at column start ? */
 		/* add end of paragraph format string if last line in column did not end it */
 		if (!add_paragraph)

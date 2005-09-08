@@ -68,7 +68,7 @@
 
 /* FIXME: this is in pixel convert to 1/1000 ? */
 #define MIN_DISTANCE_BETWEEN_LINES 15
-#define MIN_DISTANCE_BETWEEN_WORDS 15
+#define MIN_DISTANCE_BETWEEN_WORDS 10
 
 /* in 1/1000 cover units */
 #define NOT_IN_A_LINE 43

@@ -82,8 +82,8 @@ typedef struct
 	char paragraph_end_string[50];
 	char line_start_string[50];
 	char line_end_string[50];
-	char indent_string[50];
-
+	char unknown_start_string[50];
+	char unknown_end_string[50];
 
 } hocr_format_strings;
 
