@@ -187,7 +187,7 @@ content=\"text/html; charset=UTF-8\">\n\
 <table>\n<tr>\n");
 		strcpy (format_strings.page_end_string,
 			"</tr>\n</table>\n</body>\n</html>\n");
-		strcpy (format_strings.column_start_string, "<td>\n");
+		strcpy (format_strings.column_start_string, "<td width=\"25%\">\n");
 		strcpy (format_strings.column_end_string, "</td>\n");
 		strcpy (format_strings.paragraph_start_string, "<p>\n");
 		strcpy (format_strings.paragraph_end_string, "</p>\n");
