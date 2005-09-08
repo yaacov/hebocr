@@ -428,6 +428,7 @@ color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
 
 int
 hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
+	     hocr_format_strings * user_format_strings,
 	     hocr_output out_flags, hocr_ocr_type ocr_type,
 	     hocr_error * error)
 {
@@ -458,8 +459,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	int end_of_line;
 	int end_of_word;
 	int add_space;
-	int start_of_paragraph;
-	int end_of_paragraph;
+	int add_indent;
+	int add_paragraph;
 
 	/* FIXME: what size is the new string to add ? */
 	char chars[MAX_NUM_OF_CHARS_IN_FONT];
@@ -467,36 +468,74 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	int marks[25];
 
+	/* defoult format strings */
+	hocr_format_strings format_strings;
+
+	/* use users format strings */
+	if (user_format_strings)
+	{
+		strcpy (format_strings.page_start_string,
+			user_format_strings->page_start_string);
+		strcpy (format_strings.page_end_string,
+			user_format_strings->page_end_string);
+		strcpy (format_strings.column_start_string,
+			user_format_strings->column_start_string);
+		strcpy (format_strings.column_end_string,
+			user_format_strings->column_end_string);
+		strcpy (format_strings.paragraph_start_string,
+			user_format_strings->paragraph_start_string);
+		strcpy (format_strings.paragraph_end_string,
+			user_format_strings->paragraph_end_string);
+		strcpy (format_strings.line_start_string,
+			user_format_strings->line_start_string);
+		strcpy (format_strings.line_end_string,
+			user_format_strings->line_end_string);
+		strcpy (format_strings.indent_string,
+			user_format_strings->indent_string);
+	}
+	else
+		/* if user did not give any format strings use defaults */
+	{
+		strcpy (format_strings.page_start_string, "");
+		strcpy (format_strings.page_end_string, "");
+		strcpy (format_strings.column_start_string, "");
+		strcpy (format_strings.column_end_string, "\n");
+		strcpy (format_strings.paragraph_start_string, "");
+		strcpy (format_strings.paragraph_end_string, "\n");
+		strcpy (format_strings.line_start_string, "");
+		strcpy (format_strings.line_end_string, "\n");
+		strcpy (format_strings.indent_string, "  ");
+	}
+
 	/* init the error to OK */
 	if (error)
 		*error = HOCR_ERROR_OK;
 
 	/* page layout recognition */
-
 	/* if user want to check for columns get all columns in this page */
 	if (ocr_type & HOCR_OCR_TYPE_COLUMNS)
 	{
-		fill_columns_array (pix, columns, &num_of_columns_in_page,
-				    MAX_COLUMNS);
+		fill_columns_array (pix, columns,
+				    &num_of_columns_in_page, MAX_COLUMNS);
 	}
 	else
 	{
 		num_of_columns_in_page = 1;
-
 		columns[0].x1 = 1;
 		columns[0].y1 = 1;
 		columns[0].x2 = pix->width - 1;
 		columns[0].y2 = pix->height - 1;
-
 		columns[0].width = pix->width - 2;
 		columns[0].hight = pix->height - 2;
 	}
 
 	/* get all lines in this column */
 	num_of_lines_in_page = 0;
+
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
 		num_of_lines[c] = 0;
+
 		fill_lines_array (pix, columns[c], lines[c],
 				  &(num_of_lines[c]), MAX_LINES);
 		num_of_lines_in_page += num_of_lines[c];
@@ -513,18 +552,20 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	/* get avg_line_hight_in_page */
 	avg_line_hight_in_page = 0;
 	avg_diff_between_lines_in_page = 0;
+
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
 		avg_line_x_start_in_column[c] = 0;
+
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
 			avg_line_x_start_in_column[c] += lines[c][i].x2;
-
 			avg_line_hight_in_page += lines[c][i].hight;
 			if (i < (num_of_lines[c] - 1))
 				avg_diff_between_lines_in_page +=
 					(lines[c][i + 1].y1 - lines[c][i].y2);
 		}
+
 		if (num_of_lines[c] != 0)
 		{
 			avg_line_x_start_in_column[c] =
@@ -532,11 +573,12 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				num_of_lines[c];
 		}
 	}
+
 	avg_line_hight_in_page =
 		avg_line_hight_in_page / num_of_lines_in_page;
 	avg_diff_between_lines_in_page =
-		avg_diff_between_lines_in_page / (num_of_lines_in_page -
-						  num_of_columns_in_page);
+		avg_diff_between_lines_in_page /
+		(num_of_lines_in_page - num_of_columns_in_page);
 
 	/* get all fonts for all the lines */
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -554,6 +596,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	num_of_fonts_in_page = 0;
 	avg_font_hight_in_page = 0;
 	avg_font_width_in_page = 0;
+
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
 		for (i = 0; i < num_of_lines[c]; i++)
@@ -570,7 +613,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 						fonts[c][i][j].width;
 					avg_font_hight_in_page +=
 						fonts[c][i][j].hight;
-
 				}
 			}
 		}
@@ -652,11 +694,51 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	/* page layout is complite start of font recognition */
 
+	/* start of a page */
+
+	/* add start of page format string */
+	hocr_text_buffer_add_string
+		(text_buffer, format_strings.page_start_string);
+
 	/* get all you know of each font */
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
+		/* start of a column */
+
+		/* add start of column format string */
+		hocr_text_buffer_add_string
+			(text_buffer, format_strings.column_start_string);
+
+		/* FIXME: allways use paragraphs at column start ? */
+		add_paragraph = TRUE;
+
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
+			/* start of a line / paragraph */
+
+			/* add start of paragraph format string */
+			if (add_paragraph)
+				hocr_text_buffer_add_string
+					(text_buffer,
+					 format_strings.
+					 paragraph_start_string);
+
+			/* add start of line format string */
+			hocr_text_buffer_add_string
+				(text_buffer,
+				 format_strings.line_start_string);
+
+			/* add indentation */
+			add_indent =
+				lines[c][i].x2 <
+				(avg_line_x_start_in_column
+				 [c] - avg_font_width_in_page * 2);
+
+			if (add_indent)
+				hocr_text_buffer_add_string
+					(text_buffer,
+					 format_strings.indent_string);
+
 			for (j = 0; j < num_of_fonts[c][i]; j++)
 			{
 				/* if it is small don't bother */
@@ -667,12 +749,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				/* get font position in word, e.g. is last
 				 * or is before non letter (psik, nekuda ...) */
 				end_of_line = (j + 1) == num_of_fonts[c][i];
-
 				add_space = !end_of_line
 					&& (fonts[c][i][j].x1 -
 					    fonts[c][i][j + 1].x2) >
 					MIN_DISTANCE_BETWEEN_WORDS;
-
 				/* FIXME: !(top_class == -1) only covers words that end
 				 * with ",.-" but what if word ends with "?!:" ... ? */
 				end_of_word =
@@ -687,27 +767,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					 (fonts[c][i][j + 1],
 					  line_eqs[c][i][1],
 					  avg_font_hight_in_page) == -1);
-
-				start_of_paragraph = j == 0 &&
-					lines[c][i].x2 <
-					avg_line_x_start_in_column[c];
-
-				end_of_paragraph =
-					2 * avg_diff_between_lines_in_page <
-					(lines[c][i + 1].y1 - lines[c][i].y2);
-			 
-			 	/* do i need to add somthing before font */
-
-				/* if this is start of pargraph, add the start of paragraph
-				 * before the font */
-				if (start_of_paragraph)
-				{
-					hocr_text_buffer_add_string
-						(text_buffer, "   ");
-				}
-
+				/* do i need to add somthing before font */
 				/* add font */
-				
 				/* get font markers */
 				hocr_guess_font (pix, fonts[c][i][j],
 						 line_eqs[c][i][0],
@@ -717,7 +778,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 						 end_of_word,
 						 chars,
 						 MAX_NUM_OF_CHARS_IN_FONT);
-
 				/* if chars is ' check the next char and if it is ' too
 				 * add " once */
 				if (!end_of_line && chars[0] == '\''
@@ -733,16 +793,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 							 end_of_word,
 							 next_font_chars,
 							 MAX_NUM_OF_CHARS_IN_FONT);
-
 					/* if next font is ' replace both fonts with one " */
 					if (next_font_chars[0] == '\''
 					    && next_font_chars[1] == 0)
 					{
 						chars[0] = '\"';
 						j++;
-
 						/* check for end of line etc.. after next ' */
-
 						/* get font position in word, e.g. is last
 						 * or is before non letter (psik, nekuda ...) */
 						end_of_line =
@@ -773,25 +830,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 							  line_eqs[c][i][1],
 							  avg_font_hight_in_page)
 							 == -1);
-
-						start_of_paragraph = j == 0 &&
-							lines[c][i].x2 <
-							avg_line_x_start_in_column
-							[c];
-
-						end_of_paragraph = FALSE;
-						if (i < (num_of_lines[c] - 1))
-						{
-							end_of_paragraph =
-								2 *
-								avg_diff_between_lines_in_page
-								<
-								(lines[c]
-								 [i + 1].y1 -
-								 lines[c][i].
-								 y2);
-						}
-
 					}
 				}
 
@@ -804,40 +842,12 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 					    HOCR_ERROR_OUT_OF_MEMORY)
 					{
 						if (error)
-							*error = HOCR_ERROR_OUT_OF_MEMORY;
+							*error = *error |
+								HOCR_ERROR_OUT_OF_MEMORY;
 					}
 
-				/* if user want printout print all you know about this char */
-				if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
-				{
-					printf ("Font %d %d %d\n", c, i, j);
-
-					/* print the font, this take a lot of time, remove if not needed */
-					print_font (pix, fonts[c][i][j]);
-
-					/* print out font position in word, e.g. is last
-					 * or is before non letter (psik, nekuda ...) */
-					printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
-
-					/* print marks */
-					print_marks (pix, fonts[c][i][j],
-						     marks);
-
-					printf ("font markers: %d%d %d%d %d%d\n", marks[1], marks[2], marks[3], marks[4], marks[5], marks[6]);
-
-					/* print out end of font */
-					printf ("font is %s\n", chars);
-
-					printf ("=======================\n");
-				}
-
-				/* color unknown fonts in the pixbuf */
-				if (chars[0] == '_')
-					color_hocr_box_full (pix,
-							     fonts[c][i][j],
-							     1, 255);
-
 				/* do i need to add somthing after font */
+
 				/* check for end of word and end of line */
 				if (add_space)
 				{
@@ -845,23 +855,74 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 						(text_buffer, " ");
 				}
 
-				if (end_of_line)
-				{
-					hocr_text_buffer_add_string
-						(text_buffer, "\n");
+				/**
+				 */
 
-					/* if end of a paragraph add a new line :) */
-					if (end_of_paragraph)
-					{
-						hocr_text_buffer_add_string
-							(text_buffer, "\n");
-					}
+				/* color unknown fonts in the pixbuf */
+				if (chars[0] == '_')
+					color_hocr_box_full (pix,
+							     fonts[c][i][j],
+							     1, 255);
+				/* if user want printout print all you know about this char */
+				if (out_flags & HOCR_OUTPUT_WITH_DEBUG_TEXT)
+				{
+					printf ("Font %d %d %d\n", c, i, j);
+					/* print the font, this take a lot of time, remove if not needed */
+					print_font (pix, fonts[c][i][j]);
+					/* print out font position in word, e.g. is last
+					 * or is before non letter (psik, nekuda ...) */
+					printf ("end of line %d, add space %d, end of word %d\n", end_of_line, add_space, end_of_word);
+					/* print marks */
+					print_marks (pix, fonts[c][i][j],
+						     marks);
+					printf ("font markers: %d%d %d%d %d%d\n", marks[1], marks[2], marks[3], marks[4], marks[5], marks[6]);
+					/* print out end of font */
+					printf ("font is %s\n", chars);
+					printf ("=======================\n");
 				}
 			}
+			/* end of line / paragraph */
+
+			/* check for paragraph start if not at end of column */
+			if (i < (num_of_lines[c] - 2))
+			{
+				add_paragraph =
+					2 *
+					avg_diff_between_lines_in_page
+					<
+					(lines[c][i + 2].y1 -
+					 lines[c][i + 1].y2);
+			}
+
+			/* add end of line format string */
+			hocr_text_buffer_add_string
+				(text_buffer, format_strings.line_end_string);
+
+			/* add end of paragraph format string */
+			if (add_paragraph)
+				hocr_text_buffer_add_string
+					(text_buffer,
+					 format_strings.paragraph_end_string);
 		}
-		/* new column */
-		hocr_text_buffer_add_string (text_buffer, "\n");
+		/* end of column */
+
+		/* FIXME: allways use paragraphs at column start ? */
+		/* add end of paragraph format string if last line in column did not end it */
+		if (!add_paragraph)
+			hocr_text_buffer_add_string
+				(text_buffer,
+				 format_strings.paragraph_end_string);
+
+		/* add end of column format string */
+		hocr_text_buffer_add_string
+			(text_buffer, format_strings.column_end_string);
+
 	}
+	/* end of page */
+
+	/* add end of page format string */
+	hocr_text_buffer_add_string (text_buffer,
+				     format_strings.page_end_string);
 
 	return 0;
 }

@@ -37,7 +37,7 @@ extern "C"
 #ifndef FALSE
 #define FALSE 0
 #endif
-	
+
 /** line equation structore used by hocr
  
  a and b in the equation are Y = a X + b
@@ -71,6 +71,21 @@ typedef enum
 	HOCR_OUTPUT_WITH_GRAPHICS = 1,
 	HOCR_OUTPUT_WITH_DEBUG_TEXT = 2,
 } hocr_output;
+
+typedef struct
+{
+	char page_start_string[50];
+	char page_end_string[50];
+	char column_start_string[50];
+	char column_end_string[50];
+	char paragraph_start_string[50];
+	char paragraph_end_string[50];
+	char line_start_string[50];
+	char line_end_string[50];
+	char indent_string[50];
+
+
+} hocr_format_strings;
 
 typedef struct
 {
@@ -257,7 +272,10 @@ int hocr_pixbuf_unref (hocr_pixbuf * pix);
  @param error pointer to hocr_error enum that will return exit status.
  @return 1
  */
-int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer* text_buffer, hocr_output out_flags, hocr_ocr_type ocr_type, hocr_error* error);
+int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
+		 hocr_format_strings * user_format_strings,
+		 hocr_output out_flags, hocr_ocr_type ocr_type,
+		 hocr_error * error);
 
 #ifdef __cplusplus
 }

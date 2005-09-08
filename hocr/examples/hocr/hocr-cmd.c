@@ -173,7 +173,7 @@ main (int argc, char *argv[])
 	}
 
 	/* do ocr */
-	hocr_do_ocr (pix, text_buffer, HOCR_OUTPUT_JUST_OCR,
+	hocr_do_ocr (pix, text_buffer, 0, HOCR_OUTPUT_JUST_OCR,
 		     HOCR_OCR_TYPE_REGULAR, &error);
 
 	/* did do_ocr return an error ? */

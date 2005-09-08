@@ -62,11 +62,11 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 		return 0;
 	}
 
-	/* TODO: get ocr type from user */ 
+	/* TODO: get ocr type from user */
 	ocr_type = HOCR_OCR_TYPE_COLUMNS | HOCR_OCR_TYPE_NIKUD;
 	ocr_output = HOCR_OUTPUT_WITH_GRAPHICS;
-	
-	hocr_do_ocr (&hocr_pix, text, ocr_output, ocr_type, NULL);
+
+	hocr_do_ocr (&hocr_pix, text, NULL, ocr_output, ocr_type, NULL);
 
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
