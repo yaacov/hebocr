@@ -39,9 +39,19 @@ int
 print_help ()
 {
 	printf ("hocr %s - Hebrew OCR program\n", VERSION);
+	printf ("USAGE: hocr -i <pnm_filename> [-o <text_filename>] [-f <HTML, TEXT>]\n");
+
+	printf ("\nOptions:\n");
+	printf ("  -h Display this message.\n");
+	printf ("  -i <pnm_filename> The image that you wish to process.\n");
+	printf ("  -f <HTML, TEXT>] what output format to use.\n");
+	printf ("  -o <text_filename> The filename to export the output to.\n");
+	
+	printf ("\nExample:\n");
+	printf ("  hocr -i test1.pnm -f HTML -o test1.html\n");
+
+	printf ("\nReport bugs to <kzamir@walla.co.il>\n");
 	printf ("http://hocr.berlios.de\n");
-	printf ("\n");
-	printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f HTML/TEXT]\n");
 	printf ("\n");
 
 	return 0;
