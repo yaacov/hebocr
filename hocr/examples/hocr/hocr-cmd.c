@@ -40,7 +40,8 @@ print_help ()
 {
 	printf ("hocr %s - Hebrew OCR program\n", VERSION);
 	printf ("http://hocr.berlios.de\n");
-	printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
+	printf ("\n");
+	printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f HTML/TEXT]\n");
 	printf ("\n");
 
 	return 0;
@@ -68,9 +69,18 @@ save_text (char *filename, char *text)
 	}
 	else
 	{
-		/* no file name - print to std output */
-		printf ("%s", text);
+		printf ("hocr: can\'t save file as %s\n", filename);
+		exit (0);
 	}
+
+	return 0;
+}
+
+int
+print_text (char *text)
+{
+	/* no file name - print to std output */
+	printf ("%s", text);
 
 	return 0;
 }
@@ -180,7 +190,8 @@ content=\"text/html; charset=UTF-8\">\n\
 			     HOCR_OUTPUT_JUST_OCR, HOCR_OCR_TYPE_COLUMNS,
 			     &error);
 	}
-	else			/* text */
+	else
+		/* text output */
 	{
 		hocr_do_ocr (pix, text_buffer, 0, HOCR_OUTPUT_JUST_OCR,
 			     HOCR_OCR_TYPE_REGULAR, &error);
@@ -226,7 +237,7 @@ content=\"text/html; charset=UTF-8\">\n\
 	if (opt_o == 1)
 		save_text (filename_out, text_buffer->text);
 	else
-		save_text (NULL, text_buffer->text);
+		print_text (text_buffer->text);
 
 	/* unref memory */
 	hocr_pixbuf_unref (pix);
