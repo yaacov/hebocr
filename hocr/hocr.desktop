@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=hocr, Hebrew OCR
 Name[he]=hocr, OCR עברי
-Exec=hocr-gui
+Exec=hocr-gnome
 Icon=text-editor
 Terminal=false
 Type=Application

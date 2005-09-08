@@ -630,7 +630,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	{
 		/* is it O.K. to have no fonts in the page ? */
 		if (error)
-			*error = *error | HOCR_ERROR_NOT_HORIZONTAL_LINE;
+			*error = *error | HOCR_ERROR_NO_FONTS_FOUND;
 		return 1;
 	}
 
@@ -962,7 +962,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 		
 		/* FIXME: allways use paragraphs at column start ? */
 		/* add end of paragraph format string if last line in column did not end it */
-		if (!add_paragraph)
+		if (!(add_paragraph || add_indent))
 			hocr_text_buffer_add_string
 				(text_buffer,
 				 format_strings.paragraph_end_string);
