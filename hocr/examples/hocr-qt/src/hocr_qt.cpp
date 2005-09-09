@@ -106,7 +106,7 @@ hocr_qt::about ()
 {
 	QMessageBox::about (this, tr ("About hocr-qt"),
 			    tr
-			    ("<p>HOCR-QT - Hebrew character recognition software<br>http://hocr.berlios.de<br>Copyright \xa9 2005 Yaacov Zamir.</p>"));
+			    ("<center><p>HOCR-QT - Hebrew character recognition software<br>Copyright \xa9 2005 Yaacov Zamir.<br>http://hocr.berlios.de</p></center>"));
 }
 
 void
@@ -228,9 +228,8 @@ hocr_qt::adjustScrollBar (QScrollBar * scrollBar, double factor)
 void
 hocr_qt::apply ()
 {
-	char text[3500];
-	text[0] = 0;
-
+	std::string text;
+	
 	if (!imageLabel->pixmap ())
 		return;
 
@@ -240,22 +239,23 @@ hocr_qt::apply ()
 		using namespace hocr;
 
 		Hocr *hocr_engine = new Hocr;
-
+		HocrFormatStrings foramt_strings;
+		
 		hocr_engine->set_pixels (img.bits ());
 		hocr_engine->set_height (img.size ().height ());
 		hocr_engine->set_width (img.size ().width ());
 		hocr_engine->set_rowstride (img.bytesPerLine ());
 		hocr_engine->set_n_channels (img.depth () / 8);
 		hocr_engine->set_brightness (100);
-
-		hocr_engine->do_ocr (text, 3500);
-
+		
+		hocr_engine->do_ocr (&text, foramt_strings);
+		
 		// if not set_pixels to 0 will delete the original image
 		hocr_engine->set_pixels (0);
 		free (hocr_engine);
 	}
 
-	textEdit->append (QString::fromUtf8 (text));
+	textEdit->append (QString::fromUtf8 (text.c_str()));
 	textEdit->setAlignment (Qt::AlignRight);
 }
 

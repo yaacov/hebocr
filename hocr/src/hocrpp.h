@@ -26,6 +26,9 @@
 #define __HOCR_PP_H__
 
 #include <hocr.h>
+#include <string.h>
+
+#include <string>
 
 /**
  @brief the libhocr namespace.
@@ -39,6 +42,107 @@ namespace hocr
 	 class for Hebrew OCR
 	 */
 	class Hocr;
+
+	/**
+	 @brief HocrFormatStrings class.
+	
+	 class for Hebrew OCR format strings
+	 */
+	class HocrFormatStrings;
+
+		/**
+	 @brief HocrFormatStrings class.
+	
+	 class for Hebrew OCR format strings
+	 */
+	class HocrFormatStrings
+	{
+	      public:
+
+		/**
+		 @brief HocrFormatStrings constructor.
+		 */
+		HocrFormatStrings ()
+		{
+			strcpy (format_strings.page_start_string, "");
+			strcpy (format_strings.page_end_string, "");
+			strcpy (format_strings.column_start_string, "");
+			strcpy (format_strings.column_end_string, "");
+			strcpy (format_strings.paragraph_start_string, "");
+			strcpy (format_strings.paragraph_end_string, "");
+			strcpy (format_strings.line_start_string, "");
+			strcpy (format_strings.line_end_string, "");
+			strcpy (format_strings.unknown_start_string, "");
+			strcpy (format_strings.unknown_end_string, "");
+		}
+
+		/**
+		 @brief HocrFormatStrings destructor.
+		 */
+		 ~HocrFormatStrings ()
+		{
+			// do nothing ?
+		}
+
+		void set_page_start_string (char *str)
+		{
+			strcpy (format_strings.page_start_string, str);
+		}
+
+		void set_page_end_string (char *str)
+		{
+			strcpy (format_strings.page_end_string, str);
+		}
+
+		void set_column_start_string (char *str)
+		{
+			strcpy (format_strings.column_start_string, str);
+		}
+
+		void set_column_end_string (char *str)
+		{
+			strcpy (format_strings.column_end_string, str);
+		}
+
+		void set_paragraph_start_string (char *str)
+		{
+			strcpy (format_strings.paragraph_start_string, str);
+		}
+
+		void set_paragraph_end_string (char *str)
+		{
+			strcpy (format_strings.paragraph_end_string, str);
+		}
+
+		void set_line_start_string (char *str)
+		{
+			strcpy (format_strings.line_start_string, str);
+		}
+
+		void set_line_end_string (char *str)
+		{
+			strcpy (format_strings.line_end_string, str);
+		}
+
+		void set_unknown_start_string (char *str)
+		{
+			strcpy (format_strings.unknown_start_string, str);
+		}
+
+		void set_unknown_end_string (char *str)
+		{
+			strcpy (format_strings.unknown_end_string, str);
+		}
+
+		hocr_format_strings get_format_strings ()
+		{
+			return format_strings;
+		}
+
+	      private:
+
+		hocr_format_strings format_strings;
+	};
 
 	/**
 	 @brief Hocr class.
@@ -79,7 +183,7 @@ namespace hocr
 		/**
 		 @brief Hocr destructor.
 		 */
-		 ~Hocr ()
+		~Hocr ()
 		{
 			hocr_pixbuf_unref (h);
 		}
@@ -90,7 +194,8 @@ namespace hocr
 		 @param text a string to get the output text in.
 		 @return 1
 		 */
-		int do_ocr (String text)
+		int do_ocr (std::string *text,
+			    HocrFormatStrings foramt_strings)
 		{
 			hocr_text_buffer *text_buffer = 0;
 
@@ -101,13 +206,17 @@ namespace hocr
 			{
 				return 0;
 			}
-			
-			hocr_do_ocr (h, text_buffer, HOCR_OUTPUT_JUST_OCR, 0);
 
-			text = h->text;
-			
+			hocr_do_ocr (h, text_buffer,
+				     &(foramt_strings.get_format_strings ()),
+				     (hocr_output)(HOCR_OUTPUT_WITH_GRAPHICS),
+				     (hocr_ocr_type)(HOCR_OCR_TYPE_COLUMNS |
+				     HOCR_OCR_TYPE_NIKUD), 0);
+
+			*text = text_buffer->text;
+
 			hocr_text_buffer_unref (text_buffer);
-			
+
 			return 1;
 		}
 
