@@ -181,10 +181,10 @@ hocr_qt::createToolBars ()
 	zoomToolBar->addAction (zoomOutAct);
 	zoomToolBar->addAction (normalSizeAct);
 
-	exitToolBar = addToolBar (tr ("Exit"));
+	//exitToolBar = addToolBar (tr ("Exit"));
 
-	exitToolBar->addAction (aboutAct);
-	exitToolBar->addAction (exitAct);
+	//exitToolBar->addAction (aboutAct);
+	//exitToolBar->addAction (exitAct);
 }
 
 void
