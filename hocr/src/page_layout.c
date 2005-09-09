@@ -128,12 +128,6 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 		{
 			*line_end = y;
 
-			/* if here and this line has logical width then found a new line */
-			/* FIXME: do we want to read BIG fonts ? 
-			 * see consts.h for details about MAX_LINE_HIGHT */
-			if ((*line_end - *line_start) > MAX_LINE_HIGHT)
-				return 1;
-
 			return 0;
 		}
 	}

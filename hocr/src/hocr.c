@@ -423,9 +423,6 @@ color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
 /*
  */
 
-/*
- */
-
 int
 hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 	     hocr_format_strings * user_format_strings,
@@ -496,7 +493,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			user_format_strings->unknown_end_string);
 	}
 	else
-		/* if user did not give any format strings use defaults */
+	/* if user did not give any format strings use defaults */
 	{
 		strcpy (format_strings.page_start_string, "");
 		strcpy (format_strings.page_end_string, "");
@@ -650,7 +647,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 			/* if line is very not horizontal return error */
 			if ((line_eqs[c][i][0].a * line_eqs[c][i][0].a) >
-			    (1.0 / 9.0))
+			    (1.0 / 1000.0))
 			{
 				if (error)
 					*error = *error |
@@ -659,10 +656,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				num_of_fonts[c][i] = 0;
 			}
 
-			/* if this line is not high it is nikud line */
+			/* if this line do not logical hight then dont parse it */
 			if ((line_eqs[c][i][0].b - line_eqs[c][i][1].b) <
 			    (avg_font_hight_in_page -
-			     MIN_DISTANCE_BETWEEN_LINES))
+			     MIN_DISTANCE_BETWEEN_LINES) ||
+				(lines[c][i].y2 - lines[c][i].y1) > 2 * NORMAL_FONT_HIGHT)
 			{
 				num_of_fonts[c][i] = 0;
 			}
@@ -697,7 +695,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 
 	/**
 	 */
-
+		
+	/* if user do not want font recognition then finished */
+	if (ocr_type & HOCR_OCR_TYPE_NO_FONT_RECOGNITION)
+	{
+		return 0;
+	}
+	
 	/* page layout is complite start of font recognition */
 		
 	/* TODO: make new word/line detection by avg values and

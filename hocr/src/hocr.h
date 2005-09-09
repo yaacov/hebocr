@@ -63,13 +63,14 @@ typedef enum
 	HOCR_OCR_TYPE_COLUMNS = 1,
 	HOCR_OCR_TYPE_NIKUD = 2,
 	HOCR_OCR_TYPE_TABLE = 4,
+	HOCR_OCR_TYPE_NO_FONT_RECOGNITION = 8
 } hocr_ocr_type;
 
 typedef enum
 {
 	HOCR_OUTPUT_JUST_OCR = 0,
 	HOCR_OUTPUT_WITH_GRAPHICS = 1,
-	HOCR_OUTPUT_WITH_DEBUG_TEXT = 2,
+	HOCR_OUTPUT_WITH_DEBUG_TEXT = 2
 } hocr_output;
 
 /* FIXME: static length arrays for strings ?! help ! */
