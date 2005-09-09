@@ -262,6 +262,8 @@ hocr_qt::apply ()
 		// if not set_pixels to 0 will delete the original image
 		hocr_engine->set_pixels (0);
 		free (hocr_engine);
+		
+		imageLabel->setPixmap (QPixmap::fromImage (img));
 	}
 
 	textEdit->append (QString::fromUtf8 (text.c_str()));
