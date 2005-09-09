@@ -38,8 +38,9 @@ hocr_qt::hocr_qt ()
 	scrollArea->setWidget (imageLabel);
 
 	textEdit = new QTextEdit;
-	textEdit->setAlignment (Qt::AlignRight);
-
+	textEdit->setLayoutDirection( Qt::RightToLeft );
+	textEdit->setPlainText(QString::fromUtf8 (""));
+	
 	createActions ();
 	createMenus ();
 	createToolBars ();
@@ -148,6 +149,12 @@ hocr_qt::createActions ()
 	connect (normalSizeAct, SIGNAL (triggered ()), this,
 		 SLOT (normalSize ()));
 
+	setFontAct =
+		new QAction (tr ("Set &Font"), this);
+	setFontAct->setShortcut (tr ("Ctrl+F"));
+	connect (setFontAct, SIGNAL (triggered ()), this,
+		 SLOT (setFont ()));
+		 
 	aboutAct =
 		new QAction (QIcon (":/icons/about.png"), tr ("A&bout"),
 			     this);
@@ -195,6 +202,8 @@ hocr_qt::createMenus ()
 	menuView->addAction (zoomOutAct);
 	menuView->addSeparator ();
 	menuView->addAction (normalSizeAct);
+	menuView->addSeparator ();
+	menuView->addAction (setFontAct);
 
 	menuHelp = menuBar ()->addMenu (tr ("&Help"));
 	menuHelp->addAction (aboutAct);
@@ -256,7 +265,17 @@ hocr_qt::apply ()
 	}
 
 	textEdit->append (QString::fromUtf8 (text.c_str()));
-	textEdit->setAlignment (Qt::AlignRight);
+	textEdit->setLayoutDirection( Qt::RightToLeft );
+}
+
+void 
+hocr_qt::setFont()
+{
+	bool ok;
+	QFont font = QFontDialog::getFont( &ok, textEdit->font(), this );
+
+	if (ok)
+		textEdit->setFont( font );
 }
 
 void

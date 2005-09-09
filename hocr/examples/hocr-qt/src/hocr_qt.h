@@ -49,6 +49,7 @@ class hocr_qt:public QMainWindow
 	void zoomIn ();
 	void zoomOut ();
 	void normalSize ();
+	void setFont ();
 	void about ();
 
       private:
@@ -83,6 +84,8 @@ class hocr_qt:public QMainWindow
 	QAction *zoomInAct;
 	QAction *zoomOutAct;
 	QAction *normalSizeAct;
+	
+	QAction *setFontAct;
 	
 	QAction *aboutAct;
 	QAction *exitAct;
