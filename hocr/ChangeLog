@@ -13,6 +13,8 @@ hocr (0.5.0)
   
   * add borrowed KDE iKons to hocr-qt
   
+  * hocr-qt example show graphical output
+  
   * update the cpp bindings
    
   -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 23 Aug 2005 02:13

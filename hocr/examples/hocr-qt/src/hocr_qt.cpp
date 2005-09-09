@@ -107,7 +107,7 @@ hocr_qt::about ()
 {
 	QMessageBox::about (this, tr ("About hocr-qt"),
 			    tr
-			    ("<center><p>HOCR-QT - Hebrew character recognition software<br>Copyright \xa9 2005 Yaacov Zamir.<br>http://hocr.berlios.de</p></center>"));
+			    ("<center><h1>HOCR-QT 0.5.0</h1><p>Hebrew character recognition software<br>Copyright \xa9 2005 Yaacov Zamir.<br>http://hocr.berlios.de</p></center>"));
 }
 
 void
