@@ -44,6 +44,33 @@ GtkWidget *
 create_window1 (void)
 {
 	GtkWidget *vbox1;
+
+	/* menu */
+	GtkWidget *menubar1;
+	GtkWidget *menuitem1;
+	GtkWidget *menuitem1_menu;
+	GtkWidget *open;
+	GtkWidget *apply;
+	GtkWidget *save;
+	GtkWidget *separatormenuitem1;
+	GtkWidget *quit;
+	GtkWidget *menuitem2;
+	GtkWidget *menuitem2_menu;
+	GtkWidget *font;
+	GtkWidget *separator2;
+	GtkWidget *spell_check;
+	GtkWidget *separator3;
+	GtkWidget *menuitem3;
+	GtkWidget *menuitem3_menu;
+	GtkWidget *zoom_in;
+	GtkWidget *zoom_out;
+	GtkWidget *normal_size;
+	GtkWidget *menuitem4;
+	GtkWidget *menuitem4_menu;
+	GtkWidget *about;
+	GtkAccelGroup *accel_group;
+
+	/* toolbar */
 	GtkWidget *toolbar;
 	GtkIconSize tmp_toolbar_icon_size;
 	GtkWidget *toolbutton_open;
@@ -63,8 +90,12 @@ create_window1 (void)
 	GtkWidget *toolitem4;
 	GtkWidget *vseparator4;
 	GtkWidget *toolbutton_quit;
+
+	/* image */
 	GtkWidget *vpaned1;
 	GtkWidget *scrolledwindow_image;
+
+	/* text */
 	GtkWidget *viewport1;
 	GtkWidget *scrolledwindow_text;
 	GtkTooltips *tooltips;
@@ -72,6 +103,7 @@ create_window1 (void)
 	PangoFontDescription *font_desc;
 
 	tooltips = gtk_tooltips_new ();
+	accel_group = gtk_accel_group_new ();
 
 	window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_size_request (window1, 800, 600);
@@ -81,6 +113,138 @@ create_window1 (void)
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (window1), vbox1);
 
+	/* menu */
+
+	menubar1 = gtk_menu_bar_new ();
+	gtk_widget_show (menubar1);
+	gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
+
+	menuitem1 = gtk_menu_item_new_with_mnemonic (_("_File"));
+	gtk_widget_show (menuitem1);
+	gtk_container_add (GTK_CONTAINER (menubar1), menuitem1);
+
+	menuitem1_menu = gtk_menu_new ();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem1), menuitem1_menu);
+
+	open = gtk_image_menu_item_new_from_stock ("gtk-open", accel_group);
+	gtk_widget_show (open);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), open);
+
+	apply = gtk_image_menu_item_new_from_stock ("gtk-apply", accel_group);
+	gtk_widget_show (apply);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), apply);
+
+	save = gtk_image_menu_item_new_from_stock ("gtk-save", accel_group);
+	gtk_widget_show (save);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), save);
+
+	separatormenuitem1 = gtk_separator_menu_item_new ();
+	gtk_widget_show (separatormenuitem1);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu),
+			   separatormenuitem1);
+	gtk_widget_set_sensitive (separatormenuitem1, FALSE);
+
+	quit = gtk_image_menu_item_new_from_stock ("gtk-quit", accel_group);
+	gtk_widget_show (quit);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), quit);
+
+	menuitem2 = gtk_menu_item_new_with_mnemonic (_("_Edit"));
+	gtk_widget_show (menuitem2);
+	gtk_container_add (GTK_CONTAINER (menubar1), menuitem2);
+
+	menuitem2_menu = gtk_menu_new ();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem2), menuitem2_menu);
+
+	font = gtk_image_menu_item_new_from_stock ("gtk-select-font",
+						   accel_group);
+	gtk_widget_show (font);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), font);
+
+	separator2 = gtk_separator_menu_item_new ();
+	gtk_widget_show (separator2);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), separator2);
+	gtk_widget_set_sensitive (separator2, FALSE);
+
+	spell_check =
+		gtk_image_menu_item_new_from_stock ("gtk-spell-check",
+						    accel_group);
+	gtk_widget_show (spell_check);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), spell_check);
+
+	separator3 = gtk_separator_menu_item_new ();
+	gtk_widget_show (separator3);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), separator3);
+	gtk_widget_set_sensitive (separator3, FALSE);
+
+	columns = gtk_check_menu_item_new_with_mnemonic (_("Columns"));
+	gtk_widget_show (columns);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), columns);
+	gtk_tooltips_set_tip (tooltips, columns,
+			      _("Check for columns in scaned picture"), NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (columns), TRUE);
+
+	nikud = gtk_check_menu_item_new_with_mnemonic (_("Nikud"));
+	gtk_widget_show (nikud);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), nikud);
+	gtk_tooltips_set_tip (tooltips, nikud,
+			      _("Check for nikud in scaned picture"), NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (nikud), TRUE);
+
+	graphics = gtk_check_menu_item_new_with_mnemonic (_("Graphics"));
+	gtk_widget_show (graphics);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), graphics);
+	gtk_tooltips_set_tip (tooltips, graphics, _("Show graphical output"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (graphics), TRUE);
+
+	ocr = gtk_check_menu_item_new_with_mnemonic (_("OCR"));
+	gtk_widget_show (ocr);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), ocr);
+	gtk_tooltips_set_tip (tooltips, ocr,
+			      _("Try to recognize fonts in scaned text"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ocr), TRUE);
+
+	menuitem3 = gtk_menu_item_new_with_mnemonic (_("_View"));
+	gtk_widget_show (menuitem3);
+	gtk_container_add (GTK_CONTAINER (menubar1), menuitem3);
+
+	menuitem3_menu = gtk_menu_new ();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem3), menuitem3_menu);
+
+	zoom_in =
+		gtk_image_menu_item_new_from_stock ("gtk-zoom-in",
+						    accel_group);
+	gtk_widget_show (zoom_in);
+	gtk_container_add (GTK_CONTAINER (menuitem3_menu), zoom_in);
+
+	zoom_out =
+		gtk_image_menu_item_new_from_stock ("gtk-zoom-out",
+						    accel_group);
+	gtk_widget_show (zoom_out);
+	gtk_container_add (GTK_CONTAINER (menuitem3_menu), zoom_out);
+
+	normal_size =
+		gtk_image_menu_item_new_from_stock ("gtk-zoom-100",
+						    accel_group);
+	gtk_widget_show (normal_size);
+	gtk_container_add (GTK_CONTAINER (menuitem3_menu), normal_size);
+
+	menuitem4 = gtk_menu_item_new_with_mnemonic (_("_Help"));
+	gtk_widget_show (menuitem4);
+	gtk_container_add (GTK_CONTAINER (menubar1), menuitem4);
+
+	menuitem4_menu = gtk_menu_new ();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem4), menuitem4_menu);
+
+	about = gtk_menu_item_new_with_mnemonic (_("_About"));
+	gtk_widget_show (about);
+	gtk_container_add (GTK_CONTAINER (menuitem4_menu), about);
+	gtk_widget_add_accelerator (about, "activate", accel_group,
+				    GDK_B, (GdkModifierType) GDK_CONTROL_MASK,
+				    GTK_ACCEL_VISIBLE);
+
+	/* toolbar */
 	toolbar = gtk_toolbar_new ();
 	gtk_widget_show (toolbar);
 	gtk_box_pack_start (GTK_BOX (vbox1), toolbar, FALSE, FALSE, 0);
@@ -131,7 +295,7 @@ create_window1 (void)
 	vseparator2 = gtk_vseparator_new ();
 	gtk_widget_show (vseparator2);
 	gtk_container_add (GTK_CONTAINER (toolitem2), vseparator2);
-	
+
 	toolbutton_zoom_in =
 		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-zoom-in");
 	gtk_widget_show (toolbutton_zoom_in);
@@ -175,10 +339,11 @@ create_window1 (void)
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_quit), tooltips,
 				   _("Quit this program"), NULL);
 
+	/* image */
 	vpaned1 = gtk_vpaned_new ();
 	gtk_widget_show (vpaned1);
 	gtk_container_add (GTK_CONTAINER (vbox1), vpaned1);
-											 
+
 	scrolledwindow_image = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy ((GtkScrolledWindow *)
 					scrolledwindow_image,
@@ -195,6 +360,7 @@ create_window1 (void)
 	gtk_widget_show (image);
 	gtk_container_add (GTK_CONTAINER (viewport1), image);
 
+	/* text */
 	scrolledwindow_text = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy ((GtkScrolledWindow *)
 					scrolledwindow_text,
@@ -215,23 +381,25 @@ create_window1 (void)
 	gtk_widget_modify_font (textview, font_desc);
 	pango_font_description_free (font_desc);
 
+	/* main window */
 	g_signal_connect ((gpointer) window1, "delete_event",
 			  G_CALLBACK (on_window1_delete_event), NULL);
 
+	/* toolbar */
 	g_signal_connect ((gpointer) toolbutton_open, "clicked",
 			  G_CALLBACK (on_toolbutton_open_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_apply, "clicked",
 			  G_CALLBACK (on_toolbutton_apply_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_save, "clicked",
 			  G_CALLBACK (on_toolbutton_save_clicked), NULL);
-			  
+
 	g_signal_connect ((gpointer) toolbutton_zoom_in, "clicked",
 			  G_CALLBACK (on_toolbutton_zoom_in_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_zoom_out, "clicked",
 			  G_CALLBACK (on_toolbutton_zoom_out_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_zoom_fit, "clicked",
 			  G_CALLBACK (on_toolbutton_zoom_fit_clicked), NULL);
-			  
+
 	g_signal_connect ((gpointer) toolbutton_about, "clicked",
 			  G_CALLBACK (on_toolbutton_about_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_spell, "clicked",
@@ -239,6 +407,38 @@ create_window1 (void)
 
 	g_signal_connect ((gpointer) toolbutton_quit, "clicked",
 			  G_CALLBACK (on_toolbutton_quit_clicked), NULL);
+
+	/* menu */
+	g_signal_connect ((gpointer) open, "activate",
+			  G_CALLBACK (on_open_activate), NULL);
+	g_signal_connect ((gpointer) apply, "activate",
+			  G_CALLBACK (on_apply_activate), NULL);
+	g_signal_connect ((gpointer) save, "activate",
+			  G_CALLBACK (on_save_activate), NULL);
+	g_signal_connect ((gpointer) quit, "activate",
+			  G_CALLBACK (on_quit_activate), NULL);
+	g_signal_connect ((gpointer) font, "activate",
+			  G_CALLBACK (on_font_activate), NULL);
+	g_signal_connect ((gpointer) spell_check, "activate",
+			  G_CALLBACK (on_spell_check_activate), NULL);
+	g_signal_connect ((gpointer) columns, "activate",
+			  G_CALLBACK (on_columns_activate), NULL);
+	g_signal_connect ((gpointer) nikud, "activate",
+			  G_CALLBACK (on_nikud_activate), NULL);
+	g_signal_connect ((gpointer) graphics, "activate",
+			  G_CALLBACK (on_graphics_activate), NULL);
+	g_signal_connect ((gpointer) ocr, "activate",
+			  G_CALLBACK (on_ocr_activate), NULL);
+	g_signal_connect ((gpointer) zoom_in, "activate",
+			  G_CALLBACK (on_zoom_in_activate), NULL);
+	g_signal_connect ((gpointer) zoom_out, "activate",
+			  G_CALLBACK (on_zoom_out_activate), NULL);
+	g_signal_connect ((gpointer) normal_size, "activate",
+			  G_CALLBACK (on_normal_size_activate), NULL);
+	g_signal_connect ((gpointer) about, "activate",
+			  G_CALLBACK (on_about_activate), NULL);
+
+	gtk_window_add_accel_group (GTK_WINDOW (window1), accel_group);
 
 	return window1;
 }

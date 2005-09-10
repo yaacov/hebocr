@@ -37,6 +37,7 @@
 GdkPixbuf *pixbuf = NULL;
 GdkPixbuf *vis_pixbuf = NULL;
 
+/* toolbar */
 int
 do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 {
@@ -410,4 +411,116 @@ on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data)
 	}
 
 	gtk_main_quit ();
+}
+
+/* menu */
+void
+on_open_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_open_clicked (NULL, NULL);
+}
+
+
+void
+on_apply_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_apply_clicked (NULL, NULL);
+}
+
+
+void
+on_save_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_save_clicked (NULL, NULL);
+}
+
+
+void
+on_quit_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_quit_clicked (NULL, NULL);
+}
+
+
+void
+on_font_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_spell_check_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_spell_clicked (NULL, NULL);
+}
+
+
+void
+on_columns_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	
+}
+
+
+void
+on_nikud_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_graphics_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_ocr_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_zoom_in_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_zoom_in_clicked (NULL, NULL);
+}
+
+
+void
+on_zoom_out_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_zoom_out_clicked (NULL, NULL);
+}
+
+
+void
+on_normal_size_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_zoom_fit_clicked (NULL, NULL);
+}
+
+
+void
+on_about_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_toolbutton_about_clicked (NULL, NULL);
 }

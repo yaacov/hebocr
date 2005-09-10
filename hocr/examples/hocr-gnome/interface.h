@@ -22,8 +22,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/* main window */
 GtkWidget *window1;
+
+/* menu check boxs */
+GtkWidget *columns;
+GtkWidget *nikud;
+GtkWidget *graphics;
+GtkWidget *ocr;
+
+/* image and text of main window */
 GtkWidget *image;
 GtkWidget *textview;
 
+/* user interface for window */ 
 GtkWidget *create_window1 (void);
