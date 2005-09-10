@@ -758,7 +758,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				if (fonts[c][i][j].hight < MIN_FONT_SIZE
 				    && fonts[c][i][j].width < MIN_FONT_SIZE)
 					continue;
-
+				if (fonts[c][i][j].hight < 2
+				    || fonts[c][i][j].width < 2)
+					continue;
+				
 				/* get font position in word, e.g. is last
 				 * or is before non letter (psik, nekuda ...) */
 				end_of_line = (j + 1) == num_of_fonts[c][i];
