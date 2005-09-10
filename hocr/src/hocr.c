@@ -687,6 +687,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 				/* color individual font boxes */
 				for (j = 0; j < num_of_fonts[c][i]; j++)
 				{
+					if (fonts[c][i][j].hight < 2
+				    || fonts[c][i][j].width < 2)
+					continue;
+					
 					color_hocr_box (pix, fonts[c][i][j],
 							1, 0);
 				}
