@@ -179,7 +179,7 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), columns);
 	gtk_tooltips_set_tip (tooltips, columns,
 			      _("Check for columns in scaned picture"), NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (columns), FALSE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (columns), TRUE);
 
 	/*nikud = gtk_check_menu_item_new_with_mnemonic (_("Nikud"));
 	gtk_widget_show (nikud);

@@ -192,12 +192,6 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	font->width = font->x2 - font->x1;
 	font->hight = font->y2 - font->y1;
 
-	/* i do not think this is a font */
-	if (font->hight > MAX_LINE_HIGHT || font->hight < MIN_LINE_HIGHT ||
-	    font->width > NORMAL_FONT_WIDTH * 3
-	    || font->width < MIN_FONT_SIZE)
-		return 1;
-
 	/* go down until found a font */
 	sum = 0;
 	for (y = font->y1; y < font->y2 && sum == 0; y++)
