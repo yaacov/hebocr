@@ -38,8 +38,6 @@
 #include "callbacks.h"
 #include "interface.h"
 
-#define TEXT_FONT_NAME "Miriam Mono CLM 15"
-
 GtkWidget *
 create_window1 (void)
 {
@@ -188,14 +186,14 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), nikud);
 	gtk_tooltips_set_tip (tooltips, nikud,
 			      _("Check for nikud in scaned picture"), NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (nikud), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (nikud), FALSE);
 
 	graphics = gtk_check_menu_item_new_with_mnemonic (_("Graphics"));
 	gtk_widget_show (graphics);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), graphics);
 	gtk_tooltips_set_tip (tooltips, graphics, _("Show graphical output"),
 			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (graphics), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (graphics), FALSE);
 
 	ocr = gtk_check_menu_item_new_with_mnemonic (_("OCR"));
 	gtk_widget_show (ocr);
@@ -376,7 +374,7 @@ create_window1 (void)
 	gtk_widget_show (textview);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_text), textview);
 
-	/* Change default font throughout the widget */
+	/* Change default font throughout the text widget */
 	font_desc = pango_font_description_from_string (TEXT_FONT_NAME);
 	gtk_widget_modify_font (textview, font_desc);
 	pango_font_description_free (font_desc);

@@ -63,12 +63,23 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 		return 0;
 	}
 
-	/* TODO: get ocr type from user */
-	ocr_type = HOCR_OCR_TYPE_COLUMNS | HOCR_OCR_TYPE_NIKUD;
-	ocr_output = HOCR_OUTPUT_WITH_GRAPHICS;
+	/* get ocr type from user */
+	ocr_type = HOCR_OCR_TYPE_REGULAR;
+	ocr_output = HOCR_OUTPUT_JUST_OCR;
+
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (columns)))
+		ocr_type = ocr_type | HOCR_OCR_TYPE_COLUMNS;
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (nikud)))
+		ocr_type = ocr_type | HOCR_OCR_TYPE_NIKUD;
+	if (!(gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (ocr))))
+		ocr_type = ocr_type | HOCR_OCR_TYPE_NO_FONT_RECOGNITION;
+
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (graphics)))
+		ocr_output = ocr_output | HOCR_OUTPUT_WITH_GRAPHICS;
 
 	hocr_do_ocr (&hocr_pix, text, NULL, ocr_output, ocr_type, NULL);
 
+	/* insert text to text view widget */
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
 
@@ -415,112 +426,128 @@ on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data)
 
 /* menu */
 void
-on_open_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_open_clicked (NULL, NULL);
 }
 
 
 void
-on_apply_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_apply_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_apply_clicked (NULL, NULL);
 }
 
 
 void
-on_save_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_save_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_save_clicked (NULL, NULL);
 }
 
 
 void
-on_quit_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_quit_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_quit_clicked (NULL, NULL);
 }
 
 
 void
-on_font_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_font_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
+	GtkWidget *fsd;
+	PangoFontDescription *font_desc;
+	gint result;
 
+	/* create font dialog */
+	fsd = gtk_font_selection_dialog_new (_("Set text font"));
+	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
+						 (fsd), TEXT_FONT_NAME);
+
+	/* run dialog */
+	result = gtk_dialog_run (GTK_DIALOG (fsd));
+	switch (result)
+	{
+	case GTK_RESPONSE_OK:
+		/* Change default font throughout the text widget */
+		font_desc =
+			pango_font_description_from_string
+			(gtk_font_selection_dialog_get_font_name
+			 (GTK_FONT_SELECTION_DIALOG (fsd)));
+
+		gtk_widget_modify_font (textview, font_desc);
+		pango_font_description_free (font_desc);
+
+		break;
+	default:
+		/* do nothing since dialog was cancelled */
+		break;
+	}
+
+	/* free dialog */
+	gtk_widget_destroy (fsd);
 }
 
 
 void
-on_spell_check_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_spell_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_spell_clicked (NULL, NULL);
 }
 
 
 void
-on_columns_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_columns_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-	
+	/* do not do anything, done automaticly */
 }
 
 
 void
-on_nikud_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_nikud_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	/* do not do anything, done automaticly */
 }
 
 
 void
-on_graphics_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_graphics_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	/* do not do anything, done automaticly */
 }
 
 
 void
-on_ocr_activate                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_ocr_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	/* do not do anything, done automaticly */
 }
 
 
 void
-on_zoom_in_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_zoom_in_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_zoom_in_clicked (NULL, NULL);
 }
 
 
 void
-on_zoom_out_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_zoom_out_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_zoom_out_clicked (NULL, NULL);
 }
 
 
 void
-on_normal_size_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_normal_size_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_zoom_fit_clicked (NULL, NULL);
 }
 
 
 void
-on_about_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_about_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_about_clicked (NULL, NULL);
 }
