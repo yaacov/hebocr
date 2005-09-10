@@ -193,8 +193,15 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), graphics);
 	gtk_tooltips_set_tip (tooltips, graphics, _("Show graphical output"),
 			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (graphics), FALSE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (graphics), TRUE);
 
+	html = gtk_check_menu_item_new_with_mnemonic (_("Html"));
+	gtk_widget_show (html);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), html);
+	gtk_tooltips_set_tip (tooltips, html, _("Output html text"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (html), FALSE);
+	
 	ocr = gtk_check_menu_item_new_with_mnemonic (_("OCR"));
 	gtk_widget_show (ocr);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), ocr);

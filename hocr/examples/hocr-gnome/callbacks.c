@@ -45,6 +45,7 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	hocr_output ocr_output;
 	hocr_ocr_type ocr_type;
 	hocr_text_buffer *text;
+	hocr_format_strings format_strings;
 	GtkTextIter iter;
 
 	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
@@ -77,7 +78,35 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (graphics)))
 		ocr_output = ocr_output | HOCR_OUTPUT_WITH_GRAPHICS;
 
-	hocr_do_ocr (&hocr_pix, text, NULL, ocr_output, ocr_type, NULL);
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (html)))
+		/* html output */
+	{
+		strcpy (format_strings.page_start_string,
+			"<html>\n<meta http-equiv=\"Content-Type\"\
+content=\"text/html; charset=UTF-8\">\n\
+<body dir=\"rtl\">\n\
+<table>\n<tr>\n");
+		strcpy (format_strings.page_end_string,
+			"</tr>\n</table>\n</body>\n</html>\n");
+		strcpy (format_strings.column_start_string,
+			"<td width=\"25%\">\n");
+		strcpy (format_strings.column_end_string, "</td>\n");
+		strcpy (format_strings.paragraph_start_string, "<p>\n");
+		strcpy (format_strings.paragraph_end_string, "</p>\n");
+		strcpy (format_strings.line_start_string, "");
+		strcpy (format_strings.line_end_string, "</br>");
+		strcpy (format_strings.unknown_start_string, "");
+		strcpy (format_strings.unknown_end_string, "");
+
+		hocr_do_ocr (&hocr_pix, text, &format_strings,
+			     ocr_output, ocr_type, NULL);
+	}
+	else
+		/* text output */
+	{
+		hocr_do_ocr (&hocr_pix, text, NULL, ocr_output, ocr_type,
+			     NULL);
+	}
 
 	/* insert text to text view widget */
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);

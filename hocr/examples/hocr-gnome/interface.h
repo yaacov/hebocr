@@ -31,6 +31,7 @@ GtkWidget *window1;
 GtkWidget *columns;
 GtkWidget *nikud;
 GtkWidget *graphics;
+GtkWidget *html;
 GtkWidget *ocr;
 
 /* image and text of main window */

@@ -187,13 +187,14 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	int found_nikud;
 
 	/* adjust font hight and width */
-	font->x2++;
+	font->x2 += 1;
+	font->x1 -= 0;
 	font->width = font->x2 - font->x1;
 	font->hight = font->y2 - font->y1;
 
 	/* i do not think this is a font */
 	if (font->hight > MAX_LINE_HIGHT || font->hight < MIN_LINE_HIGHT ||
-	    font->width > NORMAL_FONT_WIDTH * 2
+	    font->width > NORMAL_FONT_WIDTH * 3
 	    || font->width < MIN_FONT_SIZE)
 		return 1;
 
@@ -220,7 +221,7 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 	}
-	font->y1 = y + 1;
+	font->y1 = y + 2;
 
 	/* go up until found a font */
 	sum = 0;
@@ -246,8 +247,7 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 		}
 	}
 	
-	font->y2 = y - 1;
-	font->hight = font->y2 - font->y1;
+	font->y2 = y - 2;
 	
 	/* check for nikud under the font */
 	found_nikud = TRUE;
@@ -314,6 +314,8 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 			font->y1 = y;
 		}
 	}
+
+	font->hight = font->y2 - font->y1;
 
 	return 1;
 }

@@ -800,7 +800,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 						 avg_font_width_in_page,
 						 end_of_word,
 						 chars,
-						 MAX_NUM_OF_CHARS_IN_FONT);
+						 MAX_NUM_OF_CHARS_IN_FONT); 
 
 				/* if chars is ' check the next char and if it is ' too
 				 * add " once */
