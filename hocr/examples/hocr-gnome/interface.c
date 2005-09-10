@@ -179,14 +179,14 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), columns);
 	gtk_tooltips_set_tip (tooltips, columns,
 			      _("Check for columns in scaned picture"), NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (columns), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (columns), FALSE);
 
-	nikud = gtk_check_menu_item_new_with_mnemonic (_("Nikud"));
+	/*nikud = gtk_check_menu_item_new_with_mnemonic (_("Nikud"));
 	gtk_widget_show (nikud);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), nikud);
 	gtk_tooltips_set_tip (tooltips, nikud,
 			      _("Check for nikud in scaned picture"), NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (nikud), FALSE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (nikud), FALSE);*/
 
 	graphics = gtk_check_menu_item_new_with_mnemonic (_("Graphics"));
 	gtk_widget_show (graphics);
@@ -426,14 +426,6 @@ create_window1 (void)
 			  G_CALLBACK (on_font_activate), NULL);
 	g_signal_connect ((gpointer) spell_check, "activate",
 			  G_CALLBACK (on_spell_check_activate), NULL);
-	g_signal_connect ((gpointer) columns, "activate",
-			  G_CALLBACK (on_columns_activate), NULL);
-	g_signal_connect ((gpointer) nikud, "activate",
-			  G_CALLBACK (on_nikud_activate), NULL);
-	g_signal_connect ((gpointer) graphics, "activate",
-			  G_CALLBACK (on_graphics_activate), NULL);
-	g_signal_connect ((gpointer) ocr, "activate",
-			  G_CALLBACK (on_ocr_activate), NULL);
 	g_signal_connect ((gpointer) zoom_in, "activate",
 			  G_CALLBACK (on_zoom_in_activate), NULL);
 	g_signal_connect ((gpointer) zoom_out, "activate",

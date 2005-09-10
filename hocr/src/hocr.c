@@ -938,14 +938,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer,
 			}
 
 			/* check for paragraph start if not at end of column */
-			if (i < (num_of_lines[c] - 2))
+			if (i < (num_of_lines[c] - 1))
 			{
 				add_paragraph =
 					2 *
 					avg_diff_between_lines_in_page
 					<
-					(lines[c][i + 2].y1 -
-					 lines[c][i + 1].y2);
+					(lines[c][i + 1].y1 -
+					 lines[c][i + 0].y2);
 			}
 
 			/* add end of line format string */

@@ -70,8 +70,8 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (columns)))
 		ocr_type = ocr_type | HOCR_OCR_TYPE_COLUMNS;
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (nikud)))
-		ocr_type = ocr_type | HOCR_OCR_TYPE_NIKUD;
+	/*if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (nikud)))
+		ocr_type = ocr_type | HOCR_OCR_TYPE_NIKUD;*/
 	if (!(gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (ocr))))
 		ocr_type = ocr_type | HOCR_OCR_TYPE_NO_FONT_RECOGNITION;
 
@@ -524,35 +524,6 @@ on_spell_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_spell_clicked (NULL, NULL);
 }
-
-
-void
-on_columns_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-	/* do not do anything, done automaticly */
-}
-
-
-void
-on_nikud_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-	/* do not do anything, done automaticly */
-}
-
-
-void
-on_graphics_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-	/* do not do anything, done automaticly */
-}
-
-
-void
-on_ocr_activate (GtkMenuItem * menuitem, gpointer user_data)
-{
-	/* do not do anything, done automaticly */
-}
-
 
 void
 on_zoom_in_activate (GtkMenuItem * menuitem, gpointer user_data)

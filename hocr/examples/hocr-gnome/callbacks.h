@@ -72,14 +72,6 @@ void on_font_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void on_spell_check_activate (GtkMenuItem * menuitem, gpointer user_data);
 
-void on_columns_activate (GtkMenuItem * menuitem, gpointer user_data);
-
-void on_nikud_activate (GtkMenuItem * menuitem, gpointer user_data);
-
-void on_graphics_activate (GtkMenuItem * menuitem, gpointer user_data);
-
-void on_ocr_activate (GtkMenuItem * menuitem, gpointer user_data);
-
 void on_zoom_in_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void on_zoom_out_activate (GtkMenuItem * menuitem, gpointer user_data);

@@ -29,7 +29,7 @@ GtkWidget *window1;
 
 /* menu check boxs */
 GtkWidget *columns;
-GtkWidget *nikud;
+/*GtkWidget *nikud;*/
 GtkWidget *graphics;
 GtkWidget *html;
 GtkWidget *ocr;
