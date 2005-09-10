@@ -165,7 +165,7 @@ hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y)
 {
 	unsigned char *pixel;
 
-	if (x < 0 || x > pix->width || y < 0 || y > pix->height)
+	if (x < 0 || x >= pix->width || y < 0 || y >= pix->height)
 		return 0;
 
 	pixel = pix->pixels + x * pix->n_channels + y * pix->rowstride;
@@ -179,7 +179,7 @@ hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel,
 {
 	unsigned char *pixel;
 
-	if (x < 0 || x > pix->width || y < 0 || y > pix->height)
+	if (x < 0 || x >= pix->width || y < 0 || y >= pix->height)
 		return 0;
 
 	pixel = pix->pixels + x * pix->n_channels + y * pix->rowstride;

@@ -98,7 +98,10 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 	width_1_3 = width / 3;
 	width_2_3 = 2 * width / 3;
 
-	for (y = current_pos; y < column.hight; y++)
+	inside_line = FALSE;
+	*line_start = current_pos;
+
+	for (y = current_pos; y < column.y2; y++)
 	{
 		/* get presentage coverage for this pixel line */
 		last_raw_sum = sum;
@@ -113,25 +116,26 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 		/* check only the part with the most color on it */
 		sum = 1000 * sum / width;
 
+		/* if presantage below maximum for in a line then we need to find 
+		 * the end of the line by looking to the end of the down slop */
+		if (sum <= IN_A_LINE &&
+		    inside_line &&
+		    (y - *line_start) > MIN_LINE_HIGHT &&
+		    (last_raw_sum - sum) <= 0)
+		{
+			*line_end = y;
+			return 0;
+		}
+
 		/* if presantage above minmun for not in a line then we are in aline */
 		if (sum >= NOT_IN_A_LINE && !inside_line)
 		{
 			*line_start = y;
 			inside_line = TRUE;
 		}
-		/* if presantage below maximum for in a line then we need to find 
-		 * the end of the line by looking to the end of the down slop */
-		else if (sum <= IN_A_LINE &&
-			 inside_line &&
-			 (y - *line_start) > MIN_LINE_HIGHT &&
-			 (last_raw_sum - sum) <= 0)
-		{
-			*line_end = y;
-
-			return 0;
-		}
 	}
 
+	*line_end = column.y2;
 	return 1;
 }
 
@@ -182,13 +186,19 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	int sum;
 	int found_nikud;
 
+	/* adjust font hight and width */
 	font->x2++;
-	font->width++;
+	font->width = font->x2 - font->x1;
+	font->hight = font->y2 - font->y1;
 
-	/* check if font box is too big */
+	/* i do not think this is a font */
+	if (font->hight > MAX_LINE_HIGHT || font->hight < MIN_LINE_HIGHT ||
+	    font->width > NORMAL_FONT_WIDTH * 2
+	    || font->width < MIN_FONT_SIZE)
+		return 1;
 
+	/* go down until found a font */
 	sum = 0;
-	/* read line from right to left */
 	for (y = font->y1; y < font->y2 && sum == 0; y++)
 	{
 		/* get presentage coverage for this pixel line */
@@ -198,26 +208,10 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 	}
-	font->y1 = y - 1;
 
-	sum = 0;
-	/* read line from right to left */
-	for (y = font->y2; y > font->y1 && sum == 0; y--)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (x = font->x1; x <= font->x2; x++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-	}
-	font->y2 = y + 1;
-
-	/* check if font box is too small */
-
+	/* go up until out of a font */
 	sum = 1;
-	/* read line from right to left */
-	for (y = font->y1; y > (font->y1 - MIN_LINE_HIGHT) && sum != 0; y--)
+	for (; y > (font->y1 - font->hight) && sum != 0; y--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
@@ -228,9 +222,9 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 	}
 	font->y1 = y + 1;
 
-	sum = 1;
-	/* read line from right to left */
-	for (y = font->y2; y < (font->y2 + MIN_LINE_HIGHT) && sum != 0; y++)
+	/* go up until found a font */
+	sum = 0;
+	for (y = font->y2; y > font->y1 && sum == 0; y--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
@@ -239,8 +233,22 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 		}
 	}
-	font->y2 = y - 1;
 
+	/* go down until out of a font */
+	sum = 1;
+	for (; y < (font->y2 + font->hight) && sum != 0; y++)
+	{
+		/* get presentage coverage for this pixel line */
+		sum = 0;
+		for (x = font->x1; x <= font->x2; x++)
+		{
+			sum += hocr_pixbuf_get_pixel (pix, x, y);
+		}
+	}
+	
+	font->y2 = y - 1;
+	font->hight = font->y2 - font->y1;
+	
 	/* check for nikud under the font */
 	found_nikud = TRUE;
 
@@ -265,12 +273,45 @@ adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
 			sum += hocr_pixbuf_get_pixel (pix, x, font->y2 - 3);
 		}
 
-		found_nikud = (y > font->y1 + MIN_DISTANCE_BETWEEN_LINES
+		found_nikud = (y > font->y1 + (font->hight / 2)
 			       && sum < 4 * font->width / 5);
 
 		if (found_nikud)
 		{
-			font->y2 = y - 1;
+			font->y2 = y;
+		}
+	}
+
+	/* check for nikud above the font */
+	found_nikud = TRUE;
+
+	while (found_nikud)
+	{
+		sum = 1;
+		/* read line from right to left */
+		for (y = font->y1 + 1; y < font->y2 && sum != 0; y++)
+		{
+			/* get presentage coverage for this pixel line */
+			sum = 0;
+			for (x = font->x1; x <= font->x2; x++)
+			{
+				sum += hocr_pixbuf_get_pixel (pix, x, y);
+			}
+		}
+		/* some times bet and caf look like resh with patach
+		 * but patach is smaller ~3/4 than lower bar of kaf and bet */
+		sum = 0;
+		for (x = font->x1; x <= font->x2; x++)
+		{
+			sum += hocr_pixbuf_get_pixel (pix, x, font->y2 - 3);
+		}
+
+		found_nikud = (y < font->y2 - (font->hight / 2)
+			       && sum < 4 * font->width / 5);
+
+		if (found_nikud)
+		{
+			font->y1 = y;
 		}
 	}
 

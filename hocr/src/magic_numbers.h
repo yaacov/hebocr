@@ -62,7 +62,7 @@
 
 #define MIN_COLUMN_WIDTH 100
 #define MAX_LINE_HIGHT 60
-#define MIN_LINE_HIGHT 20
+#define MIN_LINE_HIGHT 15
 
 #define MIN_FONT_SIZE 3
 

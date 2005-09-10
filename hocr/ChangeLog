@@ -16,6 +16,8 @@ hocr (0.5.0)
   * hocr-qt example show graphical output
   
   * update the cpp bindings
+  
+  * fix bug in get/set pixels that crashed the program.
    
   -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 23 Aug 2005 02:13
 
