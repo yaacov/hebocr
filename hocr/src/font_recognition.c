@@ -26,18 +26,19 @@
  font markers
  */
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "hocr.h"
-#include "magic_numbers.h"
+#include "consts.h"
 #include "font_recognition.h"
 
 /**
  */
 
 int
-has_black_right_bottom_mark (hocr_pixbuf * pix, hocr_box font)
+has_black_right_bottom_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int x, y;
 	int sum;
@@ -47,7 +48,7 @@ has_black_right_bottom_mark (hocr_pixbuf * pix, hocr_box font)
 	for (x = font.x2; x > (font.x2 - 2); x--)
 		for (y = font.y2; y > (font.y2 - (x - (font.x1 - 2))); y--)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
+			sum += (hocr_pixbuf_get_object (pix, x, y) == obj)?1:0;
 		}
 
 	if (sum < 3)
@@ -57,7 +58,7 @@ has_black_right_bottom_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_black_left_bottom_mark (hocr_pixbuf * pix, hocr_box font)
+has_black_left_bottom_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int x, y;
 	int sum;
@@ -68,7 +69,7 @@ has_black_left_bottom_mark (hocr_pixbuf * pix, hocr_box font)
 	for (x = font.x1; x < (font.x1 + 4); x++)
 		for (y = font.y2; y > (font.y2 - ((font.x1 + 4) - x)); y--)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
+			sum += ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		}
 
 	if (sum == 0)
@@ -77,7 +78,7 @@ has_black_left_bottom_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_black_left_top_mark (hocr_pixbuf * pix, hocr_box font)
+has_black_left_top_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int x, y;
 	int sum;
@@ -88,7 +89,7 @@ has_black_left_top_mark (hocr_pixbuf * pix, hocr_box font)
 	for (x = font.x1; x < (font.x1 + 4); x++)
 		for (y = font.y1; y < (font.y2 + ((font.x1 + 4) - x)); y++)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
+			sum += ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		}
 
 	if (sum == 0)
@@ -97,7 +98,7 @@ has_black_left_top_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-has_black_right_top_mark (hocr_pixbuf * pix, hocr_box font)
+has_black_right_top_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int x, y;
 	int sum;
@@ -108,7 +109,7 @@ has_black_right_top_mark (hocr_pixbuf * pix, hocr_box font)
 	for (x = font.x2; x > (font.x2 - 4); x--)
 		for (y = font.y1; y < (font.y2 + (x - (font.x2 - 4))); y++)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
+			sum += ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		}
 
 	if (sum == 0)
@@ -118,8 +119,8 @@ has_black_right_top_mark (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos,
-		     int *first_x, int *last_x)
+count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos, int *first_x,
+		     int *last_x, unsigned int obj)
 {
 	int x, y;
 	int current_color;
@@ -137,7 +138,7 @@ count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos,
 	/* go axros the font + one white place */
 	for (x = font.x1; x < (font.x2 + 4); x++)
 	{
-		new_color = hocr_pixbuf_get_pixel (pix, x, y);
+		new_color = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 
 		if (new_color == 1 && *first_x == 0)
 			*first_x = x;
@@ -155,8 +156,8 @@ count_vertical_bars (hocr_pixbuf * pix, hocr_box font, int y_pos,
 }
 
 int
-count_horizontal_bars (hocr_pixbuf * pix, hocr_box font, int x_pos,
-		       int *first_y, int *last_y)
+count_horizontal_bars (hocr_pixbuf * pix, hocr_box font, int x_pos, int *first_y,
+		       int *last_y, unsigned int obj)
 {
 	int x, y;
 	int current_color;
@@ -174,7 +175,7 @@ count_horizontal_bars (hocr_pixbuf * pix, hocr_box font, int x_pos,
 	/* go axros the font + one white place */
 	for (y = font.y1; y < (font.y2 + 3); y++)
 	{
-		new_color = hocr_pixbuf_get_pixel (pix, x, y);
+		new_color = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 
 		if (new_color == 1 && *first_y == 0)
 			*first_y = y;
@@ -192,90 +193,7 @@ count_horizontal_bars (hocr_pixbuf * pix, hocr_box font, int x_pos,
 }
 
 int
-count_obliqe_bars_minus (hocr_pixbuf * pix, hocr_box font,
-			 int *first_x, int *last_x)
-{
-	int x, y;
-	int a, b;		/* y=ax+b */
-	int current_color;
-	int new_color;
-	int counter = 0;
-
-	/* get the line equation */
-	a = font.hight / font.width;	/* -45 deg */
-	b = 0;			/* from top left corner */
-
-	/* start with white in mind */
-	current_color = 0;
-	*first_x = 0;
-	*last_x = 0;
-
-	/* go axros the font + one white place */
-	for (x = font.x1; x < (font.x2 + 4); x++)
-	{
-		y = font.y1 + a * (x - font.x1) + b;
-		new_color = hocr_pixbuf_get_pixel (pix, x, y);
-
-		if (new_color == 1 && *first_x == 0)
-			*first_x = x;
-
-		/* if exiting a line then count one more line */
-		if (new_color == 0 && current_color == 1)
-		{
-			counter++;
-			*last_x = x;
-		}
-		current_color = new_color;
-	}
-
-	return counter;
-}
-
-int
-count_obliqe_bars_plus (hocr_pixbuf * pix, hocr_box font,
-			int *first_x, int *last_x)
-{
-	int x, y;
-	int a, b;		/* y=ax+b */
-	int current_color;
-	int new_color;
-	int counter = 0;
-
-	/* get the line equation */
-	a = -font.hight / font.width;	/* -45 deg */
-	b = font.hight;		/* from top left corner */
-
-	/* start with white in mind */
-	current_color = 0;
-	*first_x = 0;
-	*last_x = 0;
-
-	/* go axros the font + one white place */
-	for (x = font.x1; x < (font.x2 + 4); x++)
-	{
-		y = font.y1 + a * (x - font.x1) + b;
-		new_color = hocr_pixbuf_get_pixel (pix, x, y);
-
-		if (new_color == 1 && *first_x == 0)
-			*first_x = x;
-
-		/* if exiting a line then count one more line */
-		if (new_color == 0 && current_color == 1)
-		{
-			counter++;
-			*last_x = x;
-		}
-		current_color = new_color;
-	}
-
-	return counter;
-}
-
-/**
- */
-
-int
-is_empty (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
+is_empty (hocr_pixbuf * pix, int x1, int y1, int x2, int y2, unsigned int obj)
 {
 	int x, y;
 	int sum = 0;
@@ -284,14 +202,14 @@ is_empty (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 	for (x = x1; x < x2; x++)
 		for (y = y1; y < y2; y++)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
+			sum += ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		}
 
 	return (sum == 0) ? 1 : 0;
 }
 
 int
-find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
+find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2, unsigned int obj)
 {
 	int x, y;
 	int sum;
@@ -302,7 +220,7 @@ find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 
 		for (y = y1; y < y2; y++)
 		{
-			sum += (hocr_pixbuf_get_pixel (pix, x, y) == 0) ? 1 : 0;	/* count whites */
+			sum += (((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0) == 0) ? 1 : 0;	/* count whites */
 		}
 
 		if (sum < 2)
@@ -313,7 +231,7 @@ find_horizontal_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 }
 
 int
-find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
+find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2, unsigned int obj)
 {
 	int x, y;
 	int sum;
@@ -324,10 +242,11 @@ find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 
 		for (x = x1; x < x2; x++)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
+			sum += ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		}
 
-		sum = sum / (x2 - x1);
+		if ((x2 - x1) != 0)
+			sum = sum / (x2 - x1);
 
 		if (sum > 0)
 			return 0;
@@ -338,7 +257,7 @@ find_vertical_path (hocr_pixbuf * pix, int x1, int y1, int x2, int y2)
 
 int
 find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1,
-				     int x2, int y2)
+				     int x2, int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -351,7 +270,7 @@ find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1,
 		x = x2;
 		while (x > x1 && sum == 0)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			x--;
 		}
 
@@ -367,7 +286,7 @@ find_horizontal_notch_to_right_down (hocr_pixbuf * pix, int x1, int y1,
 
 int
 find_horizontal_notch_to_left_down (hocr_pixbuf * pix, int x1, int y1, int x2,
-				    int y2)
+				    int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -380,7 +299,7 @@ find_horizontal_notch_to_left_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 		x = x1;
 		while (x < x2 && sum == 0)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			x++;
 		}
 
@@ -396,7 +315,7 @@ find_horizontal_notch_to_left_down (hocr_pixbuf * pix, int x1, int y1, int x2,
 
 int
 find_horizontal_notch_to_left_up (hocr_pixbuf * pix, int x1, int y1, int x2,
-				  int y2)
+				  int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -409,7 +328,7 @@ find_horizontal_notch_to_left_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 		x = x1;
 		while (x < x2 && sum == 0)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			x++;
 		}
 
@@ -425,7 +344,7 @@ find_horizontal_notch_to_left_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 
 int
 find_horizontal_notch_to_right_up (hocr_pixbuf * pix, int x1, int y1, int x2,
-				   int y2)
+				   int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -438,7 +357,7 @@ find_horizontal_notch_to_right_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 		x = x2;
 		while (x > x1 && sum == 0)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			x--;
 		}
 
@@ -454,7 +373,7 @@ find_horizontal_notch_to_right_up (hocr_pixbuf * pix, int x1, int y1, int x2,
 
 int
 find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
-				  int y2)
+				  int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -467,7 +386,7 @@ find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 		y = y2 - 3;
 		while (y > y1 && sum < 2)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			sum += hocr_pixbuf_get_pixel (pix, x + 1, y);
 			sum += hocr_pixbuf_get_pixel (pix, x + 2, y);
 			y--;
@@ -487,7 +406,7 @@ find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 
 int
 find_vertical_notch_up_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
-				int y2)
+				int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -500,7 +419,7 @@ find_vertical_notch_up_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 		y = y1;
 		while (y < y2 && sum == 0)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			y++;
 		}
 
@@ -516,7 +435,7 @@ find_vertical_notch_up_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 
 int
 find_vertical_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1, int x2,
-				 int y2)
+				 int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -529,7 +448,7 @@ find_vertical_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1, int x2,
 		y = y1;
 		while (y < y2 && sum == 0)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			y++;
 		}
 
@@ -545,7 +464,7 @@ find_vertical_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1, int x2,
 
 int
 find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
-					int x2, int y2)
+					int x2, int y2, unsigned int obj)
 {
 	int x, y;
 
@@ -560,7 +479,7 @@ find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 		y = y1;
 		while (y < y2 && sum == 0)
 		{
-			sum = hocr_pixbuf_get_pixel (pix, x, y);
+			sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 			y++;
 		}
 
@@ -591,7 +510,7 @@ find_vertical_double_notch_up_to_right (hocr_pixbuf * pix, int x1, int y1,
 }
 
 int
-thin_lines (hocr_pixbuf * pix, hocr_box font)
+thin_lines (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int x, y;
 	int start;
@@ -605,13 +524,13 @@ thin_lines (hocr_pixbuf * pix, hocr_box font)
 	/* go axros the font + one white place */
 	while (y < font.y2 && sum == 0)
 	{
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		y++;
 	}
 	start = y;
 	while (y < font.y2 && sum == 1)
 	{
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		y++;
 	}
 	end = y;
@@ -623,7 +542,7 @@ thin_lines (hocr_pixbuf * pix, hocr_box font)
 }
 
 int
-find_tet_mark (hocr_pixbuf * pix, hocr_box font)
+find_tet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int x, y;
 	int sum = 0;
@@ -635,7 +554,7 @@ find_tet_mark (hocr_pixbuf * pix, hocr_box font)
 	/* get inside the font */
 	while (sum == 0 && x > font.x1)
 	{
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		x--;
 	}
 	if (x == font.x1)
@@ -643,7 +562,7 @@ find_tet_mark (hocr_pixbuf * pix, hocr_box font)
 
 	while (sum == 1 && x > font.x1)
 	{
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		x--;
 	}
 	if (x == font.x1)
@@ -654,17 +573,17 @@ find_tet_mark (hocr_pixbuf * pix, hocr_box font)
 	{
 		/* try up */
 		y--;
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		if (sum == 0)
 			continue;
 		/* try left */
 		x--;
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		if (sum == 0)
 			continue;
 		/* try strait left */
 		y++;
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 	}
 	if (x == font.x1)
 		return 0;
@@ -685,17 +604,17 @@ find_tet_mark (hocr_pixbuf * pix, hocr_box font)
 
 		/* try left */
 		x--;
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		if (sum == 0)
 			continue;
 		/* try down */
 		y++;
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 		if (sum == 0)
 			continue;
 		/* try strait down */
 		x++;
-		sum = hocr_pixbuf_get_pixel (pix, x, y);
+		sum = ((hocr_pixbuf_get_object (pix, x, y) == obj)?1:0);
 	}
 
 	return 0;
@@ -705,7 +624,7 @@ find_tet_mark (hocr_pixbuf * pix, hocr_box font)
  */
 
 int
-has_alef_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_alef_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int y_top;
@@ -713,23 +632,21 @@ has_alef_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 5,
-				     &y_top, &y_bottom);
+				     &y_top, &y_bottom, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
 	number_of_bars =
-		count_vertical_bars (pix, font,
-				     font.y1 + 4 * font.hight / 5,
-				     &y_top, &y_bottom);
+		count_vertical_bars (pix, font, font.y1 + 4 * font.hight / 5,
+				     &y_top, &y_bottom, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
 	number_of_bars =
-		count_horizontal_bars (pix, font,
-				       font.x1 + font.width / 2, &y_top,
-				       &y_bottom);
+		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
+				       &y_top, &y_bottom, obj);
 
 	if (y_bottom > (font.y2 - font.hight / 5))
 		return 0;
@@ -741,7 +658,7 @@ has_alef_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_bet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_bet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -753,7 +670,7 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* horizontal bars */
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 3,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -761,14 +678,14 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* horizontal path */
 	if (find_horizontal_path
 	    (pix, font.x1, end_of_top_bar - 1, font.x1 + font.width / 3,
-	     end_of_top_bar + 4) == 0)
+	     end_of_top_bar + 4, obj) == 0)
 		return 0;
 
 	/* vertical bars */
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -780,24 +697,24 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if not caf */
 	if (find_horizontal_notch_to_right_down
 	    (pix, end_of_right_bar - 3, font.y1 + 2 * font.hight / 3,
-	     end_of_right_bar + 1, font.y2) == 0)
+	     end_of_right_bar + 1, font.y2, obj) == 0)
 		return 0;
 
 	if (find_vertical_notch_down_to_left
 	    (pix, font.x1 + font.width / 4, font.y1 + font.hight / 2,
-	     font.x1 + 3 * font.width / 4, font.y2) == 1)
+	     font.x1 + 3 * font.width / 4, font.y2, obj) == 1)
 		return 0;
 
 	if (find_vertical_path
 	    (pix, font.x1 + font.width / 3, font.y1,
-	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3) == 1)
+	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3, obj) == 1)
 		return 0;
 
 	return 1;
 }
 
 int
-has_gimel_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_gimel_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -805,7 +722,7 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -818,14 +735,14 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -834,14 +751,14 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y2 - 1,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars == 2)
 		return 1;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y2 - 3,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 
 	if (number_of_bars == 2)
@@ -849,7 +766,7 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y2 - 5,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars == 2)
 		return 1;
@@ -860,7 +777,7 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_dalet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_dalet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -872,14 +789,14 @@ has_dalet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 3,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -892,7 +809,7 @@ has_dalet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	number_of_bars =
 		count_vertical_bars (pix, font,
 				     (end_of_top_bar + start_of_top_bar) / 2,
-				     &x_start_of_top_bar, &x_end_of_top_bar);
+				     &x_start_of_top_bar, &x_end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -903,14 +820,14 @@ has_dalet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if not he */
 	if (is_empty
 	    (pix, font.x1, end_of_top_bar + 3, start_of_right_bar - 3,
-	     font.y2) == 0)
+	     font.y2, obj) == 0)
 		return 0;
 
 	return 1;
 }
 
 int
-has_he_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_he_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -920,14 +837,14 @@ has_he_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 3 * font.hight / 4,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -939,14 +856,14 @@ has_he_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if not het */
 	if (find_horizontal_path
 	    (pix, font.x1, end_of_top_bar - 1, font.x1 + font.width / 2,
-	     end_of_top_bar + 5) == 0)
+	     end_of_top_bar + 5, obj) == 0)
 		return 0;
 
 	return 1;
 }
 
 int
-has_vav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_vav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -957,19 +874,19 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	int x_start_of_top_bar;
 
 	/* chek if this is realy is a thin font */
-	if ((double) font.hight / (double) font.width < 2.1)
+	if (font.width > 0 && ((double) font.hight / (double) font.width) < 2.1)
 		return 0;
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -986,7 +903,7 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	number_of_bars =
 		count_vertical_bars (pix, font,
 				     (end_of_top_bar + start_of_top_bar) / 2,
-				     &x_start_of_top_bar, &x_end_of_top_bar);
+				     &x_start_of_top_bar, &x_end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -997,14 +914,14 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if not he */
 	if (is_empty
 	    (pix, font.x1, end_of_top_bar + 4, start_of_right_bar - 4,
-	     font.y2) == 0)
+	     font.y2, obj) == 0)
 		return 0;
 
 	return 1;
 }
 
 int
-has_zain_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_zain_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1012,7 +929,7 @@ has_zain_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1020,20 +937,20 @@ has_zain_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* check to see if not nun */
 	if (find_vertical_path
 	    (pix, start_of_right_bar - 5, font.y1 + font.hight / 2,
-	     start_of_right_bar + 2, font.y2) == 0)
+	     start_of_right_bar + 2, font.y2, obj) == 0)
 		return 0;
 
 	/* check to see if not vav */
 	if (find_horizontal_notch_to_right_up
 	    (pix, end_of_right_bar - 2, font.y1, font.x2,
-	     font.y1 + font.hight / 2) == 0)
+	     font.y1 + font.hight / 2, obj) == 0)
 		return 0;
 
 	return 1;
 }
 
 int
-has_het_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_het_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int start, end;
@@ -1048,7 +965,7 @@ has_het_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1056,18 +973,18 @@ has_het_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if not tav */
 	if (find_vertical_path
 	    (pix, start - 2, font.y1 + 2 * font.hight / 3, start + 2,
-	     font.y2) == 0)
+	     font.y2, obj) == 0)
 		return 0;
 
 	/* if not mem */
 	if (find_vertical_path
 	    (pix, end - 7, font.y1 + 2 * font.hight / 3, end - 2,
-	     font.y2) == 0)
+	     font.y2, obj) == 0)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1075,7 +992,7 @@ has_het_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start, &end);
+				       &start, &end, obj);
 
 	if (start > (font.y1 + 3))
 		return 0;
@@ -1090,7 +1007,7 @@ has_het_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_tet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_tet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int start, end;
@@ -1099,7 +1016,7 @@ has_tet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars == 1)
 		return 0;
@@ -1107,42 +1024,44 @@ has_tet_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	number_of_bars =
 		find_vertical_double_notch_up_to_right (pix,
 							font.x1 +
-							font.width / 8,
+							font.width / 4,
 							font.y1, font.x2,
 							font.y1 +
-							font.hight / 2);
-
+							font.hight / 2, obj);
 	if (number_of_bars != 1)
 		return 0;
 
-	if (find_tet_mark (pix, font) == 0)
+	if (find_tet_mark (pix, font, obj) == 0)
 		return 0;
 
-	if (thin_lines (pix, font) == 0 && find_vertical_notch_down_to_left
+	if (thin_lines (pix, font, obj) == 0 && find_vertical_notch_down_to_left
 	    (pix, font.x1, font.y1 + 2 * font.hight / 3,
-	     font.x1 + font.width / 4, font.y2) == 1)
+	     font.x1 + font.width / 4, font.y2, obj) == 1)
 		return 0;
 
-	if (thin_lines (pix, font) == 1 && find_vertical_notch_down_to_left
+	if (thin_lines (pix, font, obj) == 1 && find_vertical_notch_down_to_left
 	    (pix, font.x1, font.y1 + 2 * font.hight / 3,
-	     font.x1 + font.width / 2, font.y2) == 1)
+	     font.x1 + font.width / 2, font.y2, obj) == 1)
 		return 0;
 
 	if (find_horizontal_notch_to_left_down
 	    (pix, font.x1, font.y1 + 2 * font.hight / 3,
-	     font.x1 + font.width / 2, font.y2) == 1)
+	     font.x1 + font.width / 2, font.y2, obj) == 1)
 		return 0;
 
 	if (thin_lines == 0 && find_vertical_notch_down_to_left
-	    (pix, start + 4, font.y1,
-	     font.x1 + font.width / 2, font.y1 + font.hight / 2) == 0)
+	    (pix, font.x1, font.y1 + font.hight / 2,
+	     font.x1 + font.width / 2, font.y2, obj) == 0)
 		return 0;
 
+	//if (has_black_left_bottom_mark (pix, font, obj) == 1)
+	//	return 0;
+	
 	return 1;
 }
 
 int
-has_yud_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_yud_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1150,13 +1069,13 @@ has_yud_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	if (find_horizontal_notch_to_left_up
 	    (pix, font.x1, font.y1, font.x1 + font.width / 2,
-	     font.y1 + 2 * font.hight / 3) == 0)
+	     font.y1 + font.hight / 2, obj) == 0)
 		return 0;
 
 	/* horizontal bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_top_bar, &end_of_top_bar);
+				     &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1165,7 +1084,7 @@ has_yud_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_kaf_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_kaf_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1173,24 +1092,27 @@ has_kaf_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	int end_of_right_bar;
 	int start_of_right_bar;
 
+	if (font.width > 0 && ((double) font.hight / (double) font.width > 1.7))
+		return 0;
+
 	/* horizontal bars */
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
 	if (find_vertical_path
 	    (pix, font.x1 + font.width / 3, font.y1,
-	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3) == 1)
+	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3, obj) == 1)
 		return 0;
 
 	/* vertical bars */
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1203,7 +1125,7 @@ has_kaf_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 
 	int number_of_bars;
@@ -1214,21 +1136,14 @@ has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
-
-	if (number_of_bars != 1)
-		return 0;
-
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 4,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1244,21 +1159,27 @@ has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if not he */
 	if (is_empty
 	    (pix, font.x1, end_of_top_bar + 4, start_of_right_bar - 4,
-	     font.y2) == 0)
+	     font.y2, obj) == 0)
 		return 0;
 
+	/* if not tzadi sofit */
+	if (find_vertical_path
+	    (pix, font.x1 + font.width / 3, font.y1,
+	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 8, obj) == 1)
+	      return 0;
+	
 	return 1;
 }
 
 int
-has_lamed_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_lamed_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 
-	return 1;
+	return 0;
 }
 
 int
-has_mem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_mem_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1272,8 +1193,8 @@ has_mem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* vertical bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start_of_right_bar, &end_of_right_bar);
-
+				     &start_of_right_bar, &end_of_right_bar, obj);
+	
 	//if (number_of_bars != 2)
 	//      return 0;
 
@@ -1281,7 +1202,7 @@ has_mem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	number_of_bars =
 		count_horizontal_bars (pix, font,
 				       font.x1 + 2 * font.width / 3,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1311,7 +1232,7 @@ has_mem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	if (find_vertical_path
 	    (pix, start_of_right_bar + 1, font.y1 + font.hight / 2,
-	     end_of_right_bar - 3, font.y2) == 0)
+	     end_of_right_bar - 3, font.y2, obj) == 0)
 		return 0;
 
 	//number_of_bars = find_vertical_double_notch_up_to_right (pix, font.x1 + font.width /3, font.y1, font.x2, font.y2);
@@ -1323,18 +1244,28 @@ has_mem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
 	int start_of_top_bar;
 	int end_of_right_bar;
 	int start_of_right_bar;
-
+	int end_of_left_bar;
+	int start_of_left_bar;
+	hocr_box box;
+	
+	box.x1 = font.x1;
+	box.x2 = font.x1 + font.width / 2;
+	box.y1 = font.y1;
+	box.y2 = font.y2;
+	box.width = font.width / 2;
+	box.hight = font.hight;
+	
 	/* vertical bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1342,36 +1273,51 @@ has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* horizontal bars */
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
-	if (find_horizontal_path
-	    (pix, font.x1, start_of_top_bar + 4, font.x1 + font.width / 4,
-	     start_of_top_bar + 10) == 1)
+	number_of_bars =
+		count_vertical_bars (pix, box, box.y1 + box.hight / 2,
+				     &start_of_left_bar, &end_of_left_bar, obj);
+	
+	if (number_of_bars != 1)
+		return 0;
+	
+	if (thin_lines (pix, font, obj) == 0 && find_horizontal_path
+		(pix, font.x1, font.y1 + font.hight / 3,
+		font.x1 + font.width / 6, font.y2, obj) == 1)
+		return 0;
+	//else
+	//	if (find_horizontal_path
+	//		(pix, start_of_left_bar, font.y1 + 3 * font.hight / 4,
+	//		end_of_left_bar - 2, font.y2, obj) == 1)
+	//		return 0;
+	
+	if (find_vertical_path
+		(pix, font.x1 + font.width / 8,
+		font.y1, font.x1 + font.width / 2, font.y1 + font.hight / 3, obj) == 1)
 		return 0;
 
-	if (find_horizontal_path
-	    (pix, font.x1, end_of_top_bar - 10, font.x1 + font.width / 4,
-	     end_of_top_bar - 4) == 1)
-		return 0;
+	//if (has_black_right_bottom_mark (pix, font, obj) == 0)
+	//      return 0;
 
-	if (thin_lines (pix, font) == 0 && find_vertical_notch_down_to_left
+	//if (find_vertical_notch_down_to_left
+	//    (pix, font.x1 + font.width / 2, font.y1 + font.hight / 2,
+	//     end_of_right_bar - 5, font.y2, obj) == 1)
+	//      return 0;
+
+	if (thin_lines (pix, font, obj) == 1 && find_vertical_notch_down_to_left
 	    (pix, font.x1 + font.width / 2, font.y1 + font.hight / 2,
-	     end_of_right_bar - 2, font.y2 + 2) == 1)
-		return 0;
-
-	if (thin_lines (pix, font) == 1 && find_vertical_notch_down_to_left
-	    (pix, font.x1 + font.width / 2, font.y1 + font.hight / 2,
-	     end_of_right_bar - 2, font.y2) == 1)
+	     end_of_right_bar - 4, font.y2 + 3, obj) == 1)
 		return 0;
 
 	return 1;
 }
 
 int
-has_nun_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_nun_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1379,12 +1325,12 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	int end_of_top_bar;
 	int start_of_top_bar;
 
-	if ((double) font.hight / (double) font.width < 1.5)
+	if ( font.width > 0 && ((double) font.hight / (double) font.width < 1.5))
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1395,12 +1341,12 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* horizontal bars */
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
-	if (thin_lines (pix, font) == 0 && number_of_bars != 2)
+	if (thin_lines (pix, font, obj) == 0 && number_of_bars != 2)
 		return 0;
 
-	if (thin_lines (pix, font) == 1 && font.hight / font.width < 2)
+	if (font.width > 0 && thin_lines (pix, font, obj) == 1 && font.hight / font.width < 2)
 		return 0;
 
 	if (end_of_top_bar < font.y2 - font.hight / 6)
@@ -1410,14 +1356,14 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 
-	return 1;
+	return 0;
 }
 
 int
-has_sameh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_sameh_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1428,7 +1374,7 @@ has_sameh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* vertical bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1436,24 +1382,27 @@ has_sameh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* horizontal bars */
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
 	if (find_horizontal_path
 	    (pix, start_of_right_bar, start_of_top_bar + 2,
-	     font.x1 + font.width / 2, end_of_top_bar - 2) == 1)
+	     font.x1 + font.width / 2, end_of_top_bar - 2, obj) == 1)
 		return 0;
 
-	if (thin_lines (pix, font) == 0 && find_vertical_notch_down_to_left
+	//if (has_black_right_bottom_mark (pix, font) == 0)
+	//      return 0;
+
+	if (thin_lines (pix, font, obj) == 0 && find_vertical_notch_down_to_left
 	    (pix, font.x1 + font.width / 2, font.y1 + font.hight / 2,
-	     end_of_right_bar - 2, font.y2 + 2) == 0)
+	     end_of_right_bar - 2, font.y2, obj) == 0)
 		return 0;
 
-	if (thin_lines (pix, font) == 1 && find_vertical_notch_down_to_left
+	if (thin_lines (pix, font, obj) == 1 && find_vertical_notch_down_to_left
 	    (pix, font.x1 + font.width / 2, font.y1 + font.hight / 2,
-	     end_of_right_bar - 2, font.y2) == 0)
+	     end_of_right_bar - 2, font.y2, obj) == 0)
 		return 0;
 
 	number_of_bars =
@@ -1462,16 +1411,21 @@ has_sameh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 							font.width / 4,
 							font.y1, font.x2,
 							font.y1 +
-							font.hight / 2);
+							font.hight / 2, obj);
 
 	if (number_of_bars != 0)
 		return 0;
 
+	if (find_horizontal_notch_to_left_down
+		(pix, font.x1, font.y1 + 2 * font.hight / 3,
+		font.x1 + font.width / 4, font.y2, obj) == 1)
+		return 0;
+	
 	return 1;
 }
 
 int
-has_ayin_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_ayin_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1480,40 +1434,40 @@ has_ayin_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* vertical bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
-	if (thin_lines (pix, font) == 0 && find_horizontal_path
-	    (pix, font.x1, font.y1 + font.hight / 3, font.x1 + font.width / 3,
-	     font.y2 - 3) == 0)
-		return 0;
+	//if (thin_lines (pix, font, obj) == 0 && find_horizontal_path
+	//    (pix, font.x1, font.y1 + font.hight / 3, font.x1 + font.width / 3,
+	//     font.y2 - 3, obj) == 0)
+	//	return 0;
 
 	if (find_horizontal_path
 	    (pix, font.x1, font.y1 + 2 * font.hight / 3,
-	     font.x1 + 2 * font.width / 3, font.y2 - 3) == 1)
+	     font.x1 + 2 * font.width / 3, font.y2 - 3, obj) == 1)
 		return 0;
 
 	if (find_horizontal_path
 	    (pix, font.x1 + 4 * font.width / 5, font.y1 + 3 * font.hight / 8,
-	     font.x2, font.y1 + 5 * font.hight / 8) == 1)
+	     font.x2, font.y1 + 5 * font.hight / 8, obj) == 1)
 		return 0;
 
 
-	if (has_black_left_bottom_mark (pix, font) == 0)
+	if (has_black_left_bottom_mark (pix, font, obj) == 0)
 		return 0;
 
 	if (find_vertical_path
 	    (pix, font.x1 + font.width / 3, font.y1 + font.hight / 2,
-	     font.x1 + 2 * font.width / 3, font.y2) == 1)
+	     font.x1 + 2 * font.width / 3, font.y2, obj) == 1)
 		return 0;
 
 	return 1;
 }
 
 int
-has_pe_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_pe_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1524,12 +1478,12 @@ has_pe_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* vertical bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 4,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	/* horizontal bars */
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (end_of_right_bar < (font.x1 + 2 * font.width / 3))
 		return 0;
@@ -1543,24 +1497,13 @@ has_pe_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/*  horizontal notch */
 	if (find_horizontal_notch_to_right_down
 	    (pix, font.x1, font.y1 + font.hight / 2, end_of_right_bar + 1,
-	     font.y2) == 1)
+	     font.y2, obj) == 1)
 		return 0;
 
-	number_of_bars =
-		find_vertical_double_notch_up_to_right (pix,
-							font.x1 +
-							font.width / 4,
-							font.y1, font.x2,
-							font.y1 +
-							font.hight / 2);
-
-	if (number_of_bars != 1)
+	if (find_horizontal_path
+	    (pix, font.x1, font.y1 + 2 * font.hight / 3,
+	     font.x1 + 3 * font.width / 4, font.y2 - 3, obj) == 0)
 		return 0;
-
-	//if (find_horizontal_path
-	//    (pix, font.x1, font.y1 + 2 * font.hight / 3,
-	//     font.x1 + 3 * font.width / 4, font.y2 - 3) == 0)
-	//      return 0;
 
 	//if (find_vertical_notch_down_to_left
 	//    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x1 + font.width / 2,
@@ -1571,7 +1514,7 @@ has_pe_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_right_bar;
@@ -1580,37 +1523,37 @@ has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* vertical bars */
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
 	if (find_horizontal_path
 	    (pix, font.x1, font.y1 + font.hight / 3,
-	     font.x1 + 2 * font.width / 3, font.y2 - 3) == 0)
+	     font.x1 + 2 * font.width / 3, font.y2 - 3, obj) == 0)
 		return 0;
 
-	if (has_black_right_bottom_mark (pix, font) == 0)
+	if (has_black_right_bottom_mark (pix, font, obj) == 0)
 		return 0;
 
-	if (has_black_left_bottom_mark (pix, font) == 1)
+	if (has_black_left_bottom_mark (pix, font, obj) == 1)
 		return 0;
 
 	if (find_vertical_path
 	    (pix, font.x1 + font.width / 3, font.y1,
-	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3) == 1)
+	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3, obj) == 1)
 		return 0;
 
 	if (is_empty
 	    (pix, font.x1, font.y1 + 2 * font.hight / 3,
-	     font.x1 + font.width / 2, font.y2) == 0)
+	     font.x1 + font.width / 2, font.y2, obj) == 0)
 		return 0;
 
 	return 1;
 }
 
 int
-has_tzadi_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_tzadi_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1620,26 +1563,26 @@ has_tzadi_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	/* vertical bars */
 	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start_of_right_bar, &end_of_right_bar);
+		count_vertical_bars (pix, font, font.y1 + 2.0 * (double)font.hight / 3.0,
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	if (find_horizontal_path
-	    (pix, font.x1, font.y1 + font.hight / 3,
-	     font.x1 + 1 * font.width / 2, font.y2 - 3) == 0)
+	    (pix, font.x1, font.y1 + (double)font.hight / 3.0,
+	     font.x1 + 1 * font.width / 4, font.y2 - 3, obj) == 0)
 		return 0;
 
 	number_of_bars =
-		count_horizontal_bars (pix, font, font.x1 + font.width / 3,
-				       &start_of_top_bar, &end_of_top_bar);
+		count_horizontal_bars (pix, font, font.x1 + font.width / 4,
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars == 1)
 		return 0;
 
-	//if (has_black_right_bottom_mark (pix, font) == 0)
-	//      return 0;
+	if (has_black_right_bottom_mark (pix, font, obj) == 0)
+		return 0;
 
 	//if (find_vertical_path
 	//    (pix, font.x1 + font.width / 3, font.y1,
@@ -1650,7 +1593,7 @@ has_tzadi_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1660,21 +1603,21 @@ has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	//if (number_of_bars != 1)
 	//      return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 6,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 2)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 6 * font.hight / 7,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	//if (number_of_bars != 1)
 	//      return 0;
@@ -1698,7 +1641,7 @@ has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_kof_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_kof_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1708,7 +1651,7 @@ has_kof_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	//if (number_of_bars != 1)
 	//      return 0;
@@ -1722,7 +1665,7 @@ has_kof_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 7 * font.hight / 8,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1736,14 +1679,14 @@ has_kof_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	if (find_vertical_path
 	    (pix, font.x1 + font.width / 3, font.y1,
-	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3) == 1)
+	     font.x1 + 2 * font.width / 3, font.y1 + font.hight / 3, obj) == 1)
 		return 0;
 
 	return 1;
 }
 
 int
-has_resh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_resh_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int end_of_top_bar;
@@ -1755,14 +1698,14 @@ has_resh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start_of_top_bar, &end_of_top_bar);
+				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start_of_right_bar, &end_of_right_bar);
+				     &start_of_right_bar, &end_of_right_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1779,7 +1722,7 @@ has_resh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	number_of_bars =
 		count_vertical_bars (pix, font,
 				     (end_of_top_bar + start_of_top_bar) / 2,
-				     &x_start_of_top_bar, &x_end_of_top_bar);
+				     &x_start_of_top_bar, &x_end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
 		return 0;
@@ -1790,14 +1733,14 @@ has_resh_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if not he */
 	if (is_empty
 	    (pix, font.x1, end_of_top_bar + 4, start_of_right_bar - 4,
-	     font.y2) == 0)
+	     font.y2, obj) == 0)
 		return 0;
 
 	return 1;
 }
 
 int
-has_shin_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_shin_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int start, end;
@@ -1805,14 +1748,14 @@ has_shin_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	if (font.width < 15 || font.hight < 15)
 		return 0;
 
-	if (font.hight / font.width > 1)
+	if (font.width > 0 && font.hight / font.width > 1)
 		return 0;
 
 	/* start of font */
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars != 3)
 		return 0;
@@ -1823,7 +1766,7 @@ has_shin_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 							font.width / 4,
 							font.y1, font.x2,
 							font.y1 +
-							font.hight / 2);
+							font.hight / 2, obj);
 
 	if (number_of_bars == 1)
 		return 0;
@@ -1832,7 +1775,7 @@ has_shin_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_tav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_tav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int start, end;
@@ -1845,7 +1788,7 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1853,12 +1796,12 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 	/* if tav */
 	if (find_vertical_path
 	    (pix, start - 2, font.y1 + 2 * font.hight / 3, start + 2,
-	     font.y2) == 1)
+	     font.y2, obj) == 1)
 		return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1866,7 +1809,7 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
-				       &start, &end);
+				       &start, &end, obj);
 
 	if (start > (font.y1 + font.hight / 6))
 		return 0;
@@ -1881,50 +1824,35 @@ has_tav_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_nekuda_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
-{
-	if ((double) font.hight / (double) font.width > 1.8)
-		return 0;
-
-	return 1;
-}
-
-int
-has_psik_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
-{
-	return 1;
-}
-
-int
-has_quat_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_quat_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int start, end;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
 	if (find_horizontal_notch_to_left_up
 	    (pix, font.x1, font.y1, font.x1 + font.width / 2,
-	     font.y1 + font.hight / 2) == 1)
+	     font.y1 + font.hight / 2, obj) == 1)
 		return 0;
 
 	return 1;
 }
 
 int
-has_double_quat_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_double_quat_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int start, end;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
+				     &start, &end, obj);
 
 	if (number_of_bars != 2)
 		return 0;
@@ -1933,501 +1861,550 @@ has_double_quat_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
 }
 
 int
-has_exlem_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_exlem_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
 	int start, end;
 
-	if (font.hight / font.width <= 1)
+	if (find_horizontal_path
+	    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x2,
+	     font.y2 - 3, obj) == 0)
 		return 0;
-
-	return 1;
-}
-
-int
-has_dots_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
-{
-	return 1;
-}
-
-int
-has_question_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
-{
-
-	int number_of_bars;
-	int start, end;
-
-	if (font.hight / font.width > 1)
-		return 0;
-
-	return 1;
-}
-
-int
-has_makaf_mark (hocr_pixbuf * pix, hocr_box font, int *marks)
-{
-	int number_of_bars;
-	int start, end;
 
 	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
-				     &start, &end);
+		count_vertical_bars (pix, font, font.y1 + font.hight / 6,
+				     &start, &end, obj);
 
 	if (number_of_bars != 1)
 		return 0;
 
-	if (font.width > font.hight)
-		return 1;
-
-	return 0;
+	return 1;
 }
 
-/**
- */
-
 int
-print_marks (hocr_pixbuf * pix, hocr_box font, int *marks)
+has_question_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
+
+	int number_of_bars;
 	int start, end;
 
-	marks[1] =
-		count_horizontal_bars (pix, font,
-				       font.x1 + 1 * font.width / 3, &start,
-				       &end);
-	marks[2] =
-		count_horizontal_bars (pix, font,
-				       font.x1 + 1 * font.width / 2, &start,
-				       &end);
-	marks[3] =
-		count_horizontal_bars (pix, font,
-				       font.x1 + 1 * font.width / 3, &start,
-				       &end);
-
-	marks[4] =
-		count_vertical_bars (pix, font, font.y1 + 1 * font.hight / 3,
-				     &start, &end);
-	marks[5] =
-		count_vertical_bars (pix, font, font.y1 + 1 * font.hight / 2,
-				     &start, &end);
-	marks[6] =
-		count_vertical_bars (pix, font, font.y1 + 2 * font.hight / 3,
-				     &start, &end);
-
-	marks[7] = count_obliqe_bars_minus (pix, font, &start, &end);
-	marks[8] = count_obliqe_bars_plus (pix, font, &start, &end);
-
-	return 0;
-}
-
-/**
- */
-
-int
-hocr_guess_font (hocr_pixbuf * pix, hocr_box font,
-		 hocr_line_eq base_line_eq, hocr_line_eq top_line_eq,
-		 int avg_font_hight_in_page, int avg_font_width_in_page,
-		 int end_of_word,
-		 char *font_string, int max_chars_in_font_string)
-{
-	int number_of_bars, number_of_bars2;
-	int start, end;
-	hocr_box under_the_font;
-	int marks[25];
-
-	int top, base;
-	int base_class;
-	int top_class;
-	int hight_class;
-	int width_class;
-
-	base = hocr_line_eq_get_y (base_line_eq, font.x2);
-	top = hocr_line_eq_get_y (top_line_eq, font.x1);
-
-	/* get font position above/below line */
-	base_class =
-		get_font_base_class (font,
-				     base_line_eq, avg_font_hight_in_page);
-	top_class =
-		get_font_top_class (font,
-				    top_line_eq, avg_font_hight_in_page);
-
-	/* get font x, y size compared to other fonts in page */
-	hight_class =
-		get_font_hight_class (font.hight, avg_font_hight_in_page);
-	width_class =
-		get_font_width_class (font.width, avg_font_width_in_page);
-
-	/* if font is too small this is artefact */
-	if (font.hight < MIN_FONT_SIZE && font.width < MIN_FONT_SIZE)
-	{
-		sprintf (font_string, "");
-		return 1;
-	}
-
-	/* extract font marks */
-	/* TODO: fond a better place to do this */
-	print_marks (pix, font, marks);
-
-	/* normal width, high, assend over top of line fonts */
-	if (hight_class == 1 && top_class == 1)
-	{
-		if (has_lamed_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ל");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* thin width, high, desend below base of line fonts */
-	if (width_class == -1 && hight_class == 1 && base_class == 1)
-	{
-		if (has_nun_sofit_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ן");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* normal width, high, desend below base of line fonts */
-	if (width_class == 0 && hight_class == 1 && base_class == 1)
-	{
-		if (has_kaf_sofit_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ך");
-			return 0;
-		}
-
-		if (has_ayin_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ע");
-			return 0;
-		}
-
-		if (has_pe_sofit_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ף");
-			return 0;
-		}
-
-		if (has_tzadi_sofit_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ץ");
-			return 0;
-		}
-
-		if (has_kof_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ק");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* below top and above base lines fonts */
-	if (hight_class == -1 && top_class == -1 && base_class == -1)
-	{
-		/* look for the dot of ? : ! under the font */
-		under_the_font.x1 = font.x1;
-		under_the_font.y1 = font.y2;
-		under_the_font.x2 = font.x2;
-		under_the_font.y2 = base;
-
-		number_of_bars =
-			count_horizontal_bars (pix, under_the_font,
-					       font.x1 + font.width / 2,
-					       &start, &end);
-
-		/* found a dot under the font */
-		if (number_of_bars != 0)
-		{
-
-			if (has_dots_mark (pix, font, marks))
-			{
-				sprintf (font_string, ":");
-				return 0;
-			}
-
-			sprintf (font_string, "_");
-			return 1;
-		}
-		else
-		{
-			if (has_makaf_mark (pix, font, marks))
-			{
-				sprintf (font_string, "-");
-				return 0;
-			}
-
-			sprintf (font_string, "_");
-			return 1;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* below top and on base lines fonts */
-	if (hight_class == -1 && top_class == -1 && base_class == 0)
-	{
-		if (has_nekuda_mark (pix, font, marks))
-		{
-			sprintf (font_string, ".");
-			return 0;
-		}
-
-		if (has_psik_mark (pix, font, marks))
-		{
-			sprintf (font_string, ",");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* below top and below base lines fonts */
-	if (hight_class == -1 && top_class == -1 && base_class == 1)
-	{
-		if (has_psik_mark (pix, font, marks))
-		{
-			sprintf (font_string, ",");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* on top and above base lines fonts */
-	if (hight_class == -1 && top_class == 0 && base_class == -1)
-	{
-		/* look for the dot of ? : ! under the font */
-		under_the_font.x1 = font.x1;
-		under_the_font.y1 = font.y2;
-		under_the_font.x2 = font.x2;
-		under_the_font.y2 = base + 3;
-
-		number_of_bars =
-			count_horizontal_bars (pix, under_the_font,
-					       font.x1 + font.width / 2,
-					       &start, &end);
-
-		number_of_bars2 =
-			count_horizontal_bars (pix, under_the_font,
-					       font.x1 + font.width / 3,
-					       &start, &end);
-
-		if (number_of_bars < number_of_bars2)
-			number_of_bars = number_of_bars2;
-
-		/* found a dot under the font */
-		if (number_of_bars != 0)
-		{
-			if (has_question_mark (pix, font, marks))
-			{
-				sprintf (font_string, "?");
-				return 0;
-			}
-
-			if (has_exlem_mark (pix, font, marks))
-			{
-				sprintf (font_string, "!");
-				return 0;
-			}
-
-			sprintf (font_string, "_");
-			return 1;
-		}
-		else
-		{
-			if (has_makaf_mark (pix, font, marks))
-			{
-				sprintf (font_string, "-");
-				return 0;
-			}
-
-			if (has_yud_mark (pix, font, marks))
-			{
-				sprintf (font_string, "י");
-				return 0;
-			}
-
-			if (has_quat_mark (pix, font, marks))
-			{
-				sprintf (font_string, "\'");
-				return 0;
-			}
-
-			if (has_double_quat_mark (pix, font, marks))
-			{
-				sprintf (font_string, "\"");
-				return 0;
-			}
-
-			sprintf (font_string, "_");
-			return 1;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* thin fonts */
-	if (hight_class == 0 && width_class == -1)
-	{
-		if (has_gimel_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ג");
-			return 0;
-		}
-
-		if (has_vav_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ו");
-			return 0;
-		}
-
-		if (has_zain_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ז");
-			return 0;
-		}
-
-		if (has_tet_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ט");
-			return 0;
-		}
-
-		if (has_nun_mark (pix, font, marks))
-		{
-			sprintf (font_string, "נ");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* all other fonts */
-	if (hight_class == 0 && width_class == 0)
-	{
-		if (has_alef_mark (pix, font, marks))
-		{
-			sprintf (font_string, "א");
-			return 0;
-		}
-
-		if (has_bet_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ב");
-			return 0;
-		}
-
-		if (has_gimel_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ג");
-			return 0;
-		}
-
-		if (has_dalet_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ד");
-			return 0;
-		}
-
-		if (has_he_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ה");
-			return 0;
-		}
-
-		if (has_het_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ח");
-			return 0;
-		}
-
-		if (has_tet_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ט");
-			return 0;
-		}
-
-		if (has_kaf_mark (pix, font, marks))
-		{
-			sprintf (font_string, "כ");
-			return 0;
-		}
-
-		if (has_mem_mark (pix, font, marks))
-		{
-			sprintf (font_string, "מ");
-			return 0;
-		}
-
-		if (has_mem_sofit_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ם");
-			return 0;
-		}
-
-		if (has_sameh_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ס");
-			return 0;
-		}
-
-		if (has_ayin_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ע");
-			return 0;
-		}
-
-		if (has_pe_mark (pix, font, marks))
-		{
-			sprintf (font_string, "פ");
-			return 0;
-		}
-
-		if (has_tzadi_mark (pix, font, marks))
-		{
-			sprintf (font_string, "צ");
-			return 0;
-		}
-
-		if (has_resh_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ר");
-			return 0;
-		}
-
-		if (has_shin_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ש");
-			return 0;
-		}
-
-		if (has_tav_mark (pix, font, marks))
-		{
-			sprintf (font_string, "ת");
-			return 0;
-		}
-
-		sprintf (font_string, "_");
-		return 1;
-	}
-
-	/* this font is unknown */
-	sprintf (font_string, "_");
+	if (find_horizontal_path
+	    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x2,
+	     font.y2 - 3, obj) == 0)
+		return 0;
+
+	number_of_bars =
+		count_vertical_bars (pix, font, font.y1 + font.hight / 6,
+				     &start, &end, obj);
+
+	if (number_of_bars != 2)
+		return 0;
 
 	return 1;
+}
+
+int
+has_makaf_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
+{
+	if (font.hight > 5)
+		return 0;
+
+	if (font.hight > 0 && font.width / font.hight >= 2)
+		return 1;
+	else
+		return 0;
+}
+
+///////////////
+
+int
+hocr_recognize_font(hocr_pixbuf * pix, hocr_box * fonts_line, int num_of_fonts_in_line,
+				int font_index, hocr_line_eq line_eqs[2],
+				int avg_font_hight, int avg_font_width,
+				int avg_diff_between_lines, char *chars)
+{
+	int i;
+	
+	hocr_box font = fonts_line[font_index];
+	hocr_box next_font = fonts_line[(font_index + 1) % num_of_fonts_in_line];
+	hocr_box box;
+	unsigned int obj = 0;
+	unsigned int box_obj = 0;
+	unsigned int object_array[MAX_OBJECTS_IN_FONT];
+	unsigned int box_object_array[MAX_OBJECTS_IN_FONT];
+	
+	hocr_object main_object;
+	
+	int low_line_y;
+	int high_line_y;
+	
+	int number_of_object_in_font;
+	int number_of_object_in_box;
+	
+	int short_font;
+	int tall_font;
+	int thin_font;
+	int wide_font;
+	
+	int assending_font; /* ל */
+	int dessending_font; /* ך */
+	int high_font; /* ' */
+	int low_font; /* , */
+	
+	/* reset chars array */
+	chars[0] = '\0';
+
+	/* get line y */
+	high_line_y = hocr_line_eq_get_y (line_eqs[1], font.x1);
+	low_line_y = hocr_line_eq_get_y (line_eqs[0], font.x1);
+
+	/* check if font is in the line ? */
+	if (font.y1 > low_line_y || font.y2 < high_line_y)
+	{
+		/* this is not a font ! */
+		return 0;
+		
+		/* check the main object (in the same x) inside the line */
+		font.y1 = high_line_y;
+		font.y2 = low_line_y;
+		font.hight = font.y2 - font.y1;
+		
+		/* recalc font for the object inside line */
+		obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array);
+		font.x1 = pix->objects[obj].x1;
+		font.x2 = pix->objects[obj].x2;
+		font.y1 = pix->objects[obj].y1;
+		font.y2 = pix->objects[obj].y2;
+		font.hight = font.y2 - font.y1;
+		font.width = font.x2 - font.x1;
+		
+		/* FIXME: check that this is not the next font */
+	}
+
+	/* set box */
+	box.x1 = font.x1;
+	box.x2 = font.x2;
+	box.y1 = high_line_y;
+	box.y2 = low_line_y - 1;
+	box.hight = font.y2 - font.y1;
+	box.width = font.x2 - font.x1;
+
+	/* count objects in font */
+	obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array);
+	number_of_object_in_font = count_object_array(object_array);
+
+	/* count objects in box */
+	box_obj = hocr_pixbuf_get_objects_in_box (pix, box, box_object_array);
+	number_of_object_in_box = count_object_array(box_object_array);
+	
+	/* get font proportions */
+	short_font = font.hight < (0.8 * (double)avg_font_hight);
+	tall_font = font.hight > (1.2 * (double)avg_font_hight);
+	thin_font = font.width < (0.85 * (double)avg_font_width);
+	wide_font = font.width > (1.2 * (double)avg_font_width);
+	
+	assending_font = (font.y1 < (high_line_y - (0.1 * (double)avg_font_hight)));
+	dessending_font = (font.y2 > (low_line_y + (0.1 * (double)avg_font_hight)));
+	high_font = (font.y2 < (high_line_y + 0.8 * (double)avg_font_hight));
+	low_font = (font.y1 > (high_line_y + 0.5 * (double)avg_font_hight));
+	
+
+/* DEBUG: print debug info */
+//#define DEBUG
+#ifdef DEBUG
+	print_font (pix, font);
+	printf ("font %d %d obj %d %d\n\n",font.hight, font.width, 
+		pix->objects[obj].hight, pix->objects[obj].width);
+	printf ("number of objects in font %d\n", number_of_object_in_font);
+	printf ("number of objects in box %d\n", number_of_object_in_box);
+	printf ("short font %d\n", short_font);
+	printf ("tall font %d\n", tall_font);
+	printf ("thin font %d\n", thin_font);
+	printf ("wide font %d\n", wide_font);
+	printf ("assending font %d\n", assending_font);
+	printf ("dessending font %d\n", dessending_font);
+	printf ("high font %d\n", high_font);
+	printf ("low font %d\n", low_font);
+	printf ("end of word %d\n", *end_of_word);
+#endif
+
+	/** look for none letter marks */
+	
+	/* flat font - */
+	if (high_font && short_font && pix->objects[obj].hight && 
+		(pix->objects[obj].width / pix->objects[obj].hight) > 1)
+	{
+		sprintf (chars, "-");
+	}
+	
+	/* two part non letter marks: !?:; */
+	else if (number_of_object_in_box == 2 && number_of_object_in_font == 1 &&
+		(pix->objects[box_object_array[1]].y2 < (low_line_y + avg_font_hight / 10) &&
+		pix->objects[box_object_array[1]].y1 > (high_line_y + 
+		avg_font_hight / 2) &&
+		pix->objects[box_object_array[1]].width < avg_font_width / 2) &&
+		pix->objects[box_object_array[1]].width > 3)
+	{
+		if (!wide_font && !thin_font && high_font)
+		{
+			/* regular mark ? */
+			/* is second part is a point */
+			
+			/* is upper part is ? */
+			if (pix->objects[box_object_array[0]].width > 
+				(pix->objects[box_object_array[1]].width + avg_font_hight / 10))
+				sprintf (chars, "?");
+		}
+		else if (thin_font)
+		{
+			/* thin marks ?!:; */
+			if (pix->objects[box_object_array[0]].width > 
+				(pix->objects[box_object_array[1]].width + avg_font_hight / 10))
+				sprintf (chars, "?");
+			else if ((pix->objects[box_object_array[0]].hight + avg_font_hight / 10) < 
+				pix->objects[box_object_array[1]].hight)
+				sprintf (chars, ";");
+			else if (pix->objects[box_object_array[0]].hight > 
+				(pix->objects[box_object_array[1]].hight + avg_font_hight / 10))
+				sprintf (chars, "!");
+			else if ((pix->objects[box_object_array[0]].hight < 
+				(pix->objects[box_object_array[1]].hight + avg_font_hight / 10)) &&
+				(pix->objects[box_object_array[0]].hight > 
+				(pix->objects[box_object_array[1]].hight - avg_font_hight / 10)))
+				sprintf (chars, ":");
+		}
+	}
+	/* short low non letter marks: ,. */
+	else if (short_font && low_font && thin_font && 
+		number_of_object_in_font == 1 && number_of_object_in_box == 1)
+	{
+		if (find_horizontal_notch_to_left_down
+	    (pix, font.x1, font.y1 + font.hight / 2, font.x1 + font.width / 2,
+	     font.y2, obj) == 1)
+			sprintf (chars, ",");
+		else
+			sprintf (chars, ".");
+	}
+	/* short high non letter marks: ' */
+	else if (short_font && high_font && thin_font && 
+		number_of_object_in_font == 1 && number_of_object_in_box == 1)
+	{
+		if (find_horizontal_notch_to_left_up
+	    (pix, font.x1, font.y1, font.x1 + font.width / 2,
+	     font.y1 + 3.0 * (double)font.hight / 4.0, obj) == 0)
+			sprintf (chars, "'");
+	}
+	
+	/* if found then finished */
+	if (chars[0] != '\0') /* found a non letter */
+	{
+		return 0;
+	}
+	
+	/* look for hebrew letters */
+	
+	/* check for assending font ל */
+	if (assending_font)
+	{
+		sprintf (chars, "ל");
+		return 0;
+	}
+		
+	/* check for two part fonts ה ק  */
+	if (number_of_object_in_font >= 2)
+	{
+		i = 1;
+		
+		/* theck for dagesh */
+		if (number_of_object_in_font > 2)
+		{
+			if (pix->objects[object_array[i]].hight < (0.2 * (double)avg_font_hight))
+				i = 2;
+		}
+		
+		/* check that second part look like a | */
+		if (pix->objects[object_array[i]].y1 > high_line_y && 
+			pix->objects[object_array[i]].width &&
+			(pix->objects[object_array[i]].hight / 
+			pix->objects[object_array[i]].width) > 1 &&
+			pix->objects[object_array[i]].x2 < (font.x1 + font.width / 2))
+		{
+			/* if seconde part is dessending it's kof */
+			if (pix->objects[object_array[i]].y2 > (low_line_y + 3))
+			{
+				sprintf (chars, "ק");
+				return 0;
+			}
+			else if (has_resh_mark (pix, font, obj) ||
+					has_dalet_mark (pix, font, obj))
+			{
+				sprintf (chars, "ה");
+				return 0;
+			}
+		}
+		/* else check fot pe and shin */
+		
+	}
+	
+	/* check fot high fonts י (check that it is not kotz of big font) */
+	if (high_font && short_font && !assending_font && 
+		pix->objects[box_obj].weight < 1.2 * (double)pix->objects[obj].weight)
+	{
+		sprintf (chars, "י");
+		return 0;
+	}
+	
+			/* high and thin fonts desending from buttom */
+
+			else if (tall_font && thin_font && dessending_font &&
+				!low_font && !high_font)
+			{
+				if (has_kaf_sofit_mark (pix, font, obj) &&
+					(font.hight / font.width) < 3)
+				{
+					/* kaf sofit */
+					sprintf (chars, "ך");
+					return 0;
+				}
+				else
+				{
+					/* nun sofit */
+					sprintf (chars, "ן");
+					return 0;
+				}
+			}
+
+			/* high fonts desending from buttom */
+
+			else if (tall_font && !thin_font && dessending_font &&
+				!low_font && !high_font)
+			{
+				if (has_kof_mark (pix, font, obj))
+				{
+					/* kof */
+					sprintf (chars, "ק");
+					return 0;
+				}
+				if (has_kaf_sofit_mark (pix, font, obj))
+				{
+					/* kaf sofit */
+					sprintf (chars, "ך");
+					return 0;
+				}
+				else if (has_ayin_mark (pix, font, obj))
+				{
+					/*  ayin */
+					sprintf (chars, "ע");
+					return 0;
+				}
+				else if (has_pe_sofit_mark (pix, font, obj))
+				{
+					/*  pe sofit */
+					sprintf (chars, "ף");
+					return 0;
+				}
+				else if (has_tzadi_sofit_mark (pix, font, obj))
+				{
+					/* tzadi */
+					sprintf (chars, "ץ");
+					return 0;
+				}
+			}
+			
+			/* if here then did not find a match in tall font 
+			   maybe it's an attached nikud ? cut it */
+			font.y2 = low_line_y;
+			font.hight = font.y2 - font.y1;
+			tall_font = FALSE;
+			
+			/* thin fonts */
+
+			if (thin_font)
+			{
+				/* gimel 2, vav 5, zayin 6, tet 8, nun 15 */
+
+				if (has_gimel_mark (pix, font, obj))
+				{
+					/* gimel */
+					sprintf (chars, "ג");
+					return 0;
+				}
+				else if (has_tet_mark  (pix, font, obj))
+				{
+					/* tet */
+					sprintf (chars, "ט");
+					return 0;
+				}
+				else if (has_ayin_mark  (pix, font, obj))
+				{
+					/* ayin */
+					sprintf (chars, "ע");
+					return 0;
+				}
+				else if (has_kaf_mark (pix, font, obj))
+				{
+					sprintf (chars, "כ");
+					return 0;
+				}
+				else if (has_nun_mark  (pix, font, obj))
+				{
+					/* nun */
+					sprintf (chars, "נ");
+					return 0;
+				}
+				else if (has_bet_mark (pix, font, obj))
+				{
+					sprintf (chars, "ב");
+					return 0;
+				}
+				else if (has_vav_mark  (pix, font, obj))
+				{
+					/* vav */
+					sprintf (chars, "ו");
+					return 0;
+				}
+				else if (has_resh_mark  (pix, font, obj))
+				{
+					/* resh */
+					sprintf (chars, "ר");
+					return 0;
+				}
+				else if (has_zain_mark  (pix, font, obj))
+				{
+					/* zayin */
+					sprintf (chars, "ז");
+					return 0;
+				}
+				else if (has_mem_mark (pix, font, obj))
+				{
+					sprintf (chars, "מ");
+					return 0;
+				}
+				else if (has_mem_sofit_mark (pix, font, obj))
+				{
+					sprintf (chars, "ם");
+					return 0;
+				}
+				else if (has_pe_mark (pix, font, obj))
+				{
+					sprintf (chars, "פ");
+					return 0;
+				}
+				else if (has_tzadi_mark (pix, font, obj))
+				{
+					sprintf (chars, "צ");
+					return 0;
+				}
+				else if (has_het_mark (pix, font, obj))
+				{
+					sprintf (chars, "ח");
+					return 0;
+				}
+			}
+		
+			/* regular fonts */
+			/* TODO: sort fonts by statistical number of appearences in text */
+			else
+			{
+
+				if (has_alef_mark (pix, font, obj))
+				{
+					sprintf (chars, "א");
+					return 0;
+				}
+				else if (has_bet_mark (pix, font, obj))
+				{
+					sprintf (chars, "ב");
+					return 0;
+				}
+				else if (has_gimel_mark (pix, font, obj))
+				{
+					sprintf (chars, "ג");
+					return 0;
+				}
+				else if (has_dalet_mark (pix, font, obj))
+				{
+					sprintf (chars, "ד");
+					return 0;
+				}
+				else if (has_he_mark (pix, font, obj))
+				{
+					sprintf (chars, "ה");
+					return 0;
+				}
+				else if (has_het_mark (pix, font, obj))
+				{
+					sprintf (chars, "ח");
+					return 0;
+				}
+				else if (has_mem_mark (pix, font, obj))
+				{
+					sprintf (chars, "מ");
+					return 0;
+				}
+				else if (has_mem_sofit_mark (pix, font, obj))
+				{
+					sprintf (chars, "ם");
+					return 0;
+				}
+				else if (has_tet_mark (pix, font, obj))
+				{
+					sprintf (chars, "ט");
+					return 0;
+				}
+				else if (has_kaf_mark (pix, font, obj))
+				{
+					sprintf (chars, "כ");
+					return 0;
+				}
+				
+				
+				//else if (nun_mark == 1)
+				//{
+				//      sprintf (chars, "נ");
+				//}
+				else if (has_sameh_mark (pix, font, obj))
+				{
+					sprintf (chars, "ס");
+					return 0;
+				}
+				else if (has_ayin_mark (pix, font, obj))
+				{
+					sprintf (chars, "ע");
+					return 0;
+				}
+				else if (has_pe_mark (pix, font, obj))
+				{
+					sprintf (chars, "פ");
+					return 0;
+				}
+				else if (has_tzadi_mark (pix, font, obj))
+				{
+					sprintf (chars, "צ");
+					return 0;
+				}
+				else if (has_resh_mark (pix, font, obj))
+				{
+					sprintf (chars, "ר");
+					return 0;
+				}
+				else if (has_shin_mark (pix, font, obj))
+				{
+					sprintf (chars, "ש");
+					return 0;
+				}
+				else if (has_tav_mark (pix, font, obj))
+				{
+					sprintf (chars, "ת");
+					return 0;
+				}
+			}
+	/* check for other letters */
+	
+	
+	/* if here then no font found */
+	chars[0] = '*';
+	chars[1] = '\0';
+	
+	return 0;
 }

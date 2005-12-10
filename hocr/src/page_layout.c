@@ -23,7 +23,7 @@
  */
 
 #include "hocr.h"
-#include "magic_numbers.h"
+#include "consts.h"
 #include "page_layout.h"
 
 int
@@ -106,7 +106,7 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 		/* get presentage coverage for this pixel line */
 		last_raw_sum = sum;
 		sum = 0;
-		for (x = 0; x < width_1_3; x++)
+		for (x = column.x1; x < (column.x1 + width_1_3); x++)
 		{
 			sum += hocr_pixbuf_get_pixel (pix, x, y);
 			sum += hocr_pixbuf_get_pixel (pix, x + width_1_3, y);
@@ -114,7 +114,8 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 		}
 
 		/* check only the part with the most color on it */
-		sum = 1000 * sum / width;
+		if (width > 0)
+			sum = 1000 * sum / width;
 
 		/* if presantage below maximum for in a line then we need to find 
 		 * the end of the line by looking to the end of the down slop */
@@ -141,208 +142,34 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 
 int
 get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
-			 int current_pos, int *font_start, int *font_end)
+			 int current_pos, int *font_start, 
+			int *font_end, int *top, int *bottom)
+
 {
 	int x, y;
 	int sum;
 	int inside_font = FALSE;
-
-	/* we have to calculate line hight, we do not get it from caller */
-	int line_hight = line_end - line_start;
-
-	/* read line from right to left */
-	for (x = current_pos - 1; x > 0; x--)
+	unsigned int object;
+	
+	for (x = current_pos - MIN_DISTANCE_BETWEEN_FONTS; x > 0; x--)
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
 		for (y = line_start; y < line_end; y++)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-		sum = 1000 * sum / line_hight;
-
-		/* if presantage covarage is less then 1 we are between text fonts */
-		if (sum >= NOT_IN_A_FONT && !inside_font)
-		{
-			*font_start = x - 1;
-			inside_font = TRUE;
-		}
-		else if (sum <= NOT_IN_A_FONT && inside_font)
-		{
-			*font_end = x + 1;
-
-			/* if here then found a new line */
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
-int
-adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font)
-{
-	int x, y;
-	int sum;
-	int found_nikud;
-
-	/* adjust font hight and width */
-	font->x2 += 1;
-	font->x1 -= 0;
-	font->width = font->x2 - font->x1;
-	font->hight = font->y2 - font->y1;
-
-	/* go down until found a font */
-	sum = 0;
-	for (y = font->y1; y < font->y2 && sum == 0; y++)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (x = font->x1; x <= font->x2; x++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-	}
-
-	/* go up until out of a font */
-	sum = 1;
-	for (; y > (font->y1 - font->hight) && sum != 0; y--)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (x = font->x1; x <= font->x2; x++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-	}
-	font->y1 = y + 2;
-
-	/* go up until found a font */
-	sum = 0;
-	for (y = font->y2; y > font->y1 && sum == 0; y--)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (x = font->x1; x <= font->x2; x++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-	}
-
-	/* go down until out of a font */
-	sum = 1;
-	for (; y < (font->y2 + font->hight) && sum != 0; y++)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (x = font->x1; x <= font->x2; x++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-	}
-	
-	font->y2 = y - 2;
-	
-	/* check for nikud under the font */
-	found_nikud = TRUE;
-
-	while (found_nikud)
-	{
-		sum = 1;
-		/* read line from right to left */
-		for (y = font->y2 - 1; y > font->y1 && sum != 0; y--)
-		{
-			/* get presentage coverage for this pixel line */
-			sum = 0;
-			for (x = font->x1; x <= font->x2; x++)
+			object = hocr_pixbuf_get_object (pix, x, y);
+			
+			if (object)
 			{
-				sum += hocr_pixbuf_get_pixel (pix, x, y);
+				*font_start = pix->objects[object].x2;
+				*font_end = pix->objects[object].x1;
+				*bottom = pix->objects[object].y2;
+				*top = pix->objects[object].y1;
+				return 0;
 			}
 		}
-		/* some times bet and caf look like resh with patach
-		 * but patach is smaller ~3/4 than lower bar of kaf and bet */
-		sum = 0;
-		for (x = font->x1; x <= font->x2; x++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, font->y2 - 3);
-		}
-
-		found_nikud = (y > font->y1 + (font->hight / 2)
-			       && sum < 4 * font->width / 5);
-
-		if (found_nikud)
-		{
-			font->y2 = y;
-		}
+		
 	}
-
-	/* check for nikud above the font */
-	found_nikud = TRUE;
-
-	while (found_nikud)
-	{
-		sum = 1;
-		/* read line from right to left */
-		for (y = font->y1 + 1; y < font->y2 && sum != 0; y++)
-		{
-			/* get presentage coverage for this pixel line */
-			sum = 0;
-			for (x = font->x1; x <= font->x2; x++)
-			{
-				sum += hocr_pixbuf_get_pixel (pix, x, y);
-			}
-		}
-		/* some times bet and caf look like resh with patach
-		 * but patach is smaller ~3/4 than lower bar of kaf and bet */
-		sum = 0;
-		for (x = font->x1; x <= font->x2; x++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, font->y2 - 3);
-		}
-
-		found_nikud = (y < font->y2 - (font->hight / 2)
-			       && sum < 4 * font->width / 5);
-
-		if (found_nikud)
-		{
-			font->y1 = y;
-		}
-	}
-
-	font->hight = font->y2 - font->y1;
-
-	return 1;
-}
-
-int
-adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box column, hocr_box * line)
-{
-	int sum;
-	int x, y;
-
-	sum = 0;
-	for (x = column.x1; x < column.x2 && sum == 0; x++)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (y = line->y1; y < line->y2; y++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-	}
-	line->x1 = x - 2;
-
-	sum = 0;
-	for (x = column.x2; x > column.x1 && sum == 0; x--)
-	{
-		/* get presentage coverage for this pixel line */
-		sum = 0;
-		for (y = line->y1; y < line->y2; y++)
-		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-		}
-	}
-	line->x2 = x + 2;
 
 	return 1;
 }
@@ -387,12 +214,24 @@ fill_columns_array (hocr_pixbuf * pix, hocr_box * columns,
 		}
 
 		/* get some lee way from the end of last line */
-		column_end += MIN_DISTANCE_BETWEEN_LINES;
+		column_end += MIN_DISTANCE_BETWEEN_COLUMNS;
 
 		return_value = get_next_column_extention
 			(pix, column_start, &column_start, &column_end);
 	}
 
+	/* if no column found, return page */
+	if (!counter)
+	{
+		counter = 1;
+		columns[0].x1 = 0;
+		columns[0].y1 = 0;
+		columns[0].x2 = pix->width;
+		columns[0].y2 = pix->height;
+		columns[0].width = pix->width;
+		columns[0].hight = pix->height;
+	}
+	
 	*num_of_columns = counter;
 
 	return 0;
@@ -419,10 +258,10 @@ fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
 		/* insert this line to lines array */
 		lines[counter].y1 = line_start;
 		lines[counter].y2 = line_end;
-		lines[counter].hight = (line_end - line_start);
-
-		adjust_line_hocr_box (pix, column, &(lines[counter]));
-
+		lines[counter].x2 = column.x2;
+		lines[counter].x1 = column.x1;
+		lines[counter].hight = 
+			(lines[counter].y2 - lines[counter].y1);
 		lines[counter].width =
 			(lines[counter].x2 - lines[counter].x1);
 
@@ -447,6 +286,8 @@ fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 	/* for gliphs detection */
 	int font_start;
 	int font_end;
+	int top;
+	int bottom;
 	int return_value;
 	int counter;
 
@@ -457,7 +298,7 @@ fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 						line.y1,
 						line.y2,
 						line.x2,
-						&font_start, &font_end);
+						&font_start, &font_end, &top, &bottom);
 
 	while (return_value == 0 && font_start > line.x1
 	       && counter < max_fonts)
@@ -465,12 +306,9 @@ fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 		/* insert this font to fonts array */
 		fonts[counter].x1 = font_end;	/* this is right to left sweep */
 		fonts[counter].x2 = font_start;
-		fonts[counter].y1 = line.y1;
-		fonts[counter].y2 = line.y2;
+		fonts[counter].y1 = top;
+		fonts[counter].y2 = bottom;
 		fonts[counter].width = (font_start - font_end);
-
-		/* adjust font hight top and bottom borders */
-		adjust_font_hocr_box (pix, &(fonts[counter]));
 		fonts[counter].hight = fonts[counter].y2 - fonts[counter].y1;
 
 		counter++;
@@ -479,8 +317,7 @@ fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 							line.y1,
 							line.y2,
 							font_end,
-							&font_start,
-							&font_end);
+							&font_start, &font_end, &top, &bottom);
 	}
 
 	*num_of_fonts = counter;

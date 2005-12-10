@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=hocr
+Name[he]=hocr
+Exec=hocr-gtk
+Icon=text-editor
+Terminal=false
+Type=Application
+Categories=GTK;Application;Graphics;RasterGraphics;OCR;
+StartupNotify=true

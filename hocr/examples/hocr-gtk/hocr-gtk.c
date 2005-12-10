@@ -26,7 +26,7 @@
 #  include <config.h>
 #endif
 
-#include <gnome.h>
+#include <gtk/gtk.h>
 
 #include "interface.h"
 
@@ -41,10 +41,7 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 #endif
 
-	gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE,
-			    argc, argv,
-			    GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR, NULL);
-
+	gtk_init (&argc, &argv);
 	window1 = create_window1 ();
 	gtk_widget_show (window1);
 

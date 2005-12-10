@@ -38,220 +38,177 @@
 int
 print_help ()
 {
-	printf ("hocr %s - Hebrew OCR program\n", VERSION);
-	printf ("USAGE: hocr -i <pnm_filename> [-o <text_filename>] [-f <HTML, TEXT>]\n");
+  printf ("hocr %s - Hebrew OCR program\n", VERSION);
+  printf ("http://hocr.berlios.de\n");
+  printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
+  printf ("\n");
 
-	printf ("\nOptions:\n");
-	printf ("  -h Display this message.\n");
-	printf ("  -i <pnm_filename> The image that you wish to process.\n");
-	printf ("  -f <HTML, TEXT>] what output format to use.\n");
-	printf ("  -o <text_filename> The filename to export the output to.\n");
-	
-	printf ("\nExample:\n");
-	printf ("  hocr -i test1.pnm -f HTML -o test1.html\n");
-
-	printf ("\nReport bugs to <kzamir@walla.co.il>\n");
-	printf ("http://hocr.berlios.de\n");
-	printf ("\n");
-
-	return 0;
+  return 0;
 }
 
 int
-save_text (char *filename, char *text)
+save_text (char *filename, char *format_out, char *text)
 {
-	FILE *file;
+  FILE *file;
 
-	/* if format string begin with 'h' assume html output */
-	if (filename)
-	{
-		/* save to file */
-		file = fopen (filename, "w");
+  /*
+   * if format string begin with 'h' assume html output 
+   */
+  if (filename)
+    {
+      /*
+       * save to file 
+       */
+      file = fopen (filename, "w");
 
-		/* can't open file */
-		if (!file)
-		{
-			printf ("hocr: can\'t save file as %s\n", filename);
-			exit (0);
-		}
-		fprintf (file, "%s", text);
-		fclose (file);
-	}
-	else
+      /*
+       * can't open file 
+       */
+      if (!file)
 	{
-		printf ("hocr: can\'t save file as %s\n", filename);
-		exit (0);
+	  printf ("hocr: can\'t save file as %s\n", filename);
+	  exit (0);
 	}
 
-	return 0;
-}
+      if (format_out[0] == 'h')
+	fprintf (file, "<html>\n<meta http-equiv=\"Content-Type\" \
+content=\"text/html; charset=UTF-8\">\n \
+<body dir=\"rtl\"><pre>\n");
 
-int
-print_text (char *text)
-{
-	/* no file name - print to std output */
-	printf ("%s", text);
+      fprintf (file, "%s", text);
 
-	return 0;
+      if (format_out[0] == 'h')
+	fprintf (file, "</pre></body>\n</html>\n");
+      fclose (file);
+    }
+  else
+    {
+      /*
+       * no file name - print to std output 
+       */
+      if (format_out[0] == 'h')
+	printf ("<html>\n<meta http-equiv=\"Content-Type\" \
+content=\"text/html; charset=UTF-8\">\n \
+<body dir=\"rtl\"><pre>\n");
+
+      printf ("%s", text);
+
+      if (format_out[0] == 'h')
+	printf ("</pre></body>\n</html>\n");
+    }
+
+  return 0;
 }
 
 int
 main (int argc, char *argv[])
 {
-	int opt_i = 0;
-	int opt_o = 0;
-	int opt_f = 0;
-	char c;
+  int opt_i = 0;
+  int opt_o = 0;
+  int opt_f = 0;
+  char c;
 
-	char filename_in[STRING_MAX_SIZE];
-	char filename_out[STRING_MAX_SIZE];
-	char format_out[STRING_MAX_SIZE];
+  char filename_in[STRING_MAX_SIZE];
+  char filename_out[STRING_MAX_SIZE];
+  char format_out[STRING_MAX_SIZE];
 
-	hocr_error error;
-	hocr_pixbuf *pix;
-	hocr_text_buffer *text_buffer;
+  hocr_pixbuf *pix;
+  hocr_text_buffer *text;
 
-	hocr_format_strings format_strings;
+  /*
+   * default output is text file 
+   */
+  format_out[0] = 't';
 
-	/* default output is text file */
-	format_out[0] = 't';
-
-	while ((c = getopt (argc, argv, "hi:o:f:")) != EOF)
+  while ((c = getopt (argc, argv, "hi:o:f:")) != EOF)
+    {
+      switch (c)
 	{
-		switch (c)
-		{
-		case 'i':
-			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
-			{
-				strcpy (filename_in, optarg);
-				opt_i = 1;
-			}
-			break;
-		case 'o':
-			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
-			{
-				strcpy (filename_out, optarg);
-				opt_o = 1;
-			}
-			break;
-		case 'f':
-			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
-			{
-				strcpy (format_out, optarg);
-				opt_f = 1;
-			}
-			break;
-		case 'h':
-			print_help ();
-			exit (0);
-			break;
-		default:
-			print_help ();
-			exit (0);
-			break;
-		}
+	case 'i':
+	  if (optarg && strlen (optarg) < STRING_MAX_SIZE)
+	    {
+	      strcpy (filename_in, optarg);
+	      opt_i = 1;
+	    }
+	  break;
+	case 'o':
+	  if (optarg && strlen (optarg) < STRING_MAX_SIZE)
+	    {
+	      strcpy (filename_out, optarg);
+	      opt_o = 1;
+	    }
+	  break;
+	case 'f':
+	  if (optarg && strlen (optarg) < STRING_MAX_SIZE)
+	    {
+	      strcpy (format_out, optarg);
+	      opt_f = 1;
+	    }
+	  break;
+	case 'h':
+	  print_help ();
+	  exit (0);
+	  break;
+	default:
+	  print_help ();
+	  exit (0);
+	  break;
 	}
+    }
 
-	if (opt_i == 0)
-	{
-		print_help ();
-		exit (0);
-	}
+  if (opt_i == 0)
+    {
+      print_help ();
+      exit (0);
+    }
 
-	/* create a new pixbuf from pbm file */
-	pix = hocr_pixbuf_new_from_file (filename_in);
+  /*
+   * create a new pixbuf from pbm file 
+   */
+  pix = hocr_pixbuf_new_from_file (filename_in);
 
-	if (!pix)
-	{
-		printf ("hocr: can\'t read file %s\n", filename_in);
-		exit (0);
-	}
+  if (!pix)
+    {
+      printf ("hocr: can\'t read file %s\n", filename_in);
+      exit (0);
+    }
 
-	/* create text buffer */
-	text_buffer = hocr_text_buffer_new ();
+  /** do ocr */
 
-	if (!text_buffer)
-	{
-		printf ("hocr: can\'t allocate memory for text out\n");
-		exit (0);
-	}
+  /*
+   * build ocr command 
+   */
+  pix->command = HOCR_COMMAND_OCR;
 
-	/* do ocr */
-	if (opt_f && (format_out[0] == 'H' || format_out[0] == 'h'))
-		/* html output */
-	{
-		strcpy (format_strings.page_start_string,
-			"<html>\n<meta http-equiv=\"Content-Type\"\
-content=\"text/html; charset=UTF-8\">\n\
-<body dir=\"rtl\">\n\
-<table>\n<tr>\n");
-		strcpy (format_strings.page_end_string,
-			"</tr>\n</table>\n</body>\n</html>\n");
-		strcpy (format_strings.column_start_string, "<td width=\"25%\">\n");
-		strcpy (format_strings.column_end_string, "</td>\n");
-		strcpy (format_strings.paragraph_start_string, "<p>\n");
-		strcpy (format_strings.paragraph_end_string, "</p>\n");
-		strcpy (format_strings.line_start_string, "");
-		strcpy (format_strings.line_end_string, "</br>");
-		strcpy (format_strings.unknown_start_string, "<b>");
-		strcpy (format_strings.unknown_end_string, "</b>");
+  /* create text buffer */
+  text = hocr_text_buffer_new ();
 
-		hocr_do_ocr (pix, text_buffer, &format_strings,
-			     HOCR_OUTPUT_JUST_OCR, HOCR_OCR_TYPE_COLUMNS,
-			     &error);
-	}
-	else
-		/* text output */
-	{
-		hocr_do_ocr (pix, text_buffer, 0, HOCR_OUTPUT_JUST_OCR,
-			     HOCR_OCR_TYPE_REGULAR, &error);
-	}
+  if (!text)
+  {
+    printf ("hocr-gnome: can\'t allocate memory for text out\n");
+    return 0;
+  }
 
-	/* did do_ocr return an error ? */
-	if (error != HOCR_ERROR_OK)
-	{
-		switch (error)
-		{
-		case HOCR_ERROR_NO_LINES_FOUND:
-			printf ("hocr: can\'t find readble lines in input\n");
+  /*
+   * run the ocr 
+   */
+  hocr_do_ocr (pix, text);
 
-			/* unref memory and exit */
-			hocr_pixbuf_unref (pix);
-			hocr_text_buffer_unref (text_buffer);
-			exit (0);
+  /*
+   * unref memory 
+   */
+  hocr_pixbuf_unref (pix);
 
-			break;
-		case HOCR_ERROR_NO_FONTS_FOUND:
-			printf ("hocr: can\'t find readble fonts in input\n");
+  /*
+   * print out the text 
+   */
+  if (opt_o == 1)
+    save_text (filename_out, format_out, text->text);
+  else
+    save_text (NULL, format_out, text->text);
 
-			/* unref memory and exit */
-			hocr_pixbuf_unref (pix);
-			hocr_text_buffer_unref (text_buffer);
-			exit (0);
-
-			break;
-		case HOCR_ERROR_OUT_OF_MEMORY:
-			printf ("hocr: out of memory while reading\n");
-			break;
-		case HOCR_ERROR_NOT_HORIZONTAL_LINE:
-			printf ("hocr: found non horizontal line in text\n");
-			break;
-		default:
-			printf ("hocr: unknown error while reading\n");
-			exit (0);
-			break;
-		}
-	}
-
-	/* print out the text */
-	if (opt_o == 1)
-		save_text (filename_out, text_buffer->text);
-	else
-		print_text (text_buffer->text);
-
-	/* unref memory */
-	hocr_pixbuf_unref (pix);
-	hocr_text_buffer_unref (text_buffer);
-
-	return 0;
+  /* unref text_buffer */
+  hocr_text_buffer_unref (text);
+  
+  return 0;
 }

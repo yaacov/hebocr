@@ -1,5 +1,5 @@
 /***************************************************************************
- *            font_recognition.h
+ *            font_markers.h
  *
  *  Fri Aug 12 20:33:02 2005
  *  Copyright  2005  Yaacov Zamir
@@ -28,22 +28,54 @@
 
 #include "hocr.h"
 
-#ifndef __FONT_RECOGNITION_H__
-#define __FONT_RECOGNITION_H__
+#ifndef __FONT_MARKERS_H__
+#define __FONT_MARKERS_H__
 
 
 /**
  */
 
-/* font shape markers array*/
+int
+hocr_recognize_font(hocr_pixbuf * pix, hocr_box * fonts_line, int num_of_fonts_in_line,
+				int font_index, hocr_line_eq line_eqs[2],
+				int avg_font_hight, int avg_font_width,
+				int avg_diff_between_lines, char *chars);
 
-int hocr_guess_font (hocr_pixbuf * pix, hocr_box font,
-		     hocr_line_eq base_line_eq, hocr_line_eq top_line_eq,
-		     int avg_font_hight_in_page, int avg_font_width_in_page,
-			 int end_of_word,
-		     char *font_string, int max_chars_in_font_string);
+/* the real functions */
 
-int print_marks (hocr_pixbuf * pix, hocr_box font, int *marks);
+int has_alef_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_bet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_gimel_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_dalet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_he_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_vav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_zain_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_het_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_tet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_yud_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_kaf_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_lamed_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_mem_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_nun_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_sameh_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_ayin_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_pe_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_pe_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_tzadi_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_kof_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_resh_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_shin_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_tav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+
+int has_quat_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_double_quat_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_exlem_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_question_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
+int has_makaf_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj);
 
 /**
  */

@@ -27,9 +27,6 @@
 #ifndef __PAGE_LAYOUT_H__
 #define __PAGE_LAYOUT_H__
 
-
-/* TODO: add support for more then one squre column */
-
 /**
  @brief adjust lines y borders
 
@@ -54,25 +51,8 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos, in
  */
 int
 get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
-			 int current_pos, int *font_start, int *font_end);
-
-/**
- @brief adjust fonts y borders
-
- @param pix pointer the page hocr_pixbuf
- @param font pointer to the fonts extentions
- */
-int
-adjust_font_hocr_box (hocr_pixbuf * pix, hocr_box * font);
-
-/**
- @brief adjust line x borders
-
- @param pix pointer the page hocr_pixbuf
- @param line pointer to the lines extentions
- */
-int
-adjust_line_hocr_box (hocr_pixbuf * pix, hocr_box column, hocr_box * line);
+			 int current_pos, int *font_start, int *font_end,
+			 int *top, int *bottom);
 
 /**
  @brief fils an array of hocr_boxes with this page lines
@@ -111,5 +91,5 @@ fill_columns_array (hocr_pixbuf * pix, hocr_box * columns,
 int
 fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 		  int *num_of_fonts, int max_fonts);
-		  
+
 #endif

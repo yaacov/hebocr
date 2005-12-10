@@ -23,157 +23,122 @@
  */
 
 #include "hocr.h"
-#include "magic_numbers.h"
+#include "consts.h"
 #include "font_layout.h"
 
 int
-find_font_baseline_eq (hocr_box line, hocr_box * fonts,
-		       hocr_line_eq * base_line, hocr_line_eq * top_line,
-		       int avg_font_hight, int num_of_fonts)
+find_font_baseline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts)
 {
-	int i;
-	int counter;
-	int start_counter;
-	int y_start_base, y_end_base;
-	int x_start, x_end;
-	int y_start_top, y_end_top;
-
-	/* if no fonts then just return the line */
-	if (num_of_fonts == 0)
-	{
-		base_line->a = 0;
-		base_line->b = line.y2;
-		top_line->a = 0;
-		top_line->b = line.y1;
-		return 1;
-	}
-
-	/* avg over first NUM_OF_FONTS_TO_AVG fonts */
-	y_start_base = 0;
-	y_start_top = 0;
-	x_start = 0;
-	y_end_base = 0;
-	y_end_top = 0;
-	x_end = 0;
-
-	counter = 0;
-	start_counter = 0;
-	i = 0;
-	while (i < num_of_fonts)
-	{
-		if (fonts[i].hight <
-		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
-		    && fonts[i].hight >
-		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
-		{
-			/* take only first NUM_OF_FONTS_TO_AVG to avg */
-			if (counter < NUM_OF_FONTS_TO_AVG)
-			{
-				y_start_base += fonts[i].y2;
-				x_start += fonts[i].x2;
-				y_start_top += fonts[i].y1;
-				start_counter ++;
-			}
-			
-			/* check how many regular fonts in this line */
-			counter++;
-		}
-		i++;
-	}
-
-	/* if can't any font use the first font for horizontal lines */
-	if (start_counter == 0)
-	{
-		base_line->a = 0;
-		base_line->b = fonts[0].y2;
-		top_line->a = 0;
-		top_line->b = fonts[0].y1;
-
-		return 1;
-	}
-
-	/* if here then counter is not zero */
-	y_start_base /= start_counter;
-	y_start_top /= start_counter;
-	x_start /= start_counter;
-
-	/* if can't find NUM_OF_FONTS_TO_AVG regular fonts at start and
-	   NUM_OF_FONTS_TO_AVG at end use the horizontal lines */
-	if (counter < 2 * NUM_OF_FONTS_TO_AVG)
-	{
-		base_line->a = 0;
-		base_line->b = y_start_base;
-		top_line->a = 0;
-		top_line->b = y_start_top;
-
-		return 1;
-	}
-
-	/* avg over last NUM_OF_FONTS_TO_AVG fonts */
-	/* FIXME: can I put this in the first loop */
-	counter = 0;
-	i = num_of_fonts - 1;
-	while (counter < NUM_OF_FONTS_TO_AVG && i >= 0)
-	{
-		if (fonts[i].hight <
-		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
-		    && fonts[i].hight >
-		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
-		{
-			y_end_base += fonts[i].y2;
-			y_end_top += fonts[i].y1;
-			x_end += fonts[i].x2;
-			counter++;
-		}
-		i--;
-	}
-
-	/* if can't find NUM_OF_FONTS_TO_AVG use the horizontal lines */
-	/* FIXME: we know we can, so why check again ? */
-	if (counter < NUM_OF_FONTS_TO_AVG)
-	{
-		base_line->a = 0;
-		base_line->b = y_start_base;
-		top_line->a = 0;
-		top_line->b = y_start_top;
-		
-		return 1;
-	}
+	if (fonts[index].hight < 2 || fonts[index].width < 2)
+		return 0;
 	
-	y_end_base /= counter;
-	y_end_top /= counter;
-	x_end /= counter;
-
-	/* delta x is small return horizontal line */
-	/* FIXME: we know it is not, so why check again ? */
-	if ((x_end - x_start) == 0)
+	/* font in the middle of line */
+	if (index > 1 && index < (num_of_fonts - 2))
 	{
-		base_line->a = 0;
-		base_line->b = y_start_base;
-		top_line->a = 0;
-		top_line->b = y_start_top;
-		
-		return 1;
+		/* is font on the left regular size */
+		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
+		    == 0)
+			return fonts[index + 1].y2;
+		/* is font on the right regular size */
+		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
+		    == 0)
+			return fonts[index - 1].y2;
+		/* is second font on the left regular size */
+		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
+		    == 0)
+			return fonts[index + 2].y2;
+		/* is second font on the right regular size */
+		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
+		    == 0)
+			return fonts[index - 2].y2;
+	}
+	else
+		/* is this the first or second font in the line */
+	if (index < 2 && num_of_fonts > 3)
+	{
+		/* is font on the left regular size */
+		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
+		    == 0)
+			return fonts[index + 1].y2;
+		/* is second font on the left regular size */
+		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
+		    == 0)
+			return fonts[index + 2].y2;
+	}
+	else
+		/* is this the last font in the line */
+	if (index > 1)
+	{
+		/* is font on the right regular size */
+		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
+		    == 0)
+			return fonts[index - 1].y2;
+		/* is second font on the right regular size */
+		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
+		    == 0)
+			return fonts[index - 2].y2;
 	}
 
-	/* make line equation */
-	base_line->a =
-		(double) (y_end_base -
-			  y_start_base) / (double) (x_end - x_start);
+	/* if no other regular font is near then base on yourself */
+	return fonts[index].y2;
+}
 
-	top_line->a =
-		(double) (y_end_top -
-			  y_start_top) / (double) (x_end - x_start);
+int
+find_font_topline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts)
+{
+	if (fonts[index].hight < 2 || fonts[index].width < 2)
+		return 0;
+	
+	/* font in the middle of line */
+	if (index > 1 && index < (num_of_fonts - 2))
+	{
+		/* is font on the left regular size */
+		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
+		    == 0)
+			return fonts[index + 1].y1;
+		/* is font on the right regular size */
+		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
+		    == 0)
+			return fonts[index - 1].y1;
+		/* is second font on the left regular size */
+		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
+		    == 0)
+			return fonts[index + 2].y1;
+		/* is second font on the right regular size */
+		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
+		    == 0)
+			return fonts[index - 2].y1;
+	}
+	else
+		/* is this the first or second font in the line */
+	if (index < 2 && num_of_fonts > 3)
+	{
+		/* is font on the left regular size */
+		if (get_font_hight_class (fonts[index + 1].hight, avg_hight)
+		    == 0)
+			return fonts[index + 1].y1;
+		/* is second font on the left regular size */
+		if (get_font_hight_class (fonts[index + 2].hight, avg_hight)
+		    == 0)
+			return fonts[index + 2].y1;
+	}
+	else
+		/* is this the last font in the line */
+	if (index > 1)
+	{
+		/* is font on the right regular size */
+		if (get_font_hight_class (fonts[index - 1].hight, avg_hight)
+		    == 0)
+			return fonts[index - 1].y1;
+		/* is second font on the right regular size */
+		if (get_font_hight_class (fonts[index - 2].hight, avg_hight)
+		    == 0)
+			return fonts[index - 2].y1;
+	}
 
-	/* FIXME: assume line is horizonatal and parallel ? */
-	base_line->a =
-		(base_line->a < top_line->a) ? base_line->a : top_line->a;
-	top_line->a = base_line->a;
 
-	base_line->b = y_start_base - base_line->a * x_start;
-	top_line->b = y_start_top - top_line->a * x_start;
-
-	return 0;
+	/* if no other regular font is near then base on yourself */
+	return fonts[index].y1;
 }
 
 /*
@@ -182,9 +147,9 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 
 /* -1 assend 0 normal 1 sunk */
 int
-get_font_top_class (hocr_box font, hocr_line_eq top_line, int avg_font_hight)
+get_font_top_class (int font_top, int font_topline, int avg_font_hight)
 {
-	int assend = font.y1 - hocr_line_eq_get_y (top_line, font.x1);
+	int assend = font_topline - font_top;
 
 	if (assend < (-FONT_ASSEND * avg_font_hight / 1000))
 		return 1;
@@ -196,10 +161,9 @@ get_font_top_class (hocr_box font, hocr_line_eq top_line, int avg_font_hight)
 
 /* -1 assend 0 normal 1 sunk */
 int
-get_font_base_class (hocr_box font, hocr_line_eq base_line,
-		     int avg_font_hight)
+get_font_base_class (int font_bottom, int font_baseline, int avg_font_hight)
 {
-	int assend = font.y2 - hocr_line_eq_get_y (base_line, font.x1);
+	int assend = font_baseline - font_bottom;
 
 	if (assend < (-FONT_ASSEND * avg_font_hight / 1000))
 		return -1;
@@ -230,5 +194,118 @@ get_font_width_class (int font_width, int avg_font_width)
 	if (font_width > 2 * avg_font_width)
 		return 1;
 
+	return 0;
+}
+
+int
+find_font_baseline_eq (hocr_box line, hocr_box * fonts,
+		       hocr_line_eq * base_line, hocr_line_eq * top_line,
+		       int avg_font_hight, int num_of_fonts)
+{
+	int i;
+	int start_counter, end_counter;
+	int x_start, x_end;
+	int y_start, y_end;
+	int font_hight;
+	
+	/* if not enogh fonts then just return the line */
+	if (num_of_fonts < NUM_OF_FONTS_TO_AVG)
+	{
+		/* top line is more aqurate in most hebrew textst */
+		base_line->a = 0;
+		base_line->b = line.y1 + avg_font_hight + 1;
+		top_line->a = 0;
+		top_line->b = line.y1;
+		return 1;
+	}
+
+	/* avg over NUM_OF_FONTS_TO_AVG fonts */
+	y_start = 0;
+	y_end = 0;
+	x_start = 0;
+	x_end = 0;
+	font_hight = 0;
+	
+	start_counter = 0;
+	end_counter = 0;
+	i = 0;
+	while (i < num_of_fonts)
+	{
+		if (fonts[i].hight <
+		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
+		    && fonts[i].hight >
+		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
+		{
+			/* take only first NUM_OF_FONTS_TO_AVG to avg */
+			if ( start_counter < NUM_OF_FONTS_TO_AVG)
+			{
+				y_start += fonts[i].y1;
+				x_start += fonts[i].x2;
+				font_hight += fonts[i].hight;
+				start_counter ++;
+			}
+		}
+		i++;
+	}
+	
+	i = num_of_fonts;
+	while (i > 0)
+	{
+		i--;
+		if (fonts[i].hight <
+		    ((1000 + FONT_ASSEND) * avg_font_hight / 1000)
+		    && fonts[i].hight >
+		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
+		{
+			/* take only last NUM_OF_FONTS_TO_AVG to avg */
+			if (end_counter < NUM_OF_FONTS_TO_AVG)
+			{
+				y_end += fonts[i].y1;
+				x_end += fonts[i].x1;
+				font_hight += fonts[i].hight;
+				end_counter ++;
+			}
+		}
+	}
+
+	/* if can't any font use the first font for horizontal lines */
+	if (start_counter == 0 || end_counter == 0)
+	{
+		/* top line is more aqurate in most hebrew textst */
+		base_line->a = 0;
+		base_line->b = line.y1 + avg_font_hight + 1;
+		top_line->a = 0;
+		top_line->b = line.y1;
+		return 1;
+	}
+
+	/* if here then counter is not zero, i can avarage */
+	y_start /= start_counter;
+	x_start /= start_counter;
+	y_end /= end_counter;
+	x_end /= end_counter;
+	font_hight /= (end_counter + start_counter);
+	
+	/* delta x is small return horizontal line */
+	if ((x_start - x_end) == 0)
+	{
+		/* top line is more aqurate in most hebrew textst */
+		base_line->a = 0;
+		base_line->b = line.y1 + font_hight + 1;
+		top_line->a = 0;
+		top_line->b = line.y1;
+		return 1;
+	}
+
+	/* make line equation */
+	top_line->a =
+		(double) (y_end - y_start) / (double) (x_end - x_start);
+
+	/* FIXME: assume line is horizonatal and parallel ? */
+	base_line->a = top_line->a;
+
+	top_line->b = y_start - top_line->a * x_start;
+	base_line->b = top_line->b + font_hight + 1;
+	
 	return 0;
 }

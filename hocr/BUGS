@@ -8,29 +8,28 @@ TODO:
 
 bugs:
 
-   - find out why programs crash on some inputs.
+   - find out why programs crash on some inputs. [done, kobi 1,12,2005]
    - give some feedback when input is unreadble.
 
 code cleaning:
 
    - find ugly hacks and replace with maintanble code.
    - create a dynamic structure for text buffer, and remove the all fixed size strings.
-     [DONE kobi]
    - replace all functions and struct names to use hocr_ namespace convention.
-     [DONE kobi]
    - find a way not to use constants and remove the consts.h file.
    - find a way to make the do_ocr function more readable.
 
 features:
 
+   - add dictionary support
+   - add suport for multi columns pages [done, kobi 9,12,2005]
    - add support for new shapes (numbers, english letters)
    - add support for nikud.
    - add support for more then one shape for each font.
 
 documentation:
 
-   - add a documentation explaining the hocr_pixbuf struct and how to use it with:
+   - add a file explaining the hocr_pixbuf struct and how to use it with:
      (see hocr-gui and qhocr for more details)
-	a) gdk_pixbuf from the GTK+ toolkit
+        a) gdk_pixbuf from the GTK+ toolkit
         b) QImage from the QT toolkit
-	[DONE kobi]

@@ -1,9 +1,0 @@
-hocr-qt use QT-4 qmake system, it is NOT built by default, use qmake and make to buid it.
-
-from command line do:
-
-#> qmake
-#> make
-
-if you have the qt-4 devel library installed on yout system, you will get the hocr-qt program on this path.
-

@@ -1,26 +1,44 @@
-hocr (0.5.0)
+hocr (0.5.1)
   
-  * examples now named: hocr, hocr-gnome, hocr-qt
-  
-  * add a buffer length check before copeing strings, thanks to Ido Kaner.
-  
-  * add column and paragraph support
-  
+  * examples now named: hocr, hocr-gtk
   * fix line equation for short lines
-  
-  * add custom strings for line/paragraph/column start/end. for
-    creation of better xml outputs.
-  
-  * add borrowed KDE iKons to hocr-qt
-  
-  * hocr-qt example show graphical output
-  
-  * update the cpp bindings
-  
-  * fix bug in get/set pixels that crashed the program.
+  * create different file for different objects
+  * use a textbuffer structure
    
-  -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 23 Aug 2005 02:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Sat, 10 Aug 2005 22:13
 
+hocr (0.4.8)
+
+  * Use columns
+  * Ignure nikud marks
+  * use non horizontal lines
+  * add command to the image buffer struct to let user control ocr.
+  * add none-used error to the image struct to let peogram return 
+    feedback to user
+
+  -- Yaacov Zamir <kzamir@walla.co.il> Wed, 07 Dec 2005 22:13
+
+hocr (0.4.7)
+
+  * Remove cpp (and hocr-qt) bindings, untill API stabilize.
+
+  -- Yaacov Zamir <kzamir@walla.co.il> Wed, 07 Dec 2005 22:13
+
+hocr (0.4.6)
+
+  * Fix a bug in get/set bit functions
+  * Add desktop menu entry only if hocr-gtk is made
+  * Use gtk toolkit and not gnome to make example more portable
+  * Rename the gui example hocr-gtk
+
+  -- Yaacov Zamir <kzamir@walla.co.il> Mon, 21 Nov 2005 00:13
+  
+hocr (0.4.5a)
+
+  * Ido Kanner reported a buffer overflow on hocr cmd line example, fixed.
+
+  -- Yaacov Zamir <kzamir@walla.co.il> Sun, 04 Sep 2005 22:13
+  
 hocr (0.4.5)
   
   * Yuval Tanny: idea to make line detection more accurate
@@ -29,7 +47,7 @@ hocr (0.4.5)
     
   * add a HACKING and BUGS files to set guidelines for patches in
     the future.
-	
+
   * add hocr-qt example and remove qhocr and the bsd things.
   
   -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 21 Aug 2005 02:13
@@ -64,7 +82,7 @@ hocr (0.4.0)
   * TODO: create a load image function
   
   -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 16 Aug 2005 22:13
-	
+
 hocr (0.3.2)
 
   * make the command line compatible with gocr -i input_file -f format

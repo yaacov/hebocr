@@ -3,7 +3,7 @@
 SUBDIRS = src po tests examples
 
 EXTRA_DIST = \
-	autogen.sh hocr.spec.in hocr.spec hocr.desktop libhocr.pc.in libhocr.pc BUGS HACKING
+	autogen.sh libhocr.pc.in libhocr.pc BUGS HACKING
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libhocr.pc
@@ -18,11 +18,7 @@ hocrdoc_DATA = \
 	INSTALL \
 	HACKING \
 	BUGS
-	
-hocrdesktopdir = ${prefix}/share/applications
-hocrdesktop_DATA = \
-	hocr.desktop
-	
+
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/pixmaps; then \
@@ -43,4 +39,3 @@ dist-hook:
 	    fi \
 	  done \
 	fi
-

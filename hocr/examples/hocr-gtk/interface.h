@@ -21,18 +21,44 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include <gtk/gtk.h>
 
-#define TEXT_FONT_NAME "Miriam Mono CLM 15"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#ifdef ENABLE_NLS
+#  include <libintl.h>
+#  undef _
+#  define _(String) dgettext (GETTEXT_PACKAGE, String)
+#  define Q_(String) g_strip_context ((String), gettext (String))
+#  ifdef gettext_noop
+#    define N_(String) gettext_noop (String)
+#  else
+#    define N_(String) (String)
+#  endif
+#else
+#  define textdomain(String) (String)
+#  define gettext(String) (String)
+#  define dgettext(Domain,Message) (Message)
+#  define dcgettext(Domain,Message,Type) (Message)
+#  define bindtextdomain(Domain,Directory) (Domain)
+#  define _(String) (String)
+#  define Q_(String) g_strip_context ((String), (String))
+#  define N_(String) (String)
+#endif
+
+#define TEXT_FONT_NAME "Sans 12"
 
 /* main window */
 GtkWidget *window1;
 
 /* menu check boxs */
-GtkWidget *columns;
-/*GtkWidget *nikud;*/
-GtkWidget *graphics;
-GtkWidget *html;
+GtkWidget *color_text_box;
+GtkWidget *color_misread;
+GtkWidget *clear_text;
 GtkWidget *ocr;
+GtkWidget *use_dict;
 
 /* image and text of main window */
 GtkWidget *image;

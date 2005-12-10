@@ -22,6 +22,30 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/***************************************************************************
+ *            interface.c
+ *
+ *  Fri Aug 12 20:15:06 2005
+ *  Copyright  2005  Yaacov Zamir
+ *  <kzamir@walla.co.il>
+ ****************************************************************************/
+
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -32,8 +56,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <bonobo.h>
-#include <gnome.h>
+#include <gtk/gtk.h>
 
 #include "callbacks.h"
 #include "interface.h"
@@ -163,7 +186,8 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), separator2);
 	gtk_widget_set_sensitive (separator2, FALSE);
 
-	spell_check =
+#ifdef WITH_GTKSPELL
+		spell_check =
 		gtk_image_menu_item_new_from_stock ("gtk-spell-check",
 						    accel_group);
 	gtk_widget_show (spell_check);
@@ -173,43 +197,45 @@ create_window1 (void)
 	gtk_widget_show (separator3);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), separator3);
 	gtk_widget_set_sensitive (separator3, FALSE);
+#endif
 
-	columns = gtk_check_menu_item_new_with_mnemonic (_("Columns"));
-	gtk_widget_show (columns);
-	gtk_container_add (GTK_CONTAINER (menuitem2_menu), columns);
-	gtk_tooltips_set_tip (tooltips, columns,
-			      _("Check for columns in scaned picture"), NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (columns), TRUE);
-
-	/*nikud = gtk_check_menu_item_new_with_mnemonic (_("Nikud"));
-	gtk_widget_show (nikud);
-	gtk_container_add (GTK_CONTAINER (menuitem2_menu), nikud);
-	gtk_tooltips_set_tip (tooltips, nikud,
-			      _("Check for nikud in scaned picture"), NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (nikud), FALSE);*/
-
-	graphics = gtk_check_menu_item_new_with_mnemonic (_("Graphics"));
-	gtk_widget_show (graphics);
-	gtk_container_add (GTK_CONTAINER (menuitem2_menu), graphics);
-	gtk_tooltips_set_tip (tooltips, graphics, _("Show graphical output"),
+	color_text_box = gtk_check_menu_item_new_with_mnemonic (_("Color boxes"));
+	gtk_widget_show (color_text_box);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), color_text_box);
+	gtk_tooltips_set_tip (tooltips, color_text_box, _("Color text boxes"),
 			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (graphics), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (color_text_box), TRUE);
 
-	html = gtk_check_menu_item_new_with_mnemonic (_("Html"));
-	gtk_widget_show (html);
-	gtk_container_add (GTK_CONTAINER (menuitem2_menu), html);
-	gtk_tooltips_set_tip (tooltips, html, _("Output html text"),
+	color_misread = gtk_check_menu_item_new_with_mnemonic (_("Color misread"));
+	gtk_widget_show (color_misread);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), color_misread);
+	gtk_tooltips_set_tip (tooltips, color_misread, _("Color misread fonts"),
 			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (html), FALSE);
-	
-	ocr = gtk_check_menu_item_new_with_mnemonic (_("OCR"));
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (color_misread), TRUE);
+
+	clear_text = gtk_check_menu_item_new_with_mnemonic (_("Clear"));
+	gtk_widget_show (clear_text);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), clear_text);
+	gtk_tooltips_set_tip (tooltips, clear_text, _("Clear text each time you ocr new scan"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (clear_text), TRUE);
+
+	ocr = gtk_check_menu_item_new_with_mnemonic (_("Ocr"));
 	gtk_widget_show (ocr);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), ocr);
 	gtk_tooltips_set_tip (tooltips, ocr,
 			      _("Try to recognize fonts in scaned text"),
 			      NULL);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ocr), TRUE);
-
+/*
+	use_dict = gtk_check_menu_item_new_with_mnemonic (_("Use dictionary"));
+	gtk_widget_show (use_dict);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_dict);
+	gtk_tooltips_set_tip (tooltips, use_dict,
+			      _("Try to guess unrecognized fonts in scaned text using internal dictionary"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_dict), FALSE);
+*/
 	menuitem3 = gtk_menu_item_new_with_mnemonic (_("_View"));
 	gtk_widget_show (menuitem3);
 	gtk_container_add (GTK_CONTAINER (menubar1), menuitem3);
@@ -245,9 +271,6 @@ create_window1 (void)
 	about = gtk_menu_item_new_with_mnemonic (_("_About"));
 	gtk_widget_show (about);
 	gtk_container_add (GTK_CONTAINER (menuitem4_menu), about);
-	gtk_widget_add_accelerator (about, "activate", accel_group,
-				    GDK_B, (GdkModifierType) GDK_CONTROL_MASK,
-				    GTK_ACCEL_VISIBLE);
 
 	/* toolbar */
 	toolbar = gtk_toolbar_new ();
@@ -286,6 +309,7 @@ create_window1 (void)
 	gtk_widget_show (vseparator1);
 	gtk_container_add (GTK_CONTAINER (toolitem1), vseparator1);
 
+#ifdef WITH_GTKSPELL
 	toolbutton_spell =
 		(GtkWidget *)
 		gtk_tool_button_new_from_stock ("gtk-spell-check");
@@ -293,6 +317,7 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_spell);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_spell), tooltips,
 				   _("Spell check the text"), NULL);
+#endif
 
 	toolitem2 = (GtkWidget *) gtk_tool_item_new ();
 	gtk_widget_show (toolitem2);
@@ -380,11 +405,6 @@ create_window1 (void)
 	textview = gtk_text_view_new ();
 	gtk_widget_show (textview);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_text), textview);
-
-	/* Change default font throughout the text widget */
-	font_desc = pango_font_description_from_string (TEXT_FONT_NAME);
-	gtk_widget_modify_font (textview, font_desc);
-	pango_font_description_free (font_desc);
 
 	/* main window */
 	g_signal_connect ((gpointer) window1, "delete_event",

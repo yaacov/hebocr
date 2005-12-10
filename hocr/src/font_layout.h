@@ -23,6 +23,7 @@
  */
 
 #include "hocr.h"
+#include "consts.h"
 
 #ifndef __FONT_LAYOUT_H__
 #define __FONT_LAYOUT_H__
@@ -49,17 +50,19 @@ find_font_topline (hocr_box * fonts, int avg_hight, int index,
  */
 
 /* -1 assend 0 normal 1 sunk */
-int get_font_top_class (hocr_box font, hocr_line_eq top_line,
-			int avg_font_hight);
+int
+get_font_top_class (int font_top, int font_topline, int avg_font_hight);
 
 /* -1 assend 0 normal 1 sunk */
-int get_font_base_class (hocr_box font, hocr_line_eq base_line,
-			 int avg_font_hight);
+int
+get_font_base_class (int font_bottom, int font_baseline, int avg_font_hight);
 
 /* -1 short 0 normal 1 ling */
-int get_font_hight_class (int font_hight, int avg_font_hight);
+int
+get_font_hight_class (int font_hight, int avg_font_hight);
 
 /* -1 thin 0 normal 1 wide */
-int get_font_width_class (int font_width, int avg_font_width);
+int
+get_font_width_class (int font_width, int avg_font_width);
 
 #endif

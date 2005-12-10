@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(hocr, 0.5.0)
+AM_INIT_AUTOMAKE(hocr, 0.5.1)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 VERSION_INFO=0:0:0
@@ -19,7 +19,7 @@ AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 PACKAGE_CFLAGS=
 PACKAGE_LIBS=-lm
 
-GETTEXT_PACKAGE=hocr
+GETTEXT_PACKAGE=hocr-gtk
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
 
@@ -29,29 +29,36 @@ AM_GLIB_GNU_GETTEXT
 
 dnl =======================================================================================
 
-build_gui=yes
+build_gtk=yes
 
-AC_ARG_ENABLE(gui, [  ---disable-gnome	build hocr-gnome program [default=yes]], build_gui="$enableval", build_gui=yes)
+AC_ARG_ENABLE(gtk, [  --disable-gtk		build hocr-gtk program [[default=yes]]], build_gtk="$enableval", build_gtk=yes)
 
-gui_pkg_modules="libgnomeui-2.0 gtkspell-2.0"
-PKG_CHECK_MODULES(gui, [$gui_pkg_modules], gui=yes, gui=no)
-AC_SUBST(gui_CFLAGS)
-AC_SUBST(gui_LIBS)
+gtk_pkg_modules="gtk+-2.0"
+PKG_CHECK_MODULES(gtk, [$gtk_pkg_modules], gtk=yes, gtk=no)
+AC_SUBST(gtk_CFLAGS)
+AC_SUBST(gtk_LIBS)
 
-if test "x$gui" = "xyes"; then
-          AC_MSG_RESULT(yes)
-else
-		  AC_MSG_RESULT(no)
-		  build_gui=no
-fi
-
-AM_CONDITIONAL(WITH_GUI, test "x$build_gui" = "xyes")
+AM_CONDITIONAL(WITH_GTK, test "x$build_gtk" = "xyes")
 
 dnl =======================================================================================
 
-build_hocr=yes
+build_gtkspell=yes
 
-AC_ARG_ENABLE(cmd, [  --disable-hocr	build hocr program [default=yes]], build_cmd="$enableval", build_cmd=yes)
+AC_ARG_ENABLE(gtkspell, [  --disable-gtkspell		build hocr-gtk internal spellchecker[[default=yes]]], build_gtkspell="$enableval", build_gtkspell=yes)
+
+gtk_pkg_modules="gtkspell-2.0"
+PKG_CHECK_MODULES(gtkspell, [$gtk_pkg_modules], gtkspell=yes, gtkspell=no)
+AC_SUBST(gtkspell_CFLAGS)
+AC_SUBST(gtkspell_LIBS)
+
+AM_CONDITIONAL(WITH_GTKSPELL, test "x$build_gtkspell" = "xyes")
+AC_SUBST(WITH_GTKSPELL)
+
+dnl =======================================================================================
+
+build_cmd=yes
+
+AC_ARG_ENABLE(cmd, [  --disable-cmd		build hocr program [[default=yes]]], build_cmd="$enableval", build_cmd=yes)
 
 AM_CONDITIONAL(WITH_CMD, test "x$build_cmd" = "xyes")
 
@@ -64,13 +71,12 @@ dnl ============================================================================
 
 AC_OUTPUT([
 Makefile
-hocr.spec
 libhocr.pc
 src/Makefile
 po/Makefile.in
 tests/Makefile
 examples/Makefile
-examples/hocr-gnome/Makefile
+examples/hocr-gtk/Makefile
 examples/hocr/Makefile
 ])
 
@@ -82,11 +88,7 @@ $PACKAGE-$VERSION
 	compiler:			${CC}
 	
 	build hocr			${build_cmd}
-	build hocr-gnome		${build_gui}
-	
-	you need ${gui_pkg_modules} development libs 
-		to build the gnome interface.
+	build hocr-gtk			${build_gtk}
+		with spellchecker	${build_gtkspell}
 
-	you need QT-4 development library to build hocr-qt
-		you can build hocr-qt manualy using qmake.
 "
