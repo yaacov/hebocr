@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            page_layout.c
  *
@@ -60,15 +61,17 @@ get_next_column_extention (hocr_pixbuf * pix, int current_pos,
 			}
 		}
 
-		/* if presantage above minmun for not in a line then we are in aline */
+		/* if presantage above minmun for not in a line then we are in
+		 * aline */
 		if (!inside_column
 		    && (x <= MIN_DISTANCE_BETWEEN_WORDS || sum > 0))
 		{
 			*column_end = x + MIN_DISTANCE_BETWEEN_WORDS;
 			inside_column = TRUE;
 		}
-		/* if presantage below maximum for in a line then we need to find 
-		 * the end of the line by looking to the end of the down slop */
+		/* if presantage below maximum for in a line then we need to
+		 * find the end of the line by looking to the end of the down
+		 * slop */
 		else if ((x <= MIN_DISTANCE_BETWEEN_WORDS || sum == 0) &&
 			 inside_column)
 		{
@@ -117,8 +120,9 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 		if (width > 0)
 			sum = 1000 * sum / width;
 
-		/* if presantage below maximum for in a line then we need to find 
-		 * the end of the line by looking to the end of the down slop */
+		/* if presantage below maximum for in a line then we need to
+		 * find the end of the line by looking to the end of the down
+		 * slop */
 		if (sum <= IN_A_LINE &&
 		    inside_line &&
 		    (y - *line_start) > MIN_LINE_HIGHT &&
@@ -128,7 +132,8 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 			return 0;
 		}
 
-		/* if presantage above minmun for not in a line then we are in aline */
+		/* if presantage above minmun for not in a line then we are in
+		 * aline */
 		if (sum >= NOT_IN_A_LINE && !inside_line)
 		{
 			*line_start = y;
@@ -142,15 +147,14 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 
 int
 get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
-			 int current_pos, int *font_start, 
-			int *font_end, int *top, int *bottom)
-
+			 int current_pos, int *font_start,
+			 int *font_end, int *top, int *bottom)
 {
 	int x, y;
 	int sum;
 	int inside_font = FALSE;
 	unsigned int object;
-	
+
 	for (x = current_pos - MIN_DISTANCE_BETWEEN_FONTS; x > 0; x--)
 	{
 		/* get presentage coverage for this pixel line */
@@ -158,7 +162,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 		for (y = line_start; y < line_end; y++)
 		{
 			object = hocr_pixbuf_get_object (pix, x, y);
-			
+
 			if (object)
 			{
 				*font_start = pix->objects[object].x2;
@@ -168,7 +172,7 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 				return 0;
 			}
 		}
-		
+
 	}
 
 	return 1;
@@ -231,7 +235,7 @@ fill_columns_array (hocr_pixbuf * pix, hocr_box * columns,
 		columns[0].width = pix->width;
 		columns[0].hight = pix->height;
 	}
-	
+
 	*num_of_columns = counter;
 
 	return 0;
@@ -260,10 +264,8 @@ fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
 		lines[counter].y2 = line_end;
 		lines[counter].x2 = column.x2;
 		lines[counter].x1 = column.x1;
-		lines[counter].hight = 
-			(lines[counter].y2 - lines[counter].y1);
-		lines[counter].width =
-			(lines[counter].x2 - lines[counter].x1);
+		lines[counter].hight = (lines[counter].y2 - lines[counter].y1);
+		lines[counter].width = (lines[counter].x2 - lines[counter].x1);
 
 		counter++;
 
@@ -298,10 +300,10 @@ fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 						line.y1,
 						line.y2,
 						line.x2,
-						&font_start, &font_end, &top, &bottom);
+						&font_start, &font_end, &top,
+						&bottom);
 
-	while (return_value == 0 && font_start > line.x1
-	       && counter < max_fonts)
+	while (return_value == 0 && font_start > line.x1 && counter < max_fonts)
 	{
 		/* insert this font to fonts array */
 		fonts[counter].x1 = font_end;	/* this is right to left sweep */
@@ -317,7 +319,8 @@ fill_fonts_array (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 							line.y1,
 							line.y2,
 							font_end,
-							&font_start, &font_end, &top, &bottom);
+							&font_start, &font_end,
+							&top, &bottom);
 	}
 
 	*num_of_fonts = counter;

@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            hocr_textbuffer.h
  *
@@ -21,7 +22,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #include "consts.h"
 
 #ifndef __HOCR_TEXTBUFFER_H__
@@ -35,10 +36,13 @@
 */
 typedef struct
 {
+
 	/** get the text buffer. */
 	char *text;
+
 	/** get number of chars in the text string. */
 	int size;
+
 	/** get number of chars allocated in memory. */
 	int allocated_size;
 } hocr_text_buffer;

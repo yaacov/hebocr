@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            font_markers.h
  *
@@ -31,15 +32,15 @@
 #ifndef __FONT_MARKERS_H__
 #define __FONT_MARKERS_H__
 
-
 /**
  */
 
 int
-hocr_recognize_font(hocr_pixbuf * pix, hocr_box * fonts_line, int num_of_fonts_in_line,
-				int font_index, hocr_line_eq line_eqs[2],
-				int avg_font_hight, int avg_font_width,
-				int avg_diff_between_lines, char *chars);
+hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
+		     int num_of_fonts_in_line, int font_index,
+		     hocr_line_eq line_eqs[2], int avg_font_hight,
+		     int avg_font_width, int avg_diff_between_lines,
+		     char *chars);
 
 /* the real functions */
 

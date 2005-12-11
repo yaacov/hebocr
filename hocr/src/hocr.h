@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            hocr.h
  *
@@ -35,8 +36,7 @@ extern "C"
 {
 #endif
 
-int
-print_font (hocr_pixbuf * pix, hocr_box font);
+	int print_font (hocr_pixbuf * pix, hocr_box font);
 
 /* user only use this function */
 
@@ -48,7 +48,7 @@ print_font (hocr_pixbuf * pix, hocr_box font);
  @param max_buffer_size site of allocated memory for text_buffer.
  @return 1
  */
-int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer);
+	int hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer);
 
 #ifdef __cplusplus
 }

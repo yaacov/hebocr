@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            page_layout.c
  *
@@ -36,8 +37,8 @@
  @param line_end return y end of next line
  */
 int
-get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos, int *line_start,
-			 int *line_end);
+get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
+			 int *line_start, int *line_end);
 
 /**
  @brief adjust fonts x borders
@@ -77,8 +78,8 @@ fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
  */
 int
 fill_columns_array (hocr_pixbuf * pix, hocr_box * columns,
-		  int *num_of_columns, int max_columns);
-		  
+		    int *num_of_columns, int max_columns);
+
 /**
  @brief fils an array of hocr_boxs with this page fonts
 

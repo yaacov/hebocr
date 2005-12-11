@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            callbacks.c
  *
@@ -46,40 +47,40 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	hocr_pixbuf hocr_pix;
 	hocr_text_buffer *text;
 	GtkTextIter iter;
-	
+
 	/* clear text before ocr ? */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (clear_text)))
 		gtk_text_buffer_set_text (text_buffer, "", -1);
-	
+
 	/* init command */
 	hocr_pix.command = 0;
 
 	/* color boxes ? */
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (color_text_box)))
+	if (gtk_check_menu_item_get_active
+	    (GTK_CHECK_MENU_ITEM (color_text_box)))
 		hocr_pix.command |= HOCR_COMMAND_COLOR_BOXES;
-	
+
 	/* color misread fonts ? */
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (color_misread)))
+	if (gtk_check_menu_item_get_active
+	    (GTK_CHECK_MENU_ITEM (color_misread)))
 		hocr_pix.command |= HOCR_COMMAND_COLOR_MISREAD;
-	
+
 	/* do ocr ? */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (ocr)))
 		hocr_pix.command |= HOCR_COMMAND_OCR;
-	
-	/* use dict ? 
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (use_dict)))
-		hocr_pix.command |= HOCR_COMMAND_DICT;
-	*/
-	
+
+	/* use dict ? if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+	 * (use_dict))) hocr_pix.command |= HOCR_COMMAND_DICT; */
+
 	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
 	hocr_pix.height = gdk_pixbuf_get_height (pixbuf);
 	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
 	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	hocr_pix.pixels = (unsigned char*)(gdk_pixbuf_get_pixels (pixbuf));
+	hocr_pix.pixels = (unsigned char *) (gdk_pixbuf_get_pixels (pixbuf));
 	hocr_pix.object_map = NULL;
 	hocr_pix.objects = NULL;
 	hocr_pix.brightness = 100;
-	
+
 	/* create text buffer */
 	text = hocr_text_buffer_new ();
 	if (!text)
@@ -92,7 +93,7 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
-	
+
 	/* unref text_buffer */
 	hocr_text_buffer_unref (text);
 
@@ -106,16 +107,16 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 	char *filename;
 	gboolean have_preview;
 	GdkPixbuf *prev_pixbuf = NULL;
-	
+
 	preview = GTK_WIDGET (data);
 	filename = gtk_file_chooser_get_preview_filename (file_chooser);
-	
+
 	prev_pixbuf =
 		gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
 	have_preview = (prev_pixbuf != NULL);
-	
+
 	g_free (filename);
-	
+
 	if (prev_pixbuf)
 	{
 		gtk_image_set_from_pixbuf (GTK_IMAGE (preview), prev_pixbuf);
@@ -123,8 +124,7 @@ update_preview_cb (GtkFileChooser * file_chooser, gpointer data)
 		vis_pixbuf = NULL;
 	}
 
-	gtk_file_chooser_set_preview_widget_active (file_chooser,
-						    have_preview);
+	gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
 }
 
 void
@@ -133,7 +133,7 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 	gint result;
 	char *filename;
 	char title[255];
-	
+
 	GtkWidget *preview_frame = gtk_frame_new ("preview");
 	GtkWidget *preview = gtk_image_new ();
 	GtkWidget *my_file_chooser =
@@ -148,10 +148,10 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 
 	gtk_widget_show (preview);
 	gtk_container_add (GTK_CONTAINER (preview_frame), preview);
-	
+
 	gtk_file_chooser_set_preview_widget
 		(GTK_FILE_CHOOSER (my_file_chooser), preview_frame);
-	
+
 	g_signal_connect (my_file_chooser, "update-preview",
 			  G_CALLBACK (update_preview_cb), preview);
 
@@ -167,13 +167,13 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 			g_object_unref (pixbuf);
 			pixbuf = NULL;
 		}
-		
+
 		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-		
+
 		/* set the window title */
-		g_snprintf (title,255,"%s - %s", _("hocr-gtk"), filename);
+		g_snprintf (title, 255, "%s - %s", _("hocr-gtk"), filename);
 		gtk_window_set_title (GTK_WINDOW (window1), title);
-		
+
 		g_free (filename);
 
 		on_toolbutton_zoom_fit_clicked (NULL, NULL);
@@ -241,7 +241,7 @@ on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	GtkTextBuffer *text_buffer;
 	int width, height;
-	
+
 	height = gdk_pixbuf_get_height (vis_pixbuf);
 	width = gdk_pixbuf_get_width (vis_pixbuf);
 
@@ -317,8 +317,7 @@ on_toolbutton_zoom_in_clicked (GtkToolButton * toolbutton, gpointer user_data)
 }
 
 void
-on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton,
-				gpointer user_data)
+on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	int width, height;
 
@@ -345,8 +344,7 @@ on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton,
 }
 
 void
-on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton,
-				gpointer user_data)
+on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
 	int width, height, window_width, window_height;
 
@@ -413,7 +411,7 @@ on_window1_delete_event (GtkWidget * widget,
 		g_object_unref (vis_pixbuf);
 		vis_pixbuf = NULL;
 	}
-	
+
 	gtk_main_quit ();
 	return FALSE;
 }
@@ -443,13 +441,11 @@ on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
 	on_toolbutton_open_clicked (NULL, NULL);
 }
 
-
 void
 on_apply_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_apply_clicked (NULL, NULL);
 }
-
 
 void
 on_save_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -457,13 +453,11 @@ on_save_activate (GtkMenuItem * menuitem, gpointer user_data)
 	on_toolbutton_save_clicked (NULL, NULL);
 }
 
-
 void
 on_quit_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_quit_clicked (NULL, NULL);
 }
-
 
 void
 on_font_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -501,7 +495,6 @@ on_font_activate (GtkMenuItem * menuitem, gpointer user_data)
 	gtk_widget_destroy (fsd);
 }
 
-
 void
 on_spell_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -514,20 +507,17 @@ on_zoom_in_activate (GtkMenuItem * menuitem, gpointer user_data)
 	on_toolbutton_zoom_in_clicked (NULL, NULL);
 }
 
-
 void
 on_zoom_out_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_zoom_out_clicked (NULL, NULL);
 }
 
-
 void
 on_normal_size_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_zoom_fit_clicked (NULL, NULL);
 }
-
 
 void
 on_about_activate (GtkMenuItem * menuitem, gpointer user_data)

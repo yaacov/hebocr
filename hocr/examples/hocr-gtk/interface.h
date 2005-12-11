@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            interface.h
  *
@@ -64,5 +65,5 @@ GtkWidget *use_dict;
 GtkWidget *image;
 GtkWidget *textview;
 
-/* user interface for window */ 
+/* user interface for window */
 GtkWidget *create_window1 (void);

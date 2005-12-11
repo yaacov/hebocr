@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            hocr_object.c
  *
@@ -30,33 +31,35 @@
 #include "hocr_object.h"
 
 int
-clean_object_array(unsigned int object_array[MAX_OBJECTS_IN_FONT])
+clean_object_array (unsigned int object_array[MAX_OBJECTS_IN_FONT])
 {
 	int i;
-	
-	for (i=0; i < MAX_OBJECTS_IN_FONT; i++)
+
+	for (i = 0; i < MAX_OBJECTS_IN_FONT; i++)
 		object_array[i] = 0;
-	
+
 	return 0;
 }
 
 int
-is_in_object_array(unsigned int obj, unsigned int object_array[MAX_OBJECTS_IN_FONT])
+is_in_object_array (unsigned int obj,
+		    unsigned int object_array[MAX_OBJECTS_IN_FONT])
 {
 	int i;
-	
-	for (i=0; i < MAX_OBJECTS_IN_FONT; i++)
-		if (object_array[i] == obj) return TRUE;
-	
+
+	for (i = 0; i < MAX_OBJECTS_IN_FONT; i++)
+		if (object_array[i] == obj)
+			return TRUE;
+
 	return FALSE;
 }
 
 int
-count_object_array(unsigned int object_array[MAX_OBJECTS_IN_FONT])
+count_object_array (unsigned int object_array[MAX_OBJECTS_IN_FONT])
 {
 	int i;
-	
-	for (i=0; i < MAX_OBJECTS_IN_FONT, object_array[i]; i++);
-	
+
+	for (i = 0; i < MAX_OBJECTS_IN_FONT, object_array[i]; i++) ;
+
 	return i;
 }

@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            hocr_pixbuf.h
  *
@@ -21,7 +22,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #include "consts.h"
 #include "hocr_object.h"
 
@@ -58,25 +59,33 @@ typedef struct
 */
 typedef struct
 {
+
 	/** number of color channels in the pixpuf (e.g. 3 for red,green,blue). */
 	int n_channels;
+
 	/** get height in pixels. */
 	int height;
+
 	/** get width in pixels. */
 	int width;
+
 	/** get number of bytes in a raw of pixels. */
 	int rowstride;
+
 	/** value from which a gray-scale pixel is considered white. */
 	int brightness;
+
 	/** raw pixpuf data. */
 	unsigned char *pixels;
+
 	/** raw object map */
 	unsigned int *object_map;
+
 	/** objects list */
 	hocr_object *objects;
 	/* number of objects found */
 	int num_of_objects;
-	
+
 	/* I/O members */
 	unsigned char command;
 	unsigned char error;
@@ -86,8 +95,8 @@ typedef struct
 /* object helper functions */
 
 unsigned int
-hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box, 
-	unsigned int object_array[MAX_OBJECTS_IN_FONT]);
+hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
+				unsigned int object_array[MAX_OBJECTS_IN_FONT]);
 
 /**
  @brief get number of channels
@@ -157,13 +166,13 @@ int hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y);
  @param value the value to set the chanell to
  @return the color set
  */
-int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel, int value);
+int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel,
+			   int value);
 
 unsigned int hocr_pixbuf_get_object (hocr_pixbuf * pix, int x, int y);
 
 unsigned int hocr_pixbuf_set_object (hocr_pixbuf * pix, int x, int y,
-	unsigned int object_numebr);
-
+				     unsigned int object_numebr);
 
 /* hocr_pixbuf_new_from_file function can only open pnm file 
  of type "P4/5" Portable Any Map (PNM) binary, black/white format
@@ -190,7 +199,6 @@ int hocr_pixbuf_unref (hocr_pixbuf * pix);
 
  @param pix pointer to hocr_pixbuf struct.
  */
-int
-hocr_pixbuf_create_object_map (hocr_pixbuf * pix);
+int hocr_pixbuf_create_object_map (hocr_pixbuf * pix);
 
 #endif

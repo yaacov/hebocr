@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            interface.c
  *
@@ -161,8 +162,7 @@ create_window1 (void)
 
 	separatormenuitem1 = gtk_separator_menu_item_new ();
 	gtk_widget_show (separatormenuitem1);
-	gtk_container_add (GTK_CONTAINER (menuitem1_menu),
-			   separatormenuitem1);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), separatormenuitem1);
 	gtk_widget_set_sensitive (separatormenuitem1, FALSE);
 
 	quit = gtk_image_menu_item_new_from_stock ("gtk-quit", accel_group);
@@ -187,7 +187,7 @@ create_window1 (void)
 	gtk_widget_set_sensitive (separator2, FALSE);
 
 #ifdef WITH_GTKSPELL
-		spell_check =
+	spell_check =
 		gtk_image_menu_item_new_from_stock ("gtk-spell-check",
 						    accel_group);
 	gtk_widget_show (spell_check);
@@ -199,34 +199,38 @@ create_window1 (void)
 	gtk_widget_set_sensitive (separator3, FALSE);
 #endif
 
-	color_text_box = gtk_check_menu_item_new_with_mnemonic (_("Color boxes"));
+	color_text_box =
+		gtk_check_menu_item_new_with_mnemonic (_("Color boxes"));
 	gtk_widget_show (color_text_box);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), color_text_box);
 	gtk_tooltips_set_tip (tooltips, color_text_box, _("Color text boxes"),
 			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (color_text_box), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (color_text_box),
+					TRUE);
 
-	color_misread = gtk_check_menu_item_new_with_mnemonic (_("Color misread"));
+	color_misread =
+		gtk_check_menu_item_new_with_mnemonic (_("Color misread"));
 	gtk_widget_show (color_misread);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), color_misread);
 	gtk_tooltips_set_tip (tooltips, color_misread, _("Color misread fonts"),
 			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (color_misread), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (color_misread),
+					TRUE);
 
 	clear_text = gtk_check_menu_item_new_with_mnemonic (_("Clear"));
 	gtk_widget_show (clear_text);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), clear_text);
-	gtk_tooltips_set_tip (tooltips, clear_text, _("Clear text each time you ocr new scan"),
-			      NULL);
+	gtk_tooltips_set_tip (tooltips, clear_text,
+			      _("Clear text each time you ocr new scan"), NULL);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (clear_text), TRUE);
 
 	ocr = gtk_check_menu_item_new_with_mnemonic (_("Ocr"));
 	gtk_widget_show (ocr);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), ocr);
 	gtk_tooltips_set_tip (tooltips, ocr,
-			      _("Try to recognize fonts in scaned text"),
-			      NULL);
+			      _("Try to recognize fonts in scaned text"), NULL);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ocr), TRUE);
+
 /*
 	use_dict = gtk_check_menu_item_new_with_mnemonic (_("Use dictionary"));
 	gtk_widget_show (use_dict);
@@ -244,8 +248,7 @@ create_window1 (void)
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem3), menuitem3_menu);
 
 	zoom_in =
-		gtk_image_menu_item_new_from_stock ("gtk-zoom-in",
-						    accel_group);
+		gtk_image_menu_item_new_from_stock ("gtk-zoom-in", accel_group);
 	gtk_widget_show (zoom_in);
 	gtk_container_add (GTK_CONTAINER (menuitem3_menu), zoom_in);
 
@@ -299,8 +302,7 @@ create_window1 (void)
 	gtk_widget_show (toolbutton_save);
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_save);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_save), tooltips,
-				   _("Save the text created by the OCR"),
-				   NULL);
+				   _("Save the text created by the OCR"), NULL);
 
 	toolitem1 = (GtkWidget *) gtk_tool_item_new ();
 	gtk_widget_show (toolitem1);

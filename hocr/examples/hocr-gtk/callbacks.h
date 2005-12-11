@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            callbacks.h
  *
@@ -21,7 +22,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-  
+
 #include <gtk/gtk.h>
 
 gboolean
@@ -39,16 +40,13 @@ void
 on_toolbutton_save_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
-on_toolbutton_zoom_in_clicked (GtkToolButton * toolbutton,
-			       gpointer user_data);
+on_toolbutton_zoom_in_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
-on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton,
-				gpointer user_data);
+on_toolbutton_zoom_out_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
-on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton,
-				gpointer user_data);
+on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
 void
 on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data);

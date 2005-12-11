@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            font_layout.c
  *
@@ -27,11 +28,12 @@
 #include "font_layout.h"
 
 int
-find_font_baseline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts)
+find_font_baseline (hocr_box * fonts, int avg_hight, int index,
+		    int num_of_fonts)
 {
 	if (fonts[index].hight < 2 || fonts[index].width < 2)
 		return 0;
-	
+
 	/* font in the middle of line */
 	if (index > 1 && index < (num_of_fonts - 2))
 	{
@@ -88,7 +90,7 @@ find_font_topline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts)
 {
 	if (fonts[index].hight < 2 || fonts[index].width < 2)
 		return 0;
-	
+
 	/* font in the middle of line */
 	if (index > 1 && index < (num_of_fonts - 2))
 	{
@@ -135,7 +137,6 @@ find_font_topline (hocr_box * fonts, int avg_hight, int index, int num_of_fonts)
 		    == 0)
 			return fonts[index - 2].y1;
 	}
-
 
 	/* if no other regular font is near then base on yourself */
 	return fonts[index].y1;
@@ -207,7 +208,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	int x_start, x_end;
 	int y_start, y_end;
 	int font_hight;
-	
+
 	/* if not enogh fonts then just return the line */
 	if (num_of_fonts < NUM_OF_FONTS_TO_AVG)
 	{
@@ -225,7 +226,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	x_start = 0;
 	x_end = 0;
 	font_hight = 0;
-	
+
 	start_counter = 0;
 	end_counter = 0;
 	i = 0;
@@ -237,17 +238,17 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 		    ((1000 - FONT_ASSEND) * avg_font_hight / 1000))
 		{
 			/* take only first NUM_OF_FONTS_TO_AVG to avg */
-			if ( start_counter < NUM_OF_FONTS_TO_AVG)
+			if (start_counter < NUM_OF_FONTS_TO_AVG)
 			{
 				y_start += fonts[i].y1;
 				x_start += fonts[i].x2;
 				font_hight += fonts[i].hight;
-				start_counter ++;
+				start_counter++;
 			}
 		}
 		i++;
 	}
-	
+
 	i = num_of_fonts;
 	while (i > 0)
 	{
@@ -263,7 +264,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 				y_end += fonts[i].y1;
 				x_end += fonts[i].x1;
 				font_hight += fonts[i].hight;
-				end_counter ++;
+				end_counter++;
 			}
 		}
 	}
@@ -285,7 +286,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	y_end /= end_counter;
 	x_end /= end_counter;
 	font_hight /= (end_counter + start_counter);
-	
+
 	/* delta x is small return horizontal line */
 	if ((x_start - x_end) == 0)
 	{
@@ -298,14 +299,13 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	}
 
 	/* make line equation */
-	top_line->a =
-		(double) (y_end - y_start) / (double) (x_end - x_start);
+	top_line->a = (double) (y_end - y_start) / (double) (x_end - x_start);
 
 	/* FIXME: assume line is horizonatal and parallel ? */
 	base_line->a = top_line->a;
 
 	top_line->b = y_start - top_line->a * x_start;
 	base_line->b = top_line->b + font_hight + 1;
-	
+
 	return 0;
 }
