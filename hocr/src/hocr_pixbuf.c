@@ -304,6 +304,27 @@ hocr_pixbuf_new_from_file (const char *filename)
 	return new_pixbuf;
 }
 
+hocr_pixbuf *
+hocr_pixbuf_new (void)
+{
+	hocr_pixbuf *new_pixbuf;
+	
+	/* allocate memory for pixbuf */
+	new_pixbuf = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
+	if (!new_pixbuf)
+		return NULL;
+
+	/* read header */
+	new_pixbuf->n_channels = 3;
+	new_pixbuf->brightness = 100;
+	new_pixbuf->pixels = NULL;
+	new_pixbuf->object_map = NULL;
+	new_pixbuf->objects = NULL;
+
+	/* return the new pixbuf to user */
+	return new_pixbuf;
+}
+
 int
 hocr_pixbuf_clear_object_map (hocr_pixbuf * pix)
 {
@@ -590,7 +611,7 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 
 unsigned int
 hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
-				unsigned int object_array[MAX_OBJECTS_IN_FONT])
+				unsigned int *object_array)
 {
 	int x, y;
 	int i = 0;

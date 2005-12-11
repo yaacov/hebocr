@@ -44,42 +44,46 @@ GdkPixbuf *vis_pixbuf = NULL;
 int
 do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 {
-	hocr_pixbuf hocr_pix;
+	hocr_pixbuf *hocr_pix;
 	hocr_text_buffer *text;
 	GtkTextIter iter;
 
+	hocr_pix = hocr_pixbuf_new (); /* get an empty hocr_pix */
+	if (!hocr_pix)
+	{
+		printf ("hocr-gtk: can\'t allocate memory for picture\n");
+		return 0;
+	}
+	
 	/* clear text before ocr ? */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (clear_text)))
 		gtk_text_buffer_set_text (text_buffer, "", -1);
 
 	/* init command */
-	hocr_pix.command = 0;
+	hocr_pix->command = 0;
 
 	/* color boxes ? */
 	if (gtk_check_menu_item_get_active
 	    (GTK_CHECK_MENU_ITEM (color_text_box)))
-		hocr_pix.command |= HOCR_COMMAND_COLOR_BOXES;
+		hocr_pix->command |= HOCR_COMMAND_COLOR_BOXES;
 
 	/* color misread fonts ? */
 	if (gtk_check_menu_item_get_active
 	    (GTK_CHECK_MENU_ITEM (color_misread)))
-		hocr_pix.command |= HOCR_COMMAND_COLOR_MISREAD;
+		hocr_pix->command |= HOCR_COMMAND_COLOR_MISREAD;
 
 	/* do ocr ? */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (ocr)))
-		hocr_pix.command |= HOCR_COMMAND_OCR;
+		hocr_pix->command |= HOCR_COMMAND_OCR;
 
 	/* use dict ? if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
 	 * (use_dict))) hocr_pix.command |= HOCR_COMMAND_DICT; */
-
-	hocr_pix.n_channels = gdk_pixbuf_get_n_channels (pixbuf);
-	hocr_pix.height = gdk_pixbuf_get_height (pixbuf);
-	hocr_pix.width = gdk_pixbuf_get_width (pixbuf);
-	hocr_pix.rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	hocr_pix.pixels = (unsigned char *) (gdk_pixbuf_get_pixels (pixbuf));
-	hocr_pix.object_map = NULL;
-	hocr_pix.objects = NULL;
-	hocr_pix.brightness = 100;
+	
+	hocr_pix->n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+	hocr_pix->height = gdk_pixbuf_get_height (pixbuf);
+	hocr_pix->width = gdk_pixbuf_get_width (pixbuf);
+	hocr_pix->rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	hocr_pix->pixels = (unsigned char *) (gdk_pixbuf_get_pixels (pixbuf));
 
 	/* create text buffer */
 	text = hocr_text_buffer_new ();
@@ -89,11 +93,15 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 		return 0;
 	}
 
-	hocr_do_ocr (&hocr_pix, text);
+	hocr_do_ocr (hocr_pix, text);
 
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
 
+	/* unref hocr_pixbuf */
+	hocr_pix->pixels = NULL; /* do not unreff the original GTK picture */
+	hocr_pixbuf_unref (hocr_pix);
+	
 	/* unref text_buffer */
 	hocr_text_buffer_unref (text);
 

@@ -412,7 +412,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						     line_eqs[c][i],
 						     avg_regular_font_hight_in_page,
 						     avg_regular_font_width_in_page,
-						     avg_diff_between_lines_in_page,
 						     chars);
 
 				/* color unknown fonts in the pixbuf */

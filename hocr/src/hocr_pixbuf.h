@@ -23,7 +23,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "consts.h"
 #include "hocr_object.h"
 
 #ifndef __HOCR_PIXBUF_H__
@@ -92,11 +91,18 @@ typedef struct
 
 } hocr_pixbuf;
 
-/* object helper functions */
 
+/**
+ @brief get objects in a box
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param box pointer to hocr_pixbuf struct.
+ @param object_array an array of object to fill.
+ @return the most havy object in the box.
+ */
 unsigned int
 hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
-				unsigned int object_array[MAX_OBJECTS_IN_FONT]);
+				unsigned int *object_array);
 
 /**
  @brief get number of channels
@@ -169,8 +175,25 @@ int hocr_pixbuf_get_pixel (hocr_pixbuf * pix, int x, int y);
 int hocr_pixbuf_set_pixel (hocr_pixbuf * pix, int x, int y, int channel,
 			   int value);
 
+/**
+ @brief get the object of pixel
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param x position of pixel on x axis
+ @param y position of pixel on y axis
+ @return object number
+ */
 unsigned int hocr_pixbuf_get_object (hocr_pixbuf * pix, int x, int y);
 
+/**
+ @brief set object of pixel
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param x position of pixel on x axis
+ @param y position of pixel on y axis
+ @param object_numebr the object to set the pixel
+ @return the object set
+ */
 unsigned int hocr_pixbuf_set_object (hocr_pixbuf * pix, int x, int y,
 				     unsigned int object_numebr);
 
@@ -185,6 +208,14 @@ unsigned int hocr_pixbuf_set_object (hocr_pixbuf * pix, int x, int y,
  @return pointer to a newly allocate hocr_pixbuf, or null if can not open file.
  */
 hocr_pixbuf *hocr_pixbuf_new_from_file (const char *filename);
+
+/**
+ @brief creats a new empty hocr_pixbuf struct 
+
+ @return pointer to a newly allocate hocr_pixbuf, or null if can not open file.
+ */
+hocr_pixbuf *
+hocr_pixbuf_new (void);
 
 /**
  @brief free a hocr_pixbuf struct from memory

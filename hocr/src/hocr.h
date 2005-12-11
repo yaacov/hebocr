@@ -36,7 +36,54 @@ extern "C"
 {
 #endif
 
+/**
+ @brief print the font to std out
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param font the font to print
+ @return 1
+ */
 	int print_font (hocr_pixbuf * pix, hocr_box font);
+
+/**
+ @brief fill a box on hocr_pixbuf
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param rect the rectangle to color
+ @param chanell the color channel to color
+ @param value set the channel to this value
+ @param only_main_object if set to TRUE color only main object
+ @return 1
+ */
+	int color_hocr_box_full (hocr_pixbuf * pix, hocr_box rect, int chanell,
+				 int value, int only_main_object);
+
+/**
+ @brief drow box borders on hocr_pixbuf
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param rect the rectangle to color
+ @param chanell the color channel to color
+ @param value set the channel to this value
+ @return 1
+ */
+int
+color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value);
+
+/**
+ @brief drow a nearly horizontal line on hocr_pixbuf
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param line the line to color
+ @param x1 from x
+ @param x2 to x
+ @param chanell the color channel to color
+ @param value set the channel to this value
+ @return 1
+ */
+int
+color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
+		    int chanell, int value);
 
 /* user only use this function */
 

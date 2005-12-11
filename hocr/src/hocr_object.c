@@ -31,7 +31,7 @@
 #include "hocr_object.h"
 
 int
-clean_object_array (unsigned int object_array[MAX_OBJECTS_IN_FONT])
+clean_object_array (unsigned int *object_array)
 {
 	int i;
 
@@ -43,7 +43,7 @@ clean_object_array (unsigned int object_array[MAX_OBJECTS_IN_FONT])
 
 int
 is_in_object_array (unsigned int obj,
-		    unsigned int object_array[MAX_OBJECTS_IN_FONT])
+		    unsigned int *object_array)
 {
 	int i;
 
@@ -55,7 +55,7 @@ is_in_object_array (unsigned int obj,
 }
 
 int
-count_object_array (unsigned int object_array[MAX_OBJECTS_IN_FONT])
+count_object_array (unsigned int *object_array)
 {
 	int i;
 

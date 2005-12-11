@@ -23,8 +23,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "consts.h"
-
 #ifndef __HOCR_OBJECT_H__
 #define __HOCR_OBJECT_H__
 
@@ -41,12 +39,12 @@ typedef struct
 } hocr_object;
 
 /* object helper functions */
-int clean_object_array (unsigned int object_array[MAX_OBJECTS_IN_FONT]);
+int clean_object_array (unsigned int *object_array);
 
 int
 is_in_object_array (unsigned int obj,
-		    unsigned int object_array[MAX_OBJECTS_IN_FONT]);
+		    unsigned int *object_array);
 
-int count_object_array (unsigned int object_array[MAX_OBJECTS_IN_FONT]);
+int count_object_array (unsigned int *object_array);
 
 #endif
