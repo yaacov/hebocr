@@ -43,15 +43,29 @@ print_font (hocr_pixbuf * pix, hocr_box font)
 	int x, y;
 	int new_color;
 
+	for (x = font.x1; x <= font.x2; x++)
+	{
+		printf ("---");
+	}
+	printf ("\n");
+
 	for (y = font.y1; y <= font.y2; y++)
 	{
 		for (x = font.x1; x <= font.x2; x++)
 		{
-			new_color = hocr_pixbuf_get_object (pix, x, y);
-			printf ("%3d", new_color);
+			if (new_color = hocr_pixbuf_get_object (pix, x, y))
+				printf ("%3d", new_color);
+			else
+				printf ("   ");
 		}
 		printf ("\n");
 	}
+
+	for (x = font.x1; x <= font.x2; x++)
+	{
+		printf ("---");
+	}
+	printf ("\n");
 
 	printf ("\n");
 
@@ -421,6 +435,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					color_hocr_box_full (pix,
 							     fonts[c][i][j], 1,
 							     255, TRUE);
+
+#define DEBUG
+#ifdef DEBUG
+				printf ("found font: %d,%d,%d - '%s'\n",
+					c, i, j, chars);
+				printf ("--------------------------\n\n",
+					chars);
+#endif
 
 				/* add new recognizzed fonts to text */
 				hocr_text_buffer_add_string

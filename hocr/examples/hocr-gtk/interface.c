@@ -356,7 +356,7 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_about);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_about), tooltips,
 				   _("About this application"), NULL);
-
+/*
 	toolitem4 = (GtkWidget *) gtk_tool_item_new ();
 	gtk_widget_show (toolitem4);
 	gtk_container_add (GTK_CONTAINER (toolbar), toolitem4);
@@ -370,7 +370,7 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_quit);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_quit), tooltips,
 				   _("Quit this program"), NULL);
-
+*/
 	/* image */
 	vpaned1 = gtk_vpaned_new ();
 	gtk_widget_show (vpaned1);
@@ -431,10 +431,11 @@ create_window1 (void)
 			  G_CALLBACK (on_toolbutton_about_clicked), NULL);
 	g_signal_connect ((gpointer) toolbutton_spell, "clicked",
 			  G_CALLBACK (on_toolbutton_spell_clicked), NULL);
-
+/*
 	g_signal_connect ((gpointer) toolbutton_quit, "clicked",
 			  G_CALLBACK (on_toolbutton_quit_clicked), NULL);
-
+ */
+ 
 	/* menu */
 	g_signal_connect ((gpointer) open, "activate",
 			  G_CALLBACK (on_open_activate), NULL);

@@ -462,7 +462,7 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 		for (x = 1; x < pix->width; x++)
 		{
 			/* if this is part of an object */
-			if (hocr_pixbuf_get_pixel (pix, x - 1, y) == 1)
+			if (hocr_pixbuf_get_pixel (pix, x, y) == 1)
 			{
 				/* look at neigbors */
 				object1 =
@@ -545,7 +545,7 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 				}
 
 				/* fill the object map */
-				if (!object1 && !object2 && !object3)
+				if (!object1 && !object2 && !object3 && !object4)
 				{
 					object = hocr_pixbuf_get_first_free_object (pix);
 					hocr_pixbuf_set_object (pix, x, y,
