@@ -729,6 +729,93 @@ find_horizintal_bottom_bar (hocr_pixbuf * pix, hocr_box font, unsigned int obj,
 }
 
 int
+find_vertical_left_bar (hocr_pixbuf * pix, hocr_box font, unsigned int obj,
+			int *start, int *end)
+{
+	int number_of_bars;
+	int end_of_left_bar;
+	int start_of_left_bar;
+
+	hocr_box box_left;
+
+	box_left.x1 = font.x1 - 2;
+	box_left.x2 = font.x1 + font.width / 3;
+	box_left.y1 = font.y1;
+	box_left.y2 = font.y2;
+	box_left.width = font.width / 3 + 2;
+	box_left.hight = font.hight;
+
+	*start = 0;
+	*end = 0;
+
+	/* horizontal bars */
+	number_of_bars =
+		count_vertical_bars (pix, box_left, font.y1 + font.hight / 2,
+				     &start_of_left_bar, &end_of_left_bar, obj);
+
+	if (number_of_bars != 1)
+		return 0;
+
+	number_of_bars =
+		count_horizontal_bars (pix, box_left,
+				       (start_of_left_bar +
+					end_of_left_bar) / 2, start, end, obj);
+
+	if (number_of_bars != 1)
+		return 0;
+
+	if (*start > (font.y1 + font.hight / 3) ||
+	    *end < (font.y2 - font.hight / 3))
+		return 0;
+
+	return 1;
+}
+
+int
+find_vertical_right_bar (hocr_pixbuf * pix, hocr_box font, unsigned int obj,
+			 int *start, int *end)
+{
+	int number_of_bars;
+	int end_of_right_bar;
+	int start_of_right_bar;
+
+	hocr_box box_right;
+
+	box_right.x1 = font.x2 - font.width / 3;
+	box_right.x2 = font.x2 + 2;
+	box_right.y1 = font.y1;
+	box_right.y2 = font.y2;
+	box_right.width = font.width / 3 + 2;
+	box_right.hight = font.hight;
+
+	*start = 0;
+	*end = 0;
+
+	/* horizontal bars */
+	number_of_bars =
+		count_vertical_bars (pix, box_right, font.y1 + font.hight / 2,
+				     &start_of_right_bar, &end_of_right_bar,
+				     obj);
+
+	if (number_of_bars != 1)
+		return 0;
+
+	number_of_bars =
+		count_horizontal_bars (pix, box_right,
+				       (start_of_right_bar +
+					end_of_right_bar) / 2, start, end, obj);
+
+	if (number_of_bars != 1)
+		return 0;
+
+	if (*start > (font.y1 + font.hight / 3) ||
+	    *end < (font.y2 - font.hight / 3))
+		return 0;
+
+	return 1;
+}
+
+int
 find_empty_middle (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	return is_empty (pix, font.x1 + font.width / 3,
@@ -1374,11 +1461,14 @@ has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 int
 has_lamed_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
-	int start, end;
-	
-	if (find_horizintal_bottom_bar (pix, font, obj, &start, &end) != 0)
-		return 0;
-	if (find_horizintal_top_bar (pix, font, obj, &start, &end) != 0)
+	int number_of_bars, start_of_right_bar, end_of_right_bar;
+
+	number_of_bars =
+		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
+				     &start_of_right_bar, &end_of_right_bar,
+				     obj);
+
+	if (number_of_bars != 1)
 		return 0;
 
 	return 1;
@@ -2221,6 +2311,8 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 
 	int has_top_bar_font, top_bar_start, top_bar_end;
 	int has_bottom_bar_font, bottom_bar_start, bottom_bar_end;
+	int has_left_bar_font, left_bar_start, left_bar_end;
+	int has_right_bar_font, right_bar_start, right_bar_end;
 	int has_empty_middle_font;
 
 	/* reset chars array */
@@ -2292,6 +2384,13 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		find_horizintal_bottom_bar (pix, font, obj, &bottom_bar_start,
 					    &bottom_bar_end);
 
+	has_left_bar_font =
+		find_vertical_left_bar (pix, font, obj, &left_bar_start,
+					&left_bar_end);
+	has_right_bar_font =
+		find_vertical_right_bar (pix, font, obj, &right_bar_start,
+					 &right_bar_end);
+
 /* DEBUG: print debug info */
 #define DEBUG
 #ifdef DEBUG
@@ -2311,6 +2410,8 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	printf ("has_empty_middle_font %d\n", has_empty_middle_font);
 	printf ("has_top_bar_font %d\n", has_top_bar_font);
 	printf ("has_bottom_bar_font %d\n", has_bottom_bar_font);
+	printf ("has_left_bar_font %d\n", has_left_bar_font);
+	printf ("has_right_bar_font %d\n", has_right_bar_font);
 #endif
 
 	/** look for none letter marks */
