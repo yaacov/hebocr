@@ -667,7 +667,16 @@ find_horizintal_top_bar (hocr_pixbuf * pix, hocr_box font, unsigned int obj,
 				       &start_of_top_bar, &end_of_top_bar, obj);
 
 	if (number_of_bars != 1)
-		return 0;
+	{			/* if third does not work try middle */
+		number_of_bars =
+			count_horizontal_bars (pix, box_up,
+					       font.x1 + font.width / 2,
+					       &start_of_top_bar,
+					       &end_of_top_bar, obj);
+
+		if (number_of_bars != 1)
+			return 0;
+	}
 
 	number_of_bars =
 		count_vertical_bars (pix, box_up,
@@ -954,13 +963,13 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 		return 0;
 
 	/* not gimael */
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y2 - 1,
-				     &start_of_right_bar, &end_of_right_bar,
-				     obj);
+	// number_of_bars =
+	// count_vertical_bars (pix, font, font.y2 - 1,
+	// &start_of_right_bar, &end_of_right_bar,
+	// obj);
 
-	if (number_of_bars == 2)
-		return 0;
+	// if (number_of_bars == 2)
+	// return 0;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y2 - 3,
@@ -1027,13 +1036,13 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 
 	/* start of gimel is tricky */
 
-	number_of_bars =
-		count_vertical_bars (pix, font, font.y2 - 1,
-				     &start_of_right_bar, &end_of_right_bar,
-				     obj);
+	// number_of_bars =
+	// count_vertical_bars (pix, font, font.y2 - 1,
+	// &start_of_right_bar, &end_of_right_bar,
+	// obj);
 
-	if (number_of_bars == 2)
-		return 1;
+	// if (number_of_bars == 2)
+	// return 1;
 
 	number_of_bars =
 		count_vertical_bars (pix, font, font.y2 - 3,
@@ -1588,6 +1597,10 @@ has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	box_right.width = font.width / 2;
 	box_right.hight = font.hight;
 
+	/* mem sofit is empty */
+	if (find_empty_middle (pix, font, obj) != 1)
+		return 0;
+
 	/* horizontal bars */
 	number_of_bars =
 		count_horizontal_bars (pix, box_up, font.x1 + font.width / 3,
@@ -1961,6 +1974,12 @@ has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 				     &start_of_right_bar, &end_of_right_bar,
 				     obj);
 
+	/* not ayin */
+	if (find_horizontal_notch_to_left_down
+	    (pix, font.x1, font.y2 - font.hight / 2, font.x1 + font.width / 3,
+	     font.y2, obj) == 1)
+		return 0;
+
 	// if (number_of_bars != 1)
 	// return 0;
 
@@ -2129,6 +2148,12 @@ has_shin_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 			return 0;
 	}
 
+	/* not ayin */
+	if (find_horizontal_notch_to_left_down
+	    (pix, font.x1, font.y2 - font.hight / 2, font.x1 + font.width / 3,
+	     font.y2, obj) == 1)
+		return 0;
+
 	return 1;
 }
 
@@ -2285,6 +2310,9 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	hocr_box font = fonts_line[font_index];
 	hocr_box next_font =
 		fonts_line[(font_index + 1) % num_of_fonts_in_line];
+	hocr_box prev_font =
+		fonts_line[(num_of_fonts_in_line + font_index -
+			    1) % num_of_fonts_in_line];
 	hocr_box box;
 	unsigned int obj = 0;
 	unsigned int box_obj = 0;
@@ -2314,6 +2342,8 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	int has_left_bar_font, left_bar_start, left_bar_end;
 	int has_right_bar_font, right_bar_start, right_bar_end;
 	int has_empty_middle_font;
+	int horizontal_font;
+	int vertical_font;
 
 	/* reset chars array */
 	chars[0] = '\0';
@@ -2326,7 +2356,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	if (font.y1 > low_line_y || font.y2 < high_line_y)
 	{
 		/* this is not a font, may be nikud ? */
-		if (next_font.x2 > font.x1)
+		if (next_font.x2 >= font.x1 || prev_font.x1 <= font.x2)
 			return 0;
 
 		/* check the main object (in the same x) inside the line */
@@ -2391,6 +2421,11 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		find_vertical_right_bar (pix, font, obj, &right_bar_start,
 					 &right_bar_end);
 
+	// if (font.hight)
+	horizontal_font = (font.width / font.hight) > 2;
+	// if (font.width)
+	vertical_font = (font.hight / font.width) > 2;
+
 /* DEBUG: print debug info */
 #define DEBUG
 #ifdef DEBUG
@@ -2412,6 +2447,8 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	printf ("has_bottom_bar_font %d\n", has_bottom_bar_font);
 	printf ("has_left_bar_font %d\n", has_left_bar_font);
 	printf ("has_right_bar_font %d\n", has_right_bar_font);
+	printf ("vertical_font %d\n", vertical_font);
+	printf ("horizontal_font %d\n", horizontal_font);
 #endif
 
 	/** look for none letter marks */

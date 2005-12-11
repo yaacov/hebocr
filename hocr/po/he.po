@@ -22,35 +22,35 @@ msgstr ""
 
 #: examples/hocr-gtk/interface.c:143
 msgid "_File"
-msgstr ""
+msgstr "קובץ"
 
 #: examples/hocr-gtk/interface.c:172
 msgid "_Edit"
-msgstr ""
+msgstr "עריכה"
 
 #: examples/hocr-gtk/interface.c:202
 msgid "Color boxes"
-msgstr ""
+msgstr "צבע מסגרות"
 
 #: examples/hocr-gtk/interface.c:205
 msgid "Color text boxes"
-msgstr ""
+msgstr "צבע מסגרות של אזורי טקסט"
 
 #: examples/hocr-gtk/interface.c:209
 msgid "Color misread"
-msgstr ""
+msgstr "צבע אותיות"
 
 #: examples/hocr-gtk/interface.c:212
 msgid "Color misread fonts"
-msgstr ""
+msgstr "צבע אותיות שלא פענחו"
 
 #: examples/hocr-gtk/interface.c:216
 msgid "Clear"
-msgstr ""
+msgstr "נקה"
 
 #: examples/hocr-gtk/interface.c:219
 msgid "Clear text each time you ocr new scan"
-msgstr ""
+msgstr "נקה את אזור הטקסט לפני פענוח טקסט חדש"
 
 #: examples/hocr-gtk/interface.c:223
 msgid "Ocr"
@@ -58,7 +58,7 @@ msgstr ""
 
 #: examples/hocr-gtk/interface.c:227
 msgid "Try to recognize fonts in scaned text"
-msgstr ""
+msgstr "נסה לפענח אותיות"
 
 #.
 #. use_dict = gtk_check_menu_item_new_with_mnemonic (_("Use dictionary"));
@@ -71,39 +71,39 @@ msgstr ""
 #.
 #: examples/hocr-gtk/interface.c:239
 msgid "_View"
-msgstr ""
+msgstr "מראה"
 
 #: examples/hocr-gtk/interface.c:264
 msgid "_Help"
-msgstr ""
+msgstr "עזרה"
 
 #: examples/hocr-gtk/interface.c:271
 msgid "_About"
-msgstr ""
+msgstr "אודות"
 
 #: examples/hocr-gtk/interface.c:288
 msgid "Open a new picture for the OCR"
-msgstr ""
+msgstr "פתח תמונה חדשה לצורך פענוח"
 
 #: examples/hocr-gtk/interface.c:295
 msgid "Convert picture to text"
-msgstr ""
+msgstr "פנח תמונה"
 
 #: examples/hocr-gtk/interface.c:302
 msgid "Save the text created by the OCR"
-msgstr ""
+msgstr "שמור את הטקסט המפוענח"
 
 #: examples/hocr-gtk/interface.c:319
 msgid "Spell check the text"
-msgstr ""
+msgstr "בדוק איות"
 
 #: examples/hocr-gtk/interface.c:356
 msgid "About this application"
-msgstr ""
+msgstr "אודות ישום זה"
 
 #: examples/hocr-gtk/interface.c:370
 msgid "Quit this program"
-msgstr ""
+msgstr "סגור ישום זה"
 
 #. set the window title
 #: examples/hocr-gtk/callbacks.c:174
@@ -116,13 +116,13 @@ msgstr ""
 
 #: examples/hocr-gtk/callbacks.c:286
 msgid "HOCR-GTK - Hebrew character recognition software"
-msgstr ""
+msgstr "HOCR-GTK - מזהה אותיות אופטי עברי"
 
 #: examples/hocr-gtk/callbacks.c:288
 msgid "translator_credits"
-msgstr ""
+msgstr "יעקב זמיר"
 
 #. create font dialog
 #: examples/hocr-gtk/callbacks.c:476
 msgid "Set text font"
-msgstr ""
+msgstr "קבע את אותיות אזור הטקסט"

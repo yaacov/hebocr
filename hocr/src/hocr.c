@@ -153,6 +153,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	int avg_line_hight_in_page = 0;
 	int avg_line_x_start_in_column[MAX_COLUMNS];
 	int avg_diff_between_lines_in_page = 0;
+	int avg_diff_between_fonts_in_page = 0;
 	int avg_font_width_in_page = 0;
 	int avg_font_hight_in_page = 0;
 	int avg_regular_font_width_in_page = 0;
@@ -229,6 +230,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	num_of_regular_fonts_in_page = 0;
 	avg_font_hight_in_page = 0;
 	avg_font_width_in_page = 0;
+	avg_diff_between_fonts_in_page = 0;
 
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
@@ -246,6 +248,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						fonts[c][i][j].width;
 					avg_font_hight_in_page +=
 						fonts[c][i][j].hight;
+					if (j < (num_of_fonts[c][i] - 1))
+					{
+						avg_diff_between_fonts_in_page
+							+=
+							(fonts[c][i][j].x1 -
+							 fonts[c][i][(j +
+								      1)].x2);
+					}
 				}
 			}
 		}
@@ -255,13 +265,16 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	{
 		avg_font_width_in_page /= num_of_regular_fonts_in_page;
 		avg_font_hight_in_page /= num_of_regular_fonts_in_page;
+
+		if (num_of_regular_fonts_in_page != 1)
+			avg_diff_between_fonts_in_page /=
+				(num_of_regular_fonts_in_page - 1);
 	}
 
 	/* avg over regular fonts only to get better avg_font_hight_in_page */
 	num_of_regular_fonts_in_page = 0;
 	avg_regular_font_hight_in_page = 0;
 	avg_regular_font_hight_in_page = 0;
-
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
 		for (i = 0; i < num_of_lines[c]; i++)
@@ -275,7 +288,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					if (fonts[c][i][j].hight <
 					    ((1000 +
 					      FONT_ASSEND) *
-					     avg_font_hight_in_page / 1000)
+					     avg_font_hight_in_page /
+					     1000)
 					    && fonts[c][i][j].hight >
 					    ((1000 -
 					      FONT_ASSEND) *
@@ -305,27 +319,35 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 		{
 			if (num_of_fonts[c][i] == 0)
 				continue;
-
-			find_font_baseline_eq (lines[c][i], fonts[c][i],
-					       &(line_eqs[c][i][0]),
-					       &(line_eqs[c][i][1]),
+			find_font_baseline_eq (lines[c]
+					       [i],
+					       fonts[c]
+					       [i],
+					       &
+					       (line_eqs
+						[c][i]
+						[0]),
+					       &
+					       (line_eqs
+						[c][i]
+						[1]),
 					       avg_regular_font_hight_in_page,
 					       num_of_fonts[c][i]);
-
 			/* if line is very not horizontal return error */
-			if ((line_eqs[c][i][0].a * line_eqs[c][i][0].a) >
-			    (1.0 / 10.0))
+			if ((line_eqs[c][i][0].a *
+			     line_eqs[c][i][0].a) > (1.0 / 10.0))
 			{
 				num_of_fonts[c][i] = 0;
 			}
 
 			/* if this line do not logical hight then dont parse it 
 			 */
-			if ((line_eqs[c][i][0].b - line_eqs[c][i][1].b) <
+			if ((line_eqs[c][i][0].b -
+			     line_eqs[c][i][1].b) <
 			    (avg_font_hight_in_page -
-			     MIN_DISTANCE_BETWEEN_LINES) ||
-			    (lines[c][i].y2 - lines[c][i].y1) >
-			    2 * NORMAL_FONT_HIGHT)
+			     MIN_DISTANCE_BETWEEN_LINES)
+			    || (lines[c][i].y2 -
+				lines[c][i].y1) > 2 * NORMAL_FONT_HIGHT)
 			{
 				num_of_fonts[c][i] = 0;
 			}
@@ -342,15 +364,21 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 			{
 				if (num_of_fonts[c][i] == 0)
 					continue;
-
 				/* color line boxes */
-				color_hocr_line_eq (pix, &(line_eqs[c][i][0]),
-						    lines[c][i].x1,
+				color_hocr_line_eq (pix,
+						    &(line_eqs
+						      [c][i]
+						      [0]),
+						    lines[c]
+						    [i].x1,
 						    lines[c][i].x2, 2, 0);
-				color_hocr_line_eq (pix, &(line_eqs[c][i][1]),
-						    lines[c][i].x1,
+				color_hocr_line_eq (pix,
+						    &(line_eqs
+						      [c][i]
+						      [1]),
+						    lines[c]
+						    [i].x1,
 						    lines[c][i].x2, 2, 100);
-
 				/* color individual font boxes */
 				for (j = 0; j < num_of_fonts[c][i]; j++)
 				{
@@ -358,7 +386,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					if (fonts[c][i][j].width < 3
 					    || fonts[c][i][j].hight < 3)
 						continue;
-
 					if (fonts[c][i][j].width >
 					    (3.5 *
 					     (double)
@@ -368,9 +395,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					     (double)
 					     avg_regular_font_hight_in_page))
 						continue;
-
-					color_hocr_box (pix, fonts[c][i][j],
-							1, 0);
+					color_hocr_box (pix,
+							fonts[c][i][j], 1, 0);
 				}
 			}
 		}
@@ -379,7 +405,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	/* do ocr ? */
 	if ((pix->command & HOCR_COMMAND_OCR) == 0)
 		return 0;
-
 	/* get all fonts for all the lines */
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
@@ -388,13 +413,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 			for (j = 0; j < num_of_fonts[c][i]; j++)
 			{
 				/* check for end of word */
-				end_of_word = ((fonts[c][i][j].x1 -
-						fonts[c][i][(j +
-							     1) %
-							    num_of_fonts[c][i]].
-						x2) >
-					       MIN_DISTANCE_BETWEEN_WORDS);
-
+				end_of_word =
+					((fonts[c][i][j].x1 -
+					  fonts[c][i][(j +
+						       1) %
+						      num_of_fonts[c]
+						      [i]].x2) >
+					 MIN_DISTANCE_BETWEEN_WORDS);
 				/* if arteffact do not recognize */
 				if (fonts[c][i][j].width < 3
 				    || fonts[c][i][j].hight < 3)
@@ -408,7 +433,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 				if (fonts[c][i][j].width >
 				    (3.5 *
-				     (double) avg_regular_font_width_in_page)
+				     (double)
+				     avg_regular_font_width_in_page)
 				    || fonts[c][i][j].hight >
 				    (3.5 *
 				     (double) avg_regular_font_hight_in_page))
@@ -421,21 +447,24 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				}
 
 				/* recognize font */
-				hocr_recognize_font (pix, fonts[c][i],
-						     num_of_fonts[c][i], j,
-						     line_eqs[c][i],
+				hocr_recognize_font (pix,
+						     fonts[c]
+						     [i],
+						     num_of_fonts
+						     [c][i], j,
+						     line_eqs
+						     [c][i],
 						     avg_regular_font_hight_in_page,
 						     avg_regular_font_width_in_page,
 						     chars);
-
 				/* color unknown fonts in the pixbuf */
 				if (chars[0] == '*'
 				    && (pix->
 					command & HOCR_COMMAND_COLOR_MISREAD))
 					color_hocr_box_full (pix,
-							     fonts[c][i][j], 1,
+							     fonts[c]
+							     [i][j], 1,
 							     255, TRUE);
-
 #define DEBUG
 #ifdef DEBUG
 				printf ("found font: %d,%d,%d - '%s'\n",
@@ -443,11 +472,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				printf ("--------------------------\n\n",
 					chars);
 #endif
-
 				/* add new recognizzed fonts to text */
 				hocr_text_buffer_add_string
 					(text_buffer, chars);
-
 				/* check for end of word */
 				if (end_of_word)
 					hocr_text_buffer_add_string
@@ -456,9 +483,9 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 			/* end of line */
 			hocr_text_buffer_add_string (text_buffer, "\n");
-
 			/* check for end of paragraph */
-			if (2 * avg_diff_between_lines_in_page
+			if (2 *
+			    avg_diff_between_lines_in_page
 			    < (lines[c][i + 1].y1 - lines[c][i + 0].y2))
 				hocr_text_buffer_add_string (text_buffer, "\n");
 		}
