@@ -335,19 +335,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					       num_of_fonts[c][i]);
 			/* if line is very not horizontal return error */
 			if ((line_eqs[c][i][0].a *
-			     line_eqs[c][i][0].a) > (1.0 / 10.0))
-			{
-				num_of_fonts[c][i] = 0;
-			}
-
-			/* if this line do not logical hight then dont parse it 
-			 */
-			if ((line_eqs[c][i][0].b -
-			     line_eqs[c][i][1].b) <
-			    (avg_font_hight_in_page -
-			     MIN_DISTANCE_BETWEEN_LINES)
-			    || (lines[c][i].y2 -
-				lines[c][i].y1) > 2 * NORMAL_FONT_HIGHT)
+			     line_eqs[c][i][0].a) > (1.0 / 1000.0))
 			{
 				num_of_fonts[c][i] = 0;
 			}
@@ -458,20 +446,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						     avg_regular_font_width_in_page,
 						     chars);
 				/* color unknown fonts in the pixbuf */
-				if (chars[0] == '*'
+				if (!chars[0] || chars[0] == '*'
 				    && (pix->
 					command & HOCR_COMMAND_COLOR_MISREAD))
 					color_hocr_box_full (pix,
 							     fonts[c]
 							     [i][j], 1,
 							     255, TRUE);
-#define DEBUG
-#ifdef DEBUG
-				printf ("found font: %d,%d,%d - '%s'\n",
-					c, i, j, chars);
-				printf ("--------------------------\n\n",
-					chars);
-#endif
+
 				/* add new recognizzed fonts to text */
 				hocr_text_buffer_add_string
 					(text_buffer, chars);

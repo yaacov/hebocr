@@ -87,7 +87,7 @@ msgstr "פתח תמונה חדשה לצורך פענוח"
 
 #: examples/hocr-gtk/interface.c:295
 msgid "Convert picture to text"
-msgstr "פנח תמונה"
+msgstr "נסה לפענח תמונה"
 
 #: examples/hocr-gtk/interface.c:302
 msgid "Save the text created by the OCR"
