@@ -3057,7 +3057,6 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		}
 	}
 
-//#define DEBUG
 #ifdef DEBUG
 	printf ("found font: '%s'\n", hars);
 	printf ("--------------------------\n\n");
