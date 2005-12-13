@@ -23,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+//#define DEBUG
+
 /* 
  font markers
  */
@@ -33,6 +35,7 @@
 
 #include "hocr.h"
 #include "consts.h"
+#include "hocr_object.h"
 #include "font_recognition.h"
 
 /**
@@ -2392,7 +2395,7 @@ int
 hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		     int num_of_fonts_in_line, int font_index,
 		     hocr_line_eq line_eqs[2], int avg_font_hight,
-		     int avg_font_width, char *chars)
+		     int avg_font_width, char *chars, unsigned char command)
 {
 	int i;
 	hocr_box font = fonts_line[font_index];
@@ -2426,6 +2429,8 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	int has_empty_middle_font;
 	int horizontal_font;
 	int vertical_font;
+	int two_part_font = FALSE;
+	int found_nikud = FALSE;
 
 	/* reset chars array */
 	chars[0] = '\0';
@@ -2497,7 +2502,6 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	vertical_font = (font.hight / font.width) >= 2;
 
 /* DEBUG: print debug info */
-//#define DEBUG
 #ifdef DEBUG
 	print_font (pix, font);
 	printf ("font %d %d obj %d %d\n\n", font.hight, font.width,
@@ -2551,7 +2555,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		}
 	}
 
-	/* short high marks: ' (check for yud if you are here) */
+	/* short high marks: ' yud and holam */
 	if (!chars[0])
 	{
 		if (short_font && high_font && thin_font &&
@@ -2563,14 +2567,25 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 			    (pix, font.x1, font.y1, font.x1 + font.width / 2,
 			     font.y1 + 3.0 * (double) font.hight / 4.0,
 			     obj) == 0)
+			{
 				sprintf (chars, "'");
+			}
+			/* if looking for nikud check holam haser */
+			else if ((command & HOCR_COMMAND_NIKUD)
+			    && font.y2 < (high_line_y + avg_font_hight / 5))
+			{
+				sprintf (chars, "ּ");
+				found_nikud = TRUE;
+			}
 			/* yud is also high thin font */
-			else if (font.width <= (avg_font_width / 2))
+			else if (font.width <= ( 2 * avg_font_width / 3))
+			{
 				sprintf (chars, "י");
+			}
 		}
 	}
 
-	/* long vertical line */
+	/* only if looking for nikud? check suf pasuk */
 	if (!chars[0])
 	{
 		if (!tall_font && !high_font && !low_font
@@ -2641,11 +2656,13 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 			if (lower_object_is_dot && upper_object_is_dot)
 			{
 				sprintf (chars, ":");
+				two_part_font = TRUE;
 			}
 			/* ; */
 			else if (upper_object_is_dot)
 			{
 				sprintf (chars, ";");
+				two_part_font = TRUE;
 			}
 			else if (lower_object_is_dot)
 			{
@@ -2664,11 +2681,13 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 					upper_object_box.width / 2))
 				{
 					sprintf (chars, "?");
+					two_part_font = TRUE;
 				}
 				/* ! */
 				else if (thin_font)
 				{
 					sprintf (chars, "!");
+					two_part_font = TRUE;
 				}
 			}
 		}
@@ -2715,11 +2734,13 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				    (low_line_y + 3))
 				{
 					sprintf (chars, "ק");
+					two_part_font = TRUE;
 				}
 				else if (has_resh_mark (pix, font, obj) ||
 					 has_dalet_mark (pix, font, obj))
 				{
 					sprintf (chars, "ה");
+					two_part_font = TRUE;
 				}
 			}
 			/* else check fot pe and shin */
@@ -2728,18 +2749,38 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 			else if (has_shin_two_parts_mark (pix, font, obj))
 			{
 				sprintf (chars, "ש");
+				two_part_font = TRUE;
 			}
 		}
 	}
 
-	/* check fot high fonts י (check that it is not kotz of big font) */
+	/* check fot high fonts י ' holam (check that it is not kotz of big font) */
 	if (!chars[0])
 	{
 		if (high_font && short_font && !assending_font &&
 		    pix->objects[box_obj].weight <
 		    1.2 * (double) pix->objects[obj].weight)
 		{
-			sprintf (chars, "י");
+			/* check that this is not yud */
+			if (find_horizontal_notch_to_left_up
+			    (pix, font.x1, font.y1, font.x1 + font.width / 2,
+			     font.y1 + 3.0 * (double) font.hight / 4.0,
+			     obj) == 0)
+			{
+				sprintf (chars, "'");
+			}
+			/* if looking for nikud check holam haser */
+			else if ((command & HOCR_COMMAND_NIKUD)
+			    && font.y2 < (high_line_y + avg_font_hight / 5))
+			{
+				sprintf (chars, "ּ");
+				found_nikud = TRUE;
+			}
+			/* yud is also high thin font */
+			else if (font.width <= (2 * avg_font_width / 3))
+			{
+				sprintf (chars, "י");
+			}
 		}
 	}
 
@@ -3035,6 +3076,217 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		}
 	}
 
+	/* check for nikud */
+
+	if ((command & HOCR_COMMAND_NIKUD) && chars[0])
+	{
+		hocr_box under_font_box;
+		int number_of_object_under_font;
+		unsigned int under_font_object;
+		unsigned int under_font_object_array[MAX_OBJECTS_IN_FONT];
+
+		hocr_box over_font_box;
+		int number_of_object_over_font;
+		unsigned int over_font_object;
+		unsigned int over_font_object_array[MAX_OBJECTS_IN_FONT];
+
+		/* if looking for nikud look for dagesh */
+		if (!two_part_font && number_of_object_in_box == 2
+		    && number_of_object_in_font == 2)
+		{
+			if (pix->objects[object_array[1]].width <
+			    (avg_font_width / 3)
+			    && pix->objects[object_array[1]].hight <
+			    (avg_font_width / 3))
+			{
+				strcat (chars, "ּ");
+			}
+			else if (!found_nikud
+				 && pix->objects[object_array[1]].width >
+				 (avg_font_width / 3)
+				 && pix->objects[object_array[1]].hight <
+				 (avg_font_width / 3))
+			{
+				strcat (chars, "ַ");
+				found_nikud = TRUE;
+			}
+			else if (!found_nikud
+				 && pix->objects[object_array[1]].width >
+				 (avg_font_width / 3)
+				 && pix->objects[object_array[1]].hight >
+				 (avg_font_width / 3))
+			{
+				strcat (chars, "ָ");
+				found_nikud = TRUE;
+			}
+		}
+		else if (two_part_font && number_of_object_in_box == 3
+			 && number_of_object_in_font == 3)
+		{
+			if (pix->objects[object_array[2]].width <
+			    (avg_font_width / 3)
+			    && pix->objects[object_array[2]].hight <
+			    (avg_font_width / 3))
+			{
+				strcat (chars, "ּ");
+			}
+			else if (!found_nikud
+				 && pix->objects[object_array[1]].width >
+				 (avg_font_width / 3)
+				 && pix->objects[object_array[2]].hight <
+				 (avg_font_width / 3))
+			{
+				strcat (chars, "ַ");
+				found_nikud = TRUE;
+			}
+			else if (!found_nikud
+				 && pix->objects[object_array[1]].width >
+				 (avg_font_width / 3)
+				 && pix->objects[object_array[2]].hight >
+				 (avg_font_width / 3))
+			{
+				strcat (chars, "ָ");
+				found_nikud = TRUE;
+			}
+		}
+
+		/* if looking for nikud look under font */
+
+		/* build the under font box */
+		under_font_box.x1 = font.x1 - 2;
+		under_font_box.y1 = low_line_y;
+		under_font_box.x2 = font.x2 + 2;
+		under_font_box.y2 = low_line_y + avg_font_hight;
+		under_font_box.width = font.width + 4;
+		under_font_box.hight = avg_font_hight;
+
+		under_font_object =
+			hocr_pixbuf_get_objects_inside_box (pix, under_font_box,
+							    under_font_object_array);
+		number_of_object_under_font =
+			count_object_array (under_font_object_array);
+
+		/* one sign under font can be kamatz patach hirik */
+		if (!found_nikud && number_of_object_under_font == 1)
+		{
+			/* hirik */
+			if (pix->objects[under_font_object].hight <
+			    (avg_font_hight / 3)
+			    && pix->objects[under_font_object].width <
+			    (avg_font_width / 3))
+			{
+				strcat (chars, "ִ");
+				found_nikud = TRUE;
+			}
+			/* patach */
+			else if (pix->objects[under_font_object].hight <
+				 (avg_font_hight / 4))
+			{
+				strcat (chars, "ַ");
+				found_nikud = TRUE;
+			}
+			/* kamatz */
+			else
+			{
+				strcat (chars, "ָ");
+				found_nikud = TRUE;
+			}
+		}
+		/* shva or tzere */
+		else if (!found_nikud && number_of_object_under_font == 2)
+		{
+			if (pix->objects[under_font_object_array[0]].hight <
+			    (avg_font_hight / 3) &&
+			    pix->objects[under_font_object_array[0]].y2 >
+			    pix->objects[under_font_object_array[1]].y1)
+			{
+				strcat (chars, "ֵ");
+				found_nikud = TRUE;
+			}
+			else if (pix->objects[under_font_object_array[0]].
+				 hight < (avg_font_hight / 3)
+				 && pix->objects[under_font_object_array[0]].
+				 y2 <
+				 pix->objects[under_font_object_array[1]].y1)
+			{
+				strcat (chars, "ְ");
+				found_nikud = TRUE;
+			}
+
+		}
+		/* segol, kubutz, hataf patach, hataf kamatz */
+		else if (!found_nikud && number_of_object_under_font == 3)
+		{
+			/* segul kubutz */
+			if (pix->objects[under_font_object].width <
+			    (avg_font_width / 3))
+			{
+				strcat (chars, "ֶ");
+				found_nikud = TRUE;
+			}
+			/* hataf */
+			else
+			{
+				/* pathach */
+				if (pix->objects[under_font_object].hight <
+				    (avg_font_hight / 4))
+				{
+					strcat (chars, "ֲ");
+					found_nikud = TRUE;
+				}
+				/* kamatz */
+				else
+				{
+					strcat (chars, "ֳ");
+					found_nikud = TRUE;
+				}
+			}
+		}
+		/* hataf tzere */
+		else if (!found_nikud && number_of_object_under_font == 5)
+		{
+			if (pix->objects[under_font_object_array[0]].hight <
+			    (avg_font_hight / 3))
+			{
+				strcat (chars, "ֱ");
+			}
+		}
+
+		/* look above font */
+		/* build the under font box */
+		over_font_box.x1 = font.x1 - 2;
+		over_font_box.y1 = high_line_y - avg_font_hight / 2;
+		over_font_box.x2 = font.x2 + 2;
+		over_font_box.y2 = high_line_y;
+		over_font_box.width = font.width + 4;
+		over_font_box.hight = avg_font_hight / 2;
+
+		over_font_object =
+			hocr_pixbuf_get_objects_inside_box (pix, over_font_box,
+							    over_font_object_array);
+		number_of_object_over_font =
+			count_object_array (over_font_object_array);
+
+		/* one sign over font can be shin sin or holam */
+		if (number_of_object_over_font == 1)
+		{
+			/* holam */
+			if (pix->objects[over_font_object].hight <
+			    (avg_font_hight / 3)
+			    && pix->objects[over_font_object].width <
+			    (avg_font_width / 3) && (thin_font
+						     || (pix->
+							 objects
+							 [over_font_object].x2 <
+							 (over_font_box.x1 +
+							  avg_font_width / 2))))
+			{
+				strcat (chars, "ֹ");
+				found_nikud = TRUE;
+			}
+		}
+	}
+
 	/* check for other letters (rashi english numbers ...) */
 
 	/* if here and no char then no font found */
@@ -3061,6 +3313,5 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	printf ("found font: '%s'\n", hars);
 	printf ("--------------------------\n\n");
 #endif
-
 	return 0;
 }

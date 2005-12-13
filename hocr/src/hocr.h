@@ -36,6 +36,14 @@ extern "C"
 {
 #endif
 
+#define HOCR_COMMAND_COLOR_BOXES 1
+#define HOCR_COMMAND_COLOR_MISREAD 2
+#define HOCR_COMMAND_OCR 4
+#define HOCR_COMMAND_DICT 8
+#define HOCR_COMMAND_NIKUD 16
+#define HOCR_COMMAND_USE_SPACE_FOR_TAB 32
+#define HOCR_COMMAND_USE_INDENTATION 64
+
 /**
  @brief print the font to std out
 
@@ -67,8 +75,8 @@ extern "C"
  @param value set the channel to this value
  @return 1
  */
-int
-color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value);
+	int color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell,
+			    int value);
 
 /**
  @brief drow a nearly horizontal line on hocr_pixbuf
@@ -81,9 +89,8 @@ color_hocr_box (hocr_pixbuf * pix, hocr_box rect, int chanell, int value);
  @param value set the channel to this value
  @return 1
  */
-int
-color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1, int x2,
-		    int chanell, int value);
+	int color_hocr_line_eq (hocr_pixbuf * pix, hocr_line_eq * line, int x1,
+				int x2, int chanell, int value);
 
 /* user only use this function */
 

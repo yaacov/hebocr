@@ -54,7 +54,7 @@ extern "C"
 				 int num_of_fonts_in_line, int font_index,
 				 hocr_line_eq line_eqs[2], int avg_font_hight,
 				 int avg_font_width,
-				 char *chars);
+				 char *chars, unsigned char command);
 
 #ifdef __cplusplus
 }

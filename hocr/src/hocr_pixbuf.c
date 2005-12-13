@@ -308,7 +308,7 @@ hocr_pixbuf *
 hocr_pixbuf_new (void)
 {
 	hocr_pixbuf *new_pixbuf;
-	
+
 	/* allocate memory for pixbuf */
 	new_pixbuf = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
 	if (!new_pixbuf)
@@ -545,7 +545,8 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 				}
 
 				/* fill the object map */
-				if (!object1 && !object2 && !object3 && !object4)
+				if (!object1 && !object2 && !object3
+				    && !object4)
 				{
 					object = hocr_pixbuf_get_first_free_object (pix);
 					hocr_pixbuf_set_object (pix, x, y,
@@ -628,6 +629,45 @@ hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
 		{
 			if ((object =
 			     hocr_pixbuf_get_object (pix, x, y)) &&
+			    !(is_in_object_array (object, object_array))
+			    && (i < MAX_OBJECTS_IN_FONT))
+			{
+				/* add object to object array */
+				object_array[i] = object;
+				/* find the heviest object in the array */
+				if (pix->objects[object].weight >
+				    pix->objects[heviest_obj].weight)
+					heviest_obj = object;
+				i++;
+			}
+		}
+
+	return heviest_obj;
+}
+
+unsigned int
+hocr_pixbuf_get_objects_inside_box (hocr_pixbuf * pix, hocr_box box,
+				    unsigned int *object_array)
+{
+	int x, y;
+	int i = 0;
+	unsigned int object = 0;
+	unsigned int heviest_obj = 0;
+
+	/* make sure none object have zero weight */
+	pix->objects[0].weight = 0;
+
+	clean_object_array (object_array);
+
+	for (x = box.x1; x < box.x2; x++)
+		for (y = box.y1; y < box.y2; y++)
+		{
+			if ((object =
+			     hocr_pixbuf_get_object (pix, x, y)) &&
+			    pix->objects[object].x1 >= box.x1 &&
+			    pix->objects[object].x2 <= box.x2 &&
+			    pix->objects[object].y1 >= box.y1 &&
+			    pix->objects[object].y2 <= box.y2 &&
 			    !(is_in_object_array (object, object_array))
 			    && (i < MAX_OBJECTS_IN_FONT))
 			{

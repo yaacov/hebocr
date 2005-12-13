@@ -60,6 +60,9 @@ GtkWidget *color_misread;
 GtkWidget *clear_text;
 GtkWidget *ocr;
 GtkWidget *use_dict;
+GtkWidget *use_nikud;
+GtkWidget *use_spaces;
+GtkWidget *use_indent;
 
 /* image and text of main window */
 GtkWidget *image;

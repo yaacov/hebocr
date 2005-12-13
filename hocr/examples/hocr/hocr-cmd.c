@@ -41,7 +41,11 @@ print_help ()
 {
 	printf ("hocr %s - Hebrew OCR program\n", VERSION);
 	printf ("http://hocr.berlios.de\n");
-	printf ("USAGE: hocr -i pic_filename [-o text_filename] [-f html/text]\n");
+	printf ("USAGE: hocr [OPTION]... -i pic_filename [-o text_filename] [-f html/text]\n");
+	printf ("  -d,  Use internal dictionary to guess misread fonts.\n");
+	printf ("  -n,  Try to guess nikud for fonts.\n");
+	printf ("  -s,  Use spaces for tabs.\n");
+	printf ("  -t,  Indent indented lines.\n");
 	printf ("\n");
 
 	return 0;
@@ -108,6 +112,10 @@ main (int argc, char *argv[])
 	int opt_i = 0;
 	int opt_o = 0;
 	int opt_f = 0;
+	int opt_d = 0;
+	int opt_n = 0;
+	int opt_s = 0;
+	int opt_t = 0;
 	char c;
 
 	char filename_in[STRING_MAX_SIZE];
@@ -122,7 +130,7 @@ main (int argc, char *argv[])
 	 */
 	format_out[0] = 't';
 
-	while ((c = getopt (argc, argv, "hi:o:f:")) != EOF)
+	while ((c = getopt (argc, argv, "dnsthi:o:f:")) != EOF)
 	{
 		switch (c)
 		{
@@ -146,6 +154,18 @@ main (int argc, char *argv[])
 				strcpy (format_out, optarg);
 				opt_f = 1;
 			}
+			break;
+		case 'd':
+			opt_d = 1;
+			break;
+		case 'n':
+			opt_n = 1;
+			break;
+		case 's':
+			opt_s = 1;
+			break;
+		case 't':
+			opt_t = 1;
 			break;
 		case 'h':
 			print_help ();
@@ -182,6 +202,22 @@ main (int argc, char *argv[])
 	 */
 	pix->command = HOCR_COMMAND_OCR;
 
+	/* use dict ? */
+	if (opt_d)
+		  pix->command |= HOCR_COMMAND_DICT;
+
+	/* use nikud ? */
+	if (opt_n)
+		  pix->command |= HOCR_COMMAND_NIKUD;
+	
+	/* use spaces ? */
+	if (opt_s)
+		  pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
+	
+	/* use indentation ? */
+	if (opt_t)
+		  pix->command |= HOCR_COMMAND_USE_INDENTATION;
+	
 	/* create text buffer */
 	text = hocr_text_buffer_new ();
 

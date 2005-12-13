@@ -86,6 +86,10 @@
 /* how much memory will hocr_text_buffer will allocate when it nead memory */
 #define MEMORY_CHANK_FOR_TEXT_BUFFER 500
 
+/* indentation */
+#define NUM_OF_FONTS_IN_INDENT 3
+#define NUM_OF_FONTS_IN_TAB 6
+
 /* end of consts part
  */
 #endif

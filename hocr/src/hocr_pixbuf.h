@@ -28,11 +28,6 @@
 #ifndef __HOCR_PIXBUF_H__
 #define __HOCR_PIXBUF_H__
 
-#define HOCR_COMMAND_COLOR_BOXES 1
-#define HOCR_COMMAND_COLOR_MISREAD 2
-#define HOCR_COMMAND_OCR 4
-#define HOCR_COMMAND_DICT 8
-
 /** line equation structore used by hocr
  
  a and b in the equation are Y = a X + b
@@ -91,7 +86,6 @@ typedef struct
 
 } hocr_pixbuf;
 
-
 /**
  @brief get objects in a box
 
@@ -103,6 +97,18 @@ typedef struct
 unsigned int
 hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
 				unsigned int *object_array);
+
+/**
+ @brief get objects inside a box
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param box pointer to hocr_pixbuf struct.
+ @param object_array an array of object to fill.
+ @return the most havy object in the box.
+ */
+unsigned int
+hocr_pixbuf_get_objects_inside_box (hocr_pixbuf * pix, hocr_box box,
+				    unsigned int *object_array);
 
 /**
  @brief get number of channels

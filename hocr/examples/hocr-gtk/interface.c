@@ -231,7 +231,6 @@ create_window1 (void)
 			      _("Try to recognize fonts in scaned text"), NULL);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ocr), TRUE);
 
-/*
 	use_dict = gtk_check_menu_item_new_with_mnemonic (_("Use dictionary"));
 	gtk_widget_show (use_dict);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_dict);
@@ -239,7 +238,31 @@ create_window1 (void)
 			      _("Try to guess unrecognized fonts in scaned text using internal dictionary"),
 			      NULL);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_dict), FALSE);
-*/
+
+	use_nikud = gtk_check_menu_item_new_with_mnemonic (_("Use nikud"));
+	gtk_widget_show (use_nikud);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_nikud);
+	gtk_tooltips_set_tip (tooltips, use_nikud,
+			      _("Try to guess nikud"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_nikud), FALSE);
+
+	use_spaces = gtk_check_menu_item_new_with_mnemonic (_("Use spaces"));
+	gtk_widget_show (use_spaces);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_spaces);
+	gtk_tooltips_set_tip (tooltips, use_spaces,
+			      _("Use spaces for tabs"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_spaces), FALSE);
+
+	use_indent = gtk_check_menu_item_new_with_mnemonic (_("Use indentation"));
+	gtk_widget_show (use_indent);
+	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_indent);
+	gtk_tooltips_set_tip (tooltips, use_indent,
+			      _("Try to guess line indentation"),
+			      NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_indent), FALSE);
+	
 	menuitem3 = gtk_menu_item_new_with_mnemonic (_("_View"));
 	gtk_widget_show (menuitem3);
 	gtk_container_add (GTK_CONTAINER (menubar1), menuitem3);

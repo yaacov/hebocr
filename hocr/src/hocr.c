@@ -165,7 +165,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 	/* need this to put in the text_buffer */
 	char chars[10];
+
+	/* format args */
 	int end_of_word;
+	int tabs = 0;
+	int indent = 0;
 
 	/* create and fill the object map */
 	hocr_pixbuf_create_object_map (pix);
@@ -257,6 +261,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 								      1)].x2);
 					}
 				}
+			}
+			/* this line is too thin */
+			else
+			{
+				num_of_fonts[c][i] = 0;
 			}
 		}
 	}
@@ -398,16 +407,55 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	{
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
+			/* check for indentation */
+			if (fonts[c][i][0].x2 <
+			    (avg_line_x_start_in_column[c] -
+			     NUM_OF_FONTS_IN_INDENT * avg_font_width_in_page))
+			{
+				indent = TRUE;
+
+				if ((pix->
+				     command &
+				     HOCR_COMMAND_USE_INDENTATION) != 0)
+				{
+					if ((pix->
+					     command &
+					     HOCR_COMMAND_USE_SPACE_FOR_TAB)
+					    != 0)
+					{
+						hocr_text_buffer_add_string
+							(text_buffer, "    ");
+					}
+					else
+					{
+						hocr_text_buffer_add_string
+							(text_buffer, "\t");
+					}
+				}
+			}
+			else
+			{
+				indent = FALSE;
+			}
+
 			for (j = 0; j < num_of_fonts[c][i]; j++)
 			{
-				/* check for end of word */
-				end_of_word =
-					((fonts[c][i][j].x1 -
-					  fonts[c][i][(j +
-						       1) %
-						      num_of_fonts[c]
-						      [i]].x2) >
-					 MIN_DISTANCE_BETWEEN_WORDS);
+				if ((j + 1) < num_of_fonts[c][i])
+				{
+					/* check for end of word */
+					end_of_word =
+						((fonts[c][i][j].x1 -
+						  fonts[c][i][j + 1].x2) >
+						 MIN_DISTANCE_BETWEEN_WORDS);
+
+					/* check for tabs */
+					tabs = (fonts[c][i][j].x1 -
+						fonts[c][i][j +
+							    1].x2) /
+						(NUM_OF_FONTS_IN_TAB *
+						 avg_regular_font_width_in_page);
+				}
+
 				/* if arteffact do not recognize */
 				if (fonts[c][i][j].width < 3
 				    || fonts[c][i][j].hight < 3)
@@ -444,7 +492,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						     [c][i],
 						     avg_regular_font_hight_in_page,
 						     avg_regular_font_width_in_page,
-						     chars);
+						     chars, pix->command);
+				
 				/* color unknown fonts in the pixbuf */
 				if (!chars[0] || chars[0] == '*'
 				    && (pix->
@@ -457,16 +506,38 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				/* add new recognizzed fonts to text */
 				hocr_text_buffer_add_string
 					(text_buffer, chars);
+
 				/* check for end of word */
 				if (end_of_word)
 					hocr_text_buffer_add_string
 						(text_buffer, " ");
+
+				/* check for tabs */
+				if ((pix->
+				     command &
+				     HOCR_COMMAND_USE_SPACE_FOR_TAB) != 0)
+				{
+					for (k = 0; k < tabs; k++)
+					{
+						hocr_text_buffer_add_string
+							(text_buffer, "    ");
+					}
+				}
+				else
+				{
+					for (k = 0; k < tabs; k++)
+					{
+						hocr_text_buffer_add_string
+							(text_buffer, "\t");
+					}
+				}
 			}
 
 			/* end of line */
 			hocr_text_buffer_add_string (text_buffer, "\n");
+
 			/* check for end of paragraph */
-			if (2 *
+			if (num_of_lines[c] > (i + 1) && 2 *
 			    avg_diff_between_lines_in_page
 			    < (lines[c][i + 1].y1 - lines[c][i + 0].y2))
 				hocr_text_buffer_add_string (text_buffer, "\n");

@@ -48,13 +48,13 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	hocr_text_buffer *text;
 	GtkTextIter iter;
 
-	hocr_pix = hocr_pixbuf_new (); /* get an empty hocr_pix */
+	hocr_pix = hocr_pixbuf_new ();	/* get an empty hocr_pix */
 	if (!hocr_pix)
 	{
 		printf ("hocr-gtk: can\'t allocate memory for picture\n");
 		return 0;
 	}
-	
+
 	/* clear text before ocr ? */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (clear_text)))
 		gtk_text_buffer_set_text (text_buffer, "", -1);
@@ -76,8 +76,25 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (ocr)))
 		hocr_pix->command |= HOCR_COMMAND_OCR;
 
-	/* use dict ? if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
-	 * (use_dict))) hocr_pix.command |= HOCR_COMMAND_DICT; */
+	/* use dict ? */
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+						       (use_dict)))
+		  hocr_pix->command |= HOCR_COMMAND_DICT;
+
+	/* use nikud ? */
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+						       (use_nikud)))
+		  hocr_pix->command |= HOCR_COMMAND_NIKUD;
+	
+	/* use spaces ? */
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+						       (use_spaces)))
+		  hocr_pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
+	
+	/* use indentation ? */
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+						       (use_indent)))
+		  hocr_pix->command |= HOCR_COMMAND_USE_INDENTATION;
 	
 	hocr_pix->n_channels = gdk_pixbuf_get_n_channels (pixbuf);
 	hocr_pix->height = gdk_pixbuf_get_height (pixbuf);
@@ -99,9 +116,10 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
 
 	/* unref hocr_pixbuf */
-	hocr_pix->pixels = NULL; /* do not unreff the original GTK picture */
+	hocr_pix->pixels = NULL;	/* do not unreff the original GTK
+					 * picture */
 	hocr_pixbuf_unref (hocr_pix);
-	
+
 	/* unref text_buffer */
 	hocr_text_buffer_unref (text);
 

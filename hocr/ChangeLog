@@ -1,3 +1,10 @@
+hocr (0.6.0)
+
+ * can read nikud
+ * add command var to the pixbuf structure
+
+ -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 13 Dec 2005 22:13
+ 
 hocr (0.5.1)
   
   * examples now named: hocr, hocr-gtk
@@ -5,7 +12,7 @@ hocr (0.5.1)
   * create different file for different objects
   * use a textbuffer structure
    
-  -- Yaacov Zamir <kzamir@walla.co.il>  Sat, 10 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir@walla.co.il>  Sat, 10 Dec 2005 22:13
 
 hocr (0.4.8)
 
