@@ -245,7 +245,7 @@ create_window1 (void)
 	gtk_tooltips_set_tip (tooltips, use_nikud,
 			      _("Try to guess nikud"),
 			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_nikud), FALSE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_nikud), TRUE);
 
 	use_spaces = gtk_check_menu_item_new_with_mnemonic (_("Use spaces"));
 	gtk_widget_show (use_spaces);

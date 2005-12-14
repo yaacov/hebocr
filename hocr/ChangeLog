@@ -1,3 +1,11 @@
+hocr (0.6.1)
+
+ * code cleanups
+ * add benchmark tests for: 
+   Literature, poetry (with nikud) and bible texts.
+
+ -- Yaacov Zamir <kzamir@walla.co.il>  Wed, 14 Dec 2005 22:13
+ 
 hocr (0.6.0)
 
  * can read nikud
