@@ -62,37 +62,37 @@ msgstr "נסה לפענח אותיות"
 
 #: examples/hocr-gtk/interface.c:234
 msgid "Use dictionary"
-msgstr ""
+msgstr "מילון"
 
 #: examples/hocr-gtk/interface.c:238
 #, fuzzy
 msgid ""
 "Try to guess unrecognized fonts in scaned text using internal dictionary"
-msgstr "נסה לפענח אותיות"
+msgstr "נסה לתקן מילים שגויות בעזרת מילון פנימי"
 
 #: examples/hocr-gtk/interface.c:242
 msgid "Use nikud"
-msgstr ""
+msgstr "ניקוד"
 
 #: examples/hocr-gtk/interface.c:246
 msgid "Try to guess nikud"
-msgstr ""
+msgstr "נסה לנחש את הניקוד של האות המזוהה"
 
 #: examples/hocr-gtk/interface.c:250
 msgid "Use spaces"
-msgstr ""
+msgstr "רווח"
 
 #: examples/hocr-gtk/interface.c:254
 msgid "Use spaces for tabs"
-msgstr ""
+msgstr "השתמש ברווחים במקום סימני טאב"
 
 #: examples/hocr-gtk/interface.c:258
 msgid "Use indentation"
-msgstr ""
+msgstr "עימוד"
 
 #: examples/hocr-gtk/interface.c:262
 msgid "Try to guess line indentation"
-msgstr ""
+msgstr "נסה לנחש את העימוד של השורה המזוהה"
 
 #: examples/hocr-gtk/interface.c:266
 msgid "_View"
