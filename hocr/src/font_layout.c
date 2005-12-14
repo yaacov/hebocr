@@ -209,6 +209,9 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	int y_start, y_end;
 	int font_hight;
 
+	/* skip first two letters, they may be line numbering */
+	int start_at = (num_of_fonts > NUM_OF_FONTS_TO_AVG * 4) ? 2 : 0;
+
 	/* if not enogh fonts then just return the line */
 	if (num_of_fonts < NUM_OF_FONTS_TO_AVG)
 	{
@@ -229,7 +232,8 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 
 	start_counter = 0;
 	end_counter = 0;
-	i = 0;
+	/* skip first two letters, they may be line numbering */
+	i = start_at;
 	while (i < num_of_fonts)
 	{
 		if (fonts[i].hight <
@@ -249,7 +253,8 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 		i++;
 	}
 
-	i = num_of_fonts;
+	/* skip first two letters, they may be line numbering */
+	i = num_of_fonts - start_at;
 	while (i > 0)
 	{
 		i--;
@@ -288,7 +293,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 	font_hight /= (end_counter + start_counter);
 
 	/* delta x is small return horizontal line */
-	if ((x_start - x_end) == 0)
+	if ((x_end - x_start) == 0)
 	{
 		/* top line is more aqurate in most hebrew textst */
 		base_line->a = 0;
@@ -298,7 +303,7 @@ find_font_baseline_eq (hocr_box line, hocr_box * fonts,
 		return 1;
 	}
 
-	/* make line equation */
+	/* make line equation (x_end - x_start) is not zero */
 	top_line->a = (double) (y_end - y_start) / (double) (x_end - x_start);
 
 	/* FIXME: assume line is horizonatal and parallel ? */

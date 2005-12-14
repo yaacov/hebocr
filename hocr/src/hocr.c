@@ -213,10 +213,13 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 		}
 	}
 
-	avg_line_hight_in_page = avg_line_hight_in_page / num_of_lines_in_page;
-	avg_diff_between_lines_in_page =
-		avg_diff_between_lines_in_page /
-		(num_of_lines_in_page - num_of_columns_in_page + 1);
+	if (num_of_lines_in_page != 0)
+		avg_line_hight_in_page =
+			avg_line_hight_in_page / num_of_lines_in_page;
+	if ((num_of_lines_in_page - num_of_columns_in_page + 1) != 0)
+		avg_diff_between_lines_in_page =
+			avg_diff_between_lines_in_page /
+			(num_of_lines_in_page - num_of_columns_in_page + 1);
 
 	/* get all fonts for all the lines */
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -493,7 +496,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						     avg_regular_font_hight_in_page,
 						     avg_regular_font_width_in_page,
 						     chars, pix->command);
-				
+
 				/* color unknown fonts in the pixbuf */
 				if (!chars[0] || chars[0] == '*'
 				    && (pix->
