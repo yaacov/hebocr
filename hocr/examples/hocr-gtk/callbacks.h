@@ -51,8 +51,10 @@ on_toolbutton_zoom_fit_clicked (GtkToolButton * toolbutton, gpointer user_data);
 void
 on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data);
 
+#ifdef WITH_GTKSPELL
 void
 on_toolbutton_spell_clicked (GtkToolButton * toolbutton, gpointer user_data);
+#endif
 
 void
 on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data);
@@ -68,7 +70,9 @@ void on_quit_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void on_font_activate (GtkMenuItem * menuitem, gpointer user_data);
 
+#ifdef WITH_GTKSPELL
 void on_spell_check_activate (GtkMenuItem * menuitem, gpointer user_data);
+#endif
 
 void on_zoom_in_activate (GtkMenuItem * menuitem, gpointer user_data);
 

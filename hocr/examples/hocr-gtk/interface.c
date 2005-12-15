@@ -452,8 +452,11 @@ create_window1 (void)
 
 	g_signal_connect ((gpointer) toolbutton_about, "clicked",
 			  G_CALLBACK (on_toolbutton_about_clicked), NULL);
+#ifdef WITH_GTKSPELL
 	g_signal_connect ((gpointer) toolbutton_spell, "clicked",
 			  G_CALLBACK (on_toolbutton_spell_clicked), NULL);
+#endif
+
 /*
 	g_signal_connect ((gpointer) toolbutton_quit, "clicked",
 			  G_CALLBACK (on_toolbutton_quit_clicked), NULL);
@@ -470,8 +473,10 @@ create_window1 (void)
 			  G_CALLBACK (on_quit_activate), NULL);
 	g_signal_connect ((gpointer) font, "activate",
 			  G_CALLBACK (on_font_activate), NULL);
+#ifdef WITH_GTKSPELL
 	g_signal_connect ((gpointer) spell_check, "activate",
 			  G_CALLBACK (on_spell_check_activate), NULL);
+#endif
 	g_signal_connect ((gpointer) zoom_in, "activate",
 			  G_CALLBACK (on_zoom_in_activate), NULL);
 	g_signal_connect ((gpointer) zoom_out, "activate",

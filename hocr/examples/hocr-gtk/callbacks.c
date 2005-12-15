@@ -521,11 +521,13 @@ on_font_activate (GtkMenuItem * menuitem, gpointer user_data)
 	gtk_widget_destroy (fsd);
 }
 
+#ifdef WITH_GTKSPELL
 void
 on_spell_check_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_spell_clicked (NULL, NULL);
 }
+#endif
 
 void
 on_zoom_in_activate (GtkMenuItem * menuitem, gpointer user_data)
