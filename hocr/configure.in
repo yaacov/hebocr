@@ -1,11 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
+AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(hocr, 0.6.2)
-AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
-VERSION_INFO=0:0:0
+AM_MAINTAINER_MODE
 
+VERSION_INFO=0:0:0
 AC_SUBST(VERSION_INFO)
 
 AC_ISC_POSIX
@@ -19,6 +20,15 @@ AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 PACKAGE_CFLAGS=
 PACKAGE_LIBS=-lm
 
+win32=no
+case "${host_os}" in
+  *mingw* | pw32* | cygwin*)
+	win32="yes"
+    AC_CHECK_TOOL(WINDRES, windres, :)
+    PACKAGE_CFLAGS="$PACKAGE_CFLAGS -mms-bitfields -mno-cygwin"
+esac
+AM_CONDITIONAL(WITH_WIN32, test x"$win32" = "xyes")
+
 AC_ARG_ENABLE(nls, [  --disable-nls		disable native language support], nls="$enableval", nls=yes)
 
 if test "x$nls" = "xyes"; then
@@ -29,6 +39,9 @@ if test "x$nls" = "xyes"; then
 	dnl Add the languages which your application supports here.
 	ALL_LINGUAS="he"
 	AM_GLIB_GNU_GETTEXT
+	
+	PO_DIR=po
+	AC_SUBST(PO_DIR)
 fi
 
 dnl =======================================================================================

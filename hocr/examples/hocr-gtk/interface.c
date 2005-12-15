@@ -342,7 +342,6 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_spell);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_spell), tooltips,
 				   _("Spell check the text"), NULL);
-#endif
 
 	toolitem2 = (GtkWidget *) gtk_tool_item_new ();
 	gtk_widget_show (toolitem2);
@@ -350,6 +349,7 @@ create_window1 (void)
 	vseparator2 = gtk_vseparator_new ();
 	gtk_widget_show (vseparator2);
 	gtk_container_add (GTK_CONTAINER (toolitem2), vseparator2);
+#endif
 
 	toolbutton_zoom_in =
 		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-zoom-in");
