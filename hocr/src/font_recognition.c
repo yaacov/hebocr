@@ -1034,6 +1034,20 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	     font.x2 + 3, font.y2, obj))
 		return 0;
 
+	if (((double) font.hight / (double) font.width) > 1.5)
+	{
+		font.x1 -= 2;
+		font.x2 += 2;
+		font.width += 4;
+
+		if (!find_horizintal_bottom_bar (pix, font, obj, &start, &end))
+			return 0;
+		if (!find_horizintal_top_bar (pix, font, obj, &start2, &end2))
+			return 0;
+		if (start2 > (start + 2))
+			return 0;
+	}
+
 	return 1;
 }
 
@@ -1057,7 +1071,7 @@ has_gimel_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 		return 0;
 
 	/* if wide font check top bar start */
-	if (((double) font.hight / (double) font.width) < 1.7)
+	if (font.width && ((double) font.hight / (double) font.width) < 1.7)
 	{
 		if (start_of_top_bar < (font.x1 + font.width / 10))
 			return 0;
@@ -1201,18 +1215,18 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	int x_start_of_top_bar;
 
 	/* chek if this is realy is a thin font */
-	if (font.width > 0 && ((double) font.hight / (double) font.width) < 2.1)
+	if (font.width && ((double) font.hight / (double) font.width) < 1.9)
 		return 0;
 
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
 				       &start_of_top_bar, &end_of_top_bar, obj);
 
-	if (number_of_bars != 1)
-		return 0;
+	// if (number_of_bars != 1)
+	// return 0;
 
 	number_of_bars =
-		count_vertical_bars (pix, font, font.y1 + font.hight / 2,
+		count_vertical_bars (pix, font, font.y1 + font.hight / 3,
 				     &start_of_right_bar, &end_of_right_bar,
 				     obj);
 
@@ -1221,10 +1235,6 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 
 	/* this is not top bar */
 	if (end_of_top_bar > (font.y1 + font.hight / 2))
-		return 0;
-
-	/* this is not right bar */
-	if (start_of_right_bar < (font.x2 - font.width / 2))
 		return 0;
 
 	/* is zain */
@@ -1435,13 +1445,14 @@ has_kaf_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	int start_of_top_bar;
 	int end_of_right_bar;
 	int start_of_right_bar;
+	int start, end, start2, end2;
 
 	/* helps if patach is atached */
 	font.y2 += 6;
 	font.hight += 6;
 
 	/* kaf is wide font */
-	if ((font.hight / font.width) > 2)
+	if (font.width && (font.hight / font.width) > 2)
 		return 0;
 
 	/* horizontal bars */
@@ -1479,6 +1490,20 @@ has_kaf_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 
 	if (number_of_bars != 1)
 		return 0;
+
+	if (((double) font.hight / (double) font.width) > 1.5)
+	{
+		font.x1 -= 2;
+		font.x2 += 2;
+		font.width += 4;
+
+		if (!find_horizintal_bottom_bar (pix, font, obj, &start, &end))
+			return 0;
+		if (!find_horizintal_top_bar (pix, font, obj, &start2, &end2))
+			return 0;
+		if (start2 > (start + 2))
+			return 0;
+	}
 
 	return 1;
 }
@@ -1609,9 +1634,11 @@ has_mem_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 
 	/* helps if patach is atached */
 	font.y2 += 2;
-	font.hight += 2;
+	font.y1 -= 2;
+	font.hight += 4;
 	font.x2 += 2;
-	font.width += 2;
+	font.x1 -= 2;
+	font.width += 4;
 
 	/* is sqare */
 	number_of_bars =
@@ -1682,7 +1709,7 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 		return 0;
 
 	/* if wide font check top bar start */
-	if ((font.hight / font.width) < 2)
+	if (font.width && (font.hight / font.width) < 2)
 	{
 		if (start_of_top_bar < (font.x1 + font.width / 7))
 			return 0;
@@ -1721,7 +1748,7 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	if (thin_lines (pix, font, obj) == 0 && number_of_bars != 2)
 		return 0;
 
-	if (font.width > 0 && thin_lines (pix, font, obj) == 1
+	if (font.width && thin_lines (pix, font, obj) == 1
 	    && (font.hight / font.width) < 2)
 		return 0;
 
@@ -1734,7 +1761,7 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 int
 has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
-	if (font.hight / font.width < 3)
+	if (font.width && font.hight / font.width < 3)
 		return 0;
 
 	return 1;
@@ -1748,6 +1775,13 @@ has_sameh_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	int start_of_bottom_bar;
 	int end_of_right_bar;
 	int start_of_right_bar;
+
+	font.y2 += 2;
+	font.y1 -= 2;
+	font.hight += 4;
+	font.x2 += 2;
+	font.x1 -= 2;
+	font.width += 4;
 
 	/* is sqare */
 	number_of_bars =
@@ -2334,8 +2368,15 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 					 &right_bar_end);
 
 	/* we asume font has non zero size */
-	horizontal_font = (font.width / font.hight) >= 2;
-	vertical_font = (font.hight / font.width) >= 2;
+	if (font.width && font.hight)
+	{
+		horizontal_font = (font.width / font.hight) >= 2;
+		vertical_font = (font.hight / font.width) >= 2;
+	}
+	else
+	{
+		return -1;
+	}
 
 	/** look for none letter marks */
 	/* flat font - */
@@ -2399,7 +2440,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				found_nikud = TRUE;
 			}
 			/* yud is also high thin font */
-			else if (font.width <= (2 * avg_font_width / 3))
+			else if (font.width <= (4 * avg_font_width / 5))
 			{
 				sprintf (chars, "י");
 			}
@@ -2410,7 +2451,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	if (!chars[0])
 	{
 		if (!tall_font && !high_font && !low_font
-		    && (font.hight / font.width > 4)
+		    && (font.width && font.hight / font.width > 4)
 		    && number_of_object_in_font == 1
 		    && number_of_object_in_box == 1)
 			sprintf (chars, "|");
@@ -2548,10 +2589,12 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 			}
 
 			/* check that second part look like a | */
-			if (pix->objects[object_array[i]].y1 > high_line_y &&
-			    pix->objects[object_array[i]].width &&
-			    ((double) pix->objects[object_array[i]].hight /
-			     (double) pix->objects[object_array[i]].width) > 1.5
+			if (pix->objects[object_array[i]].width
+			    && pix->objects[object_array[i]].y1 > high_line_y
+			    && pix->objects[object_array[i]].width
+			    && ((double) pix->objects[object_array[i]].hight /
+				(double) pix->objects[object_array[i]].width) >
+			    1.5
 			    && pix->objects[object_array[i]].x2 <
 			    (font.x1 + font.width / 2))
 			{
@@ -2589,7 +2632,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		    1.2 * (double) pix->objects[obj].weight)
 		{
 			/* check that this is not yud */
-			if ((font.width / font.hight) > 0
+			if (font.hight && (font.width / font.hight) > 0
 			    && find_horizontal_notch_to_left_up (pix, font.x1,
 								 font.y1,
 								 font.x1 +
@@ -2611,7 +2654,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				found_nikud = TRUE;
 			}
 			/* yud is also high thin font */
-			else if (font.width <= (2 * avg_font_width / 3))
+			else if (font.width <= (4 * avg_font_width / 5))
 			{
 				sprintf (chars, "י");
 			}
@@ -2629,8 +2672,8 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				/* nun sofit */
 				sprintf (chars, "ן");
 			}
-			else if (has_kaf_sofit_mark (pix, font, obj) &&
-				 (font.hight / font.width) < 3)
+			else if (has_kaf_sofit_mark (pix, font, obj)
+				 && font.width && (font.hight / font.width) < 3)
 			{
 				/* kaf sofit */
 				sprintf (chars, "ך");

@@ -597,6 +597,9 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 				pix->objects[i].y2 - pix->objects[i].y1;
 			pix->objects[i].width =
 				pix->objects[i].x2 - pix->objects[i].x1;
+			
+			if (pix->objects[i].weight < 6 || pix->objects[i].hight < 1 || pix->objects[i].width < 1)
+				pix->objects[i].name = 0;
 		}
 		else
 		{

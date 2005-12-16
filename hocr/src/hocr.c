@@ -452,11 +452,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						 MIN_DISTANCE_BETWEEN_WORDS);
 
 					/* check for tabs */
-					tabs = (fonts[c][i][j].x1 -
-						fonts[c][i][j +
-							    1].x2) /
-						(NUM_OF_FONTS_IN_TAB *
-						 avg_regular_font_width_in_page);
+					if (avg_regular_font_width_in_page)
+						tabs = (fonts[c][i][j].x1 -
+							fonts[c][i][j +
+								    1].x2) /
+							(NUM_OF_FONTS_IN_TAB *
+							 avg_regular_font_width_in_page);
+					else
+						tabs = 0;
 				}
 
 				/* if arteffact do not recognize */

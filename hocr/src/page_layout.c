@@ -171,12 +171,12 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 				*top = pix->objects[object].y1;
 
 				/* check that font is inside picture */
-				if ((*font_start - *font_end) < 3 ||
-				    (*bottom - *top) < 3 ||
-				    *bottom > (pix->height - 5) ||
-				    *top < 5 ||
-				    *font_start > (pix->width - 5) ||
-				    *font_end < 5)
+				if (pix->objects[object].weight == 0
+				    || (*font_start - *font_end) < 3
+				    || (*bottom - *top) < 3
+				    || *bottom > (pix->height - 5) || *top < 5
+				    || *font_start > (pix->width - 5)
+				    || *font_end < 5)
 					continue;
 
 				return 0;
