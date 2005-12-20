@@ -186,7 +186,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 	fonts = malloc (sizeof (hocr_box) * MAX_COLUMNS * MAX_LINES *
 			MAX_FONTS_IN_LINE);
-	if (!line_eqs)
+	if (!fonts)
 	{
 		free (lines);
 		free (columns);
