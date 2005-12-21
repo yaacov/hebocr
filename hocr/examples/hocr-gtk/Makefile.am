@@ -18,9 +18,9 @@ else
 INCLUDES = \
         -DPACKAGE_DATA_DIR=\""$(datadir)"\" \
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-        @gtk_CFLAGS@ -I$(top_srcdir)/src
+        @PACKAGE_CFLAGS@ @gtk_CFLAGS@ -I$(top_srcdir)/src
 
-hocr_gtk_LDADD = ../../src/*.o @gtk_LIBS@ $(INTLLIBS)
+hocr_gtk_LDADD = ../../src/*.o @PACKAGE_LIBS@ @gtk_LIBS@ $(INTLLIBS)
 
 endif
 
