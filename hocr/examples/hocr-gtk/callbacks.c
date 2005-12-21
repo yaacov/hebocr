@@ -457,6 +457,8 @@ on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data)
 		vis_pixbuf = NULL;
 	}
 
+	g_free (font_name);
+
 	gtk_main_quit ();
 }
 
