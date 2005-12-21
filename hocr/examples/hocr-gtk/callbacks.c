@@ -495,18 +495,21 @@ on_font_activate (GtkMenuItem * menuitem, gpointer user_data)
 	/* create font dialog */
 	fsd = gtk_font_selection_dialog_new (_("Set text font"));
 	gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
-						 (fsd), TEXT_FONT_NAME);
+						 (fsd), font_name);
 
 	/* run dialog */
 	result = gtk_dialog_run (GTK_DIALOG (fsd));
 	switch (result)
 	{
 	case GTK_RESPONSE_OK:
-		/* Change default font throughout the text widget */
-		font_desc =
-			pango_font_description_from_string
-			(gtk_font_selection_dialog_get_font_name
+		/* get the new font name */
+		g_free (font_name);
+		font_name = g_strdup (gtk_font_selection_dialog_get_font_name
 			 (GTK_FONT_SELECTION_DIALOG (fsd)));
+		
+		/* Change default font throughout the text widget */
+		font_desc = pango_font_description_from_string
+			(font_name);
 
 		gtk_widget_modify_font (textview, font_desc);
 		pango_font_description_free (font_desc);

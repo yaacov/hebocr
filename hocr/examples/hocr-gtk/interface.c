@@ -128,7 +128,8 @@ create_window1 (void)
 	accel_group = gtk_accel_group_new ();
 
 	window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_widget_set_size_request (window1, 800, 600);
+	gtk_widget_set_size_request (window1, 600, 300);
+	gtk_window_maximize (GTK_WINDOW (window1));
 	gtk_window_set_title (GTK_WINDOW (window1), _("hocr-gui"));
 
 	vbox1 = gtk_vbox_new (FALSE, 0);
@@ -430,6 +431,11 @@ create_window1 (void)
 	textview = gtk_text_view_new ();
 	gtk_widget_show (textview);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_text), textview);
+	font_desc = pango_font_description_from_string
+			(font_name);
+	gtk_widget_modify_font (textview, font_desc);
+
+	font_name = g_strdup (TEXT_FONT_NAME);
 
 	/* main window */
 	g_signal_connect ((gpointer) window1, "delete_event",

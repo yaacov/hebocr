@@ -68,5 +68,8 @@ GtkWidget *use_indent;
 GtkWidget *image;
 GtkWidget *textview;
 
+/* user font */
+char * font_name;
+
 /* user interface for window */
 GtkWidget *create_window1 (void);

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-20 18:09+0200\n"
+"POT-Creation-Date: 2005-12-21 10:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,112 +16,112 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: examples/hocr-gtk/interface.c:132
+#: examples/hocr-gtk/interface.c:133
 msgid "hocr-gui"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:144
+#: examples/hocr-gtk/interface.c:145
 msgid "_File"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:172
+#: examples/hocr-gtk/interface.c:173
 msgid "_Edit"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:203
+#: examples/hocr-gtk/interface.c:204
 msgid "Color boxes"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:206
+#: examples/hocr-gtk/interface.c:207
 msgid "Color text boxes"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:212
+#: examples/hocr-gtk/interface.c:213
 msgid "Color misread"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:215
+#: examples/hocr-gtk/interface.c:216
 msgid "Color misread fonts"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:220
+#: examples/hocr-gtk/interface.c:221
 msgid "Clear"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:224
+#: examples/hocr-gtk/interface.c:225
 msgid "Clear text each time you ocr new scan"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:227
+#: examples/hocr-gtk/interface.c:228
 msgid "Ocr"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:231
+#: examples/hocr-gtk/interface.c:232
 msgid "Try to recognize fonts in scaned text"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:234
+#: examples/hocr-gtk/interface.c:235
 msgid "Use dictionary"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:238
+#: examples/hocr-gtk/interface.c:239
 msgid ""
 "Try to guess unrecognized fonts in scaned text using internal dictionary"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:242
+#: examples/hocr-gtk/interface.c:243
 msgid "Use nikud"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:246
+#: examples/hocr-gtk/interface.c:247
 msgid "Try to guess nikud"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:250
+#: examples/hocr-gtk/interface.c:251
 msgid "Use spaces"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:254
+#: examples/hocr-gtk/interface.c:255
 msgid "Use spaces for tabs"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:258
+#: examples/hocr-gtk/interface.c:259
 msgid "Use indentation"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:262
+#: examples/hocr-gtk/interface.c:263
 msgid "Try to guess line indentation"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:266
+#: examples/hocr-gtk/interface.c:267
 msgid "_View"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:290
+#: examples/hocr-gtk/interface.c:291
 msgid "_Help"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:297
+#: examples/hocr-gtk/interface.c:298
 msgid "_About"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:314
+#: examples/hocr-gtk/interface.c:315
 msgid "Open a new picture for the OCR"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:321
+#: examples/hocr-gtk/interface.c:322
 msgid "Convert picture to text"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:328
+#: examples/hocr-gtk/interface.c:329
 msgid "Save the text created by the OCR"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:344
+#: examples/hocr-gtk/interface.c:345
 msgid "Spell check the text"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:381
+#: examples/hocr-gtk/interface.c:382
 msgid "About this application"
 msgstr ""
 
