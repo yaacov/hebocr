@@ -392,7 +392,6 @@ unsigned int
 hocr_pixbuf_merge_objects (hocr_pixbuf * pix, unsigned int object1,
 			   unsigned int object2)
 {
-	int x, y;
 	unsigned int temp_object;
 
 	/* object1 is the smaller */

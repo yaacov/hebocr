@@ -993,7 +993,6 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int end, start, end2, start2;
 	int number_of_bars;
-	int start_of_right_bar, end_of_right_bar;
 
 	/* helps if patach is atached */
 	font.y2 += 3;
@@ -2052,8 +2051,6 @@ int
 has_tzadi_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
 	int number_of_bars;
-	int end_of_top_bar;
-	int start_of_top_bar;
 	int end_of_right_bar;
 	int start_of_right_bar;
 
@@ -2277,7 +2274,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	unsigned int box_obj = 0;
 	unsigned int object_array[MAX_OBJECTS_IN_FONT];
 	unsigned int box_object_array[MAX_OBJECTS_IN_FONT];
-	hocr_object main_object;
+
 	int low_line_y;
 	int high_line_y;
 	int number_of_object_in_font;
@@ -3202,7 +3199,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 							 (over_font_box.x1 +
 							  avg_font_width / 2))))
 			{
-				strcat (chars, "ֹ");
+				chars[0] = '\0';
 				found_nikud = TRUE;
 			}
 		}
@@ -3223,7 +3220,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 			 && (font.x1 < next_font.x2 || font.x2 > prev_font.x1))
 		{
 			/* may be an arteffact or part of font */
-			sprintf (chars, "");
+			chars[0] = '\0';
 		}
 		else
 		{

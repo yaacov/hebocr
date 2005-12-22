@@ -86,6 +86,9 @@ typedef struct
 
 } hocr_pixbuf;
 
+int
+hocr_line_eq_get_y (hocr_line_eq line, int x);
+
 /**
  @brief get objects in a box
 

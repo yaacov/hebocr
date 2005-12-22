@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-libhocr_la_CFLAGS =\
-	 -Wall\
-     -g
+INCLUDES = @PACKAGE_CFLAGS@ -g -Wall
+
+libhocr_la_CFLAGS = @PACKAGE_CFLAGS@ -g -Wall
 
 lib_LTLIBRARIES = libhocr.la
 
@@ -18,6 +18,6 @@ libhocr_la_SOURCES = \
 
 libhocr_la_LDFLAGS = -version-info $(VERSION_INFO)
 
-libhocr_la_LIBADD = 
+libhocr_la_LIBADD = @PACKAGE_LIBS@
 
 include_HEADERS = hocr.h hocr_pixbuf.h hocr_object.h hocr_textbuffer.h

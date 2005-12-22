@@ -59,7 +59,7 @@ count_object_array (unsigned int *object_array)
 {
 	int i;
 
-	for (i = 0; i < MAX_OBJECTS_IN_FONT, object_array[i]; i++) ;
+	for (i = 0; i < MAX_OBJECTS_IN_FONT && object_array[i]; i++) ;
 
 	return i;
 }

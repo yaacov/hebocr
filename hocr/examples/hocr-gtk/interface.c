@@ -109,10 +109,7 @@ create_window1 (void)
 	GtkWidget *toolitem3;
 	GtkWidget *vseparator3;
 	GtkWidget *toolbutton_about;
-	GtkWidget *toolitem4;
-	GtkWidget *vseparator4;
-	GtkWidget *toolbutton_quit;
-
+	
 	/* image */
 	GtkWidget *vpaned1;
 	GtkWidget *scrolledwindow_image;
@@ -380,21 +377,7 @@ create_window1 (void)
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_about);
 	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_about), tooltips,
 				   _("About this application"), NULL);
-/*
-	toolitem4 = (GtkWidget *) gtk_tool_item_new ();
-	gtk_widget_show (toolitem4);
-	gtk_container_add (GTK_CONTAINER (toolbar), toolitem4);
-	vseparator4 = gtk_vseparator_new ();
-	gtk_widget_show (vseparator4);
-	gtk_container_add (GTK_CONTAINER (toolitem4), vseparator4);
 
-	toolbutton_quit =
-		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-quit");
-	gtk_widget_show (toolbutton_quit);
-	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_quit);
-	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_quit), tooltips,
-				   _("Quit this program"), NULL);
-*/
 	/* image */
 	vpaned1 = gtk_vpaned_new ();
 	gtk_widget_show (vpaned1);
@@ -462,11 +445,6 @@ create_window1 (void)
 	g_signal_connect ((gpointer) toolbutton_spell, "clicked",
 			  G_CALLBACK (on_toolbutton_spell_clicked), NULL);
 #endif
-
-/*
-	g_signal_connect ((gpointer) toolbutton_quit, "clicked",
-			  G_CALLBACK (on_toolbutton_quit_clicked), NULL);
- */
  
 	/* menu */
 	g_signal_connect ((gpointer) open, "activate",

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hocr 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-21 10:56+0200\n"
+"POT-Creation-Date: 2005-12-21 11:56+0200\n"
 "PO-Revision-Date: 2005-08-17 02:49+0300\n"
 "Last-Translator: kzamir <kzamir@walla.co.il>\n"
 "Language-Team: Hebrew <LL@li.org>\n"
@@ -144,7 +144,7 @@ msgid "translator_credits"
 msgstr "יעקב זמיר"
 
 #. create font dialog
-#: examples/hocr-gtk/callbacks.c:496
+#: examples/hocr-gtk/callbacks.c:498
 msgid "Set text font"
 msgstr "קבע את אותיות אזור הטקסט"
 

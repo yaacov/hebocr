@@ -152,7 +152,6 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 {
 	int x, y;
 	int sum;
-	int inside_font = FALSE;
 	unsigned int object;
 
 	for (x = current_pos - MIN_DISTANCE_BETWEEN_FONTS; x > 0; x--)
