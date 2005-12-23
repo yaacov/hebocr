@@ -77,13 +77,21 @@ typedef struct
 
 	/** objects list */
 	hocr_object *objects;
-	/* number of objects found */
+	
+	/** number of objects found */
 	int num_of_objects;
 
-	/* I/O members */
+	/** commands passed to the ocr */
 	unsigned char command;
+	
+	/** error returned from the ocr */
 	unsigned char error;
-
+	
+	/** progress phase of ocr: object identification, page layout anlisis, .. */
+	unsigned char progress_phase;
+	
+	/** progress of ocr: 1..100 */
+	unsigned char progress;
 } hocr_pixbuf;
 
 int

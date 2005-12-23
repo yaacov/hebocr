@@ -458,6 +458,10 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 	/* fill the object map */
 	for (y = 1; y < pix->height; y++)
 	{
+		/* progress the progress indicator */
+		pix->progress =
+			0 + ((double) y / (double) pix->height) * 255.0;
+		
 		for (x = 1; x < pix->width; x++)
 		{
 			/* if this is part of an object */
@@ -596,8 +600,10 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 				pix->objects[i].y2 - pix->objects[i].y1;
 			pix->objects[i].width =
 				pix->objects[i].x2 - pix->objects[i].x1;
-			
-			if (pix->objects[i].weight < 6 || pix->objects[i].hight < 1 || pix->objects[i].width < 1)
+
+			if (pix->objects[i].weight < 6
+			    || pix->objects[i].hight < 1
+			    || pix->objects[i].width < 1)
 				pix->objects[i].name = 0;
 		}
 		else

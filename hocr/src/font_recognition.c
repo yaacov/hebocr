@@ -1490,7 +1490,7 @@ has_kaf_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	if (number_of_bars != 1)
 		return 0;
 
-	if (((double) font.hight / (double) font.width) > 1.5)
+	if (((double) font.hight / (double) font.width) > 1.2)
 	{
 		font.x1 -= 2;
 		font.x2 += 2;
@@ -1517,6 +1517,13 @@ has_kaf_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	int end_of_right_bar;
 	int start_of_right_bar;
 
+	/* if not tall or too tall font not kaf sofit */
+	if (((double) font.hight / (double) font.width) < 1.5 ||
+		((double) font.hight / (double) font.width) > 2.5)
+	{
+		return 0;
+	}
+	
 	number_of_bars =
 		count_horizontal_bars (pix, font, font.x1 + font.width / 2,
 				       &start_of_top_bar, &end_of_top_bar, obj);
@@ -1760,7 +1767,7 @@ has_nun_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 int
 has_nun_sofit_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 {
-	if (font.width && font.hight / font.width < 3)
+	if (font.width && (((double)font.hight / (double)font.width) < 2.5))
 		return 0;
 
 	return 1;
@@ -2304,6 +2311,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	/* get line y */
 	high_line_y = hocr_line_eq_get_y (line_eqs[1], font.x1);
 	low_line_y = hocr_line_eq_get_y (line_eqs[0], font.x1);
+
 	/* check if font is in the line ? */
 	if (font.y1 > low_line_y || font.y2 < high_line_y)
 	{
@@ -2341,7 +2349,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	/* get font proportions */
 	short_font = font.hight < (0.8 * (double) avg_font_hight);
 	tall_font = font.hight > (1.2 * (double) avg_font_hight);
-	thin_font = font.width < (0.75 * (double) avg_font_width);
+	thin_font = font.width < (0.85 * (double) avg_font_width);
 	wide_font = font.width > (1.2 * (double) avg_font_width);
 	assending_font =
 		(font.y1 < (high_line_y - (0.1 * (double) avg_font_hight)));
@@ -2597,7 +2605,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 			{
 				/* if seconde part is dessending it's kof */
 				if (pix->objects[object_array[i]].y2 >
-				    (low_line_y + 3))
+				    (pix->objects[object_array[0]].y2 + 3))
 				{
 					sprintf (chars, "ק");
 					two_part_font = TRUE;
@@ -2737,8 +2745,10 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	if (!chars[0])
 	{
 		/* TODO: check for attached nikud */
-		font.y1 = high_line_y;
-		font.y2 = low_line_y;
+		if (font.y1 < high_line_y)
+			font.y1 = high_line_y;
+		if (font.y2 > low_line_y)
+			font.y2 = low_line_y;
 		font.hight = font.y2 - font.y1;
 		tall_font = FALSE;
 	}
@@ -3199,7 +3209,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 							 (over_font_box.x1 +
 							  avg_font_width / 2))))
 			{
-				chars[0] = '\0';
+				strcat (chars, "ֹ");
 				found_nikud = TRUE;
 			}
 		}

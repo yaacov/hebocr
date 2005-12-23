@@ -149,7 +149,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	int num_of_columns_in_page = 0;
 	int num_of_lines_in_page = 0;
 	int num_of_fonts_in_page = 0;
-	int num_of_regular_fonts_in_page = 0;
 
 	int avg_line_hight_in_page = 0;
 	int avg_line_x_start_in_column[MAX_COLUMNS];
@@ -157,8 +156,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	int avg_diff_between_fonts_in_page = 0;
 	int avg_font_width_in_page = 0;
 	int avg_font_hight_in_page = 0;
-	int avg_regular_font_width_in_page = 0;
-	int avg_regular_font_hight_in_page = 0;
 
 	int c;
 	int i, j, k;
@@ -170,6 +167,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	int end_of_word = 0;
 	int tabs = 0;
 	int indent = 0;
+	int font_number = 0;
+	
+	/* init the progress indicators */
+	pix->progress = 0;
+	pix->progress_phase = 0;
 
 	/* memory allocation */
 	columns = (hocr_box *) malloc (sizeof (hocr_box) * MAX_COLUMNS);
@@ -194,9 +196,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	}
 
 	/* create and fill the object map */
+	pix->progress_phase = 1;
 	hocr_pixbuf_create_object_map (pix);
 
 	/* get columns for this page */
+	pix->progress_phase = 2;
 	fill_columns_array (pix, columns, &num_of_columns_in_page, MAX_COLUMNS);
 
 	/* get lines in this column */
@@ -325,63 +329,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				(num_of_fonts_in_page - 1);
 	}
 
-	/* avg over regular fonts only to get better avg_font_hight_in_page */
-	num_of_regular_fonts_in_page = 0;
-	avg_regular_font_hight_in_page = 0;
-	avg_regular_font_hight_in_page = 0;
-	for (c = 0; c < num_of_columns_in_page; c++)
-	{
-		for (i = 0; i < num_of_lines[c]; i++)
-		{
-			if (lines[c * MAX_LINES + i].hight >
-			    (avg_line_hight_in_page -
-			     1.5 * MIN_DISTANCE_BETWEEN_LINES))
-			{
-				for (j = 0; j < num_of_fonts[c][i]; j++)
-				{
-					if (fonts
-					    [c * MAX_LINES * MAX_FONTS_IN_LINE +
-					     i * MAX_FONTS_IN_LINE + j].hight <
-					    ((1000 +
-					      FONT_ASSEND) *
-					     avg_font_hight_in_page / 1000)
-					    && fonts[c * MAX_LINES *
-						     MAX_FONTS_IN_LINE +
-						     i * MAX_FONTS_IN_LINE +
-						     j].hight >
-					    ((1000 -
-					      FONT_ASSEND) *
-					     avg_font_hight_in_page / 1000))
-					{
-						num_of_regular_fonts_in_page++;
-						avg_regular_font_width_in_page
-							+=
-							fonts[c * MAX_LINES *
-							      MAX_FONTS_IN_LINE
-							      +
-							      i *
-							      MAX_FONTS_IN_LINE
-							      + j].width;
-						avg_regular_font_hight_in_page
-							+=
-							fonts[c * MAX_LINES *
-							      MAX_FONTS_IN_LINE
-							      +
-							      i *
-							      MAX_FONTS_IN_LINE
-							      + j].hight;
-					}
-				}
-			}
-		}
-	}
-
-	if (num_of_regular_fonts_in_page != 0)
-	{
-		avg_regular_font_width_in_page /= num_of_regular_fonts_in_page;
-		avg_regular_font_hight_in_page /= num_of_regular_fonts_in_page;
-	}
-
 	/* get line equations for non horizontal lines */
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
@@ -395,7 +342,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						       i * MAX_FONTS_IN_LINE]),
 					       &(line_eqs[c][i][0]),
 					       &(line_eqs[c][i][1]),
-					       avg_regular_font_hight_in_page,
+					       avg_font_hight_in_page,
 					       num_of_fonts[c][i]);
 			/* if line is very not horizontal return error */
 			if ((line_eqs[c][i][0].a *
@@ -448,14 +395,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					     i * MAX_FONTS_IN_LINE + j].width >
 					    (3.5 *
 					     (double)
-					     avg_regular_font_width_in_page)
+					     avg_font_width_in_page)
 					    || fonts[c * MAX_LINES *
 						     MAX_FONTS_IN_LINE +
 						     i * MAX_FONTS_IN_LINE +
 						     j].hight >
 					    (3.5 *
 					     (double)
-					     avg_regular_font_hight_in_page))
+					     avg_font_hight_in_page))
 						continue;
 					color_hocr_box (pix,
 							fonts[c * MAX_LINES *
@@ -470,6 +417,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	}
 
 	/* do ocr ? */
+	pix->progress_phase = 3;
+	font_number = 0;
 	if ((pix->command & HOCR_COMMAND_OCR))
 	{
 		/* get all fonts for all the lines */
@@ -515,6 +464,15 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 				for (j = 0; j < num_of_fonts[c][i]; j++)
 				{
+					/* progress the progress indicator */
+					/* start at 255 because 256 is the end of object count */
+					pix->progress =
+						256 +
+						((double) font_number /
+						 (double) num_of_fonts_in_page)
+						* 255.0;
+					font_number++;
+
 					if ((j + 1) < num_of_fonts[c][i])
 					{
 						/* check for end of word */
@@ -534,7 +492,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 							 MIN_DISTANCE_BETWEEN_WORDS);
 
 						/* check for tabs */
-						if (avg_regular_font_width_in_page)
+						if (avg_font_width_in_page)
 							tabs = (fonts
 								[c *
 								 MAX_LINES *
@@ -554,7 +512,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 								      1].x2) /
 								(NUM_OF_FONTS_IN_TAB
 								 *
-								 avg_regular_font_width_in_page);
+								 avg_font_width_in_page);
 						else
 							tabs = 0;
 					}
@@ -582,14 +540,14 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					     i * MAX_FONTS_IN_LINE + j].width >
 					    (3.5 *
 					     (double)
-					     avg_regular_font_width_in_page)
+					     avg_font_width_in_page)
 					    || fonts[c * MAX_LINES *
 						     MAX_FONTS_IN_LINE +
 						     i * MAX_FONTS_IN_LINE +
 						     j].hight >
 					    (3.5 *
 					     (double)
-					     avg_regular_font_hight_in_page))
+					     avg_font_hight_in_page))
 					{
 						/* check for end of word */
 						if (end_of_word)
@@ -610,8 +568,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 								     MAX_FONTS_IN_LINE]),
 							     num_of_fonts[c][i],
 							     j, line_eqs[c][i],
-							     avg_regular_font_hight_in_page,
-							     avg_regular_font_width_in_page,
+							     avg_font_hight_in_page,
+							     avg_font_width_in_page,
 							     chars,
 							     pix->command);
 
