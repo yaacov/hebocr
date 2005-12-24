@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-//#define DEBUG
+#define DEBUG
 
 /* 
  font markers
@@ -49,8 +49,8 @@ has_black_right_bottom_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 
 	sum = 0;
 	/* check a 6*6 triangle */
-	for (x = font.x2; x > (font.x2 - 2); x--)
-		for (y = font.y2; y > (font.y2 - (x - (font.x1 - 2))); y--)
+	for (x = font.x2; x > (font.x2 - 6); x--)
+		for (y = font.y2; y > (font.y2 - (x - (font.x2 - 6))); y--)
 		{
 			sum += (hocr_pixbuf_get_object (pix, x, y) ==
 				obj) ? 1 : 0;
@@ -449,7 +449,8 @@ find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 	for (x = x2; x > x1; x--)
 	{
 		sum = 0;
-		y = y2 - 3;
+		y = y2;
+
 		while (y > y1 && sum < 2)
 		{
 			sum = ((hocr_pixbuf_get_object (pix, x, y) ==
@@ -459,11 +460,11 @@ find_vertical_notch_down_to_left (hocr_pixbuf * pix, int x1, int y1, int x2,
 			y--;
 		}
 
-		if (max > (y2 - y + 1))
+		if (max > (y2 - y))
 		{
 			return 1;
-
 		}
+
 		if (max < (y2 - y))
 			max = (y2 - y);
 	}
@@ -1219,7 +1220,7 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	font.hight = font.y2 - font.y1;
 
 	/* chek if this is realy is a thin font */
-	if (font.width && ((double) font.hight / (double) font.width) < 1.9)
+	if (font.width && ((double) font.hight / (double) font.width) < 1.5)
 		return 0;
 
 	number_of_bars =
@@ -1235,7 +1236,16 @@ has_vav_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 				     obj);
 
 	if (number_of_bars != 1)
-		return 0;
+	{
+		number_of_bars =
+			count_vertical_bars (pix, font,
+					     font.y1 + 2 * font.hight / 3,
+					     &start_of_right_bar,
+					     &end_of_right_bar, obj);
+
+		if (number_of_bars != 1)
+			return 0;
+	}
 
 	/* this is not top bar */
 	if (end_of_top_bar > (font.y1 + font.hight / 2))
@@ -1654,9 +1664,11 @@ has_mem_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 	     end_of_right_bar - 3, font.y2, obj) == 0)
 		return 0;
 
-	if (!find_vertical_notch_down_to_left (pix, font.x1, font.y1+font.hight/2, font.x1+ font.width/3, font.y2, obj))
+	if (!find_vertical_notch_down_to_left
+	    (pix, font.x1, font.y1 + font.hight / 2, font.x1 + font.width / 2,
+	     font.y2, obj))
 		return 0;
-	
+
 	return 1;
 }
 
@@ -1947,6 +1959,9 @@ has_ayin_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 		return 0;
 
 	if (has_black_left_bottom_mark (pix, font, obj) == 0)
+		return 0;
+
+	if (has_black_right_bottom_mark (pix, font, obj) == 1)
 		return 0;
 
 	/* not pe */
@@ -2496,13 +2511,11 @@ has_close_brace_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 		return 0;
 
 	if (find_horizontal_notch_to_left_up
-	    (pix, font.x1, font.y1, font.x2,
-	     font.y1 + font.hight / 3, obj))
+	    (pix, font.x1, font.y1, font.x2, font.y1 + font.hight / 3, obj))
 		return 0;
 
 	if (find_horizontal_notch_to_left_down
-	    (pix, font.x1, font.y1 + 2 * font.hight / 3,
-	     font.x2, font.y2, obj))
+	    (pix, font.x1, font.y1 + 2 * font.hight / 3, font.x2, font.y2, obj))
 		return 0;
 
 	return 1;
@@ -2963,6 +2976,10 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				/* kaf sofit */
 				sprintf (chars, "ך");
 			}
+			else if (has_ayin_mark (pix, font, obj))
+			{
+				sprintf (chars, "ע");
+			}
 			else if (has_tzadi_sofit_mark (pix, font, obj))
 			{
 				/* tzadi */
@@ -2988,6 +3005,10 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				{
 					sprintf (chars, "ך");
 				}
+				else if (has_ayin_mark (pix, font, obj))
+				{
+					sprintf (chars, "ע");
+				}
 				else if (has_pe_sofit_mark (pix, font, obj))
 				{
 					sprintf (chars, "ף");
@@ -2995,10 +3016,6 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				else if (has_tzadi_sofit_mark (pix, font, obj))
 				{
 					sprintf (chars, "ץ");
-				}
-				else if (has_ayin_mark (pix, font, obj))
-				{
-					sprintf (chars, "ע");
 				}
 			}
 			else
