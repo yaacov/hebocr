@@ -109,7 +109,7 @@ create_window1 (void)
 	GtkWidget *toolitem3;
 	GtkWidget *vseparator3;
 	GtkWidget *toolbutton_about;
-	
+
 	/* image */
 	GtkWidget *vpaned1;
 	GtkWidget *scrolledwindow_image;
@@ -231,7 +231,8 @@ create_window1 (void)
 	gtk_widget_show (use_dict);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_dict);
 	gtk_tooltips_set_tip (tooltips, use_dict,
-			      _("Try to guess unrecognized fonts in scaned text using internal dictionary"),
+			      _
+			      ("Try to guess unrecognized fonts in scaned text using internal dictionary"),
 			      NULL);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_dict), FALSE);
 
@@ -239,26 +240,26 @@ create_window1 (void)
 	gtk_widget_show (use_nikud);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_nikud);
 	gtk_tooltips_set_tip (tooltips, use_nikud,
-			      _("Try to guess nikud"),
-			      NULL);
+			      _("Try to guess nikud"), NULL);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_nikud), TRUE);
 
 	use_spaces = gtk_check_menu_item_new_with_mnemonic (_("Use spaces"));
 	gtk_widget_show (use_spaces);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_spaces);
 	gtk_tooltips_set_tip (tooltips, use_spaces,
-			      _("Use spaces for tabs"),
-			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_spaces), FALSE);
+			      _("Use spaces for tabs"), NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_spaces),
+					FALSE);
 
-	use_indent = gtk_check_menu_item_new_with_mnemonic (_("Use indentation"));
+	use_indent =
+		gtk_check_menu_item_new_with_mnemonic (_("Use indentation"));
 	gtk_widget_show (use_indent);
 	gtk_container_add (GTK_CONTAINER (menuitem2_menu), use_indent);
 	gtk_tooltips_set_tip (tooltips, use_indent,
-			      _("Try to guess line indentation"),
-			      NULL);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_indent), FALSE);
-	
+			      _("Try to guess line indentation"), NULL);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_indent),
+					FALSE);
+
 	menuitem3 = gtk_menu_item_new_with_mnemonic (_("_View"));
 	gtk_widget_show (menuitem3);
 	gtk_container_add (GTK_CONTAINER (menubar1), menuitem3);
@@ -412,19 +413,25 @@ create_window1 (void)
 	textview = gtk_text_view_new ();
 	gtk_widget_show (textview);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_text), textview);
-	font_desc = pango_font_description_from_string
-			(font_name);
+	font_desc = pango_font_description_from_string (font_name);
 	gtk_widget_modify_font (textview, font_desc);
 
 	font_name = g_strdup (TEXT_FONT_NAME);
 
 	/* progress bar */
+	hbox2 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
+
 	pbar = gtk_progress_bar_new ();
-	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR (pbar),
-					  GTK_PROGRESS_LEFT_TO_RIGHT);
-	gtk_box_pack_start (GTK_BOX (vbox1), pbar, FALSE, FALSE, 0);
 	gtk_widget_show (pbar);
-	
+	gtk_box_pack_start (GTK_BOX (hbox2), pbar, FALSE, FALSE, 0);
+	gtk_widget_set_size_request (pbar, 100, -1);
+
+	statusbar1 = gtk_statusbar_new ();
+	gtk_widget_show (statusbar1);
+	gtk_box_pack_start (GTK_BOX (hbox2), statusbar1, TRUE, TRUE, 0);
+
 	/* main window */
 	g_signal_connect ((gpointer) window1, "delete_event",
 			  G_CALLBACK (on_window1_delete_event), NULL);
@@ -450,7 +457,10 @@ create_window1 (void)
 	g_signal_connect ((gpointer) toolbutton_spell, "clicked",
 			  G_CALLBACK (on_toolbutton_spell_clicked), NULL);
 #endif
- 
+
+	/* readf rc file */
+	get_rc_file();
+	
 	/* menu */
 	g_signal_connect ((gpointer) open, "activate",
 			  G_CALLBACK (on_open_activate), NULL);

@@ -81,3 +81,7 @@ void on_zoom_out_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_normal_size_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void on_about_activate (GtkMenuItem * menuitem, gpointer user_data);
+
+void get_rc_file ();
+
+void set_rc_file ();

@@ -38,6 +38,8 @@
 #include "interface.h"
 #include "hocr.h"
 
+static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+
 GdkPixbuf *pixbuf = NULL;
 GdkPixbuf *vis_pixbuf = NULL;
 
@@ -62,10 +64,10 @@ gboolean
 redraw_pixbuf (gpointer data)
 {
 	int width, height;
-	GtkTextBuffer *text_buffer = ((text_struct*)data)->text_buffer;
-	hocr_text_buffer *text = ((text_struct*)data)->text;
+	GtkTextBuffer *text_buffer = ((text_struct *) data)->text_buffer;
+	hocr_text_buffer *text = ((text_struct *) data)->text;
 	GtkTextIter iter;
-	
+
 	height = gdk_pixbuf_get_height (vis_pixbuf);
 	width = gdk_pixbuf_get_width (vis_pixbuf);
 
@@ -88,7 +90,7 @@ redraw_pixbuf (gpointer data)
 	gtk_text_buffer_get_end_iter (text_buffer, &iter);
 
 	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
-	
+
 	/* unref text_buffer */
 	hocr_text_buffer_unref (text);
 
@@ -108,8 +110,12 @@ ocr_thread (gpointer data)
 
 	guint timeout_id;
 
+	/* only one run is posible */
+	if (!g_static_mutex_trylock (&mutex))
+		return data;
+
 	text_buffer = (GtkTextBuffer *) data;
-	
+
 	hocr_pix = hocr_pixbuf_new ();	/* get an empty hocr_pix */
 	if (!hocr_pix)
 	{
@@ -190,7 +196,10 @@ ocr_thread (gpointer data)
 	/* redraw the pixbuf */
 	text_struct_instance.text = text;
 	text_struct_instance.text_buffer = text_buffer;
-	gtk_timeout_add (100, redraw_pixbuf, (gpointer) &text_struct_instance);
+	gtk_timeout_add (100, redraw_pixbuf, (gpointer) & text_struct_instance);
+
+	/* unlock mutex */
+	g_static_mutex_unlock (&mutex);
 
 	return data;
 }
@@ -238,17 +247,26 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 	char *filename;
 	char title[255];
 
-	GtkWidget *preview_frame = gtk_frame_new ("preview");
-	GtkWidget *preview = gtk_image_new ();
-	GtkWidget *my_file_chooser =
+	GtkWidget *preview_frame;
+	GtkWidget *preview;
+	GtkWidget *my_file_chooser;
+
+	/* only one run is posible */
+	if (!g_static_mutex_trylock (&mutex))
+		return;
+
+	preview_frame = gtk_frame_new ("preview");
+
+	preview = gtk_image_new ();
+
+	my_file_chooser =
 		gtk_file_chooser_dialog_new ("hocr open image",
 					     GTK_WINDOW (window1),
 					     GTK_FILE_CHOOSER_ACTION_OPEN,
 					     GTK_STOCK_CANCEL,
 					     GTK_RESPONSE_CANCEL,
 					     GTK_STOCK_OPEN,
-					     GTK_RESPONSE_ACCEPT,
-					     NULL);
+					     GTK_RESPONSE_ACCEPT, NULL);
 
 	gtk_widget_show (preview);
 	gtk_container_add (GTK_CONTAINER (preview_frame), preview);
@@ -284,6 +302,11 @@ on_toolbutton_open_clicked (GtkToolButton * toolbutton, gpointer user_data)
 	}
 
 	gtk_widget_destroy (my_file_chooser);
+
+	/* unlock mutex */
+	g_static_mutex_unlock (&mutex);
+
+	return;
 }
 
 int
@@ -504,6 +527,8 @@ gboolean
 on_window1_delete_event (GtkWidget * widget,
 			 GdkEvent * event, gpointer user_data)
 {
+	set_rc_file ();
+
 	if (pixbuf)
 	{
 		g_object_unref (pixbuf);
@@ -516,6 +541,8 @@ on_window1_delete_event (GtkWidget * widget,
 		vis_pixbuf = NULL;
 	}
 
+	g_free (font_name);
+
 	gtk_main_quit ();
 	return FALSE;
 }
@@ -523,6 +550,8 @@ on_window1_delete_event (GtkWidget * widget,
 void
 on_toolbutton_quit_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
+	set_rc_file ();
+
 	if (pixbuf)
 	{
 		g_object_unref (pixbuf);
@@ -633,4 +662,208 @@ void
 on_about_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	on_toolbutton_about_clicked (NULL, NULL);
+}
+
+void
+set_rc_file ()
+{
+	GKeyFile *key_file;
+	gchar *pathname = NULL;
+	GError *error = NULL;
+	gchar *content;
+
+	/* get menu items */
+
+	/* color boxes ? */
+	color_text_box_arg = gtk_check_menu_item_get_active
+		(GTK_CHECK_MENU_ITEM (color_text_box));
+
+	/* color misread fonts ? */
+	color_misread_arg = gtk_check_menu_item_get_active
+		(GTK_CHECK_MENU_ITEM (color_misread));
+
+	/* do ocr ? */
+	ocr_arg = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (ocr));
+
+	/* use dict ? */
+	use_dict_arg =
+		gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (use_dict));
+
+	/* use nikud ? */
+	use_nikud_arg =
+		gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+						(use_nikud));
+
+	/* use spaces ? */
+	use_spaces_arg =
+		gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+						(use_spaces));
+
+	/* use indentation ? */
+	use_indent_arg =
+		gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
+						(use_indent));
+
+	/* get path */
+	pathname = g_strdup_printf ("%s%s%s", g_get_home_dir (),
+				    G_DIR_SEPARATOR_S, ".hocr-gtk.rc");
+
+	/* create new key file data */
+	key_file = g_key_file_new ();
+
+	/* color boxes ? */
+	g_key_file_set_boolean (key_file, "hocr-gtk",
+				"color_text_box", color_text_box_arg);
+
+	/* color misread fonts ? */
+	g_key_file_set_boolean (key_file, "hocr-gtk",
+				"color_misread_arg", color_misread_arg);
+
+	/* do ocr ? */
+	g_key_file_set_boolean (key_file, "hocr-gtk", "ocr_arg", ocr_arg);
+
+	/* use dict ? */
+	g_key_file_set_boolean (key_file, "hocr-gtk",
+				"use_dict_arg", use_dict_arg);
+
+	/* use nikud ? */
+	g_key_file_set_boolean (key_file, "hocr-gtk",
+				"use_nikud_arg", use_nikud_arg);
+
+	/* use spaces ? */
+	g_key_file_set_boolean (key_file, "hocr-gtk",
+				"use_spaces_arg", use_spaces_arg);
+
+	/* use indentation ? */
+	g_key_file_set_boolean (key_file, "hocr-gtk",
+				"use_indent_arg", use_indent_arg);
+
+	/* font name */
+	g_key_file_set_string (key_file, "hocr-gtk", "font_name", font_name);
+
+	/* save data */
+	content = g_key_file_to_data (key_file, NULL, NULL);
+	g_file_set_contents (pathname, content, -1, &error);
+
+	g_key_file_free (key_file);
+	g_free (content);
+	g_free (pathname);
+}
+
+void
+get_rc_file ()
+{
+	gchar *pathname = NULL;
+	GError *error = NULL;
+	PangoFontDescription *font_desc;
+
+	/* get path */
+	pathname = g_strdup_printf ("%s%s%s", g_get_home_dir (),
+				    G_DIR_SEPARATOR_S, ".hocr-gtk.rc");
+
+	/* is file exist ? */
+	if (g_file_test (pathname, G_FILE_TEST_EXISTS))
+	{
+		GKeyFile *key_file;
+
+		/* create new key file data */
+		key_file = g_key_file_new ();
+
+		if (g_key_file_load_from_file (key_file, pathname, 0, &error))
+		{
+			/* color boxes ? */
+			color_text_box_arg =
+				g_key_file_get_boolean (key_file, "hocr-gtk",
+							"color_text_box",
+							&error);
+
+			/* color misread fonts ? */
+			color_misread_arg =
+				g_key_file_get_boolean (key_file, "hocr-gtk",
+							"color_misread_arg",
+							&error);
+
+			/* do ocr ? */
+			ocr_arg =
+				g_key_file_get_boolean (key_file, "hocr-gtk",
+							"ocr_arg", &error);
+
+			/* use dict ? */
+			use_dict_arg =
+				g_key_file_get_boolean (key_file, "hocr-gtk",
+							"use_dict_arg", &error);
+
+			/* use nikud ? */
+			use_nikud_arg =
+				g_key_file_get_boolean (key_file, "hocr-gtk",
+							"use_nikud_arg",
+							&error);
+
+			/* use spaces ? */
+			use_spaces_arg =
+				g_key_file_get_boolean (key_file, "hocr-gtk",
+							"use_spaces_arg",
+							&error);
+
+			/* use indentation ? */
+			use_indent_arg =
+				g_key_file_get_boolean (key_file, "hocr-gtk",
+							"use_indent_arg",
+							&error);
+
+			/* font name */
+			if (font_name)
+				g_free (font_name);
+
+			font_name = g_key_file_get_string (key_file, "hocr-gtk",
+							   "font_name", &error);
+
+		}
+
+		g_key_file_free (key_file);
+	}
+	else
+	{
+		/* if no file create one */
+		set_rc_file ();
+	}
+
+	/* set menu items */
+
+	/* color boxes ? */
+	gtk_check_menu_item_set_active
+		(GTK_CHECK_MENU_ITEM (color_text_box), color_text_box_arg);
+
+	/* color misread fonts ? */
+	gtk_check_menu_item_set_active
+		(GTK_CHECK_MENU_ITEM (color_misread), color_misread_arg);
+
+	/* do ocr ? */
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ocr), ocr_arg);
+
+	/* use dict ? */
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_dict),
+					use_dict_arg);
+
+	/* use nikud ? */
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_nikud),
+					use_nikud_arg);
+
+	/* use spaces ? */
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_spaces),
+					use_spaces_arg);
+
+	/* use indentation ? */
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (use_indent),
+					use_indent_arg);
+
+	/* Change default font throughout the text widget */
+	font_desc = pango_font_description_from_string (font_name);
+
+	gtk_widget_modify_font (textview, font_desc);
+	pango_font_description_free (font_desc);
+
+	g_free (pathname);
+
+	return;
 }

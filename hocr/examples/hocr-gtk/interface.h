@@ -54,6 +54,8 @@
 /* main window */
 GtkWidget *window1;
 GtkWidget *pbar;
+GtkWidget *hbox2;
+GtkWidget *statusbar1;
 
 /* menu check boxs */
 GtkWidget *color_text_box;
@@ -72,7 +74,16 @@ GtkWidget *scrolledwindow_text;
 GtkWidget *textview;
 
 /* user font */
-char * font_name;
+char *font_name;
+
+/* user pref */
+gboolean color_text_box_arg;
+gboolean color_misread_arg;
+gboolean ocr_arg;
+gboolean use_dict_arg;
+gboolean use_nikud_arg;
+gboolean use_indent_arg;
+gboolean use_spaces_arg;
 
 /* user interface for window */
 GtkWidget *create_window1 (void);
