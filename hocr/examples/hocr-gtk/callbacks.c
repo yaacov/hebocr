@@ -41,17 +41,87 @@
 GdkPixbuf *pixbuf = NULL;
 GdkPixbuf *vis_pixbuf = NULL;
 
-int
-do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
+typedef struct _text_struct
 {
-	hocr_pixbuf *hocr_pix;
+	GtkTextBuffer *text_buffer;
 	hocr_text_buffer *text;
-	GtkTextIter iter;
+} text_struct;
 
+gboolean
+draw_progress_bar (gpointer data)
+{
+	hocr_pixbuf *hocr_pix = (hocr_pixbuf *) data;
+
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (pbar),
+				       (double) hocr_pix->progress / 256.0);
+
+	return TRUE;
+}
+
+gboolean
+redraw_pixbuf (gpointer data)
+{
+	int width, height;
+	GtkTextBuffer *text_buffer = ((text_struct*)data)->text_buffer;
+	hocr_text_buffer *text = ((text_struct*)data)->text;
+	GtkTextIter iter;
+	
+	height = gdk_pixbuf_get_height (vis_pixbuf);
+	width = gdk_pixbuf_get_width (vis_pixbuf);
+
+	if (pixbuf)
+	{
+		if (vis_pixbuf)
+		{
+			g_object_unref (vis_pixbuf);
+			vis_pixbuf = NULL;
+		}
+
+		vis_pixbuf = gdk_pixbuf_scale_simple (pixbuf, width,
+						      height,
+						      GDK_INTERP_BILINEAR);
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image), vis_pixbuf);
+	}
+
+	/* insert the text to the text editor */
+	gtk_text_buffer_get_end_iter (text_buffer, &iter);
+
+	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
+	
+	/* unref text_buffer */
+	hocr_text_buffer_unref (text);
+
+	gtk_widget_queue_draw (textview);
+	gtk_widget_queue_draw (image);
+
+	return FALSE;
+}
+
+gpointer
+ocr_thread (gpointer data)
+{
+	static GtkTextBuffer *text_buffer;
+	static hocr_text_buffer *text;
+	static hocr_pixbuf *hocr_pix;
+	static text_struct text_struct_instance;
+
+	guint timeout_id;
+
+	text_buffer = (GtkTextBuffer *) data;
+	
 	hocr_pix = hocr_pixbuf_new ();	/* get an empty hocr_pix */
 	if (!hocr_pix)
 	{
 		printf ("hocr-gtk: can\'t allocate memory for picture\n");
+		return 0;
+	}
+
+	/* create text buffer */
+	text = hocr_text_buffer_new ();
+	if (!text)
+	{
+		printf ("hocr-gtk: can\'t allocate memory for text out\n");
 		return 0;
 	}
 
@@ -77,51 +147,59 @@ do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
 		hocr_pix->command |= HOCR_COMMAND_OCR;
 
 	/* use dict ? */
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
-						       (use_dict)))
-		  hocr_pix->command |= HOCR_COMMAND_DICT;
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (use_dict)))
+		hocr_pix->command |= HOCR_COMMAND_DICT;
 
 	/* use nikud ? */
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
-						       (use_nikud)))
-		  hocr_pix->command |= HOCR_COMMAND_NIKUD;
-	
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (use_nikud)))
+		hocr_pix->command |= HOCR_COMMAND_NIKUD;
+
 	/* use spaces ? */
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
-						       (use_spaces)))
-		  hocr_pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
-	
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (use_spaces)))
+		hocr_pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
+
 	/* use indentation ? */
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM
-						       (use_indent)))
-		  hocr_pix->command |= HOCR_COMMAND_USE_INDENTATION;
-	
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (use_indent)))
+		hocr_pix->command |= HOCR_COMMAND_USE_INDENTATION;
+
 	hocr_pix->n_channels = gdk_pixbuf_get_n_channels (pixbuf);
 	hocr_pix->height = gdk_pixbuf_get_height (pixbuf);
 	hocr_pix->width = gdk_pixbuf_get_width (pixbuf);
 	hocr_pix->rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 	hocr_pix->pixels = (unsigned char *) (gdk_pixbuf_get_pixels (pixbuf));
 
-	/* create text buffer */
-	text = hocr_text_buffer_new ();
-	if (!text)
-	{
-		printf ("hocr-gtk: can\'t allocate memory for text out\n");
-		return 0;
-	}
+	/* open the ocr thread */
+	hocr_pix->progress = 0;
+	hocr_pix->progress_phase = 0;
 
+	/* set time out function to draw the progress bar */
+	timeout_id =
+		gtk_timeout_add (200, draw_progress_bar, (gpointer) hocr_pix);
+
+	/* call the ocr function */
 	hocr_do_ocr (hocr_pix, text);
 
-	gtk_text_buffer_get_end_iter (text_buffer, &iter);
-	gtk_text_buffer_insert (text_buffer, &iter, text->text, -1);
+	/* remove time out function to draw the progress bar */
+	gtk_timeout_remove (timeout_id);
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (pbar), 0.0);
 
 	/* unref hocr_pixbuf */
-	hocr_pix->pixels = NULL;	/* do not unreff the original GTK
-					 * picture */
+	hocr_pix->pixels = NULL;
 	hocr_pixbuf_unref (hocr_pix);
 
-	/* unref text_buffer */
-	hocr_text_buffer_unref (text);
+	/* redraw the pixbuf */
+	text_struct_instance.text = text;
+	text_struct_instance.text_buffer = text_buffer;
+	gtk_timeout_add (100, redraw_pixbuf, (gpointer) &text_struct_instance);
+
+	return data;
+}
+
+int
+do_ocr (GdkPixbuf * pixbuf, GtkTextBuffer * text_buffer)
+{
+	/* set ocr as a thread */
+	g_thread_create (ocr_thread, (gpointer) text_buffer, FALSE, NULL);
 
 	return 1;
 }
@@ -507,11 +585,10 @@ on_font_activate (GtkMenuItem * menuitem, gpointer user_data)
 		/* get the new font name */
 		g_free (font_name);
 		font_name = g_strdup (gtk_font_selection_dialog_get_font_name
-			 (GTK_FONT_SELECTION_DIALOG (fsd)));
-		
+				      (GTK_FONT_SELECTION_DIALOG (fsd)));
+
 		/* Change default font throughout the text widget */
-		font_desc = pango_font_description_from_string
-			(font_name);
+		font_desc = pango_font_description_from_string (font_name);
 
 		gtk_widget_modify_font (textview, font_desc);
 		pango_font_description_free (font_desc);

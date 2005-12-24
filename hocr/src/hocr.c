@@ -465,12 +465,12 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				for (j = 0; j < num_of_fonts[c][i]; j++)
 				{
 					/* progress the progress indicator */
-					/* start at 255 because 256 is the end of object count */
+					/* start at 128 because 128 is the end of object count */
 					pix->progress =
-						256 +
+						128 +
 						((double) font_number /
 						 (double) num_of_fonts_in_page)
-						* 255.0;
+						* 127.0;
 					font_number++;
 
 					if ((j + 1) < num_of_fonts[c][i])

@@ -115,8 +115,6 @@ create_window1 (void)
 	GtkWidget *scrolledwindow_image;
 
 	/* text */
-	GtkWidget *viewport1;
-	GtkWidget *scrolledwindow_text;
 	GtkTooltips *tooltips;
 
 	PangoFontDescription *font_desc;
@@ -420,6 +418,13 @@ create_window1 (void)
 
 	font_name = g_strdup (TEXT_FONT_NAME);
 
+	/* progress bar */
+	pbar = gtk_progress_bar_new ();
+	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR (pbar),
+					  GTK_PROGRESS_LEFT_TO_RIGHT);
+	gtk_box_pack_start (GTK_BOX (vbox1), pbar, FALSE, FALSE, 0);
+	gtk_widget_show (pbar);
+	
 	/* main window */
 	g_signal_connect ((gpointer) window1, "delete_event",
 			  G_CALLBACK (on_window1_delete_event), NULL);

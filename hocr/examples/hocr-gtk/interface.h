@@ -53,6 +53,7 @@
 
 /* main window */
 GtkWidget *window1;
+GtkWidget *pbar;
 
 /* menu check boxs */
 GtkWidget *color_text_box;
@@ -66,6 +67,8 @@ GtkWidget *use_indent;
 
 /* image and text of main window */
 GtkWidget *image;
+GtkWidget *viewport1;
+GtkWidget *scrolledwindow_text;
 GtkWidget *textview;
 
 /* user font */

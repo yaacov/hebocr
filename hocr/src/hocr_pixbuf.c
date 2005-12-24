@@ -458,12 +458,13 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 	/* fill the object map */
 	for (y = 1; y < pix->height; y++)
 	{
-		/* progress the progress indicator */
-		pix->progress =
-			0 + ((double) y / (double) pix->height) * 255.0;
-		
 		for (x = 1; x < pix->width; x++)
 		{
+			/* progress the progress indicator */
+			pix->progress =
+				((double) y * pix->width +
+				 (double) x) / ((double) pix->height *
+						(double) pix->width) * 127.0;
 			/* if this is part of an object */
 			if (hocr_pixbuf_get_pixel (pix, x, y) == 1)
 			{
@@ -495,7 +496,6 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 								 1) *
 								rowstride]].
 					name;
-
 				/* check that neigbors are from the same */
 				if (object1 && object2 && object3
 				    && (object1 != object2))
@@ -600,7 +600,6 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 				pix->objects[i].y2 - pix->objects[i].y1;
 			pix->objects[i].width =
 				pix->objects[i].x2 - pix->objects[i].x1;
-
 			if (pix->objects[i].weight < 6
 			    || pix->objects[i].hight < 1
 			    || pix->objects[i].width < 1)
@@ -614,13 +613,12 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 
 	/* count objects (bigger then MIN_OBJECT_WEIGHT) in pixbuf */
 	pix->num_of_objects = hocr_pixbuf_count_objects (pix);
-
 	return 0;
 }
 
 unsigned int
-hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
-				unsigned int *object_array)
+hocr_pixbuf_get_objects_in_box (hocr_pixbuf *
+				pix, hocr_box box, unsigned int *object_array)
 {
 	int x, y;
 	int i = 0;
@@ -629,15 +627,14 @@ hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
 
 	/* make sure none object have zero weight */
 	pix->objects[0].weight = 0;
-
 	clean_object_array (object_array);
-
 	for (x = box.x1; x < box.x2; x++)
 		for (y = box.y1; y < box.y2; y++)
 		{
 			if ((object =
 			     hocr_pixbuf_get_object (pix, x, y)) &&
-			    !(is_in_object_array (object, object_array))
+			    !(is_in_object_array
+			      (object, object_array))
 			    && (i < MAX_OBJECTS_IN_FONT))
 			{
 				/* add object to object array */
@@ -654,8 +651,9 @@ hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
 }
 
 unsigned int
-hocr_pixbuf_get_objects_inside_box (hocr_pixbuf * pix, hocr_box box,
-				    unsigned int *object_array)
+hocr_pixbuf_get_objects_inside_box (hocr_pixbuf
+				    * pix,
+				    hocr_box box, unsigned int *object_array)
 {
 	int x, y;
 	int i = 0;
@@ -664,9 +662,7 @@ hocr_pixbuf_get_objects_inside_box (hocr_pixbuf * pix, hocr_box box,
 
 	/* make sure none object have zero weight */
 	pix->objects[0].weight = 0;
-
 	clean_object_array (object_array);
-
 	for (x = box.x1; x < box.x2; x++)
 		for (y = box.y1; y < box.y2; y++)
 		{
@@ -676,7 +672,8 @@ hocr_pixbuf_get_objects_inside_box (hocr_pixbuf * pix, hocr_box box,
 			    pix->objects[object].x2 <= box.x2 &&
 			    pix->objects[object].y1 >= box.y1 &&
 			    pix->objects[object].y2 <= box.y2 &&
-			    !(is_in_object_array (object, object_array))
+			    !(is_in_object_array
+			      (object, object_array))
 			    && (i < MAX_OBJECTS_IN_FONT))
 			{
 				/* add object to object array */
@@ -697,15 +694,11 @@ hocr_pixbuf_unref (hocr_pixbuf * pix)
 {
 	if (pix->pixels)
 		free (pix->pixels);
-
 	if (pix->object_map)
 		free (pix->object_map);
-
 	if (pix->objects)
 		free (pix->objects);
-
 	if (pix)
 		free (pix);
-
 	return 1;
 }
