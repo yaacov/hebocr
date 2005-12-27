@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <glib.h>
 #include <gtk/gtk.h>
 
 #include "interface.h"
@@ -43,6 +44,9 @@ main (int argc, char *argv[])
 #endif
 
 	gtk_init (&argc, &argv);
+	
+	if (!g_thread_supported ()) g_thread_init (NULL);
+		
 	window1 = create_window1 ();
 	gtk_widget_show (window1);
 

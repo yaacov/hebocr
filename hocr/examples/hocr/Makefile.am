@@ -17,12 +17,21 @@ bin_PROGRAMS = hocr
 hocr_SOURCES = \
 	hocr-cmd.c
 
-hocr_DEPENDENCIES = $(DEPS)
-hocr_LDADD = ../../src/*.o $(INTLLIBS)
+#if WITH_WIN32
 
-hocr$(EXEEXT): $(hocr_OBJECTS) $(hocr_DEPENDENCIES)
-	@rm -f hocr$(EXEEXT)
-	$(CC) -o hocr$(EXEEXT) @PACKAGE_LIBS@ $(hocr_LDFLAGS) $(hocr_OBJECTS) $(hocr_LDADD) $(LIBS)
+#hocr_DEPENDENCIES = $(DEPS)
+#hocr_LDADD = ../../src/*.o $(INTLLIBS)
+
+#hocr$(EXEEXT): $(hocr_OBJECTS) $(hocr_DEPENDENCIES)
+#	@rm -f hocr$(EXEEXT)
+#	$(CC) -o hocr$(EXEEXT) @PACKAGE_LIBS@ $(hocr_LDFLAGS) $(hocr_OBJECTS) $(hocr_LDADD) $(LIBS)
+
+#else
+
+hocr_DEPENDENCIES = $(DEPS)
+hocr_LDADD = $(ldadd) $(INTLLIBS)
+
+#endif
 
 man_MANS = hocr.1
 

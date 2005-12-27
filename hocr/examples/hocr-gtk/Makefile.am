@@ -11,7 +11,11 @@ INCLUDES = \
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
         @PACKAGE_CFLAGS@ @gtk_CFLAGS@ @gtkspell_CFLAGS@ -I$(top_srcdir)/src
 
-hocr_gtk_LDADD = ../../src/*.o @PACKAGE_LIBS@ @gtk_LIBS@ @gtkspell_LIBS@ $(INTLLIBS)
+#if WITH_WIN32
+#hocr_gtk_LDADD = ../../src/*.o @PACKAGE_LIBS@ @gtk_LIBS@ @gtkspell_LIBS@ $(INTLLIBS)
+#else
+hocr_gtk_LDADD = $(ldadd) @PACKAGE_LIBS@ @gtk_LIBS@ @gtkspell_LIBS@ $(INTLLIBS)
+#endif
 
 else
 
@@ -20,7 +24,11 @@ INCLUDES = \
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
         @PACKAGE_CFLAGS@ @gtk_CFLAGS@ -I$(top_srcdir)/src
 
-hocr_gtk_LDADD = ../../src/*.o @PACKAGE_LIBS@ @gtk_LIBS@ $(INTLLIBS)
+#if WITH_WIN32
+#hocr_gtk_LDADD = ../../src/*.o @PACKAGE_LIBS@ @gtk_LIBS@ $(INTLLIBS)
+#else
+hocr_gtk_LDADD = $(ldadd) @PACKAGE_LIBS@ @gtk_LIBS@ $(INTLLIBS)
+#endif
 
 endif
 
@@ -36,9 +44,13 @@ hocr_gtk_SOURCES = \
 
 hocr_gtk_DEPENDENCIES = $(DEPS)
 
-hocr-gtk$(EXEEXT): $(hocr_gtk_OBJECTS) $(hocr_gtk_DEPENDENCIES)
-	@rm -f hocr-gtk$(EXEEXT)
-	$(CC) -o hocr-gtk$(EXEEXT) $(hocr_gtk_LDFLAGS) $(hocr_gtk_OBJECTS) $(hocr_gtk_LDADD) $(LIBS)
+#if WITH_WIN32
+
+#hocr-gtk$(EXEEXT): $(hocr_gtk_OBJECTS) $(hocr_gtk_DEPENDENCIES)
+#	@rm -f hocr-gtk$(EXEEXT)
+#	$(CC) -o hocr-gtk$(EXEEXT) $(hocr_gtk_LDFLAGS) $(hocr_gtk_OBJECTS) $(hocr_gtk_LDADD) $(LIBS)
+
+#endif
 
 hocrdesktopdir = ${prefix}/share/applications
 hocrdesktop_DATA = \
