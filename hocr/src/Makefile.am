@@ -20,4 +20,4 @@ libhocr_la_LDFLAGS = -version-info $(VERSION_INFO)
 
 libhocr_la_LIBADD = @PACKAGE_LIBS@
 
-include_HEADERS = hocr.h hocr_pixbuf.h hocr_object.h hocr_textbuffer.h
+include_HEADERS = hocrpp.h hocr.h hocr_pixbuf.h hocr_object.h hocr_textbuffer.h

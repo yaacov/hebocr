@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-24 23:20+0200\n"
+"POT-Creation-Date: 2005-12-31 12:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,14 +135,16 @@ msgid "HOCR-GTK"
 msgstr ""
 
 #: examples/hocr-gtk/callbacks.c:413
-msgid "HOCR-GTK - Hebrew character recognition software"
+msgid ""
+"HOCR-GTK - Hebrew character recognition software.\n"
+"This project is supported by a grant form the Israeli Internet Association."
 msgstr ""
 
-#: examples/hocr-gtk/callbacks.c:415
+#: examples/hocr-gtk/callbacks.c:416
 msgid "translator_credits"
 msgstr ""
 
 #. create font dialog
-#: examples/hocr-gtk/callbacks.c:605
+#: examples/hocr-gtk/callbacks.c:606
 msgid "Set text font"
 msgstr ""

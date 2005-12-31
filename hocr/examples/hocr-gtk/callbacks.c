@@ -410,7 +410,8 @@ on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data)
 			       "Copyright \xc2\xa9 2005 Yaacov Zamir",
 			       "comments",
 			       _
-			       ("HOCR-GTK - Hebrew character recognition software"),
+			       ("HOCR-GTK - Hebrew character recognition software.\n\
+This project is supported by a grant form the Israeli Internet Association."),
 			       "authors", authors, "documenters", documenters,
 			       "translator-credits", _("translator_credits"),
 			       NULL);
