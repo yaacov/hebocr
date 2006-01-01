@@ -2,13 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import sys
+
+# use the hocr python module
 from hocr import *
 
-# set pic path if given by user
+# get pnm picture file path from user
 if len(sys.argv) > 1:
-    pic = sys.argv[1]
-    hocr_engien = Hocr (pic)
-    hocr_engien.set_opt_n (0) # turn nikud off
+    
+    # create a new Hocr object from pnm picture file
+    hocr_engien = Hocr (sys.argv[1])
+    
+    # turn nikud off
+    hocr_engien.set_opt_n (0)
+    
+    # print out text
     print hocr_engien.do_ocr ()
 else:
     print "USAGE: hocr_py path_to_pnm_picture"
