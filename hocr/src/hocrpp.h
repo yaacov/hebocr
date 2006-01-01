@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            hocrpp.h
  *
@@ -26,6 +27,10 @@
 #define __HOCR_PP_H__
 
 #include <hocr.h>
+#include <hocr_textbuffer.h>
+#include <hocr_pixbuf.h>
+
+#include <string>
 
 /**
  @brief the libhocr namespace.
@@ -48,24 +53,36 @@ namespace hocr
 	class Hocr
 	{
 	      public:
-		////////////////////////////////////////
-		////////////////////////////////////////
+		// //////////////////////////////////////
+		// //////////////////////////////////////
 
 		/**
 		 @brief Hocr constructor.
 		 */
 		Hocr ()
 		{
-			h = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
-			
+			h = hocr_pixbuf_new ();	/* get an empty hocr_pix */
+
 			h->n_channels = 3;
 			h->brightness = 100;
 			h->pixels = NULL;
 			h->width = 0;
 			h->height = 0;
 			h->rowstride = 0;
+
+			/* no text yet */
+			t = (hocr_text_buffer *) 0;
+
+			/* init ocr options */
+			opt_i = 1;
+			opt_o = 1;
+			opt_f = 1;
+			opt_d = 1;
+			opt_n = 1;
+			opt_s = 0;
+			opt_t = 0;
 		}
-		
+
 		/**
 		 @brief Hocr constructor.
 			
@@ -74,6 +91,18 @@ namespace hocr
 		Hocr (const char *filename)
 		{
 			h = hocr_pixbuf_new_from_file (filename);
+
+			/* no text yet */
+			t = (hocr_text_buffer *) 0;
+
+			/* init ocr options */
+			opt_i = 1;
+			opt_o = 1;
+			opt_f = 1;
+			opt_d = 1;
+			opt_n = 1;
+			opt_s = 0;
+			opt_t = 0;
 		}
 
 		/**
@@ -87,18 +116,55 @@ namespace hocr
 		/**
 		 @brief do ocr on a hocr_pixbuf and return the result text to text_buffer
 
-		 @param text_buffer pointer to an already allocated text buffer for the results
-		 @param max_buffer_size site of allocated memory for text_buffer.
+		 @param text_string refernce to Cpp STL string that will get the text
 		 @return 1
 		 */
-		int do_ocr (char *text_buffer, int max_buffer_size)
+		int do_ocr (std::string & text_string)
 		{
-			return hocr_do_ocr (h, text_buffer,
-					    max_buffer_size);
+			h->command = HOCR_COMMAND_OCR;
+
+			/* use dict ? */
+			if (opt_d)
+				h->command |= HOCR_COMMAND_DICT;
+
+			/* use nikud ? */
+			if (opt_n)
+				h->command |= HOCR_COMMAND_NIKUD;
+
+			/* use spaces ? */
+			if (opt_s)
+				h->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
+
+			/* use indentation ? */
+			if (opt_t)
+				h->command |= HOCR_COMMAND_USE_INDENTATION;
+
+			/* if text exist free it */
+			if (t)
+				hocr_text_buffer_unref (t);
+			t = (hocr_text_buffer *) 0;
+
+			/* create text buffer */
+			t = hocr_text_buffer_new ();
+
+			/* do hocr */
+			h->progress = 0;
+			h->progress_phase = 0;
+			hocr_do_ocr (h, t);
+
+			/* copy text to new text buffer */
+			text_string = std::string (t->text);
+
+			/* if text exist free it */
+			if (t)
+				hocr_text_buffer_unref (t);
+			t = (hocr_text_buffer *) 0;
+
+			return 1;
 		}
 
-		////////////////////////////////////////
-		////////////////////////////////////////
+		// //////////////////////////////////////
+		// //////////////////////////////////////
 
 		/**
 		 @brief get number of channels
@@ -139,6 +205,7 @@ namespace hocr
 		{
 			return hocr_pixbuf_get_rowstride (h);
 		}
+
 		/**
 		 @brief get value from which a gray-scale pixel is considered white
 		
@@ -159,9 +226,9 @@ namespace hocr
 			return hocr_pixbuf_get_pixels (h);
 		}
 
-		//////////////////////////////////////////////
-		//////////////////////////////////////////////
-		
+		// ////////////////////////////////////////////
+		// ////////////////////////////////////////////
+
 		/**
 		 @brief set number of channels
 		
@@ -170,7 +237,7 @@ namespace hocr
 		int set_n_channels (int n)
 		{
 			h->n_channels = n;
-			
+
 			return n;
 		}
 
@@ -182,7 +249,7 @@ namespace hocr
 		int set_height (int n)
 		{
 			h->height = n;
-			
+
 			return n;
 		}
 
@@ -194,7 +261,7 @@ namespace hocr
 		int set_width (int n)
 		{
 			h->width = n;
-			
+
 			return n;
 		}
 
@@ -206,9 +273,10 @@ namespace hocr
 		int set_rowstride (int n)
 		{
 			h->rowstride = n;
-			
+
 			return n;
 		}
+
 		/**
 		 @brief set value from which a gray-scale pixel is considered white
 		
@@ -217,7 +285,7 @@ namespace hocr
 		int set_brightness (int n)
 		{
 			h->brightness = n;
-			
+
 			return n;
 		}
 
@@ -230,16 +298,16 @@ namespace hocr
 		
 		 @return pointer to raw pixpuf data
 		 */
-		unsigned char *set_pixels (unsigned char * p)
+		unsigned char *set_pixels (unsigned char *p)
 		{
 			h->pixels = p;
-			
+
 			return p;
 		}
-		
-		//////////////////////////////////////////////
-		//////////////////////////////////////////////
-		
+
+		// ////////////////////////////////////////////
+		// ////////////////////////////////////////////
+
 		/**
 		 @brief get color of pixel
 		
@@ -263,19 +331,27 @@ namespace hocr
 		 */
 		int set_pixel (int x, int y, int channel, int value)
 		{
-			return hocr_pixbuf_set_pixel (h, x, y, channel,
-						      value);
+			return hocr_pixbuf_set_pixel (h, x, y, channel, value);
 		}
 
-		////////////////////////////////////////
-		////////////////////////////////////////
+		// //////////////////////////////////////
+		// //////////////////////////////////////
 
 	      private:
 
 		hocr_pixbuf * h;
+		hocr_text_buffer *t;
+
+		int opt_i;
+		int opt_o;
+		int opt_f;
+		int opt_d;
+		int opt_n;
+		int opt_s;
+		int opt_t;
 
 	};
 
-}	// name space
+}				// name space
 
 #endif

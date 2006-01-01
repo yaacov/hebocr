@@ -28,31 +28,36 @@
 #ifndef __HOCR_TEXTBUFFER_H__
 #define __HOCR_TEXTBUFFER_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /** text buffer structore used by hocr
  
  This struct contain dynamicaly allocated string, You MUST
  use hocr_text_buffer_new and hocr_text_buffer_unref functions 
  to create this string and nuref it.
 */
-typedef struct
-{
+	typedef struct
+	{
 
 	/** get the text buffer. */
-	char *text;
+		char *text;
 
 	/** get number of chars in the text string. */
-	int size;
+		int size;
 
 	/** get number of chars allocated in memory. */
-	int allocated_size;
-} hocr_text_buffer;
+		int allocated_size;
+	} hocr_text_buffer;
 
 /**
  @brief creats a new hocr_text_buffer struct from file 
 
  @return pointer to a newly allocate hocr_text_buffer, or null if can not open file.
  */
-hocr_text_buffer *hocr_text_buffer_new ();
+	hocr_text_buffer *hocr_text_buffer_new ();
 
 /**
  @brief free a hocr_text_buffer struct from memory
@@ -60,7 +65,7 @@ hocr_text_buffer *hocr_text_buffer_new ();
  @param text_buffer pointer to hocr_text_buffer struct.
  @return 1
  */
-int hocr_text_buffer_unref (hocr_text_buffer * text_buffer);
+	int hocr_text_buffer_unref (hocr_text_buffer * text_buffer);
 
 /**
  @brief add a string to hocr_text_buffer struct
@@ -69,7 +74,11 @@ int hocr_text_buffer_unref (hocr_text_buffer * text_buffer);
  @param new_text pointer to the string to be added to the buffer.
  @return new size of text
  */
-int hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
-				 const char *new_text);
+	int hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
+					 const char *new_text);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

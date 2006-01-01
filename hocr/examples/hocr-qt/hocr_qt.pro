@@ -1,16 +1,8 @@
 
 TEMPLATE = app
 
-win32
-{
-	INCLUDEPATH += ../../src
-	LIBS += ../../src/.libs/libhocr.a
-}
-
-unix
-{
-	LIBS += -lhocr
-}
-
+#LIBS += -lhocr
+LIBS += ../../src/.libs/libhocr.a
+INCLUDEPATH += ../../src
 HEADERS += hocr_qt.h
 SOURCES += main.cpp hocr_qt.cpp
