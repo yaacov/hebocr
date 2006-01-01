@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src $(PO_DIR) tests examples
+SUBDIRS = src $(PO_DIR) tests examples bindings
 
 EXTRA_DIST = \
 	autogen.sh libhocr.pc.in libhocr.pc BUGS HACKING

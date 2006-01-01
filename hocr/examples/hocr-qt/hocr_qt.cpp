@@ -214,7 +214,7 @@ hocr_qt::apply ()
 		hocr_engine->set_n_channels (img.depth () / 8);
 		hocr_engine->set_brightness (100);
 
-		hocr_engine->do_ocr (text_string);
+		text_string = std::string (hocr_engine->do_ocr ());
 
 		// if not set_pixels to 0 will delete the original image
 		hocr_engine->set_pixels (0);

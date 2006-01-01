@@ -111,15 +111,16 @@ namespace hocr
 		 ~Hocr ()
 		{
 			hocr_pixbuf_unref (h);
+
+			if (t)
+				hocr_text_buffer_unref (t);
 		}
 
 		/**
 		 @brief do ocr on a hocr_pixbuf and return the result text to text_buffer
-
-		 @param text_string refernce to Cpp STL string that will get the text
-		 @return 1
+  		 @return a pointer to the internal char* array
 		 */
-		int do_ocr (std::string & text_string)
+		char *do_ocr ()
 		{
 			h->command = HOCR_COMMAND_OCR;
 
@@ -152,15 +153,7 @@ namespace hocr
 			h->progress_phase = 0;
 			hocr_do_ocr (h, t);
 
-			/* copy text to new text buffer */
-			text_string = std::string (t->text);
-
-			/* if text exist free it */
-			if (t)
-				hocr_text_buffer_unref (t);
-			t = (hocr_text_buffer *) 0;
-
-			return 1;
+			return t->text;
 		}
 
 		// //////////////////////////////////////
