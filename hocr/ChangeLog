@@ -1,3 +1,10 @@
+hocr (0.7.0)
+
+ * add bindings to C++, Python and Perl
+ * documentation is now separate for c and cpp
+
+ -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 1 Jan 2005 22:13
+ 
 hocr (0.6.4)
 
  * make memory allocation dinamic in do_ocr
