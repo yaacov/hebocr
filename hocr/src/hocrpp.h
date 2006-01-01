@@ -74,9 +74,6 @@ namespace hocr
 			t = (hocr_text_buffer *) 0;
 
 			/* init ocr options */
-			opt_i = 1;
-			opt_o = 1;
-			opt_f = 1;
 			opt_d = 1;
 			opt_n = 1;
 			opt_s = 0;
@@ -96,9 +93,6 @@ namespace hocr
 			t = (hocr_text_buffer *) 0;
 
 			/* init ocr options */
-			opt_i = 1;
-			opt_o = 1;
-			opt_f = 1;
 			opt_d = 1;
 			opt_n = 1;
 			opt_s = 0;
@@ -329,14 +323,59 @@ namespace hocr
 
 		// //////////////////////////////////////
 		// //////////////////////////////////////
+		
+		/**
+		 @brief set internal dictionary option
+		
+		 @param opt_d the value of the option
+		 @return the option set
+		 */
+		int set_opt_d (int opt_d)
+		{
+			return (this->opt_d = opt_d);
+		}
 
+		/**
+		 @brief set guess nikud option
+		
+		 @param opt_n the value of the option
+		 @return the option set
+		 */
+		int set_opt_n (int opt_n)
+		{
+			return (this->opt_n = opt_n);
+		}
+		
+		/**
+		 @brief set use spaces for tabs option
+		
+		 @param opt_s the value of the option
+		 @return the option set
+		 */
+		int set_opt_s (int opt_s)
+		{
+			return (this->opt_s = opt_s);
+		}
+		
+		/**
+		 @brief set indent indented lines option
+		
+		 @param opt_t the value of the option
+		 @return the option set
+		 */
+		int set_opt_t (int opt_t)
+		{
+			return (this->opt_t = opt_t);
+		}
+
+		// //////////////////////////////////////
+		// //////////////////////////////////////
+		
 	      private:
 
 		hocr_pixbuf * h;
 		hocr_text_buffer *t;
 
-		int opt_i;
-		int opt_o;
 		int opt_f;
 		int opt_d;
 		int opt_n;

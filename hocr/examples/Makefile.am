@@ -4,6 +4,7 @@ EXTRA_DIST = \
 	hocr-qt/hocr_qt.pro \
 	hocr-qt/hocr_qt.cpp \
 	hocr-qt/hocr_qt.h \
-	hocr-qt/main.cpp
+	hocr-qt/main.cpp \
+	bindings/python/hocr_py.py
 
 SUBDIRS = hocr-gtk hocr
