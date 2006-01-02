@@ -38,8 +38,8 @@ hocr_qt::hocr_qt ()
 	scrollArea->setWidget (imageLabel);
 
 	textEdit = new QTextEdit;
-	textEdit->setAlignment (Qt::AlignRight);
-
+	textEdit->setLayoutDirection( Qt::RightToLeft );
+	
 	createActions ();
 	createToolBars ();
 
@@ -215,8 +215,7 @@ hocr_qt::apply ()
 		hocr_engine->set_brightness (100);
 
 		// get text into the text edit window
-		textEdit->append (QString::fromUtf8 (hocr_engine->do_ocr ()));
-		textEdit->setAlignment (Qt::AlignRight);
+		textEdit->setPlainText( QString::fromUtf8(hocr_engine->do_ocr ()) );
 		
 		// if not set_pixels to 0 the next <free (hocr)> 
 		// will free the original image window picture !

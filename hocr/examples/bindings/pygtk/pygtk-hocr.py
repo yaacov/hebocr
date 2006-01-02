@@ -91,6 +91,7 @@ def on_button_save_clicked(obj):
         filename = chooser.get_filename()
         file = open(filename, 'w')
         file.write (buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter()))
+        file.close()
     elif response == gtk.RESPONSE_CANCEL:
         print 'Closed, no files selected'
     
