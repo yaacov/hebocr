@@ -206,9 +206,9 @@ namespace hocr
 		
 		 @return pointer to raw pixpuf data
 		 */
-		unsigned char *get_pixels ()
+		char *get_pixels ()
 		{
-			return hocr_pixbuf_get_pixels (h);
+			return (char *) (hocr_pixbuf_get_pixels (h));
 		}
 
 		// ////////////////////////////////////////////
@@ -283,11 +283,30 @@ namespace hocr
 		
 		 @return pointer to raw pixpuf data
 		 */
-		unsigned char *set_pixels (unsigned char *p)
+		char *set_pixels (char *p)
 		{
-			h->pixels = p;
+			h->pixels = (unsigned char *) p;
 
 			return p;
+		}
+
+		/**
+		 @brief copy raw pixpuf data
+			
+		 @return pointer to raw pixpuf data
+		 */
+		char *copy_pixels (char *p, int length)
+		{
+			int i;
+
+			h->pixels = (unsigned char *) malloc (length);
+			if (!(h->pixels))
+				return NULL;
+
+			for (i = 0; i < length; i++)
+				(h->pixels)[i] = ((unsigned char *) p)[i];
+
+			return (char *) (h->pixels);
 		}
 
 		// ////////////////////////////////////////////
@@ -321,7 +340,7 @@ namespace hocr
 
 		// //////////////////////////////////////
 		// //////////////////////////////////////
-		
+
 		/**
 		 @brief set internal dictionary option
 		
@@ -343,7 +362,7 @@ namespace hocr
 		{
 			return (this->opt_n = opt_n);
 		}
-		
+
 		/**
 		 @brief set use spaces for tabs option
 		
@@ -354,7 +373,7 @@ namespace hocr
 		{
 			return (this->opt_s = opt_s);
 		}
-		
+
 		/**
 		 @brief set indent indented lines option
 		
@@ -368,7 +387,7 @@ namespace hocr
 
 		// //////////////////////////////////////
 		// //////////////////////////////////////
-		
+
 	      private:
 
 		hocr_pixbuf * h;

@@ -1,3 +1,9 @@
+hocr (0.7.1)
+
+ * Fix bindings
+
+ -- Yaacov Zamir <kzamir@walla.co.il>  Mon, 2 Jan 2005 22:13
+
 hocr (0.7.0)
 
  * add bindings to C++, Python and Perl

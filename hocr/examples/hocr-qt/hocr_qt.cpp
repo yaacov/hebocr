@@ -207,7 +207,7 @@ hocr_qt::apply ()
 		Hocr *hocr_engine = new Hocr;
 		
 		// fill the new hocr object with data from image window		
-		hocr_engine->set_pixels (img.bits ()); // a pointer ! do not free it !
+		hocr_engine->set_pixels ((char*)img.bits ()); // a pointer ! do not free it !
 		hocr_engine->set_height (img.size ().height ());
 		hocr_engine->set_width (img.size ().width ());
 		hocr_engine->set_rowstride (img.bytesPerLine ());
