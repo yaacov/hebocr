@@ -195,8 +195,6 @@ hocr_qt::adjustScrollBar (QScrollBar * scrollBar, double factor)
 void
 hocr_qt::apply ()
 {
-	std::string text_string;
-
 	if (!imageLabel->pixmap ())
 		return;
 
@@ -205,8 +203,10 @@ hocr_qt::apply ()
 	{
 		using namespace hocr;
 
+		// create a new empty hocr object
 		Hocr *hocr_engine = new Hocr;
-				
+		
+		// fill the new hocr object with data from image window		
 		hocr_engine->set_pixels (img.bits ());
 		hocr_engine->set_height (img.size ().height ());
 		hocr_engine->set_width (img.size ().width ());
@@ -214,15 +214,17 @@ hocr_qt::apply ()
 		hocr_engine->set_n_channels (img.depth () / 8);
 		hocr_engine->set_brightness (100);
 
-		text_string = std::string (hocr_engine->do_ocr ());
-
-		// if not set_pixels to 0 will delete the original image
+		// get text into the text edit window
+		textEdit->append (QString::fromUtf8 (hocr_engine->do_ocr ()));
+		textEdit->setAlignment (Qt::AlignRight);
+		
+		// if not set_pixels to 0 the next <free (hocr)> 
+		// will free the original image window picture !
 		hocr_engine->set_pixels (0);
+		
+		// free the hocr object
 		free (hocr_engine);
 	}
-
-	textEdit->append (QString::fromUtf8 (text_string.c_str()));
-	textEdit->setAlignment (Qt::AlignRight);
 }
 
 void

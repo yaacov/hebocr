@@ -30,8 +30,6 @@
 #include <hocr_textbuffer.h>
 #include <hocr_pixbuf.h>
 
-#include <string>
-
 /**
  @brief the libhocr namespace.
  */
