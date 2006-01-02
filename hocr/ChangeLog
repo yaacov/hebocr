@@ -1,6 +1,7 @@
 hocr (0.7.1)
 
  * Fix bindings
+ * add pyGTK example
 
  -- Yaacov Zamir <kzamir@walla.co.il>  Mon, 2 Jan 2005 22:13
 
