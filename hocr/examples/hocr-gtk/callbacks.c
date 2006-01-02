@@ -116,6 +116,7 @@ ocr_thread (gpointer data)
 
 	text_buffer = (GtkTextBuffer *) data;
 
+	/* create hocr picture */
 	hocr_pix = hocr_pixbuf_new ();	/* get an empty hocr_pix */
 	if (!hocr_pix)
 	{
