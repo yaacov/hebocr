@@ -18,6 +18,7 @@ The HOCR coding style.
 
    HOCR use Indent and Doxygen. Use tabs for indentation, braces are
    unindented and on a seperate line. Document your code using doxygen style.
+   (indent -bad -bap -bbb -bli0 -fca -l80 -psl -sc -sob -ss -ts8 -i8)
 
    On top of that, you will have to:
 
