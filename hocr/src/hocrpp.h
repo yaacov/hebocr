@@ -305,7 +305,7 @@ namespace hocr
 			if (!(h->pixels))
 				return NULL;
 
-			memcpy(h->pixels, p, length);
+			memcpy (h->pixels, p, length);
 
 			return (char *) (h->pixels);
 		}
@@ -394,7 +394,6 @@ namespace hocr
 		hocr_pixbuf * h;
 		hocr_text_buffer *t;
 
-		int opt_f;
 		int opt_d;
 		int opt_n;
 		int opt_s;

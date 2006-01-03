@@ -13,9 +13,13 @@ bugs:
 
 code cleaning:
 
+   - document undocumented functions and data structurs.
    - find ugly hacks and replace with maintanble code.
-   - create a dynamic structure for text buffer, and remove the all fixed size strings.
+   - rewrite the page_layout functions.
+   - create a dynamic structure for text buffer, and remove the all fixed size strings. 
+    [done, kobi 1,1,2006]
    - replace all functions and struct names to use hocr_ namespace convention.
+    [done, kobi 1,1,2006]
    - find a way not to use constants and remove the consts.h file.
    - find a way to make the do_ocr function more readable.
 
@@ -24,7 +28,7 @@ features:
    - add dictionary support
    - add suport for multi columns pages [done, kobi 9,12,2005]
    - add support for new shapes (numbers, english letters)
-   - add support for nikud.
+   - add support for nikud. [done, kobi 1,1,2006]
    - add support for more then one shape for each font.
 
 documentation:
