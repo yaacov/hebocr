@@ -30,6 +30,8 @@
 #include <hocr_textbuffer.h>
 #include <hocr_pixbuf.h>
 
+#include <string.h>
+
 /**
  @brief the libhocr namespace.
  */
@@ -303,8 +305,7 @@ namespace hocr
 			if (!(h->pixels))
 				return NULL;
 
-			for (i = 0; i < length; i++)
-				(h->pixels)[i] = ((unsigned char *) p)[i];
+			memcpy(h->pixels, p, length);
 
 			return (char *) (h->pixels);
 		}
