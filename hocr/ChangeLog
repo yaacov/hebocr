@@ -1,3 +1,9 @@
+hocr (0.7.2)
+
+ * command line example implements pipes
+
+ -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 5 Jan 2005 22:13
+ 
 hocr (0.7.1)
 
  * Fix bindings

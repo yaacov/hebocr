@@ -129,6 +129,10 @@ main (int argc, char *argv[])
 	 * default output is text file 
 	 */
 	format_out[0] = 't';
+	/* 
+	 * default input file is stdin 
+	 */
+	filename_in[0] = '\0';
 
 	while ((c = getopt (argc, argv, "dnsthi:o:f:")) != EOF)
 	{
@@ -178,12 +182,35 @@ main (int argc, char *argv[])
 		}
 	}
 
-	if (opt_i == 0)
+	/* check for one extra parameter */
+	if (argc == (optind + 1))
+	{
+		/* i already have a file name: must be an error */
+		if (opt_i == 1)
+		{
+			print_help ();
+			exit (0);
+		}
+		/* this is a file name */
+		if (opt_i == 0 && strlen (argv[optind]) < STRING_MAX_SIZE)
+		{
+			/* check for command fomrat "hocr filename" */
+			strcpy (filename_in, argv[optind]);
+			
+			/* some times pepole use '-' to indecate stdin */
+			if (filename_in[0] == '-' && filename_in[1] == '\0')
+				filename_in[0] = '\0';
+			
+			opt_i = 1;
+		}
+	}
+	/* if not one extra parameter must be no parameters */
+	else if (argc != optind)
 	{
 		print_help ();
 		exit (0);
 	}
-
+	
 	/* 
 	 * create a new pixbuf from pbm file 
 	 */
@@ -204,26 +231,26 @@ main (int argc, char *argv[])
 
 	/* use dict ? */
 	if (opt_d)
-		  pix->command |= HOCR_COMMAND_DICT;
+		pix->command |= HOCR_COMMAND_DICT;
 
 	/* use nikud ? */
 	if (opt_n)
-		  pix->command |= HOCR_COMMAND_NIKUD;
-	
+		pix->command |= HOCR_COMMAND_NIKUD;
+
 	/* use spaces ? */
 	if (opt_s)
-		  pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
-	
+		pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
+
 	/* use indentation ? */
 	if (opt_t)
-		  pix->command |= HOCR_COMMAND_USE_INDENTATION;
-	
+		pix->command |= HOCR_COMMAND_USE_INDENTATION;
+
 	/* create text buffer */
 	text = hocr_text_buffer_new ();
 
 	if (!text)
 	{
-		printf ("hocr-gnome: can\'t allocate memory for text out\n");
+		printf ("hocr: can\'t allocate memory for text out\n");
 		return 0;
 	}
 

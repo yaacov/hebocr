@@ -25,7 +25,8 @@ code cleaning:
 
 features:
 
-   - add std-in as an input method in the cmd line example (pipe)
+   - add stdin as an input method in the cmd line example (pipe)
+    [done, kobi 1,1,2006]
    - add dictionary support
    - add suport for multi columns pages [done, kobi 9,12,2005]
    - add support for new shapes (numbers, english letters)

@@ -239,27 +239,53 @@ hocr_pixbuf_new_from_file (const char *filename)
 	int gray_scale = FALSE;
 	int dippnes = 1;
 
-	/* open file */
-	file = fopen (filename, "r");
-	if (!file)
-		return NULL;
+	/* if no input file name use stdin for input */
+	if (!filename || filename[0] == '\0')
+	{
+		file = stdin;
+	}
+	else
+	{
+		/* open file */
+		file = fopen (filename, "r");
+		if (!file)
+			return NULL;
+	}
 
 	/* allocate memory for pixbuf */
 	new_pixbuf = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
 	if (!new_pixbuf)
+	{
+		if (file)
+		{
+			fclose (file);
+		}
 		return NULL;
+	}
 
 	/* read magic number "P4" for pbm file */
 	char_read = hocr_pbm_getc (file);
 	if (char_read != 'P')
+	{
+		if (file)
+		{
+			fclose (file);
+		}
 		return NULL;
+	}
 	char_read = hocr_pbm_getc (file);
 	if (char_read == '4')
 		gray_scale = FALSE;
 	else if (char_read == '5')
 		gray_scale = TRUE;
 	else
+	{
+		if (file)
+		{
+			fclose (file);
+		}
 		return NULL;
+	}
 
 	/* read header */
 	new_pixbuf->n_channels = 3;
@@ -277,13 +303,25 @@ hocr_pixbuf_new_from_file (const char *filename)
 	if (gray_scale)
 		dippnes = hocr_pbm_getint (file);
 	if (dippnes > 255)
+	{
+		if (file)
+		{
+			fclose (file);
+		}
 		return NULL;
+	}
 
 	/* allocate memory for data */
 	new_pixbuf->pixels =
 		malloc (new_pixbuf->height * new_pixbuf->rowstride);
 	if (!(new_pixbuf->pixels))
+	{
+		if (file)
+		{
+			fclose (file);
+		}
 		return NULL;
+	}
 
 	/* read data */
 	for (y = 0; y < new_pixbuf->height; y++)
@@ -298,6 +336,12 @@ hocr_pixbuf_new_from_file (const char *filename)
 			pixel[1] = bit_read;
 			pixel[2] = bit_read;
 		}
+	}
+
+	/* if regular file - close it */
+	if (file)
+	{
+		fclose (file);
 	}
 
 	/* return the new pixbuf to user */
