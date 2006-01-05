@@ -7,12 +7,13 @@ example programs for libhocr, a library that help use Hebrew character recogniti
 .PP 
 .SH "SYNOPSIS"
 .B hocr
-[\fIOPTION\fR] [\fB-i\fR] \fIpnm file\fR
+[\fIOPTION\fR] [\fB-i\fR] [\fIpnm file\fR]
 .fi
 .SH DESCRIPTION
 hocr is an optical character recognition program that can be used from
-the command line. It takes input in PBM
-format, and writes recognized utf-8 Hebrew text to \fBstdout\fR. input pbm file must be a binary black and white pnm file (magic "P4/5").
+the command line. It takes input in pbm
+format, and writes recognized utf-8 Hebrew text to \fBstdout\fR. Input pbm file must be a binary black and white pnm file (magic "P4/5").
+If the pnm file is a single dash (or no file given), PNM data is read from \fBstdin\fR.
 .PP
 .SH OPTIONS
 .TP

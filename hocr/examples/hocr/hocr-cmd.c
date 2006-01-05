@@ -41,11 +41,15 @@ print_help ()
 {
 	printf ("hocr %s - Hebrew OCR program\n", VERSION);
 	printf ("http://hocr.berlios.de\n");
-	printf ("USAGE: hocr [OPTION]... -i pic_filename [-o text_filename] [-f html/text]\n");
-	printf ("  -d,  Use internal dictionary to guess misread fonts.\n");
-	printf ("  -n,  Try to guess nikud for fonts.\n");
-	printf ("  -s,  Use spaces for tabs.\n");
-	printf ("  -t,  Indent indented lines.\n");
+	printf ("USAGE: hocr [OPTION]... [-i] [pnm_file]\n\n");
+	printf ("  If the pnm file is a single dash, or no pnm file\n\
+  is given, PNM data is read from stdin\n\n");
+	printf ("  -o text_filename,   output to text file.\n");
+	printf ("  -f format,   output format can be 'html' or 'text'.\n");
+	printf ("  -d,   Use internal dictionary to guess misread fonts.\n");
+	printf ("  -n,   Try to guess nikud for fonts.\n");
+	printf ("  -s,   Use spaces for tabs.\n");
+	printf ("  -t,   Indent indented lines.\n");
 	printf ("\n");
 
 	return 0;
