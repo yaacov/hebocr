@@ -1,6 +1,7 @@
 hocr (0.7.2)
 
  * command line example implements pipes
+ * Tal. (tal.bav@gmail.com): add save ppm to command line example.
 
  -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 5 Jan 2005 22:13
  

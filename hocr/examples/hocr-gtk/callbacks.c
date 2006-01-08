@@ -37,6 +37,7 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "hocr.h"
+#include "hocr_pixbuf.h"
 
 static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 

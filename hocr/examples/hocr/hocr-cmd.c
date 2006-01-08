@@ -50,6 +50,7 @@ print_help ()
 	printf ("  -n,   Try to guess nikud for fonts.\n");
 	printf ("  -s,   Use spaces for tabs.\n");
 	printf ("  -t,   Indent indented lines.\n");
+	printf ("  -p file, write PPM image with boxes around detected characters.\n");
 	printf ("\n");
 
 	return 0;
@@ -110,7 +111,45 @@ content=\"text/html; charset=UTF-8\">\n \
 	return 0;
 }
 
+/*
+ @brif writes hocr_pixbuf to ppm or pgm file
+
+ @param pixbuf hocr_pixbuf 8 or 24 bpp
+ @param filenme save as file name 
+ @return 1=ok, 0=error
+ */
 int
+write_pixbuf_as_pnm (hocr_pixbuf * pixbuf, char *filename) 
+{
+	FILE *fp;
+
+	fp = fopen (filename, "wb");
+
+	if (!fp)
+		return 0;
+
+	if (pixbuf->n_channels == 3)
+	{
+		/* write raw ppm */
+		/* ppm header: P6 <width> <height> <maxval> */
+		fprintf (fp, "P6 %d %d 255\n", pixbuf->width, pixbuf->height);
+	}
+	else
+	{
+		/* write raw pgm (assume 8 bits per pixel - one channel) */
+		/* 1 bpp is not supported!! */
+		/* pgm header: P5 <width> <height> <maxval> */
+		fprintf (fp, "P5 %d %d 255\n", pixbuf->width, pixbuf->height);
+	}
+
+	/* this might be a huge write... */
+	fwrite (pixbuf->pixels, 1, pixbuf->height * pixbuf->rowstride, fp);
+
+	fclose (fp);
+
+	return 1;
+}
+int
 main (int argc, char *argv[])
 {
 	int opt_i = 0;
@@ -120,10 +159,12 @@ main (int argc, char *argv[])
 	int opt_n = 0;
 	int opt_s = 0;
 	int opt_t = 0;
+	int opt_p = 0;
 	char c;
 
 	char filename_in[STRING_MAX_SIZE];
 	char filename_out[STRING_MAX_SIZE];
+	char pnm_filename_out[STRING_MAX_SIZE];
 	char format_out[STRING_MAX_SIZE];
 
 	hocr_pixbuf *pix;
@@ -138,7 +179,7 @@ main (int argc, char *argv[])
 	 */
 	filename_in[0] = '\0';
 
-	while ((c = getopt (argc, argv, "dnsthi:o:f:")) != EOF)
+	while ((c = getopt (argc, argv, "dnsthi:o:f:p:")) != EOF)
 	{
 		switch (c)
 		{
@@ -161,6 +202,13 @@ main (int argc, char *argv[])
 			{
 				strcpy (format_out, optarg);
 				opt_f = 1;
+			}
+			break;
+		case 'p':
+			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
+			{
+				strcpy (pnm_filename_out, optarg);
+				opt_p = 1;
 			}
 			break;
 		case 'd':
@@ -200,11 +248,11 @@ main (int argc, char *argv[])
 		{
 			/* check for command fomrat "hocr filename" */
 			strcpy (filename_in, argv[optind]);
-			
+
 			/* some times pepole use '-' to indecate stdin */
 			if (filename_in[0] == '-' && filename_in[1] == '\0')
 				filename_in[0] = '\0';
-			
+
 			opt_i = 1;
 		}
 	}
@@ -214,7 +262,7 @@ main (int argc, char *argv[])
 		print_help ();
 		exit (0);
 	}
-	
+
 	/* 
 	 * create a new pixbuf from pbm file 
 	 */
@@ -243,11 +291,22 @@ main (int argc, char *argv[])
 
 	/* use spaces ? */
 	if (opt_s)
+	{
 		pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
+	}
 
 	/* use indentation ? */
 	if (opt_t)
+	{
 		pix->command |= HOCR_COMMAND_USE_INDENTATION;
+	}
+
+	/* color misread font and text boxes */ 
+		if (opt_p)
+	{
+		pix->command |=
+			HOCR_COMMAND_COLOR_BOXES | HOCR_COMMAND_COLOR_MISREAD;
+	}
 
 	/* create text buffer */
 	text = hocr_text_buffer_new ();
@@ -264,18 +323,26 @@ main (int argc, char *argv[])
 	hocr_do_ocr (pix, text);
 
 	/* 
-	 * unref memory 
-	 */
-	hocr_pixbuf_unref (pix);
-
-	/* 
 	 * print out the text 
 	 */
-	if (opt_o == 1)
+	if (opt_o)
 		save_text (filename_out, format_out, text->text);
 	else
 		save_text (NULL, format_out, text->text);
 
+	/* 
+	 * save ppm file
+	 */
+	if (opt_p)
+	{
+		write_pixbuf_as_pnm (pix, pnm_filename_out);
+	}
+
+	/* 
+	 * unref memory 
+	 */
+	hocr_pixbuf_unref (pix);
+	
 	/* unref text_buffer */
 	hocr_text_buffer_unref (text);
 
