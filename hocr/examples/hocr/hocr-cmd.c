@@ -130,15 +130,19 @@ write_pixbuf_as_pnm (hocr_pixbuf * pixbuf, char *filename)
 
 	if (pixbuf->n_channels == 3)
 	{
-		/* write raw ppm */
-		/* ppm header: P6 <width> <height> <maxval> */
+		/* 
+		 * write raw ppm
+		 * ppm header: P6 <width> <height> <maxval> 
+		 */
 		fprintf (fp, "P6 %d %d 255\n", pixbuf->width, pixbuf->height);
 	}
 	else
 	{
-		/* write raw pgm (assume 8 bits per pixel - one channel) */
-		/* 1 bpp is not supported!! */
-		/* pgm header: P5 <width> <height> <maxval> */
+		/* 
+		 * write raw pgm (assume 8 bits per pixel - one channel)
+		 * 1 bpp is not supported!!
+		 * pgm header: P5 <width> <height> <maxval> 
+		 */
 		fprintf (fp, "P5 %d %d 255\n", pixbuf->width, pixbuf->height);
 	}
 
@@ -291,22 +295,16 @@ main (int argc, char *argv[])
 
 	/* use spaces ? */
 	if (opt_s)
-	{
 		pix->command |= HOCR_COMMAND_USE_SPACE_FOR_TAB;
-	}
 
 	/* use indentation ? */
 	if (opt_t)
-	{
 		pix->command |= HOCR_COMMAND_USE_INDENTATION;
-	}
 
-	/* color misread font and text boxes */ 
-		if (opt_p)
-	{
+	/* color misread font and text boxes */
+	if (opt_p)
 		pix->command |=
 			HOCR_COMMAND_COLOR_BOXES | HOCR_COMMAND_COLOR_MISREAD;
-	}
 
 	/* create text buffer */
 	text = hocr_text_buffer_new ();
@@ -334,16 +332,16 @@ main (int argc, char *argv[])
 	 * save ppm file
 	 */
 	if (opt_p)
-	{
 		write_pixbuf_as_pnm (pix, pnm_filename_out);
-	}
 
 	/* 
-	 * unref memory 
+	 * unref hocr_pixbuf
 	 */
 	hocr_pixbuf_unref (pix);
-	
-	/* unref text_buffer */
+
+	/* 
+	 * unref text_buffer 
+	 */
 	hocr_text_buffer_unref (text);
 
 	return 0;
