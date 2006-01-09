@@ -232,6 +232,16 @@ extern "C"
 	hocr_pixbuf *hocr_pixbuf_new_from_file (const char *filename);
 
 /**
+ @brif writes hocr_pixbuf to ppm or pgm file
+
+ @param pixbuf hocr_pixbuf 8 or 24 bpp
+ @param filenme save as file name 
+ @return 1=ok, 0=error
+ */
+int
+hocr_pixbuf_save_as_pnm (hocr_pixbuf * pixbuf, char *filename) ;
+
+/**
  @brief creats a new empty hocr_pixbuf struct 
 
  @return pointer to a newly allocate hocr_pixbuf, or null if can not open file.

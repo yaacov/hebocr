@@ -348,6 +348,49 @@ hocr_pixbuf_new_from_file (const char *filename)
 	return new_pixbuf;
 }
 
+/**
+ @brif writes hocr_pixbuf to ppm or pgm file
+
+ @param pixbuf hocr_pixbuf 8 or 24 bpp
+ @param filenme save as file name 
+ @return 1=ok, 0=error
+ */
+int
+hocr_pixbuf_save_as_pnm (hocr_pixbuf * pixbuf, char *filename)
+{
+	FILE *fp;
+
+	fp = fopen (filename, "wb");
+
+	if (!fp)
+		return 0;
+
+	if (pixbuf->n_channels == 3)
+	{
+		/* 
+		 * write raw ppm
+		 * ppm header: P6 <width> <height> <maxval> 
+		 */
+		fprintf (fp, "P6 %d %d 255\n", pixbuf->width, pixbuf->height);
+	}
+	else
+	{
+		/* 
+		 * write raw pgm (assume 8 bits per pixel - one channel)
+		 * 1 bpp is not supported!!
+		 * pgm header: P5 <width> <height> <maxval> 
+		 */
+		fprintf (fp, "P5 %d %d 255\n", pixbuf->width, pixbuf->height);
+	}
+
+	/* this might be a huge write... */
+	fwrite (pixbuf->pixels, 1, pixbuf->height * pixbuf->rowstride, fp);
+
+	fclose (fp);
+
+	return 1;
+}
+
 hocr_pixbuf *
 hocr_pixbuf_new (void)
 {
