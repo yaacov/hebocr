@@ -25,6 +25,9 @@
 
 #include <gtk/gtk.h>
 
+#ifndef __CALLBACKS_H__
+#define __CALLBACKS_H__
+
 gboolean
 on_window1_delete_event (GtkWidget * widget,
 			 GdkEvent * event, gpointer user_data);
@@ -85,3 +88,5 @@ void on_about_activate (GtkMenuItem * menuitem, gpointer user_data);
 void get_rc_file ();
 
 void set_rc_file ();
+
+#endif /* __CALLBACKS_H__ */

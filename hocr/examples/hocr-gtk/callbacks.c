@@ -41,9 +41,6 @@
 
 static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 
-GdkPixbuf *pixbuf = NULL;
-GdkPixbuf *vis_pixbuf = NULL;
-
 typedef struct _text_struct
 {
 	GtkTextBuffer *text_buffer;
@@ -675,6 +672,10 @@ set_rc_file ()
 	GError *error = NULL;
 	gchar *content;
 
+	/* do not use file if has command line args */
+	if (usr_cmd_line_args)
+		return;
+	
 	/* get menu items */
 
 	/* color boxes ? */
@@ -760,6 +761,10 @@ get_rc_file ()
 	GError *error = NULL;
 	PangoFontDescription *font_desc;
 
+	/* do not use file if has command line args */
+	if (usr_cmd_line_args)
+		return;
+	
 	/* get path */
 	pathname = g_strdup_printf ("%s%s%s", g_get_home_dir (),
 				    G_DIR_SEPARATOR_S, ".hocr-gtk.rc");

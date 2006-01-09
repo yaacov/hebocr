@@ -28,6 +28,9 @@
 #  include <config.h>
 #endif
 
+#ifndef __INTERFACE_H__
+#define __INTERFACE_H__
+
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #  undef _
@@ -77,6 +80,7 @@ GtkWidget *textview;
 char *font_name;
 
 /* user pref */
+gboolean usr_cmd_line_args;
 gboolean color_text_box_arg;
 gboolean color_misread_arg;
 gboolean ocr_arg;
@@ -87,3 +91,9 @@ gboolean use_spaces_arg;
 
 /* user interface for window */
 GtkWidget *create_window1 (void);
+
+/* the pixbuf used bey the interface and OCR systems */
+GdkPixbuf *pixbuf;
+GdkPixbuf *vis_pixbuf;
+
+#endif /* __INTERFACE_H__ */
