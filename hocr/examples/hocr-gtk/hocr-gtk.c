@@ -34,6 +34,7 @@
 
 #include "interface.h"
 #include "callbacks.h"
+
 int
 print_help ()
 {
@@ -103,9 +104,8 @@ main (int argc, char *argv[])
 	ocr_arg = FALSE;
 	use_dict_arg = FALSE;
 	use_nikud_arg = FALSE;
-	gboolean use_indent_arg = FALSE;
-
 	use_spaces_arg = FALSE;
+	gboolean use_indent_arg = FALSE;
 
 	while ((c = getopt (argc, argv, "ocdnsthi:")) != EOF)
 	{
