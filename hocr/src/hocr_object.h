@@ -39,12 +39,12 @@ typedef struct
 } hocr_object;
 
 /* object helper functions */
-int clean_object_array (unsigned int *object_array);
+int clean_object_array (unsigned int *object_array, int size);
 
 int
 is_in_object_array (unsigned int obj,
-		    unsigned int *object_array);
+		    unsigned int *object_array, int size);
 
-int count_object_array (unsigned int *object_array);
+int count_object_array (unsigned int *object_array, int size);
 
 #endif

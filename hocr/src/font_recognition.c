@@ -2585,7 +2585,7 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		font.y2 = low_line_y;
 		font.hight = font.y2 - font.y1;
 		/* recalc font for the object inside line */
-		obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array);
+		obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array, MAX_OBJECTS_IN_FONT);
 		font.x1 = pix->objects[obj].x1;
 		font.x2 = pix->objects[obj].x2;
 		font.y1 = pix->objects[obj].y1;
@@ -2603,11 +2603,11 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	box.hight = font.y2 - font.y1;
 	box.width = font.x2 - font.x1;
 	/* count objects in font */
-	obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array);
-	number_of_object_in_font = count_object_array (object_array);
+	obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array, MAX_OBJECTS_IN_FONT);
+	number_of_object_in_font = count_object_array (object_array, MAX_OBJECTS_IN_FONT);
 	/* count objects in box */
-	box_obj = hocr_pixbuf_get_objects_in_box (pix, box, box_object_array);
-	number_of_object_in_box = count_object_array (box_object_array);
+	box_obj = hocr_pixbuf_get_objects_in_box (pix, box, box_object_array, MAX_OBJECTS_IN_FONT);
+	number_of_object_in_box = count_object_array (box_object_array, MAX_OBJECTS_IN_FONT);
 	/* get font proportions */
 	short_font = font.hight < (0.8 * (double) avg_font_hight);
 	tall_font = font.hight > (1.2 * (double) avg_font_hight);
@@ -3370,9 +3370,9 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		under_font_object =
 			hocr_pixbuf_get_objects_inside_box (pix,
 							    under_font_box,
-							    under_font_object_array);
+							    under_font_object_array, MAX_OBJECTS_IN_FONT);
 		number_of_object_under_font =
-			count_object_array (under_font_object_array);
+			count_object_array (under_font_object_array, MAX_OBJECTS_IN_FONT);
 
 		/* one sign under font can be kamatz patach hirik */
 		if (!found_nikud && number_of_object_under_font == 1)
@@ -3500,9 +3500,9 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		over_font_object =
 			hocr_pixbuf_get_objects_inside_box (pix,
 							    over_font_box,
-							    over_font_object_array);
+							    over_font_object_array, MAX_OBJECTS_IN_FONT);
 		number_of_object_over_font =
-			count_object_array (over_font_object_array);
+			count_object_array (over_font_object_array, MAX_OBJECTS_IN_FONT);
 
 		/* one sign over font can be shin sin or holam */
 		if (number_of_object_over_font == 1)

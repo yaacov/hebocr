@@ -703,9 +703,114 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 	return 0;
 }
 
+int
+hocr_pixbuf_clean (hocr_pixbuf * pix)
+{
+	int x, y;
+	unsigned int object, object1, object2, object3,
+		object4, object5, object6, object7, object8, object9;
+
+	/* make shure null object has zero weight */
+	pix->objects[0].weight = 0;
+
+	/* check all pixes and clean objects that are two large or too small */
+	for (y = 1; y < pix->height; y++)
+	{
+		for (x = 1; x < pix->width; x++)
+		{
+			/* if this is part of an object */
+			if (pix->objects[hocr_pixbuf_get_object (pix, x, y)].
+			    weight
+			    && (pix->
+				objects[hocr_pixbuf_get_object (pix, x, y)].
+				weight < MIN_FONT_WEIGHT
+				|| pix->
+				objects[hocr_pixbuf_get_object (pix, x, y)].
+				weight > MAX_FONT_WEIGHT))
+			{
+				/* clean */
+				hocr_pixbuf_set_pixel (pix, x, y, 0, 0xffff);
+				hocr_pixbuf_set_pixel (pix, x, y, 1, 0xffff);
+				hocr_pixbuf_set_pixel (pix, x, y, 2, 0xffff);
+			}
+
+			/* get a 3x3 pixels */
+			object1 = hocr_pixbuf_get_pixel (pix, x, y);
+			object2 = hocr_pixbuf_get_pixel (pix, x, y + 1);
+			object3 = hocr_pixbuf_get_pixel (pix, x, y + 2);
+
+			object4 = hocr_pixbuf_get_pixel (pix, x + 1, y);
+			object5 = hocr_pixbuf_get_pixel (pix, x + 1, y + 1);
+			object6 = hocr_pixbuf_get_pixel (pix, x + 1, y + 2);
+
+			object7 = hocr_pixbuf_get_pixel (pix, x + 2, y);
+			object8 = hocr_pixbuf_get_pixel (pix, x + 2, y + 1);
+			object9 = hocr_pixbuf_get_pixel (pix, x + 2, y + 2);
+
+			/* remove dots */
+			if (!object5)
+			{
+
+				if ((object1 && object2 && object3
+				     && object4 && object6) ||
+				    (object7 && object8 && object9
+				     && object4 && object6) ||
+				    (object1 && object4 && object7
+				     && object2 && object8) ||
+				    (object3 && object6 && object9
+				     && object2 && object8))
+				{
+					object = hocr_pixbuf_get_object (pix,
+									 x + 1,
+									 y);
+					if (!object)
+						object = hocr_pixbuf_get_object
+							(pix, x + 1, y + 2);
+
+					hocr_pixbuf_set_pixel (pix, x + 1,
+							       y + 1, 0, 0);
+					hocr_pixbuf_set_pixel (pix, x + 1,
+							       y + 1, 1, 0);
+					hocr_pixbuf_set_pixel (pix, x + 1,
+							       y + 1, 2, 0);
+					hocr_pixbuf_set_object (pix, x + 1,
+								y + 1, object);
+				}
+			}
+			else
+			{
+				if ((!object1 && !object2 && !object3
+				     && !object4 && !object6) ||
+				    (!object7 && !object8 && !object9
+				     && !object4 && !object6) ||
+				    (!object1 && !object4 && !object7
+				     && !object2 && !object8) ||
+				    (!object3 && !object6 && !object9
+				     && !object2 && !object8))
+				{
+					hocr_pixbuf_set_pixel (pix, x + 1,
+							       y + 1, 0,
+							       0xffff);
+					hocr_pixbuf_set_pixel (pix, x + 1,
+							       y + 1, 1,
+							       0xffff);
+					hocr_pixbuf_set_pixel (pix, x + 1,
+							       y + 1, 2,
+							       0xffff);
+					hocr_pixbuf_set_object (pix, x + 1,
+								y + 1, 0);
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
 unsigned int
 hocr_pixbuf_get_objects_in_box (hocr_pixbuf *
-				pix, hocr_box box, unsigned int *object_array)
+				pix, hocr_box box, unsigned int *object_array,
+				int size)
 {
 	int x, y;
 	int i = 0;
@@ -714,15 +819,14 @@ hocr_pixbuf_get_objects_in_box (hocr_pixbuf *
 
 	/* make sure none object have zero weight */
 	pix->objects[0].weight = 0;
-	clean_object_array (object_array);
+	clean_object_array (object_array, size);
 	for (x = box.x1; x < box.x2; x++)
 		for (y = box.y1; y < box.y2; y++)
 		{
 			if ((object =
 			     hocr_pixbuf_get_object (pix, x, y)) &&
 			    !(is_in_object_array
-			      (object, object_array))
-			    && (i < MAX_OBJECTS_IN_FONT))
+			      (object, object_array, size)) && (i < size))
 			{
 				/* add object to object array */
 				object_array[i] = object;
@@ -740,7 +844,8 @@ hocr_pixbuf_get_objects_in_box (hocr_pixbuf *
 unsigned int
 hocr_pixbuf_get_objects_inside_box (hocr_pixbuf
 				    * pix,
-				    hocr_box box, unsigned int *object_array)
+				    hocr_box box, unsigned int *object_array,
+				    int size)
 {
 	int x, y;
 	int i = 0;
@@ -749,7 +854,7 @@ hocr_pixbuf_get_objects_inside_box (hocr_pixbuf
 
 	/* make sure none object have zero weight */
 	pix->objects[0].weight = 0;
-	clean_object_array (object_array);
+	clean_object_array (object_array, size);
 	for (x = box.x1; x < box.x2; x++)
 		for (y = box.y1; y < box.y2; y++)
 		{
@@ -760,8 +865,7 @@ hocr_pixbuf_get_objects_inside_box (hocr_pixbuf
 			    pix->objects[object].y1 >= box.y1 &&
 			    pix->objects[object].y2 <= box.y2 &&
 			    !(is_in_object_array
-			      (object, object_array))
-			    && (i < MAX_OBJECTS_IN_FONT))
+			      (object, object_array, size)) && (i < size))
 			{
 				/* add object to object array */
 				object_array[i] = object;

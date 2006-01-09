@@ -3,7 +3,9 @@ hocr (0.7.2)
  * command line example implements pipes
  * Tal. (tal.bav@gmail.com): add save ppm to command line example.
  * move tal's save as pnm to the internal hocr_pixbuf functions.
-
+ * add command line args to hocr-gtk example
+ * clean picture from artefacts before ocr it
+ 
  -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 5 Jan 2005 22:13
  
 hocr (0.7.1)

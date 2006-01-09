@@ -107,11 +107,13 @@ extern "C"
  @param pix pointer to hocr_pixbuf struct.
  @param box pointer to hocr_pixbuf struct.
  @param object_array an array of object to fill.
+ @param size of object_array
  @return the most havy object in the box.
  */
 	unsigned int
 		hocr_pixbuf_get_objects_in_box (hocr_pixbuf * pix, hocr_box box,
-						unsigned int *object_array);
+						unsigned int *object_array,
+						int size);
 
 /**
  @brief get objects inside a box
@@ -119,12 +121,14 @@ extern "C"
  @param pix pointer to hocr_pixbuf struct.
  @param box pointer to hocr_pixbuf struct.
  @param object_array an array of object to fill.
+ @param size of object_array
  @return the most havy object in the box.
  */
 	unsigned int
 		hocr_pixbuf_get_objects_inside_box (hocr_pixbuf * pix,
 						    hocr_box box,
-						    unsigned int *object_array);
+						    unsigned int *object_array,
+						    int size);
 
 /**
  @brief get number of channels
@@ -238,8 +242,7 @@ extern "C"
  @param filenme save as file name 
  @return 1=ok, 0=error
  */
-int
-hocr_pixbuf_save_as_pnm (hocr_pixbuf * pixbuf, char *filename) ;
+	int hocr_pixbuf_save_as_pnm (hocr_pixbuf * pixbuf, char *filename);
 
 /**
  @brief creats a new empty hocr_pixbuf struct 
@@ -262,6 +265,13 @@ hocr_pixbuf_save_as_pnm (hocr_pixbuf * pixbuf, char *filename) ;
  @param pix pointer to hocr_pixbuf struct.
  */
 	int hocr_pixbuf_create_object_map (hocr_pixbuf * pix);
+
+/**
+ @brief clean artaffects from pixbuf
+ 
+ @ param pix pointer to hocr_pixbuf struct.
+ */
+	int hocr_pixbuf_clean (hocr_pixbuf * pix);
 
 #ifdef __cplusplus
 }

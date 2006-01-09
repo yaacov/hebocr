@@ -82,7 +82,7 @@ color_hocr_box_full (hocr_pixbuf * pix, hocr_box rect, int chanell, int value,
 
 	if (only_main_object)
 	{
-		obj = hocr_pixbuf_get_objects_in_box (pix, rect, object_array);
+		obj = hocr_pixbuf_get_objects_in_box (pix, rect, object_array, MAX_OBJECTS_IN_FONT);
 	}
 
 	for (y = rect.y1 + 1; y <= (rect.y2 - 1); y++)
@@ -198,7 +198,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	/* create and fill the object map */
 	pix->progress_phase = 1;
 	hocr_pixbuf_create_object_map (pix);
-
+	
+	/* clean picture from small object arteffacts */
+	hocr_pixbuf_clean (pix);
+	
 	/* get columns for this page */
 	pix->progress_phase = 2;
 	fill_columns_array (pix, columns, &num_of_columns_in_page, MAX_COLUMNS);

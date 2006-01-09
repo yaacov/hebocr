@@ -31,11 +31,11 @@
 #include "hocr_object.h"
 
 int
-clean_object_array (unsigned int *object_array)
+clean_object_array (unsigned int *object_array, int size)
 {
 	int i;
 
-	for (i = 0; i < MAX_OBJECTS_IN_FONT; i++)
+	for (i = 0; i < size; i++)
 		object_array[i] = 0;
 
 	return 0;
@@ -43,11 +43,11 @@ clean_object_array (unsigned int *object_array)
 
 int
 is_in_object_array (unsigned int obj,
-		    unsigned int *object_array)
+		    unsigned int *object_array, int size)
 {
 	int i;
 
-	for (i = 0; i < MAX_OBJECTS_IN_FONT; i++)
+	for (i = 0; i < size; i++)
 		if (object_array[i] == obj)
 			return TRUE;
 
@@ -55,11 +55,11 @@ is_in_object_array (unsigned int obj,
 }
 
 int
-count_object_array (unsigned int *object_array)
+count_object_array (unsigned int *object_array, int size)
 {
 	int i;
 
-	for (i = 0; i < MAX_OBJECTS_IN_FONT && object_array[i]; i++) ;
+	for (i = 0; i < size && object_array[i]; i++) ;
 
 	return i;
 }
