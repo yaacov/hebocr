@@ -4,7 +4,10 @@ hocr (0.7.2)
  * Tal. (tal.bav@gmail.com): add save ppm to command line example.
  * move tal's save as pnm to the internal hocr_pixbuf functions.
  * add command line args to hocr-gtk example
+ * add save picture to hocr-gtk example
+ * add xsane option to hocr-gtk example
  * clean picture from artefacts before ocr it
+ * Tal. (tal.bav@gmail.com): add java binding example imagej-plugin
  
  -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 5 Jan 2005 22:13
  

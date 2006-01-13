@@ -38,7 +38,14 @@
 int
 hocr_line_eq_get_y (hocr_line_eq line, int x)
 {
-	return (int) (line.a * (double) x + line.b);
+	if (x < line.x1)
+		return (int) (line.a1 * (double) x + line.b1);
+	else if (x < line.x2)
+		return (int) (line.a2 * (double) x + line.b2);
+	else if (x < line.x3)
+		return (int) (line.a3 * (double) x + line.b3);
+
+	return (int) (line.a4 * (double) x + line.b4);
 }
 
 /* 
@@ -687,9 +694,13 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 				pix->objects[i].y2 - pix->objects[i].y1;
 			pix->objects[i].width =
 				pix->objects[i].x2 - pix->objects[i].x1;
-			if (pix->objects[i].weight < 6
+			if (pix->objects[i].weight < 4
 			    || pix->objects[i].hight < 1
 			    || pix->objects[i].width < 1)
+				pix->objects[i].name = 0;
+			if (pix->objects[i].weight > 1200
+			    || pix->objects[i].hight > 100
+			    || pix->objects[i].width > 100)
 				pix->objects[i].name = 0;
 		}
 		else
@@ -718,22 +729,19 @@ hocr_pixbuf_clean (hocr_pixbuf * pix)
 	{
 		for (x = 1; x < pix->width; x++)
 		{
-			/* if this is part of an object */
-			if (pix->objects[hocr_pixbuf_get_object (pix, x, y)].
-			    weight
-			    && (pix->
+			
+			/* if pixel on but not in an object */
+			if (hocr_pixbuf_get_pixel (pix, x, y) && !pix->
 				objects[hocr_pixbuf_get_object (pix, x, y)].
-				weight < MIN_FONT_WEIGHT
-				|| pix->
-				objects[hocr_pixbuf_get_object (pix, x, y)].
-				weight > MAX_FONT_WEIGHT))
+				name)
 			{
 				/* clean */
 				hocr_pixbuf_set_pixel (pix, x, y, 0, 0xffff);
-				hocr_pixbuf_set_pixel (pix, x, y, 1, 0xffff);
-				hocr_pixbuf_set_pixel (pix, x, y, 2, 0xffff);
+				hocr_pixbuf_set_pixel (pix, x, y, 1, 2500);
+				hocr_pixbuf_set_pixel (pix, x, y, 2, 1500);
 			}
 
+			/* smoth things */
 			/* get a 3x3 pixels */
 			object1 = hocr_pixbuf_get_pixel (pix, x, y);
 			object2 = hocr_pixbuf_get_pixel (pix, x, y + 1);
@@ -747,7 +755,7 @@ hocr_pixbuf_clean (hocr_pixbuf * pix)
 			object8 = hocr_pixbuf_get_pixel (pix, x + 2, y + 1);
 			object9 = hocr_pixbuf_get_pixel (pix, x + 2, y + 2);
 
-			/* remove dots */
+			/* add and remove dots */
 			if (!object5)
 			{
 
@@ -793,10 +801,10 @@ hocr_pixbuf_clean (hocr_pixbuf * pix)
 							       0xffff);
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 1,
-							       0xffff);
+							       2500);
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 2,
-							       0xffff);
+							       1500);
 					hocr_pixbuf_set_object (pix, x + 1,
 								y + 1, 0);
 				}

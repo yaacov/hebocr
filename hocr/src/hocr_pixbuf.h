@@ -36,11 +36,23 @@ extern "C"
 /** line equation structore used by hocr
  
  a and b in the equation are Y = a X + b
+ y = a1 x + b1 | x < X1
+ y = a2 x + b2 | x < X2 ...
  */
 	typedef struct
 	{
-		double a;
-		double b;
+		int x1;
+		double a1;
+		double b1;
+		int x2;
+		double a2;
+		double b2;
+		int x3;
+		double a3;
+		double b3;
+		int x4;
+		double a4;
+		double b4;
 	} hocr_line_eq;
 
 	typedef struct

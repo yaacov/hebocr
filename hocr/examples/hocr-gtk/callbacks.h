@@ -69,6 +69,10 @@ void on_apply_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void on_save_activate (GtkMenuItem * menuitem, gpointer user_data);
 
+void on_save_picture_activate (GtkMenuItem * menuitem, gpointer user_data);
+
+void on_xsane_activate (GtkMenuItem * menuitem, gpointer user_data);
+
 void on_quit_activate (GtkMenuItem * menuitem, gpointer user_data);
 
 void on_font_activate (GtkMenuItem * menuitem, gpointer user_data);

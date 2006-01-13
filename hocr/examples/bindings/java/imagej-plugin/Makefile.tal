@@ -1,0 +1,36 @@
+#
+# Makefile for HOCR plugin for ImageJ
+#
+# NOTES:
+#  - no autoconf/automake support. You'll have to change this makefile.
+#  - java compiler and setting ImageJ_SRC is OPTIONAL
+#    (because complied java bytecode is already in this directory)
+
+
+# path to ij.jar (located in root directory of ImageJ's distribution packge)
+# or to ImageJ source directory (not found in normal distribution)
+ImageJ_SRC=C:/Tmp_Downloads/ImajeJ/ImageJ/ij.jar
+
+
+##################################################################
+# Build shared library / DLL
+# --> EDIT THIS RULE MANUALLY TO BUILD SHARED OBJECT <--
+
+# --for cygwin + sun's jdk--
+jdk=/c/ProgFiles.sym/Java/jdk1.5.0_06
+hocr_java.dll: hocr_java.c hocr_java.h
+	gcc -mno-cygwin -I${jdk}/include -I${jdk}/include/win32 -Wl,--add-stdcall-alias -shared -o $@ $< \
+	  -I../../src ../../src/.libs/libhocr.a
+
+# --for Linux+GCC--
+#hocr_java.so: hocr_java.c hocr_java.h
+#	gcc -shared -o $@ $< -I../../src ../../src/.libs/libhocr.a
+
+##################################################################
+
+Hocr_Plugin.class: Hocr_Plugin.java
+	javac -cp ${ImageJ_SRC} $<
+
+hocr_java.h: #Hocr_Plugin.class
+	javah -classpath . -o hocr_java.h Hocr_Plugin
+

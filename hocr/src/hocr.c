@@ -82,7 +82,8 @@ color_hocr_box_full (hocr_pixbuf * pix, hocr_box rect, int chanell, int value,
 
 	if (only_main_object)
 	{
-		obj = hocr_pixbuf_get_objects_in_box (pix, rect, object_array, MAX_OBJECTS_IN_FONT);
+		obj = hocr_pixbuf_get_objects_in_box (pix, rect, object_array,
+						      MAX_OBJECTS_IN_FONT);
 	}
 
 	for (y = rect.y1 + 1; y <= (rect.y2 - 1); y++)
@@ -168,7 +169,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	int tabs = 0;
 	int indent = 0;
 	int font_number = 0;
-	
+
 	/* init the progress indicators */
 	pix->progress = 0;
 	pix->progress_phase = 0;
@@ -198,10 +199,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	/* create and fill the object map */
 	pix->progress_phase = 1;
 	hocr_pixbuf_create_object_map (pix);
-	
+
 	/* clean picture from small object arteffacts */
 	hocr_pixbuf_clean (pix);
-	
+
 	/* get columns for this page */
 	pix->progress_phase = 2;
 	fill_columns_array (pix, columns, &num_of_columns_in_page, MAX_COLUMNS);
@@ -347,12 +348,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					       &(line_eqs[c][i][1]),
 					       avg_font_hight_in_page,
 					       num_of_fonts[c][i]);
-			/* if line is very not horizontal return error */
-			if ((line_eqs[c][i][0].a *
-			     line_eqs[c][i][0].a) > (1.0 / 1000.0))
-			{
-				num_of_fonts[c][i] = 0;
-			}
 		}
 	}
 
@@ -374,7 +369,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						    lines[c * MAX_LINES +
 							  i].x1,
 						    lines[c * MAX_LINES +
-							  i].x2, 2, 0);
+							  i].x2, 1, 100);
 				color_hocr_line_eq (pix, &(line_eqs[c][i][1]),
 						    lines[c * MAX_LINES +
 							  i].x1,
@@ -404,8 +399,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						     i * MAX_FONTS_IN_LINE +
 						     j].hight >
 					    (3.5 *
-					     (double)
-					     avg_font_hight_in_page))
+					     (double) avg_font_hight_in_page))
 						continue;
 					color_hocr_box (pix,
 							fonts[c * MAX_LINES *
@@ -468,7 +462,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				for (j = 0; j < num_of_fonts[c][i]; j++)
 				{
 					/* progress the progress indicator */
-					/* start at 128 because 128 is the end of object count */
+					/* start at 128 because 128 is the end
+					 * of object count */
 					pix->progress =
 						128 +
 						((double) font_number /
@@ -549,8 +544,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						     i * MAX_FONTS_IN_LINE +
 						     j].hight >
 					    (3.5 *
-					     (double)
-					     avg_font_hight_in_page))
+					     (double) avg_font_hight_in_page))
 					{
 						/* check for end of word */
 						if (end_of_word)

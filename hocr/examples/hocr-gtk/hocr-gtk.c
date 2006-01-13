@@ -28,6 +28,7 @@
 #endif
 
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -75,7 +76,6 @@ print_help ()
 int
 main (int argc, char *argv[])
 {
-	GtkWidget *window1;
 	char c;
 
 #ifdef ENABLE_NLS

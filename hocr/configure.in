@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(hocr, 0.7.2)
+AM_INIT_AUTOMAKE(hocr, 0.8.0)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -102,6 +102,8 @@ AC_CHECK_PROG(have_swig, "swig", yes, no)
 
 dnl =======================================================================================
 
+dnl =======================================================================================
+
 build_python=no
 
 AC_ARG_ENABLE(python, [  --enable-python	build python binding [default=no]], build_python="$enableval", build_python=no)
@@ -179,6 +181,40 @@ AM_CONDITIONAL(WITH_PERL, test "x$build_perl" = "xyes")
 
 dnl =======================================================================================
 
+build_java=no
+have_java=no
+
+AC_ARG_ENABLE(java, [  --enable-java	build java binding [default=no]], build_java="$enableval", build_java=no)
+
+AC_ARG_WITH(java-sdk-dir, [  --with-java-sdk-dir=PATH	path to java sdk ])
+AC_ARG_WITH(java-imagej-dir, [  --with-imagej-dir=PATH	path to imagej source ])
+
+JAVA_DEV_KIT_PATH=$with_java_sdk_dir
+AC_SUBST([JAVA_DEV_KIT_PATH])
+
+IMAGEJ_SOURCE_PATH=$with_imagej_dir
+AC_SUBST([IMAGEJ_SOURCE_PATH])
+
+if test "x$with_java_sdk_dir" = "x"; then
+         build_java=no 
+fi
+
+if test "x$with_imagej_dir" = "x"; then
+         build_java=no 
+fi
+
+if test -f ${with_java_sdk_dir}/bin/javac; then
+         have_java=yes
+fi
+
+if test "x$have_java" = "xno"; then
+         build_java=no 
+fi
+
+AM_CONDITIONAL(WITH_JAVA, test "x$build_java" = "xyes")
+
+dnl =======================================================================================
+
 dnl =======================================================================================
 
 AC_SUBST(PACKAGE_CFLAGS)
@@ -195,6 +231,14 @@ tests/Makefile
 examples/Makefile
 examples/hocr-gtk/Makefile
 examples/hocr/Makefile
+examples/bindings/Makefile
+examples/bindings/python/Makefile
+examples/bindings/python/simple/Makefile
+examples/bindings/python/pygtk/Makefile
+examples/bindings/perl/Makefile
+examples/bindings/pascal/Makefile
+examples/bindings/java/Makefile
+examples/bindings/java/imagej-plugin/Makefile
 bindings/Makefile
 bindings/python/Makefile
 bindings/perl/Makefile
@@ -211,6 +255,8 @@ $PACKAGE-$VERSION
 	have swig			${have_swig}
 	have python			${have_python}
 	have perl			${have_perl}
+	hava java			${have_java}
+		javac			${with_java_sdk_dir}/bin/javac
 
 	build hocr			${cmd}
 	build hocr-gtk			${gtk}
@@ -218,8 +264,11 @@ $PACKAGE-$VERSION
 
 	build python binding		${build_python}
 	build perl binding		${build_perl}
+	build java binding		${build_java}
 	
-	perl site lib path:		$PE_MODULES_PATH
-	python site lib path:		$PY_MODULES_PATH
+	perl site lib path:		${PE_MODULES_PATH}
+	python site lib path:		${PY_MODULES_PATH}
+	java sdk path:			${JAVA_DEV_KIT_PATH}
+	imagej source path:		${IMAGEJ_SOURCE_PATH}
 
 "

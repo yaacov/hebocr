@@ -75,6 +75,10 @@ create_window1 (void)
 	GtkWidget *apply;
 	GtkWidget *save;
 	GtkWidget *separatormenuitem1;
+	GtkWidget *save_picture;
+	GtkWidget *save_picture_image;
+	GtkWidget *xsane;
+	GtkWidget *separatormenuitem2;
 	GtkWidget *quit;
 	GtkWidget *menuitem2;
 	GtkWidget *menuitem2_menu;
@@ -106,9 +110,6 @@ create_window1 (void)
 	GtkWidget *toolbutton_zoom_in;
 	GtkWidget *toolbutton_zoom_out;
 	GtkWidget *toolbutton_zoom_fit;
-	GtkWidget *toolitem3;
-	GtkWidget *vseparator3;
-	GtkWidget *toolbutton_about;
 
 	/* image */
 	GtkWidget *vpaned1;
@@ -160,6 +161,24 @@ create_window1 (void)
 	gtk_widget_show (separatormenuitem1);
 	gtk_container_add (GTK_CONTAINER (menuitem1_menu), separatormenuitem1);
 	gtk_widget_set_sensitive (separatormenuitem1, FALSE);
+
+	save_picture = gtk_image_menu_item_new_with_label (_("Save Picture"));
+	save_picture_image =
+		gtk_image_new_from_stock ("gtk-save", GTK_ICON_SIZE_MENU);
+	gtk_widget_show (save_picture_image);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (save_picture),
+				       save_picture_image);
+	gtk_widget_show (save_picture);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), save_picture);
+
+	xsane = gtk_menu_item_new_with_label (_("Xsane"));
+	gtk_widget_show (xsane);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), xsane);
+	
+	separatormenuitem2 = gtk_separator_menu_item_new ();
+	gtk_widget_show (separatormenuitem2);
+	gtk_container_add (GTK_CONTAINER (menuitem1_menu), separatormenuitem2);
+	gtk_widget_set_sensitive (separatormenuitem2, FALSE);
 
 	quit = gtk_image_menu_item_new_from_stock ("gtk-quit", accel_group);
 	gtk_widget_show (quit);
@@ -363,20 +382,6 @@ create_window1 (void)
 	gtk_widget_show (toolbutton_zoom_fit);
 	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_zoom_fit);
 
-	toolitem3 = (GtkWidget *) gtk_tool_item_new ();
-	gtk_widget_show (toolitem3);
-	gtk_container_add (GTK_CONTAINER (toolbar), toolitem3);
-	vseparator3 = gtk_vseparator_new ();
-	gtk_widget_show (vseparator3);
-	gtk_container_add (GTK_CONTAINER (toolitem3), vseparator3);
-
-	toolbutton_about =
-		(GtkWidget *) gtk_tool_button_new_from_stock ("gtk-about");
-	gtk_widget_show (toolbutton_about);
-	gtk_container_add (GTK_CONTAINER (toolbar), toolbutton_about);
-	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_about), tooltips,
-				   _("About this application"), NULL);
-
 	/* image */
 	vpaned1 = gtk_vpaned_new ();
 	gtk_widget_show (vpaned1);
@@ -451,13 +456,11 @@ create_window1 (void)
 	g_signal_connect ((gpointer) toolbutton_zoom_fit, "clicked",
 			  G_CALLBACK (on_toolbutton_zoom_fit_clicked), NULL);
 
-	g_signal_connect ((gpointer) toolbutton_about, "clicked",
-			  G_CALLBACK (on_toolbutton_about_clicked), NULL);
 #ifdef WITH_GTKSPELL
 	g_signal_connect ((gpointer) toolbutton_spell, "clicked",
 			  G_CALLBACK (on_toolbutton_spell_clicked), NULL);
 #endif
-	
+
 	/* menu */
 	g_signal_connect ((gpointer) open, "activate",
 			  G_CALLBACK (on_open_activate), NULL);
@@ -465,6 +468,10 @@ create_window1 (void)
 			  G_CALLBACK (on_apply_activate), NULL);
 	g_signal_connect ((gpointer) save, "activate",
 			  G_CALLBACK (on_save_activate), NULL);
+	g_signal_connect ((gpointer) save_picture, "activate",
+			  G_CALLBACK (on_save_picture_activate), NULL);
+	g_signal_connect ((gpointer) xsane, "activate",
+			  G_CALLBACK (on_xsane_activate), NULL);
 	g_signal_connect ((gpointer) quit, "activate",
 			  G_CALLBACK (on_quit_activate), NULL);
 	g_signal_connect ((gpointer) font, "activate",

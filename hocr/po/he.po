@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hocr 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-02 20:25+0200\n"
+"POT-Creation-Date: 2006-01-13 14:59+0200\n"
 "PO-Revision-Date: 2005-08-17 02:49+0300\n"
 "Last-Translator: kzamir <kzamir@walla.co.il>\n"
 "Language-Team: Hebrew <LL@li.org>\n"
@@ -16,139 +16,173 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: examples/hocr-gtk/interface.c:128
-msgid "hocr-gui"
+#. set the window title
+#: examples/hocr-gtk/interface.c:129 examples/hocr-gtk/callbacks.c:298
+msgid "hocr-gtk"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:140
+#: examples/hocr-gtk/interface.c:141
 msgid "_File"
 msgstr "קובץ"
 
-#: examples/hocr-gtk/interface.c:168
+#: examples/hocr-gtk/interface.c:165
+msgid "Save Picture"
+msgstr ""
+
+#: examples/hocr-gtk/interface.c:174
+msgid "Xsane"
+msgstr ""
+
+#: examples/hocr-gtk/interface.c:187
 msgid "_Edit"
 msgstr "עריכה"
 
-#: examples/hocr-gtk/interface.c:199
+#: examples/hocr-gtk/interface.c:218
 msgid "Color boxes"
 msgstr "צבע מסגרות"
 
-#: examples/hocr-gtk/interface.c:202
+#: examples/hocr-gtk/interface.c:221
 msgid "Color text boxes"
 msgstr "צבע מסגרות של אזורי טקסט"
 
-#: examples/hocr-gtk/interface.c:208
+#: examples/hocr-gtk/interface.c:227
 msgid "Color misread"
 msgstr "צבע אותיות"
 
-#: examples/hocr-gtk/interface.c:211
+#: examples/hocr-gtk/interface.c:230
 msgid "Color misread fonts"
 msgstr "צבע אותיות שלא פענחו"
 
-#: examples/hocr-gtk/interface.c:216
+#: examples/hocr-gtk/interface.c:235
 msgid "Clear"
 msgstr "נקה"
 
-#: examples/hocr-gtk/interface.c:220
+#: examples/hocr-gtk/interface.c:239
 msgid "Clear text each time you ocr new scan"
 msgstr "נקה את אזור הטקסט לפני פענוח טקסט חדש"
 
-#: examples/hocr-gtk/interface.c:223
+#: examples/hocr-gtk/interface.c:242
 msgid "Ocr"
 msgstr ""
 
-#: examples/hocr-gtk/interface.c:227
+#: examples/hocr-gtk/interface.c:246
 msgid "Try to recognize fonts in scaned text"
 msgstr "נסה לפענח אותיות"
 
-#: examples/hocr-gtk/interface.c:230
+#: examples/hocr-gtk/interface.c:249
 msgid "Use dictionary"
 msgstr "מילון"
 
-#: examples/hocr-gtk/interface.c:235
+#: examples/hocr-gtk/interface.c:254
 #, fuzzy
 msgid ""
 "Try to guess unrecognized fonts in scaned text using internal dictionary"
 msgstr "נסה לתקן מילים שגויות בעזרת מילון פנימי"
 
-#: examples/hocr-gtk/interface.c:239
+#: examples/hocr-gtk/interface.c:258
 msgid "Use nikud"
 msgstr "ניקוד"
 
-#: examples/hocr-gtk/interface.c:243
+#: examples/hocr-gtk/interface.c:262
 msgid "Try to guess nikud"
 msgstr "נסה לנחש את הניקוד של האות המזוהה"
 
-#: examples/hocr-gtk/interface.c:246
+#: examples/hocr-gtk/interface.c:265
 msgid "Use spaces"
 msgstr "רווח"
 
-#: examples/hocr-gtk/interface.c:250
+#: examples/hocr-gtk/interface.c:269
 msgid "Use spaces for tabs"
 msgstr "השתמש ברווחים במקום סימני טאב"
 
-#: examples/hocr-gtk/interface.c:255
+#: examples/hocr-gtk/interface.c:274
 msgid "Use indentation"
 msgstr "עימוד"
 
-#: examples/hocr-gtk/interface.c:259
+#: examples/hocr-gtk/interface.c:278
 msgid "Try to guess line indentation"
 msgstr "נסה לנחש את העימוד של השורה המזוהה"
 
-#: examples/hocr-gtk/interface.c:263
+#: examples/hocr-gtk/interface.c:282
 msgid "_View"
 msgstr "מראה"
 
-#: examples/hocr-gtk/interface.c:287
+#: examples/hocr-gtk/interface.c:306
 msgid "_Help"
 msgstr "עזרה"
 
-#: examples/hocr-gtk/interface.c:294
+#: examples/hocr-gtk/interface.c:313
 msgid "_About"
 msgstr "אודות"
 
-#: examples/hocr-gtk/interface.c:311
+#: examples/hocr-gtk/interface.c:330
 msgid "Open a new picture for the OCR"
 msgstr "פתח תמונה חדשה לצורך פענוח"
 
-#: examples/hocr-gtk/interface.c:318
+#: examples/hocr-gtk/interface.c:337
 msgid "Convert picture to text"
 msgstr "נסה לפענח תמונה"
 
-#: examples/hocr-gtk/interface.c:325
+#: examples/hocr-gtk/interface.c:344
 msgid "Save the text created by the OCR"
 msgstr "שמור את הטקסט המפוענח"
 
-#: examples/hocr-gtk/interface.c:341
+#: examples/hocr-gtk/interface.c:360
 msgid "Spell check the text"
 msgstr "בדוק איות"
 
-#: examples/hocr-gtk/interface.c:378
-msgid "About this application"
-msgstr "אודות ישום זה"
-
-#. set the window title
-#: examples/hocr-gtk/callbacks.c:297
-msgid "hocr-gtk"
+#: examples/hocr-gtk/callbacks.c:347
+msgid "hocr save text"
 msgstr ""
 
-#: examples/hocr-gtk/callbacks.c:408
+#: examples/hocr-gtk/callbacks.c:386
+msgid ""
+"Error wile saving:\n"
+"No picture to save"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:395
+msgid "hocr save picture"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:422
+#, c-format
+msgid ""
+"Error wile saving:\n"
+"Can't save %s, no suffix"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:440
+#, c-format
+msgid "File %s saved"
+msgstr ""
+
+#. set the window title
+#: examples/hocr-gtk/callbacks.c:471
+msgid "hocr-gtk - xsane"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:594
 msgid "HOCR-GTK"
 msgstr ""
 
-#: examples/hocr-gtk/callbacks.c:414
+#: examples/hocr-gtk/callbacks.c:594
 msgid ""
 "HOCR-GTK - Hebrew character recognition software.\n"
 "This project is supported by a grant form the Israeli Internet Association."
 msgstr ""
 
-#: examples/hocr-gtk/callbacks.c:417
+#: examples/hocr-gtk/callbacks.c:596
 msgid "translator_credits"
 msgstr "יעקב זמיר"
 
 #. create font dialog
-#: examples/hocr-gtk/callbacks.c:607
+#: examples/hocr-gtk/callbacks.c:780
 msgid "Set text font"
 msgstr "קבע את אותיות אזור הטקסט"
+
+#~ msgid "About this application"
+#~ msgstr "אודות ישום זה"
 
 #~ msgid "HOCR-GTK - Hebrew character recognition software"
 #~ msgstr "HOCR-GTK - מזהה אותיות אופטי עברי"
