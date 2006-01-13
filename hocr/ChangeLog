@@ -1,3 +1,9 @@
+hocr (0.8.0)
+
+ * 
+ 
+ -- Yaacov Zamir <kzamir@walla.co.il>  Sat, 14 Jan 2006 22:13
+
 hocr (0.7.2)
 
  * command line example implements pipes
@@ -9,7 +15,7 @@ hocr (0.7.2)
  * clean picture from artefacts before ocr it
  * Tal. (tal.bav@gmail.com): add java binding example imagej-plugin
  
- -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 5 Jan 2005 22:13
+ -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 5 Jan 2006 22:13
  
 hocr (0.7.1)
 
@@ -17,14 +23,14 @@ hocr (0.7.1)
  * add pyGTK example
  * Diego Iastrubni: fix qt example
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Mon, 2 Jan 2005 22:13
+ -- Yaacov Zamir <kzamir@walla.co.il>  Mon, 2 Jan 2006 22:13
 
 hocr (0.7.0)
 
  * add bindings to C++, Python and Perl
  * documentation is now separate for c and cpp
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 1 Jan 2005 22:13
+ -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 1 Jan 2006 22:13
  
 hocr (0.6.4)
 
