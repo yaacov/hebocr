@@ -27,7 +27,7 @@ msgstr "קובץ"
 
 #: examples/hocr-gtk/interface.c:165
 msgid "Save Picture"
-msgstr ""
+msgstr "שמור תמונה"
 
 #: examples/hocr-gtk/interface.c:174
 msgid "Xsane"
@@ -74,7 +74,6 @@ msgid "Use dictionary"
 msgstr "מילון"
 
 #: examples/hocr-gtk/interface.c:254
-#, fuzzy
 msgid ""
 "Try to guess unrecognized fonts in scaned text using internal dictionary"
 msgstr "נסה לתקן מילים שגויות בעזרת מילון פנימי"
@@ -89,7 +88,7 @@ msgstr "נסה לנחש את הניקוד של האות המזוהה"
 
 #: examples/hocr-gtk/interface.c:265
 msgid "Use spaces"
-msgstr "רווח"
+msgstr "רווחים"
 
 #: examples/hocr-gtk/interface.c:269
 msgid "Use spaces for tabs"
@@ -133,17 +132,19 @@ msgstr "בדוק איות"
 
 #: examples/hocr-gtk/callbacks.c:347
 msgid "hocr save text"
-msgstr ""
+msgstr "שמור קובץ טקסט"
 
 #: examples/hocr-gtk/callbacks.c:386
 msgid ""
 "Error wile saving:\n"
 "No picture to save"
 msgstr ""
+"שגיאה בעת שמירה:\n"
+"אין תמונה לשמור"
 
 #: examples/hocr-gtk/callbacks.c:395
 msgid "hocr save picture"
-msgstr ""
+msgstr "שמור קובץ תמונה"
 
 #: examples/hocr-gtk/callbacks.c:422
 #, c-format
@@ -151,11 +152,12 @@ msgid ""
 "Error wile saving:\n"
 "Can't save %s, no suffix"
 msgstr ""
-
+"שגיאה בעת שמירה:\n"
+"אין סיומת לקובץ %s"
 #: examples/hocr-gtk/callbacks.c:440
 #, c-format
 msgid "File %s saved"
-msgstr ""
+msgstr "הקובץ %s נשמר"
 
 #. set the window title
 #: examples/hocr-gtk/callbacks.c:471
@@ -171,6 +173,8 @@ msgid ""
 "HOCR-GTK - Hebrew character recognition software.\n"
 "This project is supported by a grant form the Israeli Internet Association."
 msgstr ""
+"HOCR-GTK - מזהה אופטי עברי.\n"
+"פרויקט זה נתמך על-ידי מענק של איגוד האינטרנט הישראלי."
 
 #: examples/hocr-gtk/callbacks.c:596
 msgid "translator_credits"
@@ -180,12 +184,3 @@ msgstr "יעקב זמיר"
 #: examples/hocr-gtk/callbacks.c:780
 msgid "Set text font"
 msgstr "קבע את אותיות אזור הטקסט"
-
-#~ msgid "About this application"
-#~ msgstr "אודות ישום זה"
-
-#~ msgid "HOCR-GTK - Hebrew character recognition software"
-#~ msgstr "HOCR-GTK - מזהה אותיות אופטי עברי"
-
-#~ msgid "Quit this program"
-#~ msgstr "סגור ישום זה"

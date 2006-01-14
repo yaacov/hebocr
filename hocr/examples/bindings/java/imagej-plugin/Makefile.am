@@ -44,7 +44,7 @@ hocr_java.h: Hocr_Plugin.class
 #else
 install-data-local: libhocr_java.so Hocr_Plugin.class
 	$(mkinstalldirs) $(DESTDIR)${ImageJ_SRC}/plugins/Analyze
-	$(INSTALL_DATA) libhocr_java.so $(DESTDIR)${ImageJ_SRC}/libhocr_java.so
+	$(INSTALL_DATA) libhocr_java.so $(DESTDIR)${jdk}/jre/lib/i386/libhocr_java.so
 	$(INSTALL_DATA) Hocr_Plugin.class $(DESTDIR)${ImageJ_SRC}/plugins/Analyze/Hocr_Plugin.class
 
 #endif
