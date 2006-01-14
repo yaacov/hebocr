@@ -10,6 +10,8 @@ bugs:
 
    - find out why programs crash on some inputs. [done, kobi 1,12,2005]
    - give some feedback when input is unreadble.
+   - Hebrew translation does not work in hocr-gtk example.
+   - win32 port is not automaticaly configured using configure.
 
 code cleaning:
 
@@ -32,6 +34,7 @@ features:
    - add support for new shapes (numbers, english letters)
    - add support for nikud. [done, kobi 1,1,2006]
    - add support for more then one shape for each font.
+   - add support for multiple font archives.
 
 documentation:
 
@@ -39,3 +42,5 @@ documentation:
      (see hocr-gui and qhocr for more details)
         a) gdk_pixbuf from the GTK+ toolkit
         b) QImage from the QT toolkit
+   - man page for hocr example [done]
+   - man page for hocr-gtk example.
