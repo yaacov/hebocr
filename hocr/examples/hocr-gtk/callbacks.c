@@ -42,6 +42,8 @@
 #include "hocr.h"
 #include "hocr_pixbuf.h"
 
+#include "hocr1-128.xpm"
+
 static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 
 typedef struct _text_struct
@@ -496,8 +498,9 @@ run_xsane (gpointer data)
 	{
 		GdkPixbuf *new_pixbuf = NULL;
 
-		new_pixbuf = gdk_pixbuf_new_from_file (xsane_pipe_pathname, NULL);
-		
+		new_pixbuf =
+			gdk_pixbuf_new_from_file (xsane_pipe_pathname, NULL);
+
 		/* check if realy a picture file */
 		if (new_pixbuf)
 		{
@@ -506,7 +509,7 @@ run_xsane (gpointer data)
 			{
 				g_object_unref (pixbuf);
 			}
-			
+
 			/* replace old pixbuf */
 			pixbuf = new_pixbuf;
 
@@ -527,7 +530,7 @@ on_xsane_activate (GtkMenuItem * menuitem, gpointer user_data)
 	/* only one run is posible */
 	if (!g_static_mutex_trylock (&mutex))
 		return;
-	
+
 	/* is xsane present */
 	if (!g_find_program_in_path ("xsane"))
 	{
@@ -551,7 +554,7 @@ on_xsane_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 	/* unlock mutex */
 	g_static_mutex_unlock (&mutex);
-	
+
 	return;
 }
 
@@ -583,6 +586,8 @@ on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data)
 void
 on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
+	GdkPixbuf *hocr_logo = gdk_pixbuf_new_from_xpm_data ((const char **)hocr1_128_xpm);
+	
 	static const gchar *authors[] = {
 		"Yaacov Zamir <kzamir@walla.co.il>",
 		NULL
@@ -591,9 +596,16 @@ on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data)
 		"Yaacov Zamir <kzamir@walla.co.il>",
 		NULL
 	};
-	gtk_show_about_dialog (GTK_WINDOW (window1), "name", _("HOCR-GTK"), "version", VERSION, "copyright", "Copyright \xc2\xa9 2005 Yaacov Zamir", "comments", _("HOCR-GTK - Hebrew character recognition software.\n\
-This project is supported by a grant form the Israeli Internet Association."),
-			       "authors", authors, "documenters", documenters, "translator-credits", _("translator_credits"), NULL);
+	static const char *artists[] = {
+		"Shlomi Israel <sijproject@gmail.com>",
+		NULL
+	};
+	gtk_show_about_dialog (GTK_WINDOW (window1),
+			       "name", _("HOCR-GTK"),
+			       "version", VERSION,
+			       "copyright", "Copyright \xc2\xa9 2005 Yaacov Zamir", "comments", _("HOCR-GTK - Hebrew character recognition software.\n\
+This project is supported by a grant form the Israeli Internet Association."), "authors", authors,
+			       "documenters", documenters, "translator-credits", _("translator_credits"), "artists", artists, "website", "http://hocr.berlios.de", "logo", hocr_logo, NULL);
 }
 
 void

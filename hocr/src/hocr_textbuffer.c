@@ -67,6 +67,9 @@ hocr_text_buffer_new ()
 int
 hocr_text_buffer_unref (hocr_text_buffer * text_buffer)
 {
+	if (text_buffer->text)
+		free (text_buffer->text);
+	
 	if (text_buffer)
 		free (text_buffer);
 

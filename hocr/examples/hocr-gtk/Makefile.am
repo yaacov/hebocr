@@ -40,7 +40,8 @@ bin_PROGRAMS = hocr-gtk
 hocr_gtk_SOURCES = \
 	hocr-gtk.c \
 	interface.c interface.h \
-	callbacks.c callbacks.h 
+	callbacks.c callbacks.h \
+	hocr1-128.xpm
 
 hocr_gtk_DEPENDENCIES = $(DEPS)
 

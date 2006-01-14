@@ -3,7 +3,8 @@
 SUBDIRS = src $(PO_DIR) tests examples bindings
 
 EXTRA_DIST = \
-	autogen.sh libhocr.pc.in libhocr.pc BUGS HACKING Doxyfile Doxyfile_cpp
+	autogen.sh libhocr.pc.in libhocr.pc BUGS HACKING Doxyfile Doxyfile_cpp \
+	pixmaps/*
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libhocr.pc
@@ -22,20 +23,20 @@ hocrdoc_DATA = \
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/pixmaps; then \
-	  $(mkinstalldirs) $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
+	  $(mkinstalldirs) $(DESTDIR)$(datadir)/pixmaps/; \
 	  for pixmap in $(srcdir)/pixmaps/*; do \
 	    if test -f $$pixmap; then \
-	      $(INSTALL_DATA) $$pixmap $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
+	      $(INSTALL_DATA) $$pixmap $(DESTDIR)$(datadir)/pixmaps/; \
 	    fi \
 	  done \
 	fi
 
 dist-hook:
 	if test -d pixmaps; then \
-	  mkdir $(distdir)/pixmaps; \
+	  mkdir $(DESTDIR)$(distdir)/pixmaps; \
 	  for pixmap in pixmaps/*; do \
 	    if test -f $$pixmap; then \
-	      cp -p $$pixmap $(distdir)/pixmaps; \
+	      cp -p $$pixmap $(DESTDIR)$(distdir)/pixmaps; \
 	    fi \
 	  done \
 	fi
