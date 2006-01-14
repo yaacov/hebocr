@@ -7,7 +7,8 @@ if WITH_GTK
 if WITH_GTKSPELL
 
 INCLUDES = \
-        -DPACKAGE_DATA_DIR=\""$(datadir)"\" -DWITH_GTKSPELL\
+        -DPACKAGE_DATA_DIR=\""$(datadir)"\" -DLOGO=\""$(datadir)/pixmaps/hocr1-128.png\"" \
+	-DWITH_GTKSPELL\
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
         @PACKAGE_CFLAGS@ @gtk_CFLAGS@ @gtkspell_CFLAGS@ -I$(top_srcdir)/src
 
@@ -20,7 +21,7 @@ hocr_gtk_LDADD = $(ldadd) @PACKAGE_LIBS@ @gtk_LIBS@ @gtkspell_LIBS@ $(INTLLIBS)
 else
 
 INCLUDES = \
-        -DPACKAGE_DATA_DIR=\""$(datadir)"\" \
+        -DPACKAGE_DATA_DIR=\""$(datadir)"\" -DLOGO=\""$(datadir)/pixmaps/hocr1-128.png\"" \
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
         @PACKAGE_CFLAGS@ @gtk_CFLAGS@ -I$(top_srcdir)/src
 
@@ -40,8 +41,7 @@ bin_PROGRAMS = hocr-gtk
 hocr_gtk_SOURCES = \
 	hocr-gtk.c \
 	interface.c interface.h \
-	callbacks.c callbacks.h \
-	hocr1-128.xpm
+	callbacks.c callbacks.h
 
 hocr_gtk_DEPENDENCIES = $(DEPS)
 

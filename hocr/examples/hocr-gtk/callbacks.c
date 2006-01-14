@@ -42,8 +42,6 @@
 #include "hocr.h"
 #include "hocr_pixbuf.h"
 
-#include "hocr1-128.xpm"
-
 static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 
 typedef struct _text_struct
@@ -586,8 +584,9 @@ on_toolbutton_apply_clicked (GtkToolButton * toolbutton, gpointer user_data)
 void
 on_toolbutton_about_clicked (GtkToolButton * toolbutton, gpointer user_data)
 {
-	GdkPixbuf *hocr_logo = gdk_pixbuf_new_from_xpm_data ((const char **)hocr1_128_xpm);
-	
+	GError *error = NULL;
+	GdkPixbuf *hocr_logo = gdk_pixbuf_new_from_file (LOGO, &error);
+
 	static const gchar *authors[] = {
 		"Yaacov Zamir <kzamir@walla.co.il>",
 		NULL

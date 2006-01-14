@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hocr 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-13 14:59+0200\n"
+"POT-Creation-Date: 2006-01-15 00:32+0200\n"
 "PO-Revision-Date: 2005-08-17 02:49+0300\n"
 "Last-Translator: kzamir <kzamir@walla.co.il>\n"
 "Language-Team: Hebrew <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. set the window title
-#: examples/hocr-gtk/interface.c:129 examples/hocr-gtk/callbacks.c:298
+#: examples/hocr-gtk/interface.c:129 examples/hocr-gtk/callbacks.c:300
 msgid "hocr-gtk"
 msgstr ""
 
@@ -130,11 +130,11 @@ msgstr "שמור את הטקסט המפוענח"
 msgid "Spell check the text"
 msgstr "בדוק איות"
 
-#: examples/hocr-gtk/callbacks.c:347
+#: examples/hocr-gtk/callbacks.c:349
 msgid "hocr save text"
 msgstr "שמור קובץ טקסט"
 
-#: examples/hocr-gtk/callbacks.c:386
+#: examples/hocr-gtk/callbacks.c:388
 msgid ""
 "Error wile saving:\n"
 "No picture to save"
@@ -142,11 +142,11 @@ msgstr ""
 "שגיאה בעת שמירה:\n"
 "אין תמונה לשמור"
 
-#: examples/hocr-gtk/callbacks.c:395
+#: examples/hocr-gtk/callbacks.c:397
 msgid "hocr save picture"
 msgstr "שמור קובץ תמונה"
 
-#: examples/hocr-gtk/callbacks.c:422
+#: examples/hocr-gtk/callbacks.c:424
 #, c-format
 msgid ""
 "Error wile saving:\n"
@@ -154,21 +154,22 @@ msgid ""
 msgstr ""
 "שגיאה בעת שמירה:\n"
 "אין סיומת לקובץ %s"
-#: examples/hocr-gtk/callbacks.c:440
+
+#: examples/hocr-gtk/callbacks.c:442
 #, c-format
 msgid "File %s saved"
 msgstr "הקובץ %s נשמר"
 
 #. set the window title
-#: examples/hocr-gtk/callbacks.c:471
+#: examples/hocr-gtk/callbacks.c:473
 msgid "hocr-gtk - xsane"
 msgstr ""
 
-#: examples/hocr-gtk/callbacks.c:594
+#: examples/hocr-gtk/callbacks.c:604
 msgid "HOCR-GTK"
 msgstr ""
 
-#: examples/hocr-gtk/callbacks.c:594
+#: examples/hocr-gtk/callbacks.c:606
 msgid ""
 "HOCR-GTK - Hebrew character recognition software.\n"
 "This project is supported by a grant form the Israeli Internet Association."
@@ -176,11 +177,11 @@ msgstr ""
 "HOCR-GTK - מזהה אופטי עברי.\n"
 "פרויקט זה נתמך על-ידי מענק של איגוד האינטרנט הישראלי."
 
-#: examples/hocr-gtk/callbacks.c:596
+#: examples/hocr-gtk/callbacks.c:608
 msgid "translator_credits"
 msgstr "יעקב זמיר"
 
 #. create font dialog
-#: examples/hocr-gtk/callbacks.c:780
+#: examples/hocr-gtk/callbacks.c:792
 msgid "Set text font"
 msgstr "קבע את אותיות אזור הטקסט"
