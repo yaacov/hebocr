@@ -96,10 +96,40 @@ extern "C"
 		hocr_object *objects;
 
 	/** number of objects found */
-		int num_of_objects;
+		unsigned int num_of_objects;
+		
+	/** number of the maximum object found */
+		unsigned int num_of_max_object;
+		
+	/** number of letters found */
+		int num_of_letters;
+	
+	/** number of missread letters found */
+		int num_of_missread_letters;
+		
+	/** number of words found */
+		int num_of_words;
+		
+	/** number of misspelled words found */
+		int num_of_misspled_words;
+	
+	/** avg width of objects found */
+		int avg_width_of_objects;
+		
+	/** avg hight of objects found */
+		int avg_hight_of_objects;
+	
+	/** avg weight of objects found */
+		int avg_weight_of_objects;
+		
+	/** common width of objects found */
+		int common_width_of_objects;
+		
+	/** common hight of objects found */
+		int common_hight_of_objects;
 
 	/** commands passed to the ocr */
-		unsigned char command;
+		unsigned int command;
 
 	/** error returned from the ocr */
 		unsigned char error;
@@ -223,6 +253,16 @@ extern "C"
  */
 	unsigned int hocr_pixbuf_get_object (hocr_pixbuf * pix, int x, int y);
 
+/**
+ @brief get if there is an object in pixel
+
+ @param pix pointer to hocr_pixbuf struct.
+ @param x position of pixel on x axis
+ @param y position of pixel on y axis
+ @return true 1 object in pixel, 0 is pixel has no object
+ */
+	unsigned int hocr_pixbuf_get_is_object (hocr_pixbuf * pix, int x, int y);
+	
 /**
  @brief set object of pixel
 

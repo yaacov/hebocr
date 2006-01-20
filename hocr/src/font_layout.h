@@ -34,9 +34,9 @@
  */
 
 int
-find_font_baseline_eq (hocr_box line, hocr_box * fonts,
+find_font_baseline_eq (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 		       hocr_line_eq * base_line, hocr_line_eq * top_line,
-		       int avg_font_hight, int num_of_fonts);
+		       int num_of_fonts);
 
 int
 find_font_baseline (hocr_box * fonts, int avg_hight, int index,

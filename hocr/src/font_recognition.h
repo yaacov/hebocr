@@ -45,16 +45,13 @@ extern "C"
  @param num_of_fonts_in_line the number of fonts in this line
  @param font_index the index of current font;
  @param hocr_line_eq the two line equations (top, bottom)
- @param avg_font_hight an array of all fonts in this line
- @param avg_font_width the number of fonts in this line
  @param chars the char buffer to return;
+ @param symbols return the number of extra symbols processed;
  @return 1
  */
 	int hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 				 int num_of_fonts_in_line, int font_index,
-				 hocr_line_eq line_eqs[2], int avg_font_hight,
-				 int avg_font_width,
-				 char *chars, unsigned char command);
+				 hocr_line_eq line_eqs[2], char *chars, int *symbols);
 
 #ifdef __cplusplus
 }

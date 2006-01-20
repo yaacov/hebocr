@@ -144,6 +144,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 	hocr_line_eq line_eqs[MAX_COLUMNS][MAX_LINES][2];
 
+	int *object_width_counters[MAX_FONT_WIDTH];	/* need to be zero at
+							 * start */
+	int *object_hight_counters[MAX_FONT_HIGHT];	/* need to be zero at
+							 * start */
+
 	int num_of_fonts[MAX_COLUMNS][MAX_LINES];
 	int num_of_lines[MAX_COLUMNS];
 
@@ -163,6 +168,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 	/* need this to put in the text_buffer */
 	char chars[10];
+	int symbols;
 
 	/* format args */
 	int end_of_word = 0;
@@ -274,13 +280,22 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	avg_font_width_in_page = 0;
 	avg_diff_between_fonts_in_page = 0;
 
+	/* set hight and width counters to zero */
+	for (i = 0; i < MAX_FONT_HIGHT; i++)
+	{
+		object_hight_counters[i] = 0;
+	}
+	for (i = 0; i < MAX_FONT_WIDTH; i++)
+	{
+		object_width_counters[i] = 0;
+	}
+
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
 			if (lines[c * MAX_LINES + i].hight >
-			    (avg_line_hight_in_page -
-			     1.5 * MIN_DISTANCE_BETWEEN_LINES))
+			    (pix->avg_hight_of_objects))
 			{
 				for (j = 0; j < num_of_fonts[c][i]; j++)
 				{
@@ -296,6 +311,99 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						      MAX_FONTS_IN_LINE +
 						      i * MAX_FONTS_IN_LINE +
 						      j].hight;
+
+					/* if font is big put it in the common fonts array */
+					if (fonts[c * MAX_LINES *
+						  MAX_FONTS_IN_LINE +
+						  i * MAX_FONTS_IN_LINE +
+						  j].width > 4 &&
+					    fonts[c * MAX_LINES *
+						  MAX_FONTS_IN_LINE +
+						  i * MAX_FONTS_IN_LINE +
+						  j].hight > 4 && 
+					fonts[c * MAX_LINES *
+						  MAX_FONTS_IN_LINE +
+						  i * MAX_FONTS_IN_LINE +
+						  j].width < MAX_FONT_WEIGHT &&
+					    fonts[c * MAX_LINES *
+						  MAX_FONTS_IN_LINE +
+						  i * MAX_FONTS_IN_LINE +
+						  j].hight < MAX_FONT_HIGHT)
+					{
+						object_width_counters[fonts
+								      [c *
+								       MAX_LINES
+								       *
+								       MAX_FONTS_IN_LINE
+								       +
+								       i *
+								       MAX_FONTS_IN_LINE
+								       +
+								       j].
+								      width -
+								      2] += 1;
+						object_width_counters[fonts
+								      [c *
+								       MAX_LINES
+								       *
+								       MAX_FONTS_IN_LINE
+								       +
+								       i *
+								       MAX_FONTS_IN_LINE
+								       +
+								       j].
+								      width -
+								      1] += 1;
+						object_width_counters[fonts
+								      [c *
+								       MAX_LINES
+								       *
+								       MAX_FONTS_IN_LINE
+								       +
+								       i *
+								       MAX_FONTS_IN_LINE
+								       +
+								       j].
+								      width +
+								      0] += 1;
+						object_hight_counters[fonts
+								      [c *
+								       MAX_LINES
+								       *
+								       MAX_FONTS_IN_LINE
+								       +
+								       i *
+								       MAX_FONTS_IN_LINE
+								       +
+								       j].
+								      hight -
+								      2] += 1;
+						object_hight_counters[fonts
+								      [c *
+								       MAX_LINES
+								       *
+								       MAX_FONTS_IN_LINE
+								       +
+								       i *
+								       MAX_FONTS_IN_LINE
+								       +
+								       j].
+								      hight -
+								      1] += 1;
+						object_hight_counters[fonts
+								      [c *
+								       MAX_LINES
+								       *
+								       MAX_FONTS_IN_LINE
+								       +
+								       i *
+								       MAX_FONTS_IN_LINE
+								       +
+								       j].
+								      hight -
+								      0] += 1;
+					}
+
 					if (j < (num_of_fonts[c][i] - 1))
 					{
 						avg_diff_between_fonts_in_page
@@ -332,6 +440,25 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 			avg_diff_between_fonts_in_page /=
 				(num_of_fonts_in_page - 1);
 	}
+	
+	/* get the common width and hight (common weight or hight sould not be
+	 * * smaller then the avvarage */
+	pix->common_width_of_objects = 0;
+	pix->common_hight_of_objects = 0;
+
+	/* set common hight and width */
+	for (i = 1; i < MAX_FONT_HIGHT; i++)
+	{
+		if (object_hight_counters[i] >
+		    object_hight_counters[pix->common_hight_of_objects])
+			pix->common_hight_of_objects = i;
+	}
+	for (i = 1; i < MAX_FONT_WIDTH; i++)
+	{
+		if (object_width_counters[i] >
+		    object_width_counters[pix->common_width_of_objects])
+			pix->common_width_of_objects = i;
+	}
 
 	/* get line equations for non horizontal lines */
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -340,17 +467,16 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 		{
 			if (num_of_fonts[c][i] == 0)
 				continue;
-			find_font_baseline_eq (lines[c * MAX_LINES + i],
+			find_font_baseline_eq (pix, lines[c * MAX_LINES + i],
 					       &(fonts[c * MAX_LINES *
 						       MAX_FONTS_IN_LINE +
 						       i * MAX_FONTS_IN_LINE]),
 					       &(line_eqs[c][i][0]),
 					       &(line_eqs[c][i][1]),
-					       avg_font_hight_in_page,
 					       num_of_fonts[c][i]);
 		}
 	}
-
+	
 	/* color the results of page layout functions */
 	if (pix->command & HOCR_COMMAND_COLOR_BOXES)
 	{
@@ -412,7 +538,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 			}
 		}
 	}
-
+		
 	/* do ocr ? */
 	pix->progress_phase = 3;
 	font_number = 0;
@@ -565,10 +691,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 								     MAX_FONTS_IN_LINE]),
 							     num_of_fonts[c][i],
 							     j, line_eqs[c][i],
-							     avg_font_hight_in_page,
-							     avg_font_width_in_page,
-							     chars,
-							     pix->command);
+							     chars, &symbols);
 
 					/* color unknown fonts in the pixbuf */
 					if ((!chars[0] || chars[0] == '*')
@@ -618,6 +741,10 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 								 "\t");
 						}
 					}
+
+					/* if more then one font processed
+					 * incrise i */
+					i += symbols;
 				}
 
 				/* end of line */

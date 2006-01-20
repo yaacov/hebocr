@@ -31,7 +31,13 @@
 #include "hocr_textbuffer.h"
 
 /* 
- internal text_buffer stractures 
+ * how much memory (bytes) hocr_text_buffer will 
+ * allocate when it nead new memory 
+ */
+#define MEMORY_CHANK_FOR_TEXT_BUFFER 500
+
+/* 
+ * internal text_buffer stractures 
  */
 
 hocr_text_buffer *
@@ -39,26 +45,32 @@ hocr_text_buffer_new ()
 {
 	hocr_text_buffer *new_text_buffer;
 
-	/* allocate memory for pixbuf */
-	new_text_buffer =
+	/* allocate memory for struct */
+		new_text_buffer =
 		(hocr_text_buffer *) malloc (sizeof (hocr_text_buffer));
 
+	/* check for new memory */
 	if (!new_text_buffer)
 		return 0;
 
+	/* init struct values */
 	new_text_buffer->size = 0;
 	new_text_buffer->allocated_size = MEMORY_CHANK_FOR_TEXT_BUFFER;
 
+	/* allocate memory for text */
 	new_text_buffer->text =
 		(char *) malloc (sizeof (char) *
 				 new_text_buffer->allocated_size);
 
+	/* if no memeory for text free the struct (no need for it with no text) 
+	 */
 	if (!new_text_buffer->text)
 	{
 		free (new_text_buffer);
 		return 0;
 	}
 
+	/* init the text to zero length null terminated string */
 	(new_text_buffer->text)[0] = '\0';
 
 	return new_text_buffer;
@@ -67,9 +79,11 @@ hocr_text_buffer_new ()
 int
 hocr_text_buffer_unref (hocr_text_buffer * text_buffer)
 {
+	/* free the text */
 	if (text_buffer->text)
 		free (text_buffer->text);
-	
+
+	/* free the struct */
 	if (text_buffer)
 		free (text_buffer);
 
@@ -93,18 +107,21 @@ hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
 				 (text_buffer->allocated_size +
 				  MEMORY_CHANK_FOR_TEXT_BUFFER));
 
+		/* got new memory */
 		if (new_allocated_text)
 		{
 			text_buffer->text = new_allocated_text;
 			text_buffer->allocated_size +=
 				MEMORY_CHANK_FOR_TEXT_BUFFER;
 		}
+		/* did not get new memory */
 		else
 		{
 			return -1;
 		}
 	}
 
+	/* add the new string */
 	strcat (text_buffer->text, new_text);
 	text_buffer->size = strlen (text_buffer->text);
 

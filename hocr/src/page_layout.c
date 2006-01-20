@@ -23,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <stdlib.h>
+
 #include "hocr.h"
 #include "consts.h"
 #include "page_layout.h"
@@ -53,11 +55,14 @@ get_next_column_extention (hocr_pixbuf * pix, int current_pos,
 		{
 			for (i = 0; i < 2 * MIN_DISTANCE_BETWEEN_WORDS; i++)
 			{
-				sum += hocr_pixbuf_get_pixel (pix, x + i, y);
-				sum += hocr_pixbuf_get_pixel (pix, x + i,
-							      y + hight_1_3);
-				sum += hocr_pixbuf_get_pixel (pix, x + i,
-							      y + hight_2_3);
+				sum += hocr_pixbuf_get_is_object (pix, x + i,
+								  y);
+				sum += hocr_pixbuf_get_is_object (pix, x + i,
+								  y +
+								  hight_1_3);
+				sum += hocr_pixbuf_get_is_object (pix, x + i,
+								  y +
+								  hight_2_3);
 			}
 		}
 
@@ -84,18 +89,82 @@ get_next_column_extention (hocr_pixbuf * pix, int current_pos,
 }
 
 int
+clean_object_list (hocr_pixbuf * pix, char *object_list, unsigned int length)
+{
+	unsigned int i;
+
+	for (i = 1; i < length; i++)
+		object_list[i] = 0;
+
+	return 0;
+}
+
+int
+binary_and_two_object_lists (hocr_pixbuf * pix, char *object_list1,
+			     char *object_list2, char *result, unsigned int length)
+{
+	int counter = 0;
+	unsigned int i;
+
+	for (i = 1; i < length; i++)
+		if (pix->objects[i].hight >= pix->avg_hight_of_objects)
+			counter += (result[i] =
+				    (object_list1[i] & object_list2[i]));
+
+	return (counter);
+}
+
+int
+count_object_list (hocr_pixbuf * pix, char *object_list, unsigned int length)
+{
+	int counter = 0;
+	unsigned int i;
+
+	for (i = 1; i < length; i++)
+		if (pix->objects[i].hight >= pix->avg_hight_of_objects)
+			counter += object_list[i];
+
+	return (counter);
+}
+
+int
 get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 			 int *line_start, int *line_end)
 {
 	int x, y;
-	int last_raw_sum;
-	int sum = 0;
+	int y_step = 1;
+	int sum1 = 0;
+	int sum2 = 0;
+	int sum_of_binary_and_list = 0;
 	int inside_line = FALSE;
-
+	char *objects_list1;
+	char *objects_list2;
+	char *objects_list3;
 	int width, width_1_3, width_2_3;
 
+	/* defaults */
 	*line_end = column.y2;
 	*line_start = current_pos;
+
+	/* allocate memory */
+	objects_list1 = (char *) malloc (pix->num_of_max_object + 1);
+	if (!objects_list1)
+	{
+		return 1;
+	}
+	objects_list2 = (char *) malloc (pix->num_of_max_object + 1);
+	if (!objects_list2)
+	{
+		free (objects_list1);
+		return 1;
+	}
+	objects_list3 = (char *) malloc (pix->num_of_max_object + 1);
+	if (!objects_list3)
+	{
+		free (objects_list1);
+		free (objects_list2);
+		return 1;
+	}
 
 	width = column.width;
 	width_1_3 = width / 3;
@@ -104,44 +173,83 @@ get_next_line_extention (hocr_pixbuf * pix, hocr_box column, int current_pos,
 	inside_line = FALSE;
 	*line_start = current_pos;
 
-	for (y = current_pos; y < column.y2; y++)
+	for (y = current_pos; y < column.y2; y += y_step)
 	{
 		/* get presentage coverage for this pixel line */
-		last_raw_sum = sum;
-		sum = 0;
+		clean_object_list (pix, objects_list1, pix->num_of_max_object);
+		clean_object_list (pix, objects_list2, pix->num_of_max_object);
+
+		/* FIXME: jump 5 pixels each line ? */
 		for (x = column.x1; x < (column.x1 + width_1_3); x++)
 		{
-			sum += hocr_pixbuf_get_pixel (pix, x, y);
-			sum += hocr_pixbuf_get_pixel (pix, x + width_1_3, y);
-			sum += hocr_pixbuf_get_pixel (pix, x + width_2_3, y);
+			objects_list1[hocr_pixbuf_get_object (pix, x, y)] = 1;
+			objects_list1[hocr_pixbuf_get_object
+				      (pix, x + width_1_3, y)] = 1;
+			objects_list1[hocr_pixbuf_get_object
+				      (pix, x + width_2_3, y)] = 1;
+
+			objects_list2[hocr_pixbuf_get_object
+				      (pix, x, y + y_step)] = 1;
+			objects_list2[hocr_pixbuf_get_object
+				      (pix, x + width_1_3, y + y_step)] = 1;
+			objects_list2[hocr_pixbuf_get_object
+				      (pix, x + width_2_3, y + y_step)] = 1;
+
+#ifdef DEBUG
+			if (x < column.x1 + 10)
+			{
+				hocr_pixbuf_set_pixel (pix, x, y,
+						       inside_line ? 2 : 3, 0);
+			}
+#endif
 		}
 
-		/* check only the part with the most color on it */
-		if (width > 0)
-			sum = 1000 * sum / width;
+		/* how many objects ? */
+		sum1 = count_object_list (pix, objects_list1,
+					  pix->num_of_max_object);
+		sum2 = count_object_list (pix, objects_list2,
+					  pix->num_of_max_object);
+
+		/* how many overlapping objects ? */
+		sum_of_binary_and_list =
+			binary_and_two_object_lists (pix, objects_list1,
+						     objects_list2,
+						     objects_list3,
+						     pix->num_of_max_object);
 
 		/* if presantage below maximum for in a line then we need to
 		 * find the end of the line by looking to the end of the down
 		 * slop */
-		if (sum <= IN_A_LINE &&
-		    inside_line &&
-		    (y - *line_start) > MIN_LINE_HIGHT &&
-		    (last_raw_sum - sum) <= 0)
+		if (inside_line
+		    && (((double) sum1 > 1.5 * (double) sum2)
+			|| (sum_of_binary_and_list < NOT_IN_A_LINE))
+		    && (*line_end - *line_start) > pix->avg_hight_of_objects)
 		{
 			*line_end = y;
+			free (objects_list1);
+			free (objects_list2);
+			free (objects_list3);
 			return 0;
 		}
 
 		/* if presantage above minmun for not in a line then we are in
 		 * aline */
-		if (sum >= NOT_IN_A_LINE && !inside_line)
+		if (!inside_line
+		    && (((double) sum2 > (double) sum1)
+			|| (sum_of_binary_and_list > NOT_IN_A_LINE)))
 		{
-			*line_start = y;
+			*line_start = y + y_step;
 			inside_line = TRUE;
+			y += pix->avg_hight_of_objects;
 		}
 	}
 
 	*line_end = column.y2;
+
+	free (objects_list1);
+	free (objects_list2);
+	free (objects_list3);
+
 	return 1;
 }
 
@@ -158,7 +266,8 @@ get_next_font_extention (hocr_pixbuf * pix, int line_start, int line_end,
 	{
 		/* get presentage coverage for this pixel line */
 		sum = 0;
-		for (y = line_start; y < line_end; y++)
+		for (y = line_start - pix->avg_hight_of_objects / 2;
+		     y < (line_end + pix->avg_hight_of_objects / 2); y++)
 		{
 			object = hocr_pixbuf_get_object (pix, x, y);
 
@@ -279,7 +388,7 @@ fill_lines_array (hocr_pixbuf * pix, hocr_box column, hocr_box * lines,
 		counter++;
 
 		/* get some lee way from the end of last line */
-		line_end += MIN_DISTANCE_BETWEEN_LINES;
+		line_end += 2 * pix->avg_hight_of_objects / 3;
 
 		return_value = get_next_line_extention
 			(pix, column, line_end, &line_start, &line_end);

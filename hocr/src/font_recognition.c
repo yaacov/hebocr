@@ -23,8 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-//#define DEBUG
-
 /* 
  font markers
  */
@@ -1030,7 +1028,7 @@ has_bet_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 		return 0;
 
 	if (!find_small_horizontal_notch_to_right_down
-	    (pix, font.x2 - font.width / 6, font.y1 + font.hight / 2,
+	    (pix, font.x2 - font.width / 3, font.y1 + font.hight / 2,
 	     font.x2 + 3, font.y2, obj))
 		return 0;
 
@@ -2528,9 +2526,12 @@ has_close_brace_mark (hocr_pixbuf * pix, hocr_box font, unsigned int obj)
 int
 hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		     int num_of_fonts_in_line, int font_index,
-		     hocr_line_eq line_eqs[2], int avg_font_hight,
-		     int avg_font_width, char *chars, unsigned char command)
+		     hocr_line_eq line_eqs[2], char *chars, int *symbols)
 {
+	int avg_font_hight = pix->common_hight_of_objects;
+	int avg_font_width = pix->common_width_of_objects;
+	unsigned char command = pix->command;
+
 	int i;
 	hocr_box font = fonts_line[font_index];
 	hocr_box next_font =
@@ -2569,7 +2570,9 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 
 	/* reset chars array */
 	chars[0] = '\0';
-
+	/* no extra symbols processed */
+	*symbols = 0;
+	
 	/* get line y */
 	high_line_y = hocr_line_eq_get_y (line_eqs[1], font.x1);
 	low_line_y = hocr_line_eq_get_y (line_eqs[0], font.x1);
@@ -2585,7 +2588,8 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		font.y2 = low_line_y;
 		font.hight = font.y2 - font.y1;
 		/* recalc font for the object inside line */
-		obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array, MAX_OBJECTS_IN_FONT);
+		obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array,
+						      MAX_OBJECTS_IN_FONT);
 		font.x1 = pix->objects[obj].x1;
 		font.x2 = pix->objects[obj].x2;
 		font.y1 = pix->objects[obj].y1;
@@ -2603,16 +2607,21 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	box.hight = font.y2 - font.y1;
 	box.width = font.x2 - font.x1;
 	/* count objects in font */
-	obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array, MAX_OBJECTS_IN_FONT);
-	number_of_object_in_font = count_object_array (object_array, MAX_OBJECTS_IN_FONT);
+	obj = hocr_pixbuf_get_objects_in_box (pix, font, object_array,
+					      MAX_OBJECTS_IN_FONT);
+	number_of_object_in_font =
+		count_object_array (object_array, MAX_OBJECTS_IN_FONT);
 	/* count objects in box */
-	box_obj = hocr_pixbuf_get_objects_in_box (pix, box, box_object_array, MAX_OBJECTS_IN_FONT);
-	number_of_object_in_box = count_object_array (box_object_array, MAX_OBJECTS_IN_FONT);
+	box_obj =
+		hocr_pixbuf_get_objects_in_box (pix, box, box_object_array,
+						MAX_OBJECTS_IN_FONT);
+	number_of_object_in_box =
+		count_object_array (box_object_array, MAX_OBJECTS_IN_FONT);
 	/* get font proportions */
-	short_font = font.hight < (0.8 * (double) avg_font_hight);
-	tall_font = font.hight > (1.2 * (double) avg_font_hight);
-	thin_font = font.width < (0.85 * (double) avg_font_width);
-	wide_font = font.width > (1.2 * (double) avg_font_width);
+	short_font = font.hight < (0.9 * (double) avg_font_hight);
+	tall_font = font.hight > (1.1 * (double) avg_font_hight);
+	thin_font = font.width < (0.75 * (double) avg_font_width);
+	wide_font = font.width > (1.1 * (double) avg_font_width);
 	assending_font =
 		(font.y1 < (high_line_y - (0.1 * (double) avg_font_hight)));
 	dessending_font =
@@ -2868,6 +2877,14 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		if (number_of_object_in_font >= 2)
 		{
 			i = 1;
+			
+			/* what if main object is the sconde one ? */
+			if (number_of_object_in_font == 2)
+			{
+				if (object_array[i] == obj)
+					i = 0;
+			}
+
 			/* theck for dagesh */
 			if (number_of_object_in_font > 2)
 			{
@@ -3370,9 +3387,11 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		under_font_object =
 			hocr_pixbuf_get_objects_inside_box (pix,
 							    under_font_box,
-							    under_font_object_array, MAX_OBJECTS_IN_FONT);
+							    under_font_object_array,
+							    MAX_OBJECTS_IN_FONT);
 		number_of_object_under_font =
-			count_object_array (under_font_object_array, MAX_OBJECTS_IN_FONT);
+			count_object_array (under_font_object_array,
+					    MAX_OBJECTS_IN_FONT);
 
 		/* one sign under font can be kamatz patach hirik */
 		if (!found_nikud && number_of_object_under_font == 1)
@@ -3500,9 +3519,11 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 		over_font_object =
 			hocr_pixbuf_get_objects_inside_box (pix,
 							    over_font_box,
-							    over_font_object_array, MAX_OBJECTS_IN_FONT);
+							    over_font_object_array,
+							    MAX_OBJECTS_IN_FONT);
 		number_of_object_over_font =
-			count_object_array (over_font_object_array, MAX_OBJECTS_IN_FONT);
+			count_object_array (over_font_object_array,
+					    MAX_OBJECTS_IN_FONT);
 
 		/* one sign over font can be shin sin or holam */
 		if (number_of_object_over_font == 1)
@@ -3605,6 +3626,14 @@ hocr_recognize_font (hocr_pixbuf * pix, hocr_box * fonts_line,
 	printf ("ת mark %d\n", has_tav_mark (pix, font, obj));
 
 	printf ("found font: '%s'\n", chars);
+
+	printf ("avg-w %d, avg-h %d, avg-we %d, com-w %d, com-h %d \n",
+		pix->avg_width_of_objects, pix->avg_hight_of_objects,
+		pix->avg_weight_of_objects, pix->common_width_of_objects,
+		pix->common_hight_of_objects);
+	printf ("font-w %d, font-h %d, font-we %d \n", font.width, font.hight,
+		pix->objects[obj].weight);
+
 	printf ("--------------------------\n\n");
 
 #endif

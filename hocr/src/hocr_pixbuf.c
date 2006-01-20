@@ -31,6 +31,8 @@
 #include "hocr_pixbuf.h"
 #include "hocr_object.h"
 
+#define DEBUG
+
 /* 
  internal line_eq stractures 
  */
@@ -120,14 +122,23 @@ hocr_pixbuf_get_object (hocr_pixbuf * pix, int x, int y)
 {
 	unsigned int object_numebr;
 	int rowstride = pix->rowstride / pix->n_channels;
-
+	unsigned int object_name;
+	
 	if (x < 0 || x >= pix->width || y < 0 || y >= pix->height)
 		return 0;
 
 	/* get the object number at x,y */
 	object_numebr = pix->object_map[x + y * rowstride];
+	object_name = pix->objects[object_numebr].name;
+	
+	return (object_name < pix->num_of_max_object)?object_name:0;
+}
 
-	return pix->objects[object_numebr].name;
+unsigned int
+hocr_pixbuf_get_is_object (hocr_pixbuf * pix, int x, int y)
+{
+	/* return 1 if object 0 if no object */
+	return hocr_pixbuf_get_object (pix, x, y) ? 1 : 0;
 }
 
 unsigned int
@@ -531,6 +542,9 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 	unsigned int object, object1, object2, object3, object4;
 	int rowstride = pix->rowstride / pix->n_channels;
 
+	/* default number of objects */
+	pix->num_of_max_object = MAX_OBJECTS_IN_PAGE - 1;
+	
 	/* check for already allocated objects */
 	if (pix->object_map || pix->objects)
 		return -1;
@@ -673,6 +687,64 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 		}
 	}
 
+	/* init valuse */
+	pix->avg_width_of_objects = 0;
+	pix->avg_hight_of_objects = 0;
+	pix->avg_weight_of_objects = 0;
+	pix->num_of_objects = 0;
+
+	/* set hight and width */
+	for (i = 1; i < MAX_OBJECTS_IN_PAGE; i++)
+	{
+		if (i == pix->objects[i].name)
+		{
+			/* set hight and width */
+			pix->objects[i].hight =
+				pix->objects[i].y2 - pix->objects[i].y1;
+			pix->objects[i].width =
+				pix->objects[i].x2 - pix->objects[i].x1;
+
+			/* delete samll objects */
+			if (pix->objects[i].weight < 4
+			    || pix->objects[i].hight < 1
+			    || pix->objects[i].width < 1)
+				pix->objects[i].name = 0;
+
+			/* delete large objects */
+			if (pix->objects[i].weight > MAX_FONT_WEIGHT
+			    || pix->objects[i].hight > MAX_FONT_HIGHT
+			    || pix->objects[i].width > MAX_FONT_WIDTH)
+				pix->objects[i].name = 0;
+
+			/* is object has a name add to satats */
+			if (pix->objects[i].name)
+			{
+				pix->avg_width_of_objects +=
+					pix->objects[i].width;
+				pix->avg_hight_of_objects +=
+					pix->objects[i].hight;
+				pix->avg_weight_of_objects +=
+					pix->objects[i].weight;
+
+				/* advance the counter */
+				pix->num_of_objects += 1;
+				pix->num_of_max_object = i;
+			}
+		}
+		else
+		{
+			pix->objects[i].weight = 0;
+		}
+	}
+
+	/* do avgs */
+	if (pix->num_of_objects)
+	{
+		pix->avg_width_of_objects /= pix->num_of_objects;
+		pix->avg_hight_of_objects /= pix->num_of_objects;
+		pix->avg_weight_of_objects /= pix->num_of_objects;
+	}
+
 	/* remove duplicate objects */
 	for (y = 0; y < pix->height; y++)
 	{
@@ -685,32 +757,6 @@ hocr_pixbuf_create_object_map (hocr_pixbuf * pix)
 		}
 	}
 
-	/* set hight and width */
-	for (i = 1; i < MAX_OBJECTS_IN_PAGE; i++)
-	{
-		if (i == pix->objects[i].name)
-		{
-			pix->objects[i].hight =
-				pix->objects[i].y2 - pix->objects[i].y1;
-			pix->objects[i].width =
-				pix->objects[i].x2 - pix->objects[i].x1;
-			if (pix->objects[i].weight < 4
-			    || pix->objects[i].hight < 1
-			    || pix->objects[i].width < 1)
-				pix->objects[i].name = 0;
-			if (pix->objects[i].weight > 1200
-			    || pix->objects[i].hight > 100
-			    || pix->objects[i].width > 100)
-				pix->objects[i].name = 0;
-		}
-		else
-		{
-			pix->objects[i].weight = 0;
-		}
-	}
-
-	/* count objects (bigger then MIN_OBJECT_WEIGHT) in pixbuf */
-	pix->num_of_objects = hocr_pixbuf_count_objects (pix);
 	return 0;
 }
 
@@ -721,25 +767,11 @@ hocr_pixbuf_clean (hocr_pixbuf * pix)
 	unsigned int object, object1, object2, object3,
 		object4, object5, object6, object7, object8, object9;
 
-	/* make shure null object has zero weight */
-	pix->objects[0].weight = 0;
-
-	/* check all pixes and clean objects that are two large or too small */
+	/* check all pixes */
 	for (y = 1; y < pix->height; y++)
 	{
 		for (x = 1; x < pix->width; x++)
 		{
-			
-			/* if pixel on but not in an object */
-			if (hocr_pixbuf_get_pixel (pix, x, y) && !pix->
-				objects[hocr_pixbuf_get_object (pix, x, y)].
-				name)
-			{
-				/* clean */
-				hocr_pixbuf_set_pixel (pix, x, y, 0, 0xffff);
-				hocr_pixbuf_set_pixel (pix, x, y, 1, 2500);
-				hocr_pixbuf_set_pixel (pix, x, y, 2, 1500);
-			}
 
 			/* smoth things */
 			/* get a 3x3 pixels */
@@ -775,12 +807,15 @@ hocr_pixbuf_clean (hocr_pixbuf * pix)
 						object = hocr_pixbuf_get_object
 							(pix, x + 1, y + 2);
 
+					/* color pixel black */
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 0, 0);
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 1, 0);
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 2, 0);
+
+					/* add pixel to object */
 					hocr_pixbuf_set_object (pix, x + 1,
 								y + 1, object);
 				}
@@ -796,15 +831,18 @@ hocr_pixbuf_clean (hocr_pixbuf * pix)
 				    (!object3 && !object6 && !object9
 				     && !object2 && !object8))
 				{
+					/* color pixel white */
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 0,
 							       0xffff);
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 1,
-							       2500);
+							       0xffff);
 					hocr_pixbuf_set_pixel (pix, x + 1,
 							       y + 1, 2,
-							       1500);
+							       0xffff);
+
+					/* remove pixel from object */
 					hocr_pixbuf_set_object (pix, x + 1,
 								y + 1, 0);
 				}

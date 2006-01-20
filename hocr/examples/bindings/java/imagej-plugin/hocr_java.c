@@ -53,7 +53,7 @@ JNIEXPORT jstring JNICALL Java_Hocr_1Plugin_doOcr_1Params
   }
     
   // raw pixpuf data.
-  pixbuf->pixels = (*env)->GetByteArrayElements(env, pixels, NULL);
+  pixbuf->pixels = (unsigned char*)((*env)->GetByteArrayElements(env, pixels, NULL));
 
   if (!command)
   {
@@ -73,7 +73,7 @@ JNIEXPORT jstring JNICALL Java_Hocr_1Plugin_doOcr_1Params
 
 	hocr_do_ocr (pixbuf, textbuf); // run the ocr
 	
-  (*env)->ReleaseByteArrayElements(env, pixels, pixbuf->pixels, 0);
+	(*env)->ReleaseByteArrayElements(env, pixels, (signed char*)(pixbuf->pixels), 0);
 	pixbuf->pixels = NULL; // hocr_pixbuf_unref() shouldn't free pixel mem
 	hocr_pixbuf_unref (pixbuf);  // unref memory
 	pixbuf = NULL;

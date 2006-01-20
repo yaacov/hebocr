@@ -199,14 +199,20 @@ get_font_width_class (int font_width, int avg_font_width)
 }
 
 int
-find_font_lines_eq_for_fonts (hocr_box line, hocr_box * fonts,
-			      double *top_a, double *top_b, double *base_a,
-			      double *base_b,
-			      int avg_font_hight, int start_at_font,
+is_regular_font (hocr_pixbuf * pix, hocr_box font)
+{
+	return ((font.hight < (double) 1.15 * pix->common_hight_of_objects)
+		&& (font.hight > (double) 0.85 * pix->common_hight_of_objects));
+}
+
+int
+find_font_lines_eq_for_fonts (hocr_pixbuf * pix, hocr_box line,
+			      hocr_box * fonts, double *top_a, double *top_b,
+			      double *base_a, double *base_b, int start_at_font,
 			      int end_at_font)
 {
 	int i;
-	int counter, start_counter, end_counter;
+	int start_counter, end_counter;
 	int x_start, x_end;
 	int y_start_down, y_end_down;
 	int y_start_up, y_end_up;
@@ -220,7 +226,7 @@ find_font_lines_eq_for_fonts (hocr_box line, hocr_box * fonts,
 		*base_a = 0;
 		*base_b =
 			(fonts[start_at_font].y1 + fonts[end_at_font].y1) / 2 +
-			avg_font_hight + 1;
+			pix->common_hight_of_objects + 1;
 		*top_a = 0;
 		*top_b = (fonts[start_at_font].y1 + fonts[end_at_font].y1) / 2;
 		return 1;
@@ -242,10 +248,7 @@ find_font_lines_eq_for_fonts (hocr_box line, hocr_box * fonts,
 	i = start_at_font;
 	while (i <= end_at_font)
 	{
-		if (fonts[i].hight <
-		    ((1000 + 1.5 * FONT_ASSEND) * avg_font_hight / 1000)
-		    && fonts[i].hight >
-		    ((1000 - 1.7 * FONT_ASSEND) * avg_font_hight / 1000))
+		if (is_regular_font (pix, fonts[i]))
 		{
 			/* take only first NUM_OF_FONTS_TO_AVG to avg */
 			if (start_counter < NUM_OF_FONTS_TO_AVG)
@@ -265,10 +268,7 @@ find_font_lines_eq_for_fonts (hocr_box line, hocr_box * fonts,
 	while (i >= start_at_font)
 	{
 		i--;
-		if (fonts[i].hight <
-		    ((1000 + 1.5 * FONT_ASSEND) * avg_font_hight / 1000)
-		    && fonts[i].hight >
-		    ((1000 - 1.7 * FONT_ASSEND) * avg_font_hight / 1000))
+		if (is_regular_font (pix, fonts[i]))
 		{
 			/* take only last NUM_OF_FONTS_TO_AVG to avg */
 			if (end_counter < NUM_OF_FONTS_TO_AVG)
@@ -289,7 +289,7 @@ find_font_lines_eq_for_fonts (hocr_box line, hocr_box * fonts,
 		*base_a = 0;
 		*base_b =
 			(fonts[start_at_font].y1 + fonts[end_at_font].y1) / 2 +
-			avg_font_hight + 1;
+			pix->avg_width_of_objects + 1;
 		*top_a = 0;
 		*top_b = (fonts[start_at_font].y1 + fonts[end_at_font].y1) / 2;
 		return 1;
@@ -330,141 +330,31 @@ find_font_lines_eq_for_fonts (hocr_box line, hocr_box * fonts,
 }
 
 int
-find_font_baseline_eq (hocr_box line, hocr_box * fonts,
+find_font_baseline_eq (hocr_pixbuf * pix, hocr_box line, hocr_box * fonts,
 		       hocr_line_eq * base_line, hocr_line_eq * top_line,
-		       int avg_font_hight, int num_of_fonts)
+		       int num_of_fonts)
 {
-	int i;
 	double top_a, top_b, base_a, base_b;
-	int counter;
 
-	/* get avg font hight for this line */
-	i = 0;
-	counter = 0;
-	while (i < num_of_fonts)
-	{
-		if (fonts[i].hight <
-		    ((1000 + 1.5 * FONT_ASSEND) * avg_font_hight / 1000)
-		    && fonts[i].hight >
-		    ((1000 - 1.7 * FONT_ASSEND) * avg_font_hight / 1000))
-		{
-			counter++;
-		}
-		i++;
-	}
-
-	/* if less then NUM_OF_FONTS_TO_AVG * 2 make one line */
-	//if (counter < 2 * NUM_OF_FONTS_TO_AVG)
-	{
-		find_font_lines_eq_for_fonts (line, fonts,
+	if (num_of_fonts > 10)
+		find_font_lines_eq_for_fonts (pix, line, fonts,
 					      &top_a, &top_b, &base_a,
-					      &base_b,
-					      avg_font_hight, 0,
-					      num_of_fonts - 1);
-
-		top_line->x1 = line.x2;
-		base_line->x1 = top_line->x1;
-		base_line->a1 = base_a;
-		base_line->b1 = base_b;
-		top_line->a1 = top_a;
-		top_line->b1 = top_b;
-
-		return 1;
-	}
-
-	/* if more them NUM_OF_FONTS_TO_AVG * 2 and less them
-	 * NUM_OF_FONTS_TO_AVG * 4 make 2 lines */
-	if (counter >= 2 * NUM_OF_FONTS_TO_AVG &&
-	    counter < 4 * NUM_OF_FONTS_TO_AVG)
-	{
-		find_font_lines_eq_for_fonts (line, fonts,
+					      &base_b, 3, num_of_fonts - 3);
+	else
+		find_font_lines_eq_for_fonts (pix, line, fonts,
 					      &top_a, &top_b, &base_a,
-					      &base_b,
-					      avg_font_hight, 0,
-					      num_of_fonts / 2);
+					      &base_b, 0, num_of_fonts - 1);
 
-		top_line->x1 = fonts[num_of_fonts / 2].x2;
-		base_line->x1 = top_line->x1;
-		base_line->a1 = base_a;
-		base_line->b1 = base_b;
-		top_line->a1 = top_a;
-		top_line->b1 = top_b;
+	top_line->x1 = line.x2;
+	base_line->x1 = top_line->x1;
+	base_line->a1 = base_a;
+	base_line->b1 = base_b;
+	top_line->a1 = top_a;
+	top_line->b1 = top_b;
 
-		find_font_lines_eq_for_fonts (line, fonts,
-					      &top_a, &top_b, &base_a,
-					      &base_b,
-					      avg_font_hight, num_of_fonts / 2,
-					      num_of_fonts - 1);
+	/* look for the most out of line font */
 
-		top_line->x2 = line.x2;
-		base_line->x2 = top_line->x2;
-		base_line->a2 = base_a;
-		base_line->b2 = base_b;
-		top_line->a2 = top_a;
-		top_line->b2 = top_b;
-
-		return 1;
-	}
-
-	/* if more them NUM_OF_FONTS_TO_AVG * 4 make 4 lines */
-	if (counter >= 4 * NUM_OF_FONTS_TO_AVG)
-	{
-		find_font_lines_eq_for_fonts (line, fonts,
-					      &top_a, &top_b, &base_a,
-					      &base_b,
-					      avg_font_hight, 0,
-					      num_of_fonts / 4);
-
-		top_line->x1 = fonts[num_of_fonts / 4].x2;
-		base_line->x1 = top_line->x1;
-		base_line->a1 = base_a;
-		base_line->b1 = base_b;
-		top_line->a1 = top_a;
-		top_line->b1 = top_b;
-
-		find_font_lines_eq_for_fonts (line, fonts,
-					      &top_a, &top_b, &base_a,
-					      &base_b,
-					      avg_font_hight, num_of_fonts / 4,
-					      2 * num_of_fonts / 4);
-
-		top_line->x2 = fonts[2 * num_of_fonts / 4].x2;
-		base_line->x2 = top_line->x2;
-		base_line->a2 = base_a;
-		base_line->b2 = base_b;
-		top_line->a2 = top_a;
-		top_line->b2 = top_b;
-
-		find_font_lines_eq_for_fonts (line, fonts,
-					      &top_a, &top_b, &base_a,
-					      &base_b,
-					      avg_font_hight,
-					      2 * num_of_fonts / 4,
-					      3 * num_of_fonts / 4);
-
-		top_line->x3 = fonts[3 * num_of_fonts / 4].x2;
-		base_line->x3 = top_line->x3;
-		base_line->a3 = base_a;
-		base_line->b3 = base_b;
-		top_line->a3 = top_a;
-		top_line->b3 = top_b;
-
-		find_font_lines_eq_for_fonts (line, fonts,
-					      &top_a, &top_b, &base_a,
-					      &base_b,
-					      avg_font_hight,
-					      3 * num_of_fonts / 4,
-					      num_of_fonts - 1);
-
-		top_line->x4 = line.x2;
-		base_line->x4 = top_line->x4;
-		base_line->a4 = base_a;
-		base_line->b4 = base_b;
-		top_line->a4 = top_a;
-		top_line->b4 = top_b;
-
-		return 1;
-	}
+	return 1;
 
 	return 0;
 }
