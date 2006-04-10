@@ -255,7 +255,7 @@ hspell_trycorrect_ocr (struct dict_radix *dict, const char *w,
 		"лч", "бе", "фб"
 	};
 	/* replace unknown '*' chars */
-	static char *similar_2[] = { "й", "*в", "*с", "*и", "*т", "*щ*",
+	static char *similar_2[] = { "*й", "*в", "*с", "*и", "*т", "щ*",
 		"*ч", "* ", "*г", "*ъ"
 	};
 
