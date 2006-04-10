@@ -41,30 +41,31 @@ print_help ()
 {
 	printf ("hocr %s - Hebrew OCR program\n", VERSION);
 	printf ("http://hocr.berlios.de\n");
-	printf ("USAGE: hocr [OPTION]... [-i] [pnm_file]\n\n");
-	printf ("  If the pnm file is a single dash, or no pnm file\n\
+
+	printf ("USAGE: hocr [OPTION]... [-i] [file]\n\n");
+	printf ("  If the file is a single dash, or no file\n\
   is given, PNM data is read from stdin\n\n");
 	printf ("  -o file,   output to text file.\n");
-	printf ("  -f format,   output format can be 'html' or 'text'.\n");
+#ifdef WITH_HSPELL
+	printf ("  -e encoding,   output encoding can be 'utf-8' or 'iso8859-8' ...\n");
 	printf ("  -d,   Use internal dictionary to guess misread fonts.\n");
+#endif
 	printf ("  -n,   Try to guess nikud for fonts.\n");
 	printf ("  -s,   Use spaces for tabs.\n");
 	printf ("  -t,   Indent indented lines.\n");
-	printf ("  -p file,   write PPM image with boxes around detected characters.\n");
+	printf ("  -p file,   write image with boxes around detected characters.\n");
 	printf ("\n");
 
 	return 0;
 }
 
 int
-save_text (char *filename, char *format_out, char *text)
+hocr_cmd_text_buffer_save (const hocr_text_buffer * const text_buffer,
+			   const char *const filename)
 {
 	FILE *file;
 
-	/* 
-	 * if format string begin with 'h' assume html output 
-	 */
-	if (filename)
+	if (filename && filename[0])
 	{
 		/* 
 		 * save to file 
@@ -76,20 +77,11 @@ save_text (char *filename, char *format_out, char *text)
 		 */
 		if (!file)
 		{
-			printf ("hocr: can\'t save file as %s\n", filename);
-			exit (0);
+			return -1;
 		}
 
-		if (format_out[0] == 'h')
-			fprintf (file,
-				 "<html>\n<meta http-equiv=\"Content-Type\" \
-content=\"text/html; charset=UTF-8\">\n \
-<body dir=\"rtl\"><pre>\n");
+		fprintf (file, "%s", text_buffer->text);
 
-		fprintf (file, "%s", text);
-
-		if (format_out[0] == 'h')
-			fprintf (file, "</pre></body>\n</html>\n");
 		fclose (file);
 	}
 	else
@@ -97,15 +89,7 @@ content=\"text/html; charset=UTF-8\">\n \
 		/* 
 		 * no file name - print to std output 
 		 */
-		if (format_out[0] == 'h')
-			printf ("<html>\n<meta http-equiv=\"Content-Type\" \
-content=\"text/html; charset=UTF-8\">\n \
-<body dir=\"rtl\"><pre>\n");
-
-		printf ("%s", text);
-
-		if (format_out[0] == 'h')
-			printf ("</pre></body>\n</html>\n");
+		printf ("%s", text_buffer->text);
 	}
 
 	return 0;
@@ -116,7 +100,7 @@ main (int argc, char *argv[])
 {
 	int opt_i = 0;
 	int opt_o = 0;
-	int opt_f = 0;
+	int opt_e = 0;
 	int opt_d = 0;
 	int opt_n = 0;
 	int opt_s = 0;
@@ -127,21 +111,26 @@ main (int argc, char *argv[])
 	char filename_in[STRING_MAX_SIZE];
 	char filename_out[STRING_MAX_SIZE];
 	char pnm_filename_out[STRING_MAX_SIZE];
-	char format_out[STRING_MAX_SIZE];
+	char encoding_out[STRING_MAX_SIZE];
 
-	hocr_pixbuf *pix;
+	hocr_pixbuf *pix = NULL;
 	hocr_text_buffer *text;
 
-	/* 
-	 * default output is text file 
-	 */
-	format_out[0] = 't';
+#ifdef WITH_GTK
+	gtk_init (&argc, &argv);
+#endif
+
 	/* 
 	 * default input file is stdin 
 	 */
 	filename_in[0] = '\0';
 
-	while ((c = getopt (argc, argv, "dnsthi:o:f:p:")) != EOF)
+	/* 
+	 * default encoding is "utf-8"
+	 */
+	encoding_out[0] = '\0';
+
+	while ((c = getopt (argc, argv, "dnsthi:o:e:p:")) != EOF)
 	{
 		switch (c)
 		{
@@ -159,11 +148,11 @@ main (int argc, char *argv[])
 				opt_o = 1;
 			}
 			break;
-		case 'f':
+		case 'e':
 			if (optarg && strlen (optarg) < STRING_MAX_SIZE)
 			{
-				strcpy (format_out, optarg);
-				opt_f = 1;
+				strcpy (encoding_out, optarg);
+				opt_e = 1;
 			}
 			break;
 		case 'p':
@@ -226,9 +215,18 @@ main (int argc, char *argv[])
 	}
 
 	/* 
-	 * create a new pixbuf from pbm file 
+	 * create a new pixbuf from file 
 	 */
-	pix = hocr_pixbuf_new_from_file (filename_in);
+#ifdef WITH_GTK
+	if (filename_in && filename_in[0])
+	{
+		pix = hocr_pixbuf_gtk_new_from_file (filename_in);
+	}
+	if (!pix)
+#endif
+	{
+		pix = hocr_pixbuf_new_from_file (filename_in);
+	}
 
 	if (!pix)
 	{
@@ -278,20 +276,82 @@ main (int argc, char *argv[])
 	 */
 	hocr_do_ocr (pix, text);
 
-	/* 
-	 * print out the text 
-	 */
-	if (opt_o)
-		save_text (filename_out, format_out, text->text);
-	else
-		save_text (NULL, format_out, text->text);
+#ifdef WITH_HSPELL
+
+	/* do encoding change */
+	if (opt_e)
+	{
+		hocr_text_buffer *text_buffer = NULL;
+
+		/* convert to encoding_out */
+		text_buffer = hocr_text_buffer_copy_convert (text,
+							     encoding_out,
+							     "utf-8");
+
+		/* copy encoded text back to text */
+		hocr_text_buffer_set_string (text, text_buffer->text);
+
+		/* free temporary utf text buffer */
+		hocr_text_buffer_unref (text_buffer);
+	}
 
 	/* 
-	 * save ppm file
+	 * print out the text
 	 */
-	if (opt_p && !hocr_pixbuf_save_as_pnm (pix, pnm_filename_out))
+	hocr_text_buffer_save (text, filename_out);
+
+#else
+	/* 
+	 * print out the text
+	 */
+	hocr_cmd_text_buffer_save (text, filename_out);
+#endif
+
+	/* 
+	 * save pic file
+	 */
+#ifdef WITH_GTK
+	if (opt_p && pnm_filename_out && pnm_filename_out[0])
 	{
-		printf ("hocr: can't write pnm file %s\n", pnm_filename_out);
+		char *type;
+
+		/* look for '.' */
+		type = pnm_filename_out;
+		while (type && type[0] != '.')
+			type++;
+
+		/* if no type save as jpeg */
+		if (!type || strlen (type) > 5)
+		{
+			if (!hocr_pixbuf_gtk_save_as_file
+			    (pix, pnm_filename_out, "jpeg"))
+			{
+				printf ("hocr: can't write file %s\n",
+					pnm_filename_out);
+			}
+		}
+		/* found type */
+		else
+		{
+			/* lose the dot */
+			type++;
+			
+			if (!hocr_pixbuf_gtk_save_as_file
+			    (pix, pnm_filename_out, type))
+			{
+				printf ("hocr: can't write file %s\n",
+					pnm_filename_out);
+			}
+		}
+	}
+	else
+#endif
+	{
+		if (opt_p && !hocr_pixbuf_save_as_pnm (pix, pnm_filename_out))
+		{
+			printf ("hocr: can't write pnm file %s\n",
+				pnm_filename_out);
+		}
 	}
 
 	/* 

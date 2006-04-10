@@ -25,6 +25,13 @@
 
 #include "consts.h"
 
+#ifdef WITH_HSPELL
+#include <glib.h>
+#include <glib/gstdio.h>
+#include <hspell.h>
+#include "hspell_ocr.h"
+#endif
+
 #ifndef __HOCR_TEXTBUFFER_H__
 #define __HOCR_TEXTBUFFER_H__
 
@@ -76,6 +83,73 @@ extern "C"
  */
 	int hocr_text_buffer_add_string (hocr_text_buffer * text_buffer,
 					 const char *new_text);
+
+/**
+ @brief set a string to hocr_text_buffer struct
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @param new_text pointer to the string to be set to the buffer.
+ @return new size of text
+ */
+	int hocr_text_buffer_set_string (hocr_text_buffer * text_buffer,
+					 const char *new_text);
+
+/**
+ @brief add a char to hocr_text_buffer struct
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @param new_char char to be added to the buffer.
+ @return new size of text
+ */
+	int hocr_text_buffer_add_char (hocr_text_buffer * text_buffer,
+				       const char new_char);
+
+/**
+ @brief copy hocr_text_buffer struct
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @return new hocr_text_buffer
+ */
+	hocr_text_buffer *hocr_text_buffer_copy (const hocr_text_buffer const
+						 *text_buffer);
+
+#ifdef WITH_HSPELL
+
+/**
+ @brief copy hocr_text_buffer struct content using different encoding
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @param to_codeset the encoding of new text_buffer
+ @param to_codeset the encoding of current text_buffer
+ @return new hocr_text_buffer
+ */
+	hocr_text_buffer *hocr_text_buffer_copy_convert (const hocr_text_buffer
+							 const *text_buffer,
+							 const gchar *
+							 to_codeset,
+							 const gchar *
+							 from_codeset);
+
+/**
+ @brief save hocr_text_buffer to file
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @param filename the file name to save to or NULL for stdout
+ @return 0
+ */
+	int hocr_text_buffer_save (const hocr_text_buffer * const text_buffer,
+				   const char *const filename);
+
+/**
+ @brief copy hocr_text_buffer struct content using hspell for misread words
+
+ @param text_buffer pointer to hocr_text_buffer struct.
+ @return new hocr_text_buffer
+ */
+	hocr_text_buffer *hocr_text_buffer_copy_hspell (const hocr_text_buffer
+							const *text_buffer);
+
+#endif				/* WITH_HSPELL */
 
 #ifdef __cplusplus
 }

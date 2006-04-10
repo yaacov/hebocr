@@ -31,6 +31,16 @@
 #include "hocr_pixbuf.h"
 #include "hocr_object.h"
 
+#ifdef WITH_GTK
+
+#include <glib.h>
+#include <glib/gprintf.h>
+#include <glib/gstdio.h>
+
+#include <gtk/gtk.h>
+
+#endif
+
 #define DEBUG
 
 /* 
@@ -307,7 +317,7 @@ hocr_pixbuf_new_from_file (const char *filename)
 
 	/* read header */
 	new_pixbuf->n_channels = 3;
-	new_pixbuf->brightness = 100;
+	new_pixbuf->brightness = 128;
 	new_pixbuf->pixels = NULL;
 	new_pixbuf->object_map = NULL;
 	new_pixbuf->objects = NULL;
@@ -421,7 +431,7 @@ hocr_pixbuf_new (void)
 
 	/* read header */
 	new_pixbuf->n_channels = 3;
-	new_pixbuf->brightness = 100;
+	new_pixbuf->brightness = 128;
 	new_pixbuf->pixels = NULL;
 	new_pixbuf->object_map = NULL;
 	new_pixbuf->objects = NULL;
@@ -939,3 +949,107 @@ hocr_pixbuf_unref (hocr_pixbuf * pix)
 		free (pix);
 	return 1;
 }
+
+hocr_pixbuf *
+hocr_pixbuf_new_from_data (const unsigned char n_channels,
+			   const unsigned int hight,
+			   const unsigned int width,
+			   const unsigned int rowstride,
+			   const unsigned char brightness,
+			   const unsigned char *const pixels)
+{
+	hocr_pixbuf *new_pixbuf = NULL;
+
+	/* allocate memory for pixbuf */
+	new_pixbuf = (hocr_pixbuf *) malloc (sizeof (hocr_pixbuf));
+	if (!new_pixbuf)
+	{
+		return NULL;
+	}
+
+	/* read header */
+	new_pixbuf->n_channels = n_channels;
+	new_pixbuf->brightness = brightness;
+	new_pixbuf->width = width;
+	new_pixbuf->height = hight;
+	new_pixbuf->rowstride = rowstride;
+
+	new_pixbuf->object_map = NULL;
+	new_pixbuf->objects = NULL;
+	
+	/* allocate memory for data */
+	new_pixbuf->pixels = malloc (new_pixbuf->height * new_pixbuf->rowstride);
+	if (!(new_pixbuf->pixels))
+	{
+		free (new_pixbuf);
+		return NULL;
+	}
+
+	/* read data */
+	memcpy (new_pixbuf->pixels, pixels,
+		(new_pixbuf->height * new_pixbuf->rowstride));
+
+	return new_pixbuf;
+}
+
+#ifdef WITH_GTK
+
+hocr_pixbuf *
+hocr_pixbuf_gtk_new_from_file (const char *const filename)
+{
+	GdkPixbuf *pixbuf = NULL;
+	hocr_pixbuf *new_pixbuf = NULL;
+
+	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+
+	if (!pixbuf)
+		return NULL;
+
+	new_pixbuf = hocr_pixbuf_gtk_new_from_gdk_pixbuf (pixbuf);
+	g_object_unref (pixbuf);
+
+	return new_pixbuf;
+}
+
+hocr_pixbuf *
+hocr_pixbuf_gtk_new_from_gdk_pixbuf (const GdkPixbuf * const pixbuf)
+{
+	return hocr_pixbuf_new_from_data (gdk_pixbuf_get_n_channels (pixbuf),
+					   gdk_pixbuf_get_height (pixbuf),
+					   gdk_pixbuf_get_width (pixbuf),
+					   gdk_pixbuf_get_rowstride (pixbuf),
+					   127, gdk_pixbuf_get_pixels (pixbuf));
+}
+
+GdkPixbuf *
+gdk_pixbuf_new_from_hocr_pixbuf (const hocr_pixbuf * const pix)
+{
+	return gdk_pixbuf_new_from_data (pix->pixels,
+					       GDK_COLORSPACE_RGB,
+					       FALSE,
+					       8,
+					       pix->width,
+					       pix->height, pix->rowstride, NULL,
+					       NULL);
+}
+
+int
+hocr_pixbuf_gtk_save_as_file (const hocr_pixbuf * const pix,
+			      const char *const filename, const char *type)
+{
+	GdkPixbuf *gdk_pixbuf = NULL;
+	GError *error = NULL;
+
+	gdk_pixbuf = gdk_pixbuf_new_from_hocr_pixbuf (pix);
+
+	if (!gdk_pixbuf)
+		return 0;
+
+	gdk_pixbuf_save (gdk_pixbuf, filename, type, &error, NULL);
+
+	g_object_unref (gdk_pixbuf);
+
+	return 1;
+}
+
+#endif

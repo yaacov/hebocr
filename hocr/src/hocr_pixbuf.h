@@ -25,6 +25,16 @@
 
 #include "hocr_object.h"
 
+#ifdef WITH_GTK
+
+#include <glib.h>
+#include <glib/gprintf.h>
+#include <glib/gstdio.h>
+
+#include <gtk/gtk.h>
+
+#endif
+
 #ifndef __HOCR_PIXBUF_H__
 #define __HOCR_PIXBUF_H__
 
@@ -97,34 +107,37 @@ extern "C"
 
 	/** number of objects found */
 		unsigned int num_of_objects;
-		
+
 	/** number of the maximum object found */
 		unsigned int num_of_max_object;
-		
+
 	/** number of letters found */
 		int num_of_letters;
-	
+
 	/** number of missread letters found */
 		int num_of_missread_letters;
-		
+
 	/** number of words found */
 		int num_of_words;
-		
+
 	/** number of misspelled words found */
 		int num_of_misspled_words;
-	
+
+	/** number of lines found */
+		int num_of_lines;
+
 	/** avg width of objects found */
 		int avg_width_of_objects;
-		
+
 	/** avg hight of objects found */
 		int avg_hight_of_objects;
-	
+
 	/** avg weight of objects found */
 		int avg_weight_of_objects;
-		
+
 	/** common width of objects found */
 		int common_width_of_objects;
-		
+
 	/** common hight of objects found */
 		int common_hight_of_objects;
 
@@ -261,8 +274,9 @@ extern "C"
  @param y position of pixel on y axis
  @return true 1 object in pixel, 0 is pixel has no object
  */
-	unsigned int hocr_pixbuf_get_is_object (hocr_pixbuf * pix, int x, int y);
-	
+	unsigned int hocr_pixbuf_get_is_object (hocr_pixbuf * pix, int x,
+						int y);
+
 /**
  @brief set object of pixel
 
@@ -324,6 +338,67 @@ extern "C"
  @ param pix pointer to hocr_pixbuf struct.
  */
 	int hocr_pixbuf_clean (hocr_pixbuf * pix);
+
+/**
+ @brief creats a new hocr_pixbuf struct from data
+
+ @param n_channels number of color chanells
+ @param hight hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param rowstride width of raw in bytes
+ @param brightness trashold lighting for gray to b/w convertions
+ @param pixels row data of picture
+ @return pointer to a newly allocate hocr_pixbuf, or null if can not copy.
+ */
+	hocr_pixbuf *hocr_pixbuf_new_from_data (const unsigned char n_channels,
+					       const unsigned int hight,
+					       const unsigned int width,
+					       const unsigned int rowstride,
+					       const unsigned char brightness,
+						   const unsigned char *const
+					       pixels);
+						   
+#ifdef WITH_GTK
+
+/**
+ @brief creats a new hocr_pixbuf struct from file
+
+ @param filename path to a file.
+ @return pointer to a newly allocate hocr_pixbuf, or null if can not open file.
+ */
+	hocr_pixbuf *hocr_pixbuf_gtk_new_from_file (const char *const filename);
+
+/**
+ @brief creats a new hocr_pixbuf struct from gdk pixbuf
+
+ @param pixbuf pointer to gdk pixbuf.
+ @return pointer to a newly allocate hocr_pixbuf, or null.
+ */
+	hocr_pixbuf *hocr_pixbuf_gtk_new_from_gdk_pixbuf (const GdkPixbuf *
+							 const pixbuf);
+
+/**
+ @brief creats a new gdk_pixbuf struct from hocr pixbuf
+
+ @param pixbuf pointer to hocr pixbuf.
+ @return pointer to a newly allocate gdk pixbuf, or null.
+ */
+	GdkPixbuf *gdk_pixbuf_new_from_hocr_pixbuf (const hocr_pixbuf *
+						    const pix);
+
+/**
+ @brif writes hocr_pixbuf to ppm or pgm file
+
+ @param pix hocr_pixbuf
+ @param filenme save as file name 
+ @param type save as type. can be "jpeg", "bmp" ...
+ @return 1=ok, 0=error
+ */
+	int hocr_pixbuf_gtk_save_as_file (const hocr_pixbuf * const pix,
+					  const char *const filename,
+					  const char *type);
+
+#endif
 
 #ifdef __cplusplus
 }

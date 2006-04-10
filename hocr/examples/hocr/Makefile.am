@@ -2,12 +2,29 @@
 
 EXTRA_DIST = hocr.1
 
+INCLUDES = @PACKAGE_CFLAGS@ 
+LDADD = @PACKAGE_LIBS@
+
+if WITH_HSPELL
+
+INCLUDES += @glib_CFLAGS@ @hspell_CFLAGS@ -DWITH_HSPELL
+LDADD += @glib_LIBS@ @hspell_LIBS@
+
+endif
+
+if WITH_GTK
+
+INCLUDES += @gtk_CFLAGS@ -DWITH_GTK
+LDADD += @gtk_LIBS@
+
+endif
+
 if WITH_CMD
 
-INCLUDES = \
+INCLUDES += \
         -DPACKAGE_DATA_DIR=\""$(datadir)"\" \
         -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-        -I$(top_srcdir)/src @PACKAGE_CFLAGS@ 
+        -I$(top_srcdir)/src
 
 DEPS= $(top_builddir)/src/libhocr.la
 ldadd= $(top_builddir)/src/libhocr.la
@@ -17,21 +34,8 @@ bin_PROGRAMS = hocr
 hocr_SOURCES = \
 	hocr-cmd.c
 
-#if WITH_WIN32
-
-#hocr_DEPENDENCIES = $(DEPS)
-#hocr_LDADD = ../../src/*.o $(INTLLIBS)
-
-#hocr$(EXEEXT): $(hocr_OBJECTS) $(hocr_DEPENDENCIES)
-#	@rm -f hocr$(EXEEXT)
-#	$(CC) -o hocr$(EXEEXT) @PACKAGE_LIBS@ $(hocr_LDFLAGS) $(hocr_OBJECTS) $(hocr_LDADD) $(LIBS)
-
-#else
-
 hocr_DEPENDENCIES = $(DEPS)
-hocr_LDADD = $(ldadd) $(INTLLIBS)
-
-#endif
+hocr_LDADD = $(LDADD) $(ldadd) $(INTLLIBS)
 
 man_MANS = hocr.1
 

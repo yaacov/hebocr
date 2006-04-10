@@ -329,7 +329,7 @@ save_text (char *filename)
 					 include_hidden_chars);
 
 	/* save to file */
-	file = fopen (filename, "w");
+	file = g_fopen (filename, "w");
 	g_fprintf (file, "%s", text);
 	fclose (file);
 
@@ -853,7 +853,7 @@ set_rc_file ()
 {
 	GKeyFile *key_file;
 	gchar *pathname = NULL;
-	GError *error = NULL;
+	/* GError *error = NULL; */
 	gchar *content;
 
 	/* do not use file if has command line args */
@@ -912,7 +912,28 @@ set_rc_file ()
 	g_key_file_set_string (key_file, "hocr-gtk", "font_name", font_name);
 	/* save data */
 	content = g_key_file_to_data (key_file, NULL, NULL);
-	g_file_set_contents (pathname, content, -1, &error);
+	
+	/* g_file_set_contents is a new simbol of glib 2.8, we want backword
+	   compatability */
+	/* g_file_set_contents (pathname, content, -1, &error); */
+	
+	/* write content to file: pathname */
+	{
+		FILE *file;
+		
+		file = g_fopen (pathname, "w");
+
+		if (!file)
+		{
+			g_print ("hocr: can\'t save file as %s\n", pathname);
+		}
+		else
+		{
+			g_fprintf (file, "%s", content);
+			fclose (file);
+		}
+	}
+	
 	g_key_file_free (key_file);
 	g_free (content);
 	g_free (pathname);

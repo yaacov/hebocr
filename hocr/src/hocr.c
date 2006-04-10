@@ -158,7 +158,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 	int avg_line_hight_in_page = 0;
 	int avg_line_x_start_in_column[MAX_COLUMNS];
-	int avg_diff_between_lines_in_page = 0;
 	int avg_diff_between_fonts_in_page = 0;
 	int avg_font_width_in_page = 0;
 	int avg_font_hight_in_page = 0;
@@ -227,7 +226,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 
 	/* get avg_line_hight_in_page */
 	avg_line_hight_in_page = 0;
-	avg_diff_between_lines_in_page = 0;
 
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
@@ -239,10 +237,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				lines[c * MAX_LINES + i].x2;
 			avg_line_hight_in_page +=
 				lines[c * MAX_LINES + i].hight;
-			if (i < (num_of_lines[c] - 1))
-				avg_diff_between_lines_in_page +=
-					(lines[c * MAX_LINES + i + 1].y1 -
-					 lines[c * MAX_LINES + i].y2);
 		}
 
 		if (num_of_lines[c] != 0)
@@ -255,10 +249,6 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	if (num_of_lines_in_page != 0)
 		avg_line_hight_in_page =
 			avg_line_hight_in_page / num_of_lines_in_page;
-	if ((num_of_lines_in_page - num_of_columns_in_page + 1) != 0)
-		avg_diff_between_lines_in_page =
-			avg_diff_between_lines_in_page /
-			(num_of_lines_in_page - num_of_columns_in_page + 1);
 
 	/* get all fonts for all the lines */
 	for (c = 0; c < num_of_columns_in_page; c++)
@@ -312,7 +302,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 						      i * MAX_FONTS_IN_LINE +
 						      j].hight;
 
-					/* if font is big put it in the common fonts array */
+					/* if font is big put it in the common
+					 * fonts array */
 					if (fonts[c * MAX_LINES *
 						  MAX_FONTS_IN_LINE +
 						  i * MAX_FONTS_IN_LINE +
@@ -320,8 +311,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					    fonts[c * MAX_LINES *
 						  MAX_FONTS_IN_LINE +
 						  i * MAX_FONTS_IN_LINE +
-						  j].hight > 4 && 
-					fonts[c * MAX_LINES *
+						  j].hight > 4 &&
+					    fonts[c * MAX_LINES *
 						  MAX_FONTS_IN_LINE +
 						  i * MAX_FONTS_IN_LINE +
 						  j].width < MAX_FONT_WEIGHT &&
@@ -440,7 +431,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 			avg_diff_between_fonts_in_page /=
 				(num_of_fonts_in_page - 1);
 	}
-	
+
 	/* get the common width and hight (common weight or hight sould not be
 	 * * smaller then the avvarage */
 	pix->common_width_of_objects = 0;
@@ -461,12 +452,15 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	}
 
 	/* get line equations for non horizontal lines */
+	pix->num_of_lines = 0;
 	for (c = 0; c < num_of_columns_in_page; c++)
 	{
 		for (i = 0; i < num_of_lines[c]; i++)
 		{
+			/* ignure lines with no fonts */
 			if (num_of_fonts[c][i] == 0)
 				continue;
+
 			find_font_baseline_eq (pix, lines[c * MAX_LINES + i],
 					       &(fonts[c * MAX_LINES *
 						       MAX_FONTS_IN_LINE +
@@ -474,9 +468,11 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 					       &(line_eqs[c][i][0]),
 					       &(line_eqs[c][i][1]),
 					       num_of_fonts[c][i]);
+
+			pix->num_of_lines++;
 		}
 	}
-	
+
 	/* color the results of page layout functions */
 	if (pix->command & HOCR_COMMAND_COLOR_BOXES)
 	{
@@ -538,7 +534,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 			}
 		}
 	}
-		
+
 	/* do ocr ? */
 	pix->progress_phase = 3;
 	font_number = 0;
@@ -613,7 +609,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 								i *
 								MAX_FONTS_IN_LINE
 								+ j + 1].x2) >
-							 MIN_DISTANCE_BETWEEN_WORDS);
+							 (avg_font_width_in_page
+							  / 2));
 
 						/* check for tabs */
 						if (avg_font_width_in_page)
@@ -751,9 +748,8 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 				hocr_text_buffer_add_string (text_buffer, "\n");
 
 				/* check for end of paragraph */
-				if (num_of_lines[c] > (i + 1) && 2 *
-				    avg_diff_between_lines_in_page
-				    <
+				if (num_of_lines[c] > (i + 1)
+				    && 3 * lines[c * MAX_LINES + i].hight <
 				    (lines[c * MAX_LINES + i + 1].y1 -
 				     lines[c * MAX_LINES + i].y2))
 					hocr_text_buffer_add_string
@@ -769,6 +765,53 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 	free (fonts);
 	free (lines);
 	free (columns);
+
+#ifdef WITH_HSPELL
+
+	/* use the dictionary spell check */
+	if (pix->command & HOCR_COMMAND_DICT)
+	{
+		hocr_text_buffer *iso_text_buffer = NULL;
+		hocr_text_buffer *utf_text_buffer = NULL;
+		hocr_text_buffer *iso_text_buffer_spell = NULL;
+
+		/* hspell only work for iso-8859-8 */
+		iso_text_buffer = hocr_text_buffer_copy_convert (text_buffer,
+								 "iso8859-8",
+								 "utf-8");
+
+		/* create a spelled buffer using hspell */
+		iso_text_buffer_spell =
+			hocr_text_buffer_copy_hspell (iso_text_buffer);
+
+		/* free the iso8859-8 buffer */
+		hocr_text_buffer_unref (iso_text_buffer);
+
+		/* FIXME: double spell ? */
+		/* create a spelled buffer using hspell */
+		iso_text_buffer =
+			hocr_text_buffer_copy_hspell (iso_text_buffer_spell);
+
+		/* free the iso8859-8 buffer */
+		hocr_text_buffer_unref (iso_text_buffer_spell);
+		
+		/* convert text back to utf-8 */
+		utf_text_buffer =
+			hocr_text_buffer_copy_convert (iso_text_buffer,
+						       "utf-8", "iso8859-8");
+
+		/* free temporary iso8859-8 spelled buffer */
+		hocr_text_buffer_unref (iso_text_buffer);
+
+		/* copy spelled utf-8 back to text_buffer */
+		hocr_text_buffer_set_string (text_buffer,
+					     utf_text_buffer->text);
+
+		/* free temporary utf text buffer */
+		hocr_text_buffer_unref (utf_text_buffer);
+	}
+
+#endif /* WITH_HSPELL */
 
 	return 0;
 }

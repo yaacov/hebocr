@@ -34,7 +34,7 @@
 #define FALSE 0
 #endif
 
-#define DEBUG
+//#define DEBUG
 
 /* FIXME: this is a hack for normal pages 
    no more then 200 lines and 200 fonts per line
