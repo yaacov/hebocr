@@ -380,7 +380,7 @@ extern "C"
 /**
  @brief creats a new gdk_pixbuf struct from hocr pixbuf
 
- @param pixbuf pointer to hocr pixbuf.
+ @param pix pointer to hocr pixbuf.
  @return pointer to a newly allocate gdk pixbuf, or null.
  */
 	GdkPixbuf *gdk_pixbuf_new_from_hocr_pixbuf (const hocr_pixbuf *
