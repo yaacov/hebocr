@@ -5,6 +5,7 @@ hocr (0.8.2)
  * add hspell backend to hocr_textbuffer
  * add glib's Character Set Conversion support to hocr_textbuffer
  * add glib's File save support to hocr_textbuffer
+ * add gtk's open/save picture files to hocr_pixbuf.
  * default brightness is 128 now
  * new and preetier logo by Shlomi
  * Daniel Nylander: swedish Swedish translation of hocr-gtk
