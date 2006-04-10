@@ -1,0 +1,190 @@
+# Swedish translation of hocr-gtk.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the hocr-gtk package.
+# Daniel Nylander <po@danielnylander.se>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hocr 0.7.1-1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-10 04:22+0300\n"
+"PO-Revision-Date: 2006-01-24 22:10+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. set the window title
+#: examples/hocr-gtk/interface.c:129 examples/hocr-gtk/callbacks.c:298
+msgid "hocr-gtk"
+msgstr "hocr-gtk"
+
+#: examples/hocr-gtk/interface.c:141
+msgid "_File"
+msgstr "_Arkiv"
+
+#: examples/hocr-gtk/interface.c:165
+msgid "Save Picture"
+msgstr ""
+
+#: examples/hocr-gtk/interface.c:174
+msgid "Xsane"
+msgstr ""
+
+#: examples/hocr-gtk/interface.c:187
+msgid "_Edit"
+msgstr "_Redigera"
+
+#: examples/hocr-gtk/interface.c:218
+msgid "Color boxes"
+msgstr "Färga rutor"
+
+#: examples/hocr-gtk/interface.c:221
+msgid "Color text boxes"
+msgstr "Färga textrutor"
+
+#: examples/hocr-gtk/interface.c:227
+msgid "Color misread"
+msgstr "Färga fellästa"
+
+#: examples/hocr-gtk/interface.c:230
+msgid "Color misread fonts"
+msgstr "Färga fellästa typsnitt"
+
+#: examples/hocr-gtk/interface.c:235
+msgid "Clear"
+msgstr "Töm"
+
+#: examples/hocr-gtk/interface.c:239
+msgid "Clear text each time you ocr new scan"
+msgstr "Töm text varje gång du skannar in ny text"
+
+#: examples/hocr-gtk/interface.c:242
+msgid "Ocr"
+msgstr "Ocr"
+
+#: examples/hocr-gtk/interface.c:246
+msgid "Try to recognize fonts in scaned text"
+msgstr "Försök att känna igen typsnitt i inskannad text"
+
+#: examples/hocr-gtk/interface.c:249
+msgid "Use dictionary"
+msgstr "Använd ordbok"
+
+#: examples/hocr-gtk/interface.c:254
+msgid ""
+"Try to guess unrecognized fonts in scaned text using internal dictionary"
+msgstr ""
+"Försök att gissa ej igenkända typsnitt i inskannad text med intern ordbok"
+
+#: examples/hocr-gtk/interface.c:258
+msgid "Use nikud"
+msgstr "Använd nikud"
+
+#: examples/hocr-gtk/interface.c:262
+msgid "Try to guess nikud"
+msgstr "Försök att gissa nikud"
+
+#: examples/hocr-gtk/interface.c:265
+msgid "Use spaces"
+msgstr "Använd blanksteg"
+
+#: examples/hocr-gtk/interface.c:269
+msgid "Use spaces for tabs"
+msgstr "Använd blanksteg som tabulator"
+
+#: examples/hocr-gtk/interface.c:274
+msgid "Use indentation"
+msgstr "Använd indentering"
+
+#: examples/hocr-gtk/interface.c:278
+msgid "Try to guess line indentation"
+msgstr "Försök att gissa radindentering"
+
+#: examples/hocr-gtk/interface.c:282
+msgid "_View"
+msgstr "_Visa"
+
+#: examples/hocr-gtk/interface.c:306
+msgid "_Help"
+msgstr "_Hjälp"
+
+#: examples/hocr-gtk/interface.c:313
+msgid "_About"
+msgstr "_Om"
+
+#: examples/hocr-gtk/interface.c:330
+msgid "Open a new picture for the OCR"
+msgstr "Öppna en ny bild för igenkänning"
+
+#: examples/hocr-gtk/interface.c:337
+msgid "Convert picture to text"
+msgstr "Konvertera bild till text"
+
+#: examples/hocr-gtk/interface.c:344
+msgid "Save the text created by the OCR"
+msgstr "Spara texten som skapades genom OCR"
+
+#: examples/hocr-gtk/interface.c:360
+msgid "Spell check the text"
+msgstr "Stavningskontrollera texten"
+
+#: examples/hocr-gtk/callbacks.c:347
+msgid "hocr save text"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:386
+msgid ""
+"Error wile saving:\n"
+"No picture to save"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:395
+msgid "hocr save picture"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:422
+#, c-format
+msgid ""
+"Error wile saving:\n"
+"Can't save %s, no suffix"
+msgstr ""
+
+#: examples/hocr-gtk/callbacks.c:440
+#, c-format
+msgid "File %s saved"
+msgstr ""
+
+#. set the window title
+#: examples/hocr-gtk/callbacks.c:471
+#, fuzzy
+msgid "hocr-gtk - xsane"
+msgstr "hocr-gtk"
+
+#: examples/hocr-gtk/callbacks.c:603
+msgid "HOCR-GTK"
+msgstr "HOCR-GTK"
+
+#: examples/hocr-gtk/callbacks.c:605
+msgid ""
+"HOCR-GTK - Hebrew character recognition software.\n"
+"This project is supported by a grant form the Israeli Internet Association."
+msgstr ""
+"HOCR-GTK - Programvara för att känna igen hebreiska tecken.\n"
+"Detta projekt stöds genom medel från israeliska Internetföreningen."
+
+#: examples/hocr-gtk/callbacks.c:607
+msgid "translator_credits"
+msgstr "Daniel Nylander <po@danielnylander.se>"
+
+#. create font dialog
+#: examples/hocr-gtk/callbacks.c:791
+msgid "Set text font"
+msgstr "Ställ in texttypsnitt"
+
+#~ msgid "hocr-gui"
+#~ msgstr "hocr-gui"
+
+#~ msgid "About this application"
+#~ msgstr "Om detta program"
