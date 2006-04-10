@@ -787,7 +787,7 @@ hocr_do_ocr (hocr_pixbuf * pix, hocr_text_buffer * text_buffer)
 		/* free the iso8859-8 buffer */
 		hocr_text_buffer_unref (iso_text_buffer);
 
-		/* FIXME: double spell ? */
+		/* FIXME: do double spell ? */
 		/* create a spelled buffer using hspell */
 		iso_text_buffer =
 			hocr_text_buffer_copy_hspell (iso_text_buffer_spell);
