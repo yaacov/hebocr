@@ -32,6 +32,7 @@
 /* hocr objmap set/get macros */
 #define ho_objmap_set(m,x,y,val) (((m)->map)[(x) + (y) * (m)->width] = (val))
 #define ho_objmap_get(m,x,y) (((m)->map)[(x) + (y) * (m)->width])
+#define ho_objmap_get_size(m) ((m)->obj_list->size)
 
 typedef struct
 {

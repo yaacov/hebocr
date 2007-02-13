@@ -282,12 +282,16 @@ main (int argc, char *argv[])
   GError *error = NULL;
   GOptionContext *context = NULL;
   gchar *text_out = NULL;
+  ho_usint index;
 
   ho_pixbuf *pix = NULL;
   ho_pixbuf *pix_temp = NULL;
+
   ho_bitmap *m_bw = NULL;
   ho_bitmap *m_bw_temp = NULL;
   ho_bitmap *m_paragraphs = NULL;
+  ho_bitmap *m_lines = NULL;
+
   ho_objmap *m_obj = NULL;
 
   ho_usint height;
@@ -474,10 +478,37 @@ main (int argc, char *argv[])
       break;
     }
 
+  /* sort paragraph by reading order */
+
   /* get lines in each paragraph */
+  m_obj = ho_objmap_new_from_bitmap (m_paragraphs);
+  for (index = 0; index < ho_objmap_get_size (m_obj); index++)
+    {
+      if (debug)
+	g_print (" proccesing layout of paragraph %d\n", index + 1);
 
-  /* get words for each line */
+      /* get the paragraph bitmap */
+      /* we need to be more cerful with free form paragraphs */
+      switch (paragraph_setup)
+	{
+	case 0:		/* colums */
 
+	  break;
+	case 1:		/* free setup */
+
+	  break;
+	default:		/* defaults to error */
+	  hocr_printerr ("unrecognized paragraph setup");
+	  exit (1);
+	  break;
+	}
+
+      /* get paragraph metrix */
+
+    }
+
+  /* free pragraph objects */
+  ho_objmap_free (m_obj);
 
   if (debug)
     g_print ("end of image layout analysis.\n");
