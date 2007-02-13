@@ -341,14 +341,14 @@ main (int argc, char *argv[])
 			   threshold, adaptive_threshold);
 
   /* do we need to auto scale ? */
-
-  /* if fonts are too small and user wants auto scale, re-scale image */
   if (!no_auto_scale && !scale_by)
     {
       /* get fonts size for autoscale */
       ho_bitmap_filter_font_metrix (m_bw, 6, 200, 6, 200, &height, &width,
 				    &nikud);
 
+
+      /* if fonts are too small and user wants auto scale, re-scale image */
       if (height < 10)
 	scale_by = 4;
       else if (height < 25)
@@ -358,7 +358,7 @@ main (int argc, char *argv[])
 	if (scale_by)
 	  g_print (" auto scale by %d.\n", scale_by);
 	else
-	  g_print (" no auto scale neaded.\n", scale_by);
+	  g_print (" no auto scale neaded.\n");
 
       if (scale_by)
 	{
