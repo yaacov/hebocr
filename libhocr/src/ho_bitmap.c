@@ -109,9 +109,10 @@ ho_bitmap_clone_window (const ho_bitmap * m, const ho_uint x, const ho_uint y,
   /* copy data */
   for (x1 = 0; x1 < width; x1++)
     for (y1 = 0; y1 < height; y1++)
-      if (ho_bitmap_get (m, x + x1, y + y1))
-	ho_bitmap_set (m_out, x1, y1);
-
+      {
+	if (ho_bitmap_get (m, x + x1, y + y1))
+	  ho_bitmap_set (m_out, x1, y1);
+      }
   return m_out;
 }
 
@@ -251,14 +252,14 @@ ho_bitmap_erosion_n (const ho_bitmap * m, const ho_uchar n)
 
 int
 ho_bitmap_draw_box (ho_bitmap * m, const ho_uint x, const ho_uint y,
-			const ho_uint width, const ho_uint height)
+		    const ho_uint width, const ho_uint height)
 {
   ho_uint x1, y1;
 
   /*  draw */
   for (x1 = x; x1 < (x + width); x1++)
     for (y1 = y; y1 < (y + height); y1++)
-	ho_bitmap_set (m, x1, y1);
+      ho_bitmap_set (m, x1, y1);
 
   return HO_FALSE;
 }

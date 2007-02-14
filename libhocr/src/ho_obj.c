@@ -108,6 +108,7 @@ ho_objlist_add (ho_objlist * object_list, double weight,
 
   /* add the new object */
   (object_list->objects)[object_list->size].index = object_list->size;
+  (object_list->objects)[object_list->size].reading_index = object_list->size;
   (object_list->objects)[object_list->size].weight = weight;
   (object_list->objects)[object_list->size].x = x;
   (object_list->objects)[object_list->size].y = y;
@@ -274,7 +275,61 @@ ho_objlist_clean (ho_objlist * object_list, ho_usint ** map)
 }
 
 int
-ho_objlist_print (ho_objlist * object_list)
+ho_objlist_clean_by_reading_index (ho_objlist * object_list, ho_usint ** map)
+{
+  ho_objlist *temp_object_list;
+  ho_usint new_index, i, j;
+
+  /* allocate temporary list */
+  temp_object_list = ho_objlist_new ();
+  if (!temp_object_list)
+    return HO_TRUE;
+
+  *map = (ho_usint *) calloc (object_list->size, sizeof (ho_usint));
+  if (!(*map))
+    {
+      ho_objlist_free (temp_object_list);
+      return HO_TRUE;
+    }
+
+  /* map by reading index */
+  new_index = 0;
+  for (i = 0; i < (object_list->size); i++)
+    {
+      for (j = 0; j < (object_list->size); j++)
+	if ((object_list->objects)[j].reading_index == i)
+	  {
+      /* this index is this reading order */
+      (*map)[j] = i;
+
+	    ho_objlist_add (temp_object_list,
+			    ((object_list->objects)[j]).weight,
+			    ((object_list->objects)[j]).x,
+			    ((object_list->objects)[j]).y,
+			    ((object_list->objects)[j]).width,
+			    ((object_list->objects)[j]).height);
+	  }
+    }
+
+  /* copy back objects from temporary list */
+  object_list->size = 0;
+  for (i = 0; i < (temp_object_list->size); i++)
+    {
+      ho_objlist_add (object_list,
+		      ((temp_object_list->objects)[i]).weight,
+		      ((temp_object_list->objects)[i]).x,
+		      ((temp_object_list->objects)[i]).y,
+		      ((temp_object_list->objects)[i]).width,
+		      ((temp_object_list->objects)[i]).height);
+    }
+
+  /* unref the temporary list */
+  ho_objlist_free (temp_object_list);
+
+  return HO_FALSE;
+}
+
+int ho_objlist_print (ho_objlist * object_list)
 {
   ho_usint i;
 
@@ -291,16 +346,16 @@ ho_objlist_print (ho_objlist * object_list)
 }
 
 int
-ho_objlist_statistics (ho_objlist * object_list,
-		       ho_uint min_height, ho_uint max_height,
-		       ho_uint min_width, ho_uint max_width,
-		       ho_usint * counter,
-		       double *weight_avg, double *weight_com,
-		       double *weight_min, double *weight_max,
-		       ho_uint * height_avg, ho_uint * height_com,
-		       ho_uint * height_min, ho_uint * height_max,
-		       ho_uint * width_avg, ho_uint * width_com,
-		       ho_uint * width_min, ho_uint * width_max)
+  ho_objlist_statistics (ho_objlist * object_list,
+			 ho_uint min_height, ho_uint max_height,
+			 ho_uint min_width, ho_uint max_width,
+			 ho_usint * counter,
+			 double *weight_avg, double *weight_com,
+			 double *weight_min, double *weight_max,
+			 ho_uint * height_avg, ho_uint * height_com,
+			 ho_uint * height_min, ho_uint * height_max,
+			 ho_uint * width_avg, ho_uint * width_com,
+			 ho_uint * width_min, ho_uint * width_max)
 {
   /* historam boxes are 0 .. 300 -> 0 .. 60 (5 values into 1 histogram box) 
      for 1D attributes and 0 .. 1500 -> 0 .. 60 (25 into 1) for 2D attributes */

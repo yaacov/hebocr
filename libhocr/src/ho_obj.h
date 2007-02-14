@@ -31,6 +31,7 @@
 typedef struct
 {
   ho_usint index;
+  ho_usint reading_index;
   double weight;
   ho_uint x;
   ho_uint y;
@@ -65,6 +66,9 @@ ho_objlist_link (ho_objlist * object_list, ho_usint index1,
 		  ho_usint index2);
 
 int ho_objlist_clean (ho_objlist * object_list, ho_usint ** map);
+
+int
+ho_objlist_clean_by_reading_index (ho_objlist * object_list, ho_usint ** map);
 
 int ho_objlist_print (ho_objlist * object_list);
 

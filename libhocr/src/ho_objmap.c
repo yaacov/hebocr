@@ -126,6 +126,38 @@ ho_objmap_clean (ho_objmap * m)
   return HO_FALSE;
 }
 
+int
+ho_objmap_sort_by_reading_index (ho_objmap * m)
+{
+  ho_uint x, y, k;
+  ho_usint index;
+  ho_usint *map = NULL;
+
+  /* make sure reading order is set */
+  ho_objmap_update_reading_index_rtl (m);
+  
+  /* clean the object list */
+  ho_objlist_clean_by_reading_index ((m->obj_list), &map);
+
+  /* re relax the object matrix */
+  for (x = 0; x < m->width; x++)
+    for (y = 0; y < m->height; y++)
+      {
+	k = ho_objmap_get (m, x, y);
+	if (k)
+	  {
+	    index = map[k - 1];
+	    ho_objmap_set (m, x, y, index + 1);
+	  }
+      }
+
+  /* free all temporary memory */
+  if (map)
+    free (map);
+
+  return HO_FALSE;
+}
+
 ho_objmap *
 ho_objmap_new_from_bitmap (const ho_bitmap * bit_in)
 {
@@ -398,4 +430,71 @@ ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
       }
 
   return m_out;
+}
+
+int
+ho_objmap_update_reading_index_rtl (ho_objmap * m)
+{
+  int q;
+  ho_usint index;
+  ho_usint sorting_list_index;
+  ho_usint sorting_lists_sizes[4] = { 0, 0, 0, 0 };
+  ho_usint *sorting_lists;
+  ho_usint reading_index;
+  int x, y;
+  ho_uint height;
+  ho_uint width;
+
+  /* is this an object map */
+  if ((m->obj_list)->size < 1)
+    return HO_TRUE;
+
+  /* allocate sorting lists memory */
+  sorting_lists = calloc (4 * ho_objmap_get_size (m), sizeof (ho_usint));
+  if (!sorting_lists)
+    return HO_TRUE;
+
+  /* sort by 1/4 of map */
+  for (index = 0; index < (m->obj_list)->size; index++)
+    {
+      x = ho_objmap_get_object (m, index).x;
+      y = ho_objmap_get_object (m, index).y;
+      width = ho_objmap_get_object (m, index).width;
+      height = ho_objmap_get_object (m, index).height;
+
+      /* what 1/4 ? */
+      q = 3 - 4 * (x + width) / m->width;
+
+      /* sanity check */
+      if (q < 0)
+	q = 0;
+
+      sorting_list_index =
+	q * ho_objmap_get_size (m) + sorting_lists_sizes[q];
+      sorting_lists[sorting_list_index] = index;
+      sorting_lists_sizes[q]++;
+    }
+
+  /* sort by height for each 1/4 */
+  reading_index = 0;
+
+  for (q = 0; q < 4; q++)
+    for (y = 0; y < m->height; y++)
+      {
+	for (sorting_list_index = 0;
+	     sorting_list_index < sorting_lists_sizes[q];
+	     sorting_list_index++)
+	  {
+	    index =
+	      sorting_lists[sorting_list_index + q * ho_objmap_get_size (m)];
+
+	    if (ho_objmap_get_object (m, index).y == y)
+	      {
+		ho_objmap_get_object (m, index).reading_index = reading_index;
+		reading_index++;
+	      }
+	  }
+      }
+
+  return HO_FALSE;
 }

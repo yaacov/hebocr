@@ -33,6 +33,7 @@
 #define ho_objmap_set(m,x,y,val) (((m)->map)[(x) + (y) * (m)->width] = (val))
 #define ho_objmap_get(m,x,y) (((m)->map)[(x) + (y) * (m)->width])
 #define ho_objmap_get_size(m) ((m)->obj_list->size)
+#define ho_objmap_get_object(m,i) ((m)->obj_list->objects[(i)])
 
 typedef struct
 {
@@ -63,6 +64,14 @@ int ho_objmap_free (ho_objmap * m);
  @return HO_FALSE
  */
 int ho_objmap_clean (ho_objmap * m);
+
+/**
+ sort the ho_objmap by reading index
+ @param m pointer to an ho_objmap
+ @return HO_FALSE
+ */
+int
+ho_objmap_sort_by_reading_index (ho_objmap * m);
 
 /**
  new ho_objmap from ho_bitmap
@@ -97,10 +106,10 @@ int ho_objmap_font_metrix (const ho_objmap * m, const ho_uint min_height,
  @param max_width only objects with this maximal width are copied
  @return a newly allocated bitmap
  */
-ho_bitmap *
-ho_objmap_to_bitmap_by_size (const ho_objmap * m,
-			     ho_uint min_height, ho_uint max_height,
-			     ho_uint min_width, ho_uint max_width);
+ho_bitmap *ho_objmap_to_bitmap_by_size (const ho_objmap * m,
+					ho_uint min_height,
+					ho_uint max_height, ho_uint min_width,
+					ho_uint max_width);
 
 /**
  copy objects from objmap to bitmap by index
@@ -108,8 +117,8 @@ ho_objmap_to_bitmap_by_size (const ho_objmap * m,
  @param index the index of the object to copy
  @return a newly allocated bitmap size of objmap
  */
-ho_bitmap *
-ho_objmap_to_bitmap_by_index (const ho_objmap * m, const ho_usint index);
+ho_bitmap *ho_objmap_to_bitmap_by_index (const ho_objmap * m,
+					 const ho_usint index);
 
 /**
  copy objects from objmap to bitmap by index of the object
@@ -118,8 +127,15 @@ ho_objmap_to_bitmap_by_index (const ho_objmap * m, const ho_usint index);
  @param frame size of white frame in the new bitmap
  @return a newly allocated bitmap size of object + frame
  */
-ho_bitmap *
-ho_objmap_to_bitmap_by_index_window (const ho_objmap * m, const ho_usint index,
-			      const ho_uint frame);
+ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
+						const ho_usint index,
+						const ho_uint frame);
+
+/**
+ guess reading_index
+ @param m pointer to an ho_objmap
+ @return HO_FALSE
+ */
+int ho_objmap_update_reading_index_rtl (ho_objmap * m);
 
 #endif /* HO_OBJMAP_H */
