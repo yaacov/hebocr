@@ -301,7 +301,11 @@ main (int argc, char *argv[])
   ho_usint font_height;
   ho_usint font_width;
   ho_usint interline_height;
+  ho_usint paragraph_font_height;
+  ho_usint paragraph_font_width;
+  ho_usint paragraph_interline_height;
   ho_uchar nikud = FALSE;
+  ho_uchar is_text_block = TRUE;
 
   /* init gtk */
   gtk_init (&argc, &argv);
@@ -564,8 +568,42 @@ main (int argc, char *argv[])
 	  break;
 	}
 
+      /* get paragraph metrix */
+      ho_bitmap_filter_font_metrix (m_current_paragraph, 6, 200, 6, 200,
+				    &paragraph_font_height,
+				    &paragraph_font_width, &nikud);
+
+      if (debug)
+	if (nikud)
+	  g_print ("   font height %d, width %d. with nikud.\n",
+		   paragraph_font_height, paragraph_font_width);
+	else
+	  g_print ("   font height %d, width %d. without nikud.\n",
+		   paragraph_font_height, paragraph_font_width);
+
+      /* get interline height */
+      ho_bitmap_filter_line_metrix (m_current_paragraph,
+				    paragraph_font_height,
+				    paragraph_font_width, nikud,
+				    &paragraph_interline_height);
+
+      if (debug)
+	g_print ("   inter-line space height %d\n",
+		 paragraph_interline_height);
+
+      is_text_block = (paragraph_font_height > 10
+		       && paragraph_font_height * 1.1 > paragraph_font_width
+		       && paragraph_font_height < font_height * 4 &&
+		       paragraph_interline_height < interline_height * 2);
+
+      if (debug)
+	if (is_text_block)
+	  g_print ("   looks like text block\n");
+	else
+	  g_print ("   does not look like text block\n");
+
       /* if debug write current paragraph to disk */
-      if (only_layout_analysis || debug)
+      if (is_text_block && (only_layout_analysis || debug))
 	{
 	  gchar *filename;
 
@@ -589,25 +627,6 @@ main (int argc, char *argv[])
 	      g_free (filename);
 	    }
 	}
-
-      /* get paragraph metrix */
-      ho_bitmap_filter_font_metrix (m_current_paragraph, 6, 200, 6, 200,
-				    &font_height, &font_width, &nikud);
-
-      if (debug)
-	if (nikud)
-	  g_print ("   font height %d, width %d. with nikud.\n", font_height,
-		   font_width);
-	else
-	  g_print ("   font height %d, width %d. without nikud.\n",
-		   font_height, font_width);
-
-      /* get interline height */
-      ho_bitmap_filter_line_metrix (m_current_paragraph, font_height,
-				    font_width, nikud, &interline_height);
-
-      if (debug)
-	g_print ("   inter-line space height %d\n", interline_height);
 
       /* free this paragraph bitmap */
       ho_bitmap_free (m_current_paragraph);
