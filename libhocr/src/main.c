@@ -199,7 +199,7 @@ main (int argc, char *argv[])
   m_bw =
     ho_pixbuf_to_bitmap_wrapper (pix, scale_by, adaptive_threshold_type,
 				 threshold, adaptive_threshold);
-  
+
   if (!m_bw)
     {
       hocr_printerr ("can't convert to black and white\n");
@@ -245,7 +245,8 @@ main (int argc, char *argv[])
 
 	  if (!m_bw)
 	    {
-	      hocr_printerr ("can't convert to black and white after auto scaleing \n");
+	      hocr_printerr
+		("can't convert to black and white after auto scaleing \n");
 	      exit (1);
 	    }
 
@@ -452,11 +453,14 @@ main (int argc, char *argv[])
 		       && paragraph_font_height * 1.1 > paragraph_font_width
 		       && paragraph_font_height < font_height * 4);
 
-
       /* look for text lines */
       if (is_text_block)
 	{
-
+	  m_lines =
+	    ho_bitmap_filter_lines (m_current_paragraph,
+				    paragraph_font_height,
+				    paragraph_font_width,
+				    nikud, paragraph_interline_height);
 	}
 
       if (debug)
@@ -471,7 +475,9 @@ main (int argc, char *argv[])
 	  gchar *filename;
 
 	  /* create paragraph  pixbuf */
-	  pix_temp = ho_pixbuf_new_from_bitmap (m_current_paragraph);
+	  pix_temp = ho_pixbuf_new (3, m_lines->width, m_lines->height, 0);
+	  ho_pixbuf_draw_bitmap (pix_temp, m_lines, 230, 100, 100);
+	  ho_pixbuf_draw_bitmap (pix_temp, m_current_paragraph, 0, 0, 0);
 	  /* add grid to layout pixbuf */
 	  if (show_grid)
 	    ho_pixbuf_draw_grid (pix_temp, 120, 30, 0, 0, 0);

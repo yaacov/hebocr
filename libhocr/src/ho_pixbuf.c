@@ -58,9 +58,10 @@ ho_pixbuf_new (const ho_uchar n_channels,
     pix->rowstride = width * n_channels;
 
   /*
-   * allocate memory for data (and set to zero)
+   * allocate memory for data (and set to white)
    */
-  pix->data = calloc (sizeof (ho_uchar), pix->height * pix->rowstride);
+  pix->data = malloc (pix->height * pix->rowstride);
+  memset((void *)(pix->data), 255, pix->height * pix->rowstride);
   if (!(pix->data))
     {
       free (pix);

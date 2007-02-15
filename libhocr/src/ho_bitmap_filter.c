@@ -350,64 +350,6 @@ ho_bitmap_filter_remove_dots (const ho_bitmap * m,
   return m_out;
 }
 
-ho_bitmap *
-ho_bitmap_filter_paragraphs (const ho_bitmap * m,
-			     const ho_uchar font_height,
-			     const ho_uchar font_width,
-			     const ho_uchar nikud,
-			     ho_usint interline_height, const ho_uchar box)
-{
-  ho_bitmap *m_clean;
-  ho_bitmap *m_temp1;
-  ho_bitmap *m_out;
-  ho_uint x, y;
-
-  /* if nikud we need to be more careful */
-  if (nikud)
-    m_clean = ho_bitmap_filter_by_size (m,
-					font_height / 2, font_height * 4,
-					font_width / 3, font_width * 5);
-  else
-    m_clean = ho_bitmap_filter_by_size (m,
-					font_height / 4, font_height * 4,
-					font_width / 4, font_width * 5);
-
-  /* link paragraphs */
-  m_temp1 = hocr_bitmap_filter_vlink (m_clean, interline_height * 1.2);
-  if (!m_temp1)
-    return HO_NULL;
-
-  m_out = hocr_bitmap_filter_hlink (m_temp1, font_width * 2);
-  if (!m_out)
-    return HO_NULL;
-
-  ho_bitmap_free (m_temp1);
-
-  if (box)
-    m_temp1 = ho_bitmap_filter_boxes (m_out);
-  else
-    m_temp1 = ho_bitmap_filter_fill (m_out);
-
-  ho_bitmap_free (m_out);
-  ho_bitmap_free (m_clean);
-
-  /* try and link one/two line broken paragraphs */
-  m_out = hocr_bitmap_filter_hlink_objecs (m_temp1, font_width * 6,
-					   font_height * 2 +
-					   interline_height * 2);
-
-  ho_bitmap_free (m_temp1);
-
-  /* check all paragraphs for artefacts, too small or large */
-  m_temp1 =
-    ho_bitmap_filter_by_size (m_out, 2 * font_height / 2, m->height,
-			      font_width * 3, m->width);
-
-  ho_bitmap_free (m_out);
-
-  return m_temp1;
-}
-
 int
 ho_bitmap_filter_font_metrix (const ho_bitmap * m, const ho_uint min_height,
 			      const ho_uint max_height,
@@ -494,4 +436,101 @@ ho_bitmap_filter_line_metrix (const ho_bitmap * m,
     *interline_height = font_height * 1.5;
 
   return return_val;
+}
+
+ho_bitmap *
+ho_bitmap_filter_paragraphs (const ho_bitmap * m,
+			     const ho_uchar font_height,
+			     const ho_uchar font_width,
+			     const ho_uchar nikud,
+			     ho_usint interline_height, const ho_uchar box)
+{
+  ho_bitmap *m_clean;
+  ho_bitmap *m_temp1;
+  ho_bitmap *m_out;
+  ho_uint x, y;
+
+  /* if nikud we need to be more careful */
+  if (nikud)
+    m_clean = ho_bitmap_filter_by_size (m,
+					font_height / 2, font_height * 4,
+					font_width / 3, font_width * 5);
+  else
+    m_clean = ho_bitmap_filter_by_size (m,
+					font_height / 4, font_height * 4,
+					font_width / 4, font_width * 5);
+
+  /* link paragraphs */
+  m_temp1 = hocr_bitmap_filter_vlink (m_clean, interline_height * 1.2);
+  if (!m_temp1)
+    return HO_NULL;
+
+  m_out = hocr_bitmap_filter_hlink (m_temp1, font_width * 2);
+  if (!m_out)
+    return HO_NULL;
+
+  ho_bitmap_free (m_temp1);
+
+  if (box)
+    m_temp1 = ho_bitmap_filter_boxes (m_out);
+  else
+    m_temp1 = ho_bitmap_filter_fill (m_out);
+
+  ho_bitmap_free (m_out);
+  ho_bitmap_free (m_clean);
+
+  /* try and link one/two line broken paragraphs */
+  m_out = hocr_bitmap_filter_hlink_objecs (m_temp1, font_width * 6,
+					   font_height * 2 +
+					   interline_height * 2);
+
+  ho_bitmap_free (m_temp1);
+
+  /* check all paragraphs for artefacts, too small or large */
+  m_temp1 =
+    ho_bitmap_filter_by_size (m_out, 2 * font_height / 3, m->height,
+			      font_width * 3, m->width);
+
+  ho_bitmap_free (m_out);
+
+  return m_temp1;
+}
+
+ho_bitmap *
+ho_bitmap_filter_lines (const ho_bitmap * m,
+			     const ho_uchar font_height,
+			     const ho_uchar font_width,
+			     const ho_uchar nikud,
+			     ho_usint interline_height)
+{
+  ho_bitmap *m_clean;
+  ho_bitmap *m_temp1;
+  ho_bitmap *m_out;
+  ho_uint x, y;
+
+  //m_clean = ho_bitmap_filter_by_size (m,
+	//				4 * font_height / 5, font_height * 1.1,
+	//				font_width / 3, font_width * 5);
+  m_clean = ho_bitmap_filter_by_size (m,
+					4 * font_height / 5, font_height * 1.1,
+					font_width / 3, font_width * 5);
+  
+  /* link lines */
+  m_out = hocr_bitmap_filter_hlink (m_clean, font_width * 18);
+  if (!m_out)
+    return HO_NULL;
+
+ //m_temp1 = ho_bitmap_filter_fill (m_out);
+
+ // ho_bitmap_free (m_out);
+  ho_bitmap_free (m_clean);
+
+  /* check all paragraphs for artefacts, too small or large */
+ //m_out =
+  //  ho_bitmap_filter_by_size (m_temp1, font_height / 2, font_height * 4,
+	//		      font_width , m->width);
+
+ // ho_bitmap_free (m_temp1);
+
+  return m_out;
 }
