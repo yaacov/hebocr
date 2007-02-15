@@ -54,4 +54,4 @@ hocr_CFLAGS = \
 hocr_LDADD= \
         $(gtk_LIBS) \
         $(libhocr_la_LIBADD) \
-        -L. -lhocr -lhocrgtk
+        -L. -lhocr -lhocrgtk -lm
