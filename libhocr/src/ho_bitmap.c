@@ -2,7 +2,7 @@
  *            ho_bitmap.c
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir, Free Software Foundation
+ *  Copyright  2005-2007  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 

@@ -2,7 +2,7 @@
  *            ho_pixbuf.c
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir, Free Software Foundation
+ *  Copyright  2005-2007  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 
@@ -68,6 +68,22 @@ ho_pixbuf_new (const ho_uchar n_channels,
     }
 
   return pix;
+}
+
+ho_pixbuf *
+ho_pixbuf_clone (const ho_pixbuf * m)
+{
+  ho_pixbuf *m_out;
+
+  /* allocate memory */
+  m_out = ho_pixbuf_new (m->n_channels, m->width, m->height, m->rowstride);
+  if (!m_out)
+    return HO_NULL;
+
+  /* copy data */
+  memcpy (m_out->data, m->data, m_out->height * m_out->rowstride);
+
+  return m_out;
 }
 
 ho_pixbuf *
@@ -1028,4 +1044,67 @@ ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
   ho_pixbuf_free (m_thresholds);
 
   return m_out;
+}
+
+
+ho_bitmap *
+ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in, const ho_uchar scale,
+			     const ho_uchar adaptive,
+			     const ho_uchar threshold,
+			     const ho_uchar a_threshold)
+{
+  ho_pixbuf *pix = HO_NULL;
+  ho_pixbuf *pix_temp = HO_NULL;
+  ho_bitmap *m_bw = HO_NULL;
+  ho_uchar nead_to_free_pix = HO_FALSE;
+
+  /* if pix is color convert to gray scale */
+  if (pix_in->n_channels > 1)
+    pix = ho_pixbuf_color_to_gray (pix_in);
+  else
+    pix = ho_pixbuf_clone (pix_in);
+  
+  if (!pix)
+    return HO_NULL;
+
+  /* streach picture grays */
+  pix_temp = ho_pixbuf_linear_filter (pix);
+  if (pix_temp)
+    {
+      ho_pixbuf_free (pix);
+      pix = pix_temp;
+    }
+
+  /* scale */
+  if (scale)
+    {
+      pix_temp = ho_pixbuf_scale (pix, scale);
+      if (pix_temp)
+	{
+	  ho_pixbuf_free (pix);
+	  pix = pix_temp;
+	}
+    }
+    
+  /* convert to b/w bitmap */
+  switch (adaptive)
+    {
+    case 0:
+      m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, 0, a_threshold);
+      break;
+    case 1:
+      m_bw = ho_pixbuf_to_bitmap (pix, threshold);
+      break;
+    case 2:
+      m_bw =
+	ho_pixbuf_to_bitmap_adaptive_best (pix, threshold, 0, a_threshold);
+      break;
+    default:
+      m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, 0, a_threshold);
+      break;
+    }
+    
+  ho_pixbuf_free (pix);
+
+  return m_bw;
 }

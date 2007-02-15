@@ -2,7 +2,7 @@
  *            ho_objmap.h
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir, Free Software Foundation
+ *  Copyright  2005-2007  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 
@@ -32,8 +32,12 @@
 /* hocr objmap set/get macros */
 #define ho_objmap_set(m,x,y,val) (((m)->map)[(x) + (y) * (m)->width] = (val))
 #define ho_objmap_get(m,x,y) (((m)->map)[(x) + (y) * (m)->width])
+
 #define ho_objmap_get_size(m) ((m)->obj_list->size)
 #define ho_objmap_get_object(m,i) ((m)->obj_list->objects[(i)])
+
+#define ho_objmap_get_width(m) ((m)->width)
+#define ho_objmap_get_height(m) ((m)->height)
 
 typedef struct
 {

@@ -2,7 +2,7 @@
  *            ho_bitmap.c
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir, Free Software Foundation
+ *  Copyright  2005-2007  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 
@@ -490,7 +490,7 @@ ho_bitmap_filter_line_metrix (const ho_bitmap * m,
   ho_objmap_free (m_obj);
 
   /* sanity chack */
-  if (*interline_height < font_height)
+  if (*interline_height < font_height || *interline_height > font_height * 4)
     *interline_height = font_height * 1.5;
 
   return return_val;

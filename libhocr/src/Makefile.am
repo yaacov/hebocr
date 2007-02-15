@@ -4,7 +4,7 @@
 INCLUDES = \
         $(hspell_CFLAGS) 
 
-pkglib_LTLIBRARIES = libhocr.la
+pkglib_LTLIBRARIES = libhocr.la libhocrgtk.la
 
 libhocr_la_SOURCES = \
         ho_pixbuf.c \
@@ -27,6 +27,24 @@ library_include_HEADERS = hocr.h \
          ho_obj.h \
          ho_objmap.h
 
+# libhocrgtk, helper functions to use hocr in gtk programs
+libhocrgtk_la_SOURCES = \
+        ho_gtk.c
+
+libhocrgtk_la_CFLAGS = \
+        $(gtk_CFLAGS)
+        
+libhocrgtk_la_LIBADD = \
+        $(gtk_LIBS) \
+        $(libhocr_la_LIBADD) \
+        -L. -lhocr
+        
+libhocrgtk_la_LDFLAGS = $(libhocr_la_LDFLAGS)
+
+librarygtk_includedir = $(includedir)/libhocr
+librarygtk_include_HEADERS = \
+         ho_gtk.h 
+
 # A demo hocr program
 bin_PROGRAMS = hocr
 hocr_SOURCES = main.c
@@ -35,5 +53,5 @@ hocr_CFLAGS = \
         -DBUILD=\"$(BUILD_STR)\" 
 hocr_LDADD= \
         $(gtk_LIBS) \
-        $(libhocr_pixbuf_la_LIBADD) \
-        -L. -lhocr
+        $(libhocr_la_LIBADD) \
+        -L. -lhocr -lhocrgtk

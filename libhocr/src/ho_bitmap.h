@@ -2,7 +2,7 @@
  *            ho_bitmap.h
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir, Free Software Foundation
+ *  Copyright  2005-2007  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 
@@ -31,6 +31,9 @@
 #define ho_bitmap_get(m,x,y) ((((m)->data[(x) / 8 + (y) * (m)->rowstride]) & (0x80 >> ((x) % 8))) > 0)
 #define ho_bitmap_set(m,x,y) (((m)->data[(x) / 8 + (y) * (m)->rowstride]) |= (0x80 >> ((x) % 8)))
 #define ho_bitmap_unset(m,x,y) (((m)->data[(x) / 8 + (y) * (m)->rowstride]) &= ~(0x80 >> ((x) % 8)))
+
+#define ho_bitmap_get_width(m) ((m)->width)
+#define ho_bitmap_get_height(m) ((m)->height)
 
 typedef struct
 {

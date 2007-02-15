@@ -1,10 +1,18 @@
+libhocr (0.10.2)
+
+ * 
+
+ -- Yaacov Zamir <kzamir@walla.co.il>  Thursday, 15 February 2007 19:12
+ 
 libhocr (0.10.1)
 
  * internal image loader can load pnm P6 images
  * new functions for color and gray scale images 
+ * paragraph segmentation functions
+ * paragraph reading order sorting functions
  * user can set light/dark image settings from the command
     line utility.
- *
+ * gtk related functions move to libhocrgtk
 
  -- Yaacov Zamir <kzamir@walla.co.il>  Tuesday, 16 Jan 2007 20:10
 

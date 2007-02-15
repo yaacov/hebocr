@@ -2,7 +2,7 @@
  *            ho_pixbuf.h
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir, Free Software Foundation
+ *  Copyright  2005-2007  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 
@@ -37,6 +37,12 @@
 #define ho_pixbuf_set(m,x,y,col,val) (((m)->data)[(x)*(m)->n_channels+(y)*(m)->rowstride+(col)]=(val))
 #define ho_pixbuf_get(m,x,y,col) (((m)->data)[(x)*(m)->n_channels+(y)*(m)->rowstride+(col)])
 
+#define ho_pixbuf_get_n_channels(m) ((m)->n_channels)
+#define ho_pixbuf_get_width(m) ((m)->width)
+#define ho_pixbuf_get_height(m) ((m)->height)
+#define ho_pixbuf_get_rowstride(m) ((m)->rowstride)
+#define ho_pixbuf_get_data(m) ((m)->data)
+
 /* hocr pixbuf: copy of gtk_pixbuf */
 typedef struct
 {
@@ -58,6 +64,14 @@ typedef struct
 ho_pixbuf *ho_pixbuf_new (const ho_uchar n_channels,
 			  const ho_uint width, const ho_uint height,
 			  const ho_uint rowstride);
+
+/**
+ clone ho_pixbuf
+ @param m pointer to a ho_pixbuf image
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *
+ho_pixbuf_clone (const ho_pixbuf * m);
 
 /**
  new ho_pixbuf from ho_bitmap
@@ -266,5 +280,20 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
 					      ho_uchar threshold,
 					      ho_uchar size,
 					      ho_uchar adaptive_threshold);
+
+/**
+ convert a gray pixbuf to bitmap wrapper function
+ @param pix_in the input ho_pixbuf
+ @param scale the scale to use
+ @param adaptive what type of thresholding to use
+ @param threshold the threshold to use 0..100
+ @param a_threshold the threshold to use for adaptive thresholding 0..100
+ @return newly allocated gray ho_bitmap
+ */
+ho_bitmap *ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
+					const ho_uchar scale,
+					const ho_uchar adaptive,
+					const ho_uchar threshold,
+					const ho_uchar a_threshold);
 
 #endif /* HO_PIXBUF_H */

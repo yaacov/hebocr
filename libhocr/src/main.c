@@ -2,7 +2,7 @@
  *            main.c
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir, Free Software Foundation
+ *  Copyright  2005-2007  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 
@@ -28,6 +28,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "hocr.h"
+#include "ho_gtk.h"
 
 gchar *image_in_filename = NULL;
 gchar *text_out_filename = NULL;
@@ -46,8 +47,6 @@ gboolean show_grid = FALSE;
 
 gboolean only_image_proccesing = FALSE;
 gboolean only_layout_analysis = FALSE;
-
-
 
 static gchar *copyright_message = "hocr - Hebrew OCR utility\n\
 %s\n\
@@ -113,166 +112,6 @@ hocr_printerr (const char *msg)
   g_printerr ("%s: %s\n\
 Try `--help' for more information.\n", g_get_prgname (), msg);
   return 0;
-}
-
-ho_pixbuf *
-ho_pixbuf_new_from_file (const char *filename)
-{
-  ho_pixbuf *pix = NULL;
-  GdkPixbuf *gdk_pix = NULL;
-
-  /* if no file name or file name is one letter, e.g. '-' 
-     use internal hocr loading function */
-  if (!filename || !(filename[1]))
-    return ho_pixbuf_new_from_pnm (image_in_filename);
-
-  /* else, use gdk to load the file */
-
-  /* load gdk pixbuf from file */
-  gdk_pix = gdk_pixbuf_new_from_file (filename, NULL);
-
-  if (!gdk_pix)
-    {
-      return NULL;
-    }
-
-  /* create hocr pixbuf from gkd pixbuf */
-  pix = ho_pixbuf_new (gdk_pixbuf_get_n_channels
-		       (gdk_pix), gdk_pixbuf_get_width
-		       (gdk_pix), gdk_pixbuf_get_height (gdk_pix),
-		       gdk_pixbuf_get_rowstride (gdk_pix));
-
-  if (!pix)
-    return NULL;
-
-  memcpy (pix->data, gdk_pixbuf_get_pixels (gdk_pix),
-	  (pix->height * pix->rowstride));
-
-  /* free gdk pixbuf */
-  g_object_unref (gdk_pix);
-
-  return pix;
-}
-
-int
-ho_pixbuf_save (const ho_pixbuf * pix, const char *filename)
-{
-  GError *error = NULL;
-  GdkPixbuf *gdk_pix = NULL;
-  gchar **ext_type = NULL;
-  ho_pixbuf *pix_color = NULL;
-
-  /* is this an RGB pixbuf ? */
-  pix_color = ho_pixbuf_to_rgb (pix);
-  if (!pix_color)
-    return TRUE;
-
-  /* load gdk pixbuf from ho_pixbuf */
-  gdk_pix = gdk_pixbuf_new_from_data (pix_color->data,
-				      GDK_COLORSPACE_RGB,
-				      FALSE,
-				      8,
-				      pix_color->width,
-				      pix_color->height,
-				      pix_color->rowstride, NULL, NULL);
-
-  if (!gdk_pix)
-    {
-      ho_pixbuf_free (pix_color);
-      return TRUE;
-    }
-
-  /* save gdk pixbuf */
-  ext_type = g_strsplit (filename, ".", 2);
-  if (!g_ascii_strncasecmp (ext_type[1], "jpg", 4))
-    gdk_pixbuf_save (gdk_pix, filename, "jpeg", &error, NULL);
-  else
-    gdk_pixbuf_save (gdk_pix, filename, ext_type[1], &error, NULL);
-
-  /* free memory */
-  ho_pixbuf_free (pix_color);
-  g_strfreev (ext_type);
-  g_object_unref (gdk_pix);
-
-  if (error)
-    {
-      g_error_free (error);
-      return TRUE;
-    }
-
-  return FALSE;
-}
-
-ho_bitmap *
-hocr_pixbuf_to_bitmap (ho_pixbuf * pix, ho_uchar scale, ho_uchar adaptive,
-		       ho_uchar threshold, ho_uchar a_threshold)
-{
-  ho_pixbuf *pix_temp = NULL;
-  ho_bitmap *m_bw = NULL;
-  ho_bitmap *m_bw_temp = NULL;
-
-  if (!pix)
-    {
-      hocr_printerr ("can't read input image\n");
-      exit (1);
-    }
-
-  /* if pix is color convert to gray scale */
-  if (pix->n_channels != 1)
-    {
-      pix_temp = ho_pixbuf_color_to_gray (pix);
-      ho_pixbuf_free (pix);
-      pix = pix_temp;
-
-      if (!pix)
-	{
-	  hocr_printerr ("bad color in input image\n");
-	  exit (1);
-	}
-    }
-
-  /* streach picture grays */
-  pix_temp = ho_pixbuf_linear_filter (pix);
-  ho_pixbuf_free (pix);
-  pix = pix_temp;
-
-  /* scale */
-  if (scale)
-    {
-      pix_temp = ho_pixbuf_scale (pix, scale);
-      if (pix_temp)
-	{
-	  ho_pixbuf_free (pix);
-	  pix = pix_temp;
-	}
-    }
-
-  /* convert to b/w bitmap */
-  switch (adaptive)
-    {
-    case 0:
-      m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, 0, a_threshold);
-      break;
-    case 1:
-      m_bw = ho_pixbuf_to_bitmap (pix, threshold);
-      break;
-    case 2:
-      m_bw =
-	ho_pixbuf_to_bitmap_adaptive_best (pix, threshold, 0, a_threshold);
-      break;
-    default:
-      hocr_printerr ("unknown adaptive threshold type, use normal\n");
-      m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, 0, a_threshold);
-      break;
-    }
-
-  if (!m_bw)
-    {
-      hocr_printerr ("can't convert to black and white\n");
-      exit (1);
-    }
-
-  return m_bw;
 }
 
 int
@@ -344,17 +183,28 @@ main (int argc, char *argv[])
   if (debug)
     g_print ("start image proccesing.\n");
 
-  /* read image and do color proccesing. if possible use the 
-     gtk version (from main.c) that can load more image formats */
-  pix = ho_pixbuf_new_from_file (image_in_filename);
+  /* read image from file */
+  pix = ho_gtk_pixbuf_new_from_file (image_in_filename);
+
+  if (!pix)
+    {
+      hocr_printerr ("can't read input image\n");
+      exit (1);
+    }
 
   if (debug)
     g_print (" input image is %d by %d pixels, with %d color channels\n",
 	     pix->width, pix->height, pix->n_channels);
 
   m_bw =
-    hocr_pixbuf_to_bitmap (pix, scale_by, adaptive_threshold_type,
-			   threshold, adaptive_threshold);
+    ho_pixbuf_to_bitmap_wrapper (pix, scale_by, adaptive_threshold_type,
+				 threshold, adaptive_threshold);
+  
+  if (!m_bw)
+    {
+      hocr_printerr ("can't convert to black and white\n");
+      exit (1);
+    }
 
   /* prompt user scale */
   if (debug && scale_by)
@@ -389,9 +239,16 @@ main (int argc, char *argv[])
 	  /* re-create bitmap */
 	  ho_bitmap_free (m_bw);
 	  m_bw =
-	    hocr_pixbuf_to_bitmap (pix, scale_by,
-				   adaptive_threshold_type, threshold,
-				   adaptive_threshold);
+	    ho_pixbuf_to_bitmap_wrapper (pix, scale_by,
+					 adaptive_threshold_type, threshold,
+					 adaptive_threshold);
+
+	  if (!m_bw)
+	    {
+	      hocr_printerr ("can't convert to black and white after auto scaleing \n");
+	      exit (1);
+	    }
+
 	}
     }
 
@@ -435,7 +292,7 @@ main (int argc, char *argv[])
       /* save to file system */
       if (filename)
 	{
-	  ho_pixbuf_save (pix_temp, filename);
+	  ho_gtk_pixbuf_save (pix_temp, filename);
 	  ho_pixbuf_free (pix_temp);
 	  g_free (filename);
 	}
@@ -593,8 +450,14 @@ main (int argc, char *argv[])
 
       is_text_block = (paragraph_font_height > 10
 		       && paragraph_font_height * 1.1 > paragraph_font_width
-		       && paragraph_font_height < font_height * 4 &&
-		       paragraph_interline_height < interline_height * 2);
+		       && paragraph_font_height < font_height * 4);
+
+
+      /* look for text lines */
+      if (is_text_block)
+	{
+
+	}
 
       if (debug)
 	if (is_text_block)
@@ -622,7 +485,7 @@ main (int argc, char *argv[])
 	  /* save to file system */
 	  if (filename)
 	    {
-	      ho_pixbuf_save (pix_temp, filename);
+	      ho_gtk_pixbuf_save (pix_temp, filename);
 	      ho_pixbuf_free (pix_temp);
 	      g_free (filename);
 	    }
@@ -656,7 +519,7 @@ main (int argc, char *argv[])
       /* save to file system */
       if (filename)
 	{
-	  ho_pixbuf_save (pix_temp, filename);
+	  ho_gtk_pixbuf_save (pix_temp, filename);
 	  ho_pixbuf_free (pix_temp);
 	  g_free (filename);
 	}
