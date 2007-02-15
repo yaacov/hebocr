@@ -73,7 +73,8 @@ module.include.files=\
 	src/hocr.h\
 	src/ho_common.h\
 	src/ho_obj.h\
-	src/ho_bitmap_filter.h
+	src/ho_bitmap_filter.h\
+	src/ho_gtk.h
 
 module.source.name=.
 module.source.type=
@@ -84,7 +85,8 @@ module.source.files=\
 	src/main.c\
 	libhocr.pc\
 	src/ho_obj.c\
-	src/ho_bitmap_filter.c
+	src/ho_bitmap_filter.c\
+	src/ho_gtk.c
 
 module.pixmap.name=.
 module.pixmap.type=

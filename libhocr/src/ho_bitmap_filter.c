@@ -501,7 +501,7 @@ ho_bitmap_filter_lines (const ho_bitmap * m,
 			     const ho_uchar font_height,
 			     const ho_uchar font_width,
 			     const ho_uchar nikud,
-			     ho_usint interline_height)
+			     const ho_usint interline_height)
 {
   ho_bitmap *m_clean;
   ho_bitmap *m_temp1;

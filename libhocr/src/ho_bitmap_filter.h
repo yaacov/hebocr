@@ -169,4 +169,18 @@ ho_bitmap *ho_bitmap_filter_paragraphs (const ho_bitmap * m,
 					ho_usint interline_height,
 					const ho_uchar box);
 
+/**
+ return a bitmap of the lines
+ @param m pointer to an ho_bitmap
+ @param font_height guessed font height in document
+ @param font_width guessed font width in document
+ @return a newly allocated bitmap
+ */
+ho_bitmap *
+ho_bitmap_filter_lines (const ho_bitmap * m,
+			     const ho_uchar font_height,
+			     const ho_uchar font_width,
+			     const ho_uchar nikud,
+			     const ho_usint interline_height);
+           
 #endif /* HO_BITMAP_FILTER_H */
