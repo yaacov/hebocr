@@ -1,5 +1,5 @@
 /***************************************************************************
- *            ho_bitmap.h
+ *            ho_bitmap_filter.h
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -28,43 +28,6 @@
 #include <ho_common.h>
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
- 
-/**
- dilation of a a bitmap with 3x3 box
- @param m the bitmap to dilate 
- @return newly allocated ho_bitmap
- */
-ho_bitmap *ho_bitmap_filter_dilation (const ho_bitmap * m);
-
-/**
- erosion of a a bitmap with 3x3 box
- @param m the bitmap to erode
- @return newly allocated ho_bitmap
- */
-ho_bitmap *ho_bitmap_filter_erosion (const ho_bitmap * m);
-
-/**
- opening of a a bitmap with 3x3 box
- @param m the bitmap to open 
- @return newly allocated ho_bitmap
- */
-ho_bitmap *ho_bitmap_filter_opening (const ho_bitmap * m);
-
-/**
- closing of a a bitmap with 3x3 box
- @param m the bitmap to close 
- @return newly allocated ho_bitmap
- */
-ho_bitmap *ho_bitmap_filter_closing (const ho_bitmap * m);
-
-/**
- horizontaly link black dots in a bitmap
- @param m the bitmap to horizontaly link
- @patam size maximum distance
- @return newly allocated ho_bitmap
- */
-ho_bitmap *hocr_bitmap_filter_hlink (ho_bitmap * m, ho_uint size);
-
 /**
  horizontaly link short objects in a bitmap
  @param m the bitmap to horizontaly link
@@ -72,17 +35,9 @@ ho_bitmap *hocr_bitmap_filter_hlink (ho_bitmap * m, ho_uint size);
  @patam max_height maximum hight of objects to link
  @return newly allocated ho_bitmap
  */
-ho_bitmap *hocr_bitmap_filter_hlink_objecs (ho_bitmap * m, ho_uint size,
+ho_bitmap *ho_bitmap_filter_hlink (ho_bitmap * m, ho_uint size,
 					    ho_uint max_height);
-
-/**
- verticaly link black dots in a bitmap
- @param m the bitmap to verticaly link
- @patam size maximum distance
- @return newly allocated ho_bitmap
- */
-ho_bitmap *hocr_bitmap_filter_vlink (ho_bitmap * m, ho_uint size);
-
+              
 /**
  copy objects from bitmap to bitmap by size
  @param m pointer to an ho_bitmap
@@ -111,6 +66,14 @@ ho_bitmap *ho_bitmap_filter_boxes (const ho_bitmap * m);
 ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
 
 /**
+ take height top pixels from objects in bitmap
+ @param m pointer to an ho_bitmap
+ @return a newly allocated bitmap
+ */
+ho_bitmap *
+ho_bitmap_filter_obj_max_height (const ho_bitmap * m, const ho_uint height);
+
+/**
  remove halftone dots from bitmap
  @param m pointer to an ho_bitmap
  @param erosion_n the erosion operator factor
@@ -121,66 +84,4 @@ ho_bitmap *ho_bitmap_filter_remove_dots (const ho_bitmap * m,
 					 const ho_uchar erosion_n,
 					 const ho_uchar dilation_n);
 
-/**
- guess font metrics
- @param m pointer to an ho_bitmap
- @param min_height only objects with this minimal height are used
- @param max_height only objects with this maximal height are used
- @param min_width only objects with this minimal width are used
- @param max_width only objects with this maximal width are used
- @param height pointer to return the guessed font average  height
- @param width pointer to return the guessed font average  width
- @return HO_FALSE
- */
-int
-ho_bitmap_filter_font_metrix (const ho_bitmap * m, const ho_uint min_height,
-			      const ho_uint max_height,
-			      const ho_uint min_width,
-			      const ho_uint max_width, ho_usint * height,
-			      ho_usint * width, ho_uchar * nikud);
-
-/**
- guess line metrics
- @param m pointer to an ho_bitmap
- @param font_height guessed font height
- @param font_width guessed font width
- @param nikud guessed existance of nikud
- @param interline_height pointer to return the guessed interline height
- @return HO_FALSE
- */
-int
-ho_bitmap_filter_line_metrix (const ho_bitmap * m,
-			      const ho_uint font_height,
-			      const ho_uint font_width,
-			      const ho_uchar nikud,
-			      ho_usint * interline_height);
-
-/**
- return a bitmap of the paragraphs
- @param m pointer to an ho_bitmap
- @param font_height guessed font height in document
- @param font_width guessed font width in document
- @return a newly allocated bitmap
- */
-ho_bitmap *ho_bitmap_filter_paragraphs (const ho_bitmap * m,
-					const ho_uchar font_height,
-					const ho_uchar font_width,
-					const ho_uchar nikud,
-					ho_usint interline_height,
-					const ho_uchar box);
-
-/**
- return a bitmap of the lines
- @param m pointer to an ho_bitmap
- @param font_height guessed font height in document
- @param font_width guessed font width in document
- @return a newly allocated bitmap
- */
-ho_bitmap *
-ho_bitmap_filter_lines (const ho_bitmap * m,
-			     const ho_uchar font_height,
-			     const ho_uchar font_width,
-			     const ho_uchar nikud,
-			     const ho_usint interline_height);
-           
 #endif /* HO_BITMAP_FILTER_H */

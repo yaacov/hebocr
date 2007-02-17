@@ -241,6 +241,23 @@ ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
 		       const ho_uchar blue);
 
 /**
+  draw a bitmap
+ @param m a ho_pixbuf 
+ @param bit_in the bitmap to draw on the pixbuf
+ @param x1 x of upper right start of drawing
+ @param y1 y of upper right start of drawing
+ @param red value of red channel 
+ @param green value of green channel 
+ @param blue value of blue channel 
+ @return HO_FALSE
+ */
+int
+ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
+			  const ho_uint x1, const ho_uint y1,
+			  const ho_uchar red, const ho_uchar green,
+			  const ho_uchar blue);
+        
+/**
  aplay a linear filter to a gray pixbuf 
  @param pix the input ho_pixbuf
  @return newly allocated gray ho_pixbuf

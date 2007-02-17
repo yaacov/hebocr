@@ -11,7 +11,9 @@ libhocr_la_SOURCES = \
         ho_bitmap.c \
         ho_bitmap_filter.c \
         ho_obj.c \
-        ho_objmap.c
+        ho_objmap.c \
+        ho_dimentions.c \
+        ho_segment.c
 
 libhocr_la_LIBADD = \
         $(hspell_LIBS)
@@ -25,7 +27,10 @@ library_include_HEADERS = hocr.h \
          ho_bitmap.h \
          ho_bitmap_filter.h \
          ho_obj.h \
-         ho_objmap.h
+         ho_objmap.h \
+         ho_dimentions.h \
+         ho_segment.h \
+         ho_gtk.h 
 
 # libhocrgtk, helper functions to use hocr in gtk programs
 libhocrgtk_la_SOURCES = \
@@ -40,10 +45,6 @@ libhocrgtk_la_LIBADD = \
         -L. -lhocr
         
 libhocrgtk_la_LDFLAGS = $(libhocr_la_LDFLAGS)
-
-librarygtk_includedir = $(includedir)/libhocr
-librarygtk_include_HEADERS = \
-         ho_gtk.h 
 
 # A demo hocr program
 bin_PROGRAMS = hocr

@@ -116,8 +116,7 @@ int ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right);
  @param n dilation constant
  @return newly allocated ho_bitmap
  */
-ho_bitmap *
-ho_bitmap_dilation_n (const ho_bitmap * m, const ho_uchar n);
+ho_bitmap *ho_bitmap_dilation_n (const ho_bitmap * m, const ho_uchar n);
 
 /**
  erosion of a a bitmap with 3x3 box
@@ -125,8 +124,16 @@ ho_bitmap_dilation_n (const ho_bitmap * m, const ho_uchar n);
  @param n erosion constant
  @return newly allocated ho_bitmap
  */
-ho_bitmap *
-ho_bitmap_erosion_n (const ho_bitmap * m, const ho_uchar n);
+ho_bitmap *ho_bitmap_erosion_n (const ho_bitmap * m, const ho_uchar n);
+
+/**
+ take only top height black pixels of bitmap
+ @param m the bitmap to erode 
+ @param height the height to take
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_max_height (const ho_bitmap * m, const ho_uint spacer,
+				 const ho_uint height);
 
 /**
  draw a black box on bitmap
@@ -139,6 +146,127 @@ ho_bitmap_erosion_n (const ho_bitmap * m, const ho_uchar n);
  */
 int
 ho_bitmap_draw_box (ho_bitmap * m, const ho_uint x, const ho_uint y,
-			const ho_uint width, const ho_uint height);
-      
+		    const ho_uint width, const ho_uint height);
+
+/**
+ draw a black empty box on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of box
+ @param y y-start of box
+ @param width width of box
+ @param height height of box
+ @return HO_FALSE
+ */
+int
+ho_bitmap_draw_box_empty (ho_bitmap * m, const ho_uint x, const ho_uint y,
+			  const ho_uint width, const ho_uint height);
+
+/**
+ draw vertical line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param height height of line
+ @return HO_FALSE
+ */
+int
+ho_bitmap_draw_vline (ho_bitmap * m, const ho_uint x, const ho_uint y,
+		      const ho_uint height);
+
+/**
+ delete vertical line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param height height of line
+ @return HO_FALSE
+ */
+int
+ho_bitmap_delete_vline (ho_bitmap * m, const ho_uint x, const ho_uint y,
+			const ho_uint height);
+
+/**
+ draw horizontal line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param width height of line
+ @return HO_FALSE
+ */
+int
+ho_bitmap_draw_hline (ho_bitmap * m, const ho_uint x, const ho_uint y,
+		      const ho_uint width);
+
+/**
+ delete horizontal line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param width height of line
+ @return HO_FALSE
+ */
+int
+ho_bitmap_delete_hline (ho_bitmap * m, const ho_uint x, const ho_uint y,
+		      const ho_uint width);
+
+/**
+ dilation of a a bitmap with 3x3 box
+ @param m the bitmap to dilate 
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_dilation (const ho_bitmap * m);
+
+/**
+ erosion of a a bitmap with 3x3 box
+ @param m the bitmap to erode
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_erosion (const ho_bitmap * m);
+
+/**
+ opening of a a bitmap with 3x3 box
+ @param m the bitmap to open 
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_opening (const ho_bitmap * m);
+
+/**
+ closing of a a bitmap with 3x3 box
+ @param m the bitmap to close 
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_closing (const ho_bitmap * m);
+
+/**
+ horizontaly link black dots in a bitmap
+ @param m the bitmap to horizontaly link
+ @patam size maximum distance
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_hlink (ho_bitmap * m, ho_uint size);
+
+/**
+ horizontaly erode black dots in a bitmap
+ @param m the bitmap to horizontaly link
+ @patam size maximum distance
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *
+ho_bitmap_herode (ho_bitmap * m, ho_uint size);
+
+/**
+ verticaly link black dots in a bitmap
+ @param m the bitmap to verticaly link
+ @patam size maximum distance
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_vlink (ho_bitmap * m, ho_uint size);
+
+/**
+ copy edges in bitmap
+ @param m pointer to an ho_bitmap
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_edge (const ho_bitmap * m);
+
 #endif /* HO_BITMAP_H */

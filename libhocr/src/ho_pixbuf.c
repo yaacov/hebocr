@@ -61,7 +61,7 @@ ho_pixbuf_new (const ho_uchar n_channels,
    * allocate memory for data (and set to white)
    */
   pix->data = malloc (pix->height * pix->rowstride);
-  memset((void *)(pix->data), 255, pix->height * pix->rowstride);
+  memset ((void *) (pix->data), 255, pix->height * pix->rowstride);
   if (!(pix->data))
     {
       free (pix);
@@ -132,6 +132,39 @@ ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
 	      ho_pixbuf_set (m, x, y, 0, red);
 	      ho_pixbuf_set (m, x, y, 1, green);
 	      ho_pixbuf_set (m, x, y, 2, blue);
+	    }
+    }
+
+  return HO_FALSE;
+}
+
+int
+ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
+			  const ho_uint x1, const ho_uint y1,
+			  const ho_uchar red, const ho_uchar green,
+			  const ho_uchar blue)
+{
+  int x, y;
+
+  /* is pixbuf color ? */
+  if (m->n_channels < 3)
+    {				/* gray scale */
+      for (x = 0; x < bit_in->width; x++)
+	for (y = 0; y < bit_in->height; y++)
+	  if ((x + x1) >= 0 && (x + x1) < m->width && (y + y1) >= 0
+	      && (y + y1) < m->height)
+	    if (ho_bitmap_get (bit_in, x, y))
+	      ho_pixbuf_set (m, (x + x1), (y + y1), 0, red);
+    }
+  else
+    {				/* color */
+      for (x = 0; x < bit_in->width; x++)
+	for (y = 0; y < bit_in->height; y++)
+	  if (ho_bitmap_get (bit_in, x, y))
+	    {
+	      ho_pixbuf_set (m, (x + x1), (y + y1), 0, red);
+	      ho_pixbuf_set (m, (x + x1), (y + y1), 1, green);
+	      ho_pixbuf_set (m, (x + x1), (y + y1), 2, blue);
 	    }
     }
 
@@ -342,7 +375,7 @@ ho_pixbuf_new_from_pnm (const char *filename)
 }
 
 int
-ho_pixbuf_save_as_pnm (const ho_pixbuf * pix, const char *filename)
+ho_pixbuf_save_pnm (const ho_pixbuf * pix, const char *filename)
 {
   FILE *file = HO_NULL;
 
@@ -1064,7 +1097,7 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in, const ho_uchar scale,
     pix = ho_pixbuf_color_to_gray (pix_in);
   else
     pix = ho_pixbuf_clone (pix_in);
-  
+
   if (!pix)
     return HO_NULL;
 
@@ -1086,7 +1119,7 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in, const ho_uchar scale,
 	  pix = pix_temp;
 	}
     }
-    
+
   /* convert to b/w bitmap */
   switch (adaptive)
     {
@@ -1104,7 +1137,7 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in, const ho_uchar scale,
       m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, 0, a_threshold);
       break;
     }
-    
+
   ho_pixbuf_free (pix);
 
   return m_bw;

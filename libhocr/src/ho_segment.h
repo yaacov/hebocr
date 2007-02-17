@@ -1,5 +1,5 @@
 /***************************************************************************
- *            hocr.h
+ *            ho_segment.h
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -22,40 +22,38 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-/** @mainpage libhocr
- * LIBrary for Hebrew Optical Character Recognition 
- *
- * @section README
- * @include README
- * 
- * @section ChangeLog
- * @include ChangeLog
- *
- */
+#ifndef HO_SEGMENT_H
+#define HO_SEGMENT_H 1
 
-#ifndef HOCR_H
-#define HOCR_H 1
-
-#ifdef __cplusplus
-#  define BEGIN_C_DECLS extern "C" {
-#  define END_C_DECLS   }
-#else /* !__cplusplus */
-#  define BEGIN_C_DECLS
-#  define END_C_DECLS
-#endif /* __cplusplus */
-
-BEGIN_C_DECLS
-
-/* binary image map */
+#include <ho_common.h>
 #include <ho_bitmap.h>
-#include <ho_bitmap_filter.h>
-/* object image map */
 #include <ho_objmap.h>
-#include <ho_dimentions.h>
-#include  <ho_segment.h>
-/* image map for i/o operations */
-#include <ho_pixbuf.h>
 
-END_C_DECLS
+/**
+ return a bitmap of the paragraphs
+ @param m pointer to an ho_bitmap
+ @param font_height guessed font height in document
+ @param font_width guessed font width in document
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_segment_paragraphs (const ho_bitmap * m,
+					const ho_uchar font_height,
+					const ho_uchar font_width,
+					const ho_uchar nikud,
+					ho_usint interline_height,
+					const ho_uchar box);
 
-#endif /* HOCR_H */
+/**
+ return a bitmap of the lines
+ @param m pointer to an ho_bitmap
+ @param font_height guessed font height in document
+ @param font_width guessed font width in document
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_segment_lines (const ho_bitmap * m,
+				   const ho_uchar font_height,
+				   const ho_uchar font_width,
+				   const ho_uchar nikud,
+				   const ho_usint interline_height);
+
+#endif /* HO_SEGMENT_H */

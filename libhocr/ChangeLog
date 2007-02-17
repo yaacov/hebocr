@@ -1,20 +1,21 @@
 libhocr (0.10.2)
 
- * 
+ * paragraph segmentation functions
+ * paragraph reading order sorting functions
+ * line segmentation functions
+ * user can ask for individual paragraphs to be saved
+ * output image has paragraph and line information
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Thursday, 15 February 2007 19:12
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 15 February 2007 19:12
  
 libhocr (0.10.1)
 
  * internal image loader can load pnm P6 images
  * new functions for color and gray scale images 
- * paragraph segmentation functions
- * paragraph reading order sorting functions
- * user can set light/dark image settings from the command
-    line utility.
+ * user can set light/dark image settings
  * gtk related functions move to libhocrgtk
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Tuesday, 16 Jan 2007 20:10
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Tuesday, 16 Jan 2007 20:10
 
 libhocr (0.10.0)
 
@@ -26,7 +27,7 @@ libhocr (0.10.0)
  * API changes, temporarily remove bindings and examples.
  * hocr command line utility requires gtk for input and output
  
- -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 25 Jun 2006 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Sun, 25 Jun 2006 22:13
 
 hocr (0.8.2)
 
@@ -40,27 +41,27 @@ hocr (0.8.2)
  * new and preetier logo by Shlomi
  * Daniel Nylander: swedish Swedish translation of hocr-gtk
  
- -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 15 Jan 2006 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Sun, 15 Jan 2006 22:13
 
 hocr (0.8.0)
 
  * Shlomi Israel: hocr logo.
- * Tal. (tal.bav@gmail.com): Fix memory leak when unrefing the text structure 
+ * Tal. (tal.bav_at_gmail.com): Fix memory leak when unrefing the text structure 
  
- -- Yaacov Zamir <kzamir@walla.co.il>  Sat, 14 Jan 2006 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Sat, 14 Jan 2006 22:13
 
 hocr (0.7.2)
 
  * command line example implements pipes
- * Tal. (tal.bav@gmail.com): add save ppm to command line example.
+ * Tal. (tal.bav_at_gmail.com): add save ppm to command line example.
  * move tal's save as pnm to the internal hocr_pixbuf functions.
  * add command line args to hocr-gtk example
  * add save picture to hocr-gtk example
  * add xsane option to hocr-gtk example
  * clean picture from artefacts before ocr it
- * Tal. (tal.bav@gmail.com): add java binding example imagej-plugin
+ * Tal. (tal.bav_at_gmail.com): add java binding example imagej-plugin
  
- -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 5 Jan 2006 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Thu, 5 Jan 2006 22:13
  
 hocr (0.7.1)
 
@@ -68,20 +69,20 @@ hocr (0.7.1)
  * add pyGTK example
  * Diego Iastrubni: fix qt example
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Mon, 2 Jan 2006 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Mon, 2 Jan 2006 22:13
 
 hocr (0.7.0)
 
  * add bindings to C++, Python and Perl
  * documentation is now separate for c and cpp
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 1 Jan 2006 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Sun, 1 Jan 2006 22:13
  
 hocr (0.6.4)
 
  * make memory allocation dinamic in do_ocr
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Wed, 14 Dec 2005 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Wed, 14 Dec 2005 22:13
 
 hocr (0.6.1)
 
@@ -89,14 +90,14 @@ hocr (0.6.1)
  * add benchmark tests for: 
    Literature, poetry (with nikud) and bible texts.
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Wed, 14 Dec 2005 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Wed, 14 Dec 2005 22:13
  
 hocr (0.6.0)
 
  * can read nikud
  * add command var to the pixbuf structure
 
- -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 13 Dec 2005 22:13
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Tue, 13 Dec 2005 22:13
  
 hocr (0.5.1)
   
@@ -105,7 +106,7 @@ hocr (0.5.1)
   * create different file for different objects
   * use a textbuffer structure
    
-  -- Yaacov Zamir <kzamir@walla.co.il>  Sat, 10 Dec 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Sat, 10 Dec 2005 22:13
 
 hocr (0.4.8)
 
@@ -116,13 +117,13 @@ hocr (0.4.8)
   * add none-used error to the image struct to let peogram return 
     feedback to user
 
-  -- Yaacov Zamir <kzamir@walla.co.il> Wed, 07 Dec 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il> Wed, 07 Dec 2005 22:13
 
 hocr (0.4.7)
 
   * Remove cpp (and hocr-qt) bindings, untill API stabilize.
 
-  -- Yaacov Zamir <kzamir@walla.co.il> Wed, 07 Dec 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il> Wed, 07 Dec 2005 22:13
 
 hocr (0.4.6)
 
@@ -131,13 +132,13 @@ hocr (0.4.6)
   * Use gtk toolkit and not gnome to make example more portable
   * Rename the gui example hocr-gtk
 
-  -- Yaacov Zamir <kzamir@walla.co.il> Mon, 21 Nov 2005 00:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il> Mon, 21 Nov 2005 00:13
   
 hocr (0.4.5a)
 
   * Ido Kanner reported a buffer overflow on hocr cmd line example, fixed.
 
-  -- Yaacov Zamir <kzamir@walla.co.il> Sun, 04 Sep 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il> Sun, 04 Sep 2005 22:13
   
 hocr (0.4.5)
   
@@ -150,20 +151,20 @@ hocr (0.4.5)
 
   * add hocr-qt example and remove qhocr and the bsd things.
   
-  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 21 Aug 2005 02:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Sun, 21 Aug 2005 02:13
   
 hocr (0.4.4)
   
-  * add Diego Iastrubni <elcuco@kde.org> qhocr to the examples directory.
+  * add Diego Iastrubni <elcuco_at_kde.org> qhocr to the examples directory.
     see examles/README_examples and examples/COPYING_examples.
   
-  -- Yaacov Zamir <kzamir@walla.co.il>  Fri, 19 Aug 2005 02:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Fri, 19 Aug 2005 02:13
 
 hocr (0.4.3)
   
   * add C++ bindings
   
-  -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 18 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Thu, 18 Aug 2005 22:13
 
 hocr (0.4.3)
   
@@ -171,7 +172,7 @@ hocr (0.4.3)
   * add file input function for pbm formated files
   * add documentation in the hocr.h file.
   
-  -- Yaacov Zamir <kzamir@walla.co.il>  Thu, 18 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Thu, 18 Aug 2005 22:13
   
 hocr (0.4.0)
 
@@ -181,7 +182,7 @@ hocr (0.4.0)
   * remove gnome, gtk and glib dependencies from ocr code
   * TODO: create a load image function
   
-  -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 16 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Tue, 16 Aug 2005 22:13
 
 hocr (0.3.2)
 
@@ -189,7 +190,7 @@ hocr (0.3.2)
   * add html output to command line
   * add sane support by assuming input is ppm if not explicitly set
 
-  -- Yaacov Zamir <kzamir@walla.co.il>  Tue, 16 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Tue, 16 Aug 2005 22:13
   
 hocr (0.3.1)
 
@@ -197,14 +198,14 @@ hocr (0.3.1)
   * Dovix: add menu entry and a spec file for rpm creating
   * add command line interface for Dan Kenigsberg
 
-  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Sun, 14 Aug 2005 22:13
   
 hocr (0.3.0)
 
   * close crash bug
   * add zoom in and out
 
-  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Sun, 14 Aug 2005 22:13
    
 hocr (0.2.0)
 
@@ -213,4 +214,4 @@ hocr (0.2.0)
   * Add patch by Yuval Tanny: make gui interface more usable by coloring the unreadble 
     signs and putting picture and text on the same window.
 
-  -- Yaacov Zamir <kzamir@walla.co.il>  Sun, 14 Aug 2005 22:13
+  -- Yaacov Zamir <kzamir_at_walla.co.il>  Sun, 14 Aug 2005 22:13
