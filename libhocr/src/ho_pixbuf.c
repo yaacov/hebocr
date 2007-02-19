@@ -983,9 +983,6 @@ ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf *
 	if (locale_thereshold < threshold)
 	  locale_thereshold = threshold;
 
-	/* do copy */
-	locale_thereshold = 127;
-
 	for (i = -hlf_size; i < 0; i++)
 	  for (j = -hlf_size; j < 0; j++)
 	    if (ho_pixbuf_get (pix, x + i, y + j, 0) < locale_thereshold)

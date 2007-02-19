@@ -43,6 +43,7 @@ gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
 gint scale_by = 0;
 gboolean remove_dots = FALSE;
+gboolean remove_images = FALSE;
 
 gint paragraph_setup = 0;
 gboolean show_grid = FALSE;
@@ -93,6 +94,9 @@ static GOptionEntry entries[] = {
   {"remove-halfton", 'r', 0, G_OPTION_ARG_NONE, &remove_dots,
    "remove small dots in input image",
    NULL},
+  {"remove-images", 'R', 0, G_OPTION_ARG_NONE, &remove_images,
+   "remove big objects in input image",
+   NULL},
   {"paragraph-setup", 'P', 0, G_OPTION_ARG_INT, &paragraph_setup,
    "paragraph setup: 0-colums 1-free",
    "NUM"},
@@ -135,6 +139,7 @@ main (int argc, char *argv[])
 
   ho_bitmap *m_bw = NULL;
   ho_bitmap *m_bw_temp = NULL;
+  ho_bitmap *m_bw_temp2 = NULL;
   ho_bitmap *m_current_paragraph = NULL;
   ho_bitmap *m_paragraphs = NULL;
   ho_bitmap *m_lines = NULL;
@@ -285,6 +290,65 @@ main (int argc, char *argv[])
 	}
     }
 
+  /* remove too big and too small objects */
+  if (remove_images)
+    {
+      if (debug)
+	g_print (" remove images.\n");
+
+      /* adaptive threshold braks big objects use adaptive_threshold_type = 1 (none) */
+      m_bw_temp = ho_pixbuf_to_bitmap_wrapper (pix, scale_by,
+					       1, threshold,
+					       adaptive_threshold);
+      if (!m_bw_temp)
+	{
+	  hocr_printerr
+	    ("can't convert to black and white for image removal \n");
+	  exit (1);
+	}
+
+      /* get fonts size for autoscale */
+      if (ho_dimentions_font (m_bw, 6, 200, 6, 200, &font_height,
+			      &font_width, &nikud))
+	{
+	  hocr_printerr ("can't create object map\n");
+	  exit (1);
+	}
+
+      /* remove big objects */
+      m_bw_temp2 = ho_bitmap_filter_by_size (m_bw_temp,
+					     font_height * 4,
+					     m_bw_temp->height,
+					     font_width * 9,
+					     m_bw_temp->width);
+      if (!m_bw_temp2)
+	{
+	  hocr_printerr
+	    ("can't convert to black and white for image removal \n");
+	  exit (1);
+	}
+
+      ho_bitmap_andnot (m_bw, m_bw_temp2);
+      ho_bitmap_free (m_bw_temp2);
+
+      /* remove small objects */
+      m_bw_temp2 = ho_bitmap_filter_by_size (m_bw_temp,
+					     1,
+					     font_height / 5,
+					     1, font_width / 8);
+      ho_bitmap_free (m_bw_temp);
+      if (!m_bw_temp2)
+	{
+	  hocr_printerr
+	    ("can't convert to black and white for image removal \n");
+	  exit (1);
+	}
+
+      ho_bitmap_andnot (m_bw, m_bw_temp2);
+      ho_bitmap_free (m_bw_temp2);
+
+    }
+
   if (debug)
     if (scale_by > 1)
       g_print (" procced image is %d by %d pixels (origianl scaled by %d)\n",
@@ -397,7 +461,7 @@ main (int argc, char *argv[])
   pix_out = ho_pixbuf_new (3, m_bw->width, m_bw->height, 0);
 
   /* add paragraph in light gray */
-  ho_pixbuf_draw_bitmap (pix_out, m_paragraphs, 240, 240, 240);
+  ho_pixbuf_draw_bitmap (pix_out, m_paragraphs, 220, 220, 220);
 
   /* get lines in each paragraph */
   if (debug)
