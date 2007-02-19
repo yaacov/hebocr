@@ -27,15 +27,13 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "ho_common.h"
 #include "ho_pixbuf.h"
 
 ho_pixbuf *
-ho_pixbuf_new (const ho_uchar n_channels,
-	       const ho_uint width, const ho_uint height,
-	       const ho_uint rowstride)
+ho_pixbuf_new (const unsigned char n_channels,
+	       const int width, const int height, const int rowstride)
 {
-  ho_pixbuf *pix = HO_NULL;
+  ho_pixbuf *pix = NULL;
 
   /*
    * allocate memory for pixbuf 
@@ -43,7 +41,7 @@ ho_pixbuf_new (const ho_uchar n_channels,
   pix = (ho_pixbuf *) malloc (sizeof (ho_pixbuf));
   if (!pix)
     {
-      return HO_NULL;
+      return NULL;
     }
 
   /*
@@ -65,7 +63,7 @@ ho_pixbuf_new (const ho_uchar n_channels,
   if (!(pix->data))
     {
       free (pix);
-      return HO_NULL;
+      return NULL;
     }
 
   return pix;
@@ -79,7 +77,7 @@ ho_pixbuf_clone (const ho_pixbuf * m)
   /* allocate memory */
   m_out = ho_pixbuf_new (m->n_channels, m->width, m->height, m->rowstride);
   if (!m_out)
-    return HO_NULL;
+    return NULL;
 
   /* copy data */
   memcpy (m_out->data, m->data, m_out->height * m_out->rowstride);
@@ -90,12 +88,12 @@ ho_pixbuf_clone (const ho_pixbuf * m)
 ho_pixbuf *
 ho_pixbuf_new_from_bitmap (const ho_bitmap * bit_in)
 {
-  ho_uint x, y;
-  ho_pixbuf *pix = HO_NULL;
+  int x, y;
+  ho_pixbuf *pix = NULL;
 
   pix = ho_pixbuf_new (1, bit_in->width, bit_in->height, 0);
   if (!pix)
-    return HO_NULL;
+    return NULL;
 
   for (x = 0; x < bit_in->width; x++)
     for (y = 0; y < bit_in->height; y++)
@@ -106,14 +104,14 @@ ho_pixbuf_new_from_bitmap (const ho_bitmap * bit_in)
 
 int
 ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
-		       const ho_uchar red, const ho_uchar green,
-		       const ho_uchar blue)
+		       const unsigned char red, const unsigned char green,
+		       const unsigned char blue)
 {
-  ho_uint x, y;
+  int x, y;
 
   /* sanity check */
   if (m->width != bit_in->width || m->height != bit_in->height)
-    return HO_TRUE;
+    return TRUE;
 
   /* is pixbuf color ? */
   if (m->n_channels < 3)
@@ -135,14 +133,14 @@ ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
 	    }
     }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
 ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
-			  const ho_uint x1, const ho_uint y1,
-			  const ho_uchar red, const ho_uchar green,
-			  const ho_uchar blue)
+			  const int x1, const int y1,
+			  const unsigned char red, const unsigned char green,
+			  const unsigned char blue)
 {
   int x, y;
 
@@ -168,21 +166,21 @@ ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
 	    }
     }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 ho_pixbuf *
-ho_pixbuf_new_from_objmap (const ho_objmap * obj_in, const ho_uchar min,
-			   const ho_uchar max)
+ho_pixbuf_new_from_objmap (const ho_objmap * obj_in, const unsigned char min,
+			   const unsigned char max)
 {
-  ho_uint x, y;
-  ho_pixbuf *pix = HO_NULL;
-  ho_usint index = 0;
+  int x, y;
+  ho_pixbuf *pix = NULL;
+  int index = 0;
 
   /* allocate memory */
   pix = ho_pixbuf_new (3, obj_in->width, obj_in->height, 0);
   if (!pix)
-    return HO_NULL;
+    return NULL;
 
   /* copy pixels from gsl mtirxes */
   for (x = 0; x < obj_in->width; x++)
@@ -213,14 +211,14 @@ ho_pixbuf_new_from_objmap (const ho_objmap * obj_in, const ho_uchar min,
 ho_pixbuf *
 ho_pixbuf_to_rgb (const ho_pixbuf * pix_in)
 {
-  ho_uint x, y;
-  ho_pixbuf *pix = HO_NULL;
-  ho_uchar red, green, blue;
+  int x, y;
+  ho_pixbuf *pix = NULL;
+  unsigned char red, green, blue;
 
   /* allocate memory */
   pix = ho_pixbuf_new (3, pix_in->width, pix_in->height, 0);
   if (!pix)
-    return HO_NULL;
+    return NULL;
 
   /* does original pix has the rgb channels ? */
   if (pix_in->n_channels < 3)
@@ -258,29 +256,29 @@ int
 ho_pixbuf_free (ho_pixbuf * pix)
 {
   if (!pix)
-    return HO_TRUE;
+    return TRUE;
 
   if (pix->data)
     free (pix->data);
 
   free (pix);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
-ho_uchar
+unsigned char
 ho_pbm_getc (FILE * file)
 {
-  ho_uchar ch;
-  int comment = HO_FALSE;
+  unsigned char ch;
+  int comment = FALSE;
 
   do
     {
       ch = getc (file);
       if (ch == '\n')
-	comment = HO_FALSE;
+	comment = FALSE;
       else if (ch == '#')
-	comment = HO_TRUE;
+	comment = TRUE;
     }
   while (comment);
 
@@ -290,7 +288,7 @@ ho_pbm_getc (FILE * file)
 int
 ho_pbm_getint (FILE * file)
 {
-  ho_uchar ch;
+  unsigned char ch;
   int i = 0;
 
   do
@@ -309,16 +307,40 @@ ho_pbm_getint (FILE * file)
   return i;
 }
 
+int
+ho_pbm_getbit (FILE * file)
+{
+
+  static unsigned char byte = 0;
+  static unsigned char mask = 0;
+  int return_bit;
+
+  if (mask == 0)
+    {
+      mask = 0x80;
+      byte = getc (file);
+    }
+
+  return_bit = (byte & mask) ? 0 : 255;
+
+  mask >>= 1;
+
+  return return_bit;
+}
+
 ho_pixbuf *
 ho_pixbuf_new_from_pnm (const char *filename)
 {
   char ch1, ch2;
-  ho_pixbuf *pix = HO_NULL;
-  FILE *file = HO_NULL;
-  ho_uchar use_stdin = 0;
-  ho_uchar n_channels = 0;
-  ho_uint width = 0;
-  ho_uint height = 0;
+  ho_pixbuf *pix = NULL;
+  FILE *file = NULL;
+  unsigned char use_stdin = 0;
+  unsigned char n_channels = 0;
+  unsigned char val = 0;
+  int width = 0;
+  int height = 0;
+  int x, y, rowstride;
+  int i;
 
   /* if no input file name use stdin for input */
   if (!filename || filename[0] == '\0'
@@ -333,18 +355,18 @@ ho_pixbuf_new_from_pnm (const char *filename)
       /* open file */
       file = fopen (filename, "r");
       if (!file)
-	return HO_NULL;
+	return NULL;
     }
 
   /* read magic number "P?" for pbm file */
   ch1 = ho_pbm_getc (file);
   ch2 = ho_pbm_getc (file);
-  if (ch1 != 'P' || (ch2 != '5' && ch2 != '6'))
+  if (ch1 != 'P' || (ch2 != '6' && ch2 != '5' && ch2 != '4'))
     {
       /* bad magic */
       if (!use_stdin)
 	fclose (file);
-      return HO_NULL;
+      return NULL;
     }
 
   /* read header */
@@ -352,21 +374,45 @@ ho_pixbuf_new_from_pnm (const char *filename)
   width = ho_pbm_getint (file);
   height = ho_pbm_getint (file);
 
-  /* read bits per pixel */
-  if (ho_pbm_getint (file) > 255)
+  if (ch2 == '4')
     {
-      /* bad bits per pixel */
-      if (!use_stdin)
-	fclose (file);
+      /* read bites per pixel */
 
-      return HO_NULL;
+      /* create a new pixbuf */
+      pix = ho_pixbuf_new (n_channels, width, height, 0);
+
+      rowstride = 8 * (width / 8 + 1);
+      if (pix)
+	for (y = 0; y < height; y++)
+	  for (x = 0; x < rowstride; x++)
+	    {
+	      val = ho_pbm_getbit (file);
+	      if (x < width)
+		ho_pixbuf_set (pix, x, y, 0, val);
+	    }
+
+    }
+  else
+    {
+      /* read bytes per pixel */
+
+      /* check for color depth */
+      if (ho_pbm_getint (file) > 255)
+	{
+	  /* bad bits per pixel */
+	  if (!use_stdin)
+	    fclose (file);
+
+	  return NULL;
+	}
+
+      /* create a new pixbuf */
+      pix = ho_pixbuf_new (n_channels, width, height, 0);
+
+      if (pix)
+	fread (pix->data, 1, pix->height * pix->rowstride, file);
     }
 
-  /* create a new pixbuf */
-  pix = ho_pixbuf_new (n_channels, width, height, 0);
-
-  if (pix)
-    fread (pix->data, 1, pix->height * pix->rowstride, file);
   if (!use_stdin)
     fclose (file);
 
@@ -377,18 +423,18 @@ ho_pixbuf_new_from_pnm (const char *filename)
 int
 ho_pixbuf_save_pnm (const ho_pixbuf * pix, const char *filename)
 {
-  FILE *file = HO_NULL;
+  FILE *file = NULL;
 
   if (pix->n_channels != 3 && pix->n_channels != 1)
     {
       /* bad magic */
-      return HO_TRUE;
+      return TRUE;
     }
 
   file = fopen (filename, "wb");
 
   if (!file)
-    return HO_TRUE;
+    return TRUE;
 
   /* print header */
   fprintf (file, "P%c %d %d 255\n", ((pix->n_channels == 3) ? '6' : '5'),
@@ -398,24 +444,24 @@ ho_pixbuf_save_pnm (const ho_pixbuf * pix, const char *filename)
   fwrite (pix->data, 1, pix->height * pix->rowstride, file);
   fclose (file);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 ho_pixbuf *
 ho_pixbuf_color_to_gray (const ho_pixbuf * pix)
 {
-  ho_pixbuf *pix_gray = HO_NULL;
-  ho_uint x, y;
-  ho_uchar red, green, blue;
+  ho_pixbuf *pix_gray = NULL;
+  int x, y;
+  unsigned char red, green, blue;
 
   /* does input has the rgb channels ? */
   if (pix->n_channels < 3)
-    return HO_NULL;
+    return NULL;
 
   /* allocate memory */
   pix_gray = ho_pixbuf_new (1, pix->width, pix->height, 0);
   if (!pix_gray)
-    return HO_NULL;
+    return NULL;
 
   for (x = 0; x < pix->width; x++)
     for (y = 0; y < pix->height; y++)
@@ -435,18 +481,18 @@ ho_pixbuf_color_to_gray (const ho_pixbuf * pix)
 ho_pixbuf *
 ho_pixbuf_scale2 (const ho_pixbuf * pix)
 {
-  ho_pixbuf *pix_scaled = HO_NULL;
-  ho_uint x, y;
-  ho_uchar neighbors[4];
+  ho_pixbuf *pix_scaled = NULL;
+  int x, y;
+  unsigned char neighbors[4];
 
   /* is input gray ? */
   if (pix->n_channels != 1 || pix->width < 3 || pix->height < 3)
-    return HO_NULL;
+    return NULL;
 
   /* allocate memory */
   pix_scaled = ho_pixbuf_new (1, pix->width * 2 - 2, pix->height * 2 - 2, 0);
   if (!pix_scaled)
-    return HO_NULL;
+    return NULL;
 
   for (x = 0; x < pix->width - 1; x++)
     for (y = 0; y < pix->height - 1; y++)
@@ -473,18 +519,18 @@ ho_pixbuf_scale2 (const ho_pixbuf * pix)
 ho_pixbuf *
 ho_pixbuf_scale3 (const ho_pixbuf * pix)
 {
-  ho_pixbuf *pix_scaled = HO_NULL;
-  ho_uint x, y;
-  ho_uchar neighbors[4];
+  ho_pixbuf *pix_scaled = NULL;
+  int x, y;
+  unsigned char neighbors[4];
 
   /* is input gray ? */
   if (pix->n_channels != 1 || pix->width < 3 || pix->height < 3)
-    return HO_NULL;
+    return NULL;
 
   /* allocate memory */
   pix_scaled = ho_pixbuf_new (1, pix->width * 3 - 3, pix->height * 3 - 3, 0);
   if (!pix_scaled)
-    return HO_NULL;
+    return NULL;
 
   for (x = 0; x < pix->width - 1; x++)
     for (y = 0; y < pix->height - 1; y++)
@@ -525,14 +571,14 @@ ho_pixbuf_scale3 (const ho_pixbuf * pix)
 }
 
 ho_pixbuf *
-ho_pixbuf_scale (const ho_pixbuf * pix, const ho_uchar scale)
+ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale)
 {
-  ho_pixbuf *pix_temp1 = HO_NULL;
-  ho_pixbuf *pix_temp2 = HO_NULL;
+  ho_pixbuf *pix_temp1 = NULL;
+  ho_pixbuf *pix_temp2 = NULL;
 
   /* is input sane ? */
   if (scale < 2 || pix->n_channels != 1 || pix->width < 3 || pix->height < 3)
-    return HO_NULL;
+    return NULL;
 
   if (scale == 2)
     return ho_pixbuf_scale2 (pix);
@@ -578,20 +624,21 @@ ho_pixbuf_scale (const ho_pixbuf * pix, const ho_uchar scale)
       return pix_temp2;
     }
 
-  return HO_NULL;
+  return NULL;
 }
 
-ho_uchar
-ho_pixbuf_minmax (const ho_pixbuf * pix, ho_uchar * min, ho_uchar * max)
+unsigned char
+ho_pixbuf_minmax (const ho_pixbuf * pix, unsigned char *min,
+		  unsigned char *max)
 {
-  ho_uint x, y;
+  int x, y;
 
   *min = 0;
   *max = 255;
 
   /* is input gray ? */
   if (pix->n_channels != 1)
-    return HO_TRUE;
+    return TRUE;
 
   for (x = 0; x < pix->width; x++)
     for (y = 0; y < pix->height; y++)
@@ -602,20 +649,20 @@ ho_pixbuf_minmax (const ho_pixbuf * pix, ho_uchar * min, ho_uchar * max)
 	  *max = (pix->data)[x + y * pix->rowstride];
       }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
-ho_pixbuf_draw_line (ho_pixbuf * m, const ho_uint x1, const ho_uint y1,
-		     const ho_uint x2, const ho_uint y2, const ho_uchar red,
-		     const ho_uchar green, const ho_uchar blue)
+ho_pixbuf_draw_line (ho_pixbuf * m, const int x1, const int y1,
+		     const int x2, const int y2, const unsigned char red,
+		     const unsigned char green, const unsigned char blue)
 {
   double x, step_x;
   double y, step_y;
-  ho_uint x_start = x1;
-  ho_uint x_end = x2;
-  ho_uint y_start = y1;
-  ho_uint y_end = y2;
+  int x_start = x1;
+  int x_end = x2;
+  int y_start = y1;
+  int y_end = y2;
 
   step_x = ((double) x2 - (double) x1) * ((double) x2 - (double) x1);
   step_y = ((double) y2 - (double) y1) * ((double) y2 - (double) y1);
@@ -677,16 +724,17 @@ ho_pixbuf_draw_line (ho_pixbuf * m, const ho_uint x1, const ho_uint y1,
 	}
     }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
-ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const ho_uint x1,
-				 const ho_uint y1, const ho_uint length,
-				 const ho_uint step, const ho_uchar red,
-				 const ho_uchar green, const ho_uchar blue)
+ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const int x1,
+				 const int y1, const int length,
+				 const int step, const unsigned char red,
+				 const unsigned char green,
+				 const unsigned char blue)
 {
-  ho_uint x;
+  int x;
 
   for (x = 0; x <= length; x++)
     {
@@ -725,16 +773,17 @@ ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const ho_uint x1,
 	}
     }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
-ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const ho_uint x1,
-			       const ho_uint y1, const ho_uint length,
-			       const ho_uint step, const ho_uchar red,
-			       const ho_uchar green, const ho_uchar blue)
+ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const int x1,
+			       const int y1, const int length,
+			       const int step, const unsigned char red,
+			       const unsigned char green,
+			       const unsigned char blue)
 {
-  ho_uint y;
+  int y;
 
   for (y = 0; y <= length; y++)
     {
@@ -773,19 +822,19 @@ ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const ho_uint x1,
 	}
     }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
-ho_pixbuf_draw_grid (ho_pixbuf * m, const ho_uint size, const ho_uint step,
-		     const ho_uchar red, const ho_uchar green,
-		     const ho_uchar blue)
+ho_pixbuf_draw_grid (ho_pixbuf * m, const int size, const int step,
+		     const unsigned char red, const unsigned char green,
+		     const unsigned char blue)
 {
-  ho_uint i;
+  int i;
 
   /* check fot matrix size */
   if (m->width < 120 || m->height < 120)
-    return HO_TRUE;
+    return TRUE;
 
   /* adding  grid */
   for (i = 60; i < (m->width - 60); i += size)
@@ -800,24 +849,24 @@ ho_pixbuf_draw_grid (ho_pixbuf * m, const ho_uint size, const ho_uint step,
 				       green, blue);
     }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 ho_pixbuf *
 ho_pixbuf_linear_filter (const ho_pixbuf * pix)
 {
-  ho_pixbuf *pix_gray = HO_NULL;
-  ho_uint x, y;
-  ho_uchar min, max;
+  ho_pixbuf *pix_gray = NULL;
+  int x, y;
+  unsigned char min, max;
 
   /* is input gray ? */
   if (pix->n_channels != 1)
-    return HO_NULL;
+    return NULL;
 
   /* allocate memory */
   pix_gray = ho_pixbuf_new (1, pix->width, pix->height, 0);
   if (!pix_gray)
-    return HO_NULL;
+    return NULL;
 
   ho_pixbuf_minmax (pix, &min, &max);
   for (x = 0; x < pix->width; x++)
@@ -831,24 +880,24 @@ ho_pixbuf_linear_filter (const ho_pixbuf * pix)
 }
 
 ho_bitmap *
-ho_pixbuf_to_bitmap (const ho_pixbuf * pix, ho_uchar threshold)
+ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold)
 {
-  ho_bitmap *m_out = HO_NULL;
-  ho_uint x, y;
+  ho_bitmap *m_out = NULL;
+  int x, y;
 
   /* convert threshold from 0..100 to 0..255 */
   threshold = 255 * threshold / 100;
 
   /* is input gray ? */
   if (pix->n_channels != 1)
-    return HO_NULL;
+    return NULL;
   if (!threshold)
     threshold = 153;
 
   /* allocate memory */
   m_out = ho_bitmap_new (pix->width, pix->height);
   if (!m_out)
-    return HO_NULL;
+    return NULL;
 
   /* copy data */
   for (x = 0; x < pix->width; x++)
@@ -862,15 +911,16 @@ ho_pixbuf_to_bitmap (const ho_pixbuf * pix, ho_uchar threshold)
 ho_bitmap *
 ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf *
 			      pix,
-			      ho_uchar threshold,
-			      ho_uchar size, ho_uchar adaptive_threshold)
+			      unsigned char threshold,
+			      unsigned char size,
+			      unsigned char adaptive_threshold)
 {
-  ho_bitmap *m_out = HO_NULL;
-  ho_uint x, y;
+  ho_bitmap *m_out = NULL;
+  int x, y;
   int i, j;
-  ho_uchar locale_thereshold;
+  unsigned char locale_thereshold;
   double sum;
-  double hlf_size = size / 2.0;
+  int hlf_size = size / 2;
   double size_aquare = size * size;
   double factor = (double) adaptive_threshold / 100.0;
 
@@ -879,7 +929,7 @@ ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf *
 
   /* is input gray ? */
   if (pix->n_channels != 1)
-    return HO_NULL;
+    return NULL;
 
   /* set defaults */
   if (!threshold)
@@ -891,14 +941,14 @@ ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf *
   if (!size)
     {
       size = 70;
-      hlf_size = size / 2.0;
+      hlf_size = size / 2;
       size_aquare = size * size;
     }
 
   /* allocate memory */
   m_out = ho_bitmap_new (pix->width, pix->height);
   if (!m_out)
-    return HO_NULL;
+    return NULL;
 
   /* init threshold matrix to 0.5 */
   for (x = 0; x < hlf_size; x++)
@@ -926,20 +976,21 @@ ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf *
 	sum = 0;
 	for (i = -hlf_size; i < hlf_size; i++)
 	  for (j = -hlf_size; j < hlf_size; j++)
-	    {
-	      sum += ho_pixbuf_get (pix, x + i, y + j, 0);
-	    }
+	    sum += ho_pixbuf_get (pix, x + i, y + j, 0);
 
 	/* calculate locale threshold */
-	locale_thereshold = (sum / size_aquare) * factor;
+	locale_thereshold = (unsigned char) (factor * sum / size_aquare);
 	if (locale_thereshold < threshold)
 	  locale_thereshold = threshold;
 
 	/* do copy */
+	locale_thereshold = 127;
+
 	for (i = -hlf_size; i < 0; i++)
 	  for (j = -hlf_size; j < 0; j++)
 	    if (ho_pixbuf_get (pix, x + i, y + j, 0) < locale_thereshold)
 	      ho_bitmap_set (m_out, x + i, y + j);
+
       }
 
   return m_out;
@@ -948,14 +999,15 @@ ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf *
 ho_bitmap *
 ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
 				   pix,
-				   ho_uchar threshold,
-				   ho_uchar size, ho_uchar adaptive_threshold)
+				   unsigned char threshold,
+				   unsigned char size,
+				   unsigned char adaptive_threshold)
 {
-  ho_pixbuf *m_thresholds = HO_NULL;
-  ho_bitmap *m_out = HO_NULL;
-  ho_uint x, y;
+  ho_pixbuf *m_thresholds = NULL;
+  ho_bitmap *m_out = NULL;
+  int x, y;
   int i, j;
-  ho_uchar locale_thereshold;
+  unsigned char locale_thereshold;
   double sum, first_row, last_row;
   double hlf_size = size / 2.0;
   double size_aquare = size * size;
@@ -966,7 +1018,7 @@ ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
 
   /* is input gray ? */
   if (pix->n_channels != 1)
-    return HO_NULL;
+    return NULL;
 
   /* set defaults */
   if (!threshold)
@@ -985,13 +1037,13 @@ ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
   /* allocate memory */
   m_out = ho_bitmap_new (pix->width, pix->height);
   if (!m_out)
-    return HO_NULL;
+    return NULL;
 
   m_thresholds = ho_pixbuf_new (1, pix->width, pix->height, 0);
   if (!m_thresholds)
     {
       ho_bitmap_free (m_out);
-      return HO_NULL;
+      return NULL;
     }
 
   /* init threshold matrix to 0.5 */
@@ -1082,15 +1134,16 @@ ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
 
 
 ho_bitmap *
-ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in, const ho_uchar scale,
-			     const ho_uchar adaptive,
-			     const ho_uchar threshold,
-			     const ho_uchar a_threshold)
+ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
+			     const unsigned char scale,
+			     const unsigned char adaptive,
+			     const unsigned char threshold,
+			     const unsigned char a_threshold)
 {
-  ho_pixbuf *pix = HO_NULL;
-  ho_pixbuf *pix_temp = HO_NULL;
-  ho_bitmap *m_bw = HO_NULL;
-  ho_uchar nead_to_free_pix = HO_FALSE;
+  ho_pixbuf *pix = NULL;
+  ho_pixbuf *pix_temp = NULL;
+  ho_bitmap *m_bw = NULL;
+  unsigned char nead_to_free_pix = FALSE;
 
   /* if pix is color convert to gray scale */
   if (pix_in->n_channels > 1)
@@ -1099,25 +1152,23 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in, const ho_uchar scale,
     pix = ho_pixbuf_clone (pix_in);
 
   if (!pix)
-    return HO_NULL;
+    return NULL;
 
   /* streach picture grays */
   pix_temp = ho_pixbuf_linear_filter (pix);
-  if (pix_temp)
-    {
-      ho_pixbuf_free (pix);
-      pix = pix_temp;
-    }
+  ho_pixbuf_free (pix);
+  if (!pix_temp)
+    return NULL;
+  pix = pix_temp;
 
   /* scale */
-  if (scale)
+  if (scale > 1)
     {
       pix_temp = ho_pixbuf_scale (pix, scale);
-      if (pix_temp)
-	{
-	  ho_pixbuf_free (pix);
-	  pix = pix_temp;
-	}
+      ho_pixbuf_free (pix);
+      if (!pix_temp)
+	return NULL;
+      pix = pix_temp;
     }
 
   /* convert to b/w bitmap */

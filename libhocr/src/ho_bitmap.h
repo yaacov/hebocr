@@ -25,7 +25,15 @@
 #ifndef HO_BITMAP_H
 #define HO_BITMAP_H 1
 
-#include <ho_common.h>
+#ifndef TRUE
+#define TRUE -1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
 
 /* hocr bitmap set/get macros */
 #define ho_bitmap_get(m,x,y) ((((m)->data[(x) / 8 + (y) * (m)->rowstride]) & (0x80 >> ((x) % 8))) > 0)
@@ -37,10 +45,10 @@
 
 typedef struct
 {
-  ho_uint height;
-  ho_uint width;
-  ho_uint rowstride;
-  ho_uchar *data;
+  int height;
+  int width;
+  int rowstride;
+  unsigned char *data;
 } ho_bitmap;
 
 /**
@@ -49,12 +57,12 @@ typedef struct
  @param width width of pixbuf in pixels
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_new (const ho_uint width, const ho_uint height);
+ho_bitmap *ho_bitmap_new (const int width, const int height);
 
 /**
  free an ho_bitmap
  @param m pointer to an ho_bitmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_bitmap_free (ho_bitmap * m);
 
@@ -74,15 +82,15 @@ ho_bitmap *ho_bitmap_clone (const ho_bitmap * m);
  @param height height of window
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_clone_window (const ho_bitmap * m, const ho_uint x,
-				   const ho_uint y, const ho_uint width,
-				   const ho_uint height);
+ho_bitmap *ho_bitmap_clone_window (const ho_bitmap * m, const int x,
+				   const int y, const int width,
+				   const int height);
 
 /**
  do bitwise and of two bitmaps
  @param m_left the left hand bitmap
  @param m_right the right hand bitmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_bitmap_and (ho_bitmap * m_left, const ho_bitmap * m_right);
 
@@ -90,7 +98,7 @@ int ho_bitmap_and (ho_bitmap * m_left, const ho_bitmap * m_right);
  do bitwise or of two bitmaps
  @param m_left the left hand bitmap
  @param m_right the right hand bitmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_bitmap_or (ho_bitmap * m_left, const ho_bitmap * m_right);
 
@@ -98,7 +106,7 @@ int ho_bitmap_or (ho_bitmap * m_left, const ho_bitmap * m_right);
  do bitwise xor of two bitmaps
  @param m_left the left hand bitmap
  @param m_right the right hand bitmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_bitmap_xor (ho_bitmap * m_left, const ho_bitmap * m_right);
 
@@ -106,7 +114,7 @@ int ho_bitmap_xor (ho_bitmap * m_left, const ho_bitmap * m_right);
  do bitwise and not of two bitmaps
  @param m_left the left hand bitmap
  @param m_right the right hand bitmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right);
 
@@ -116,7 +124,7 @@ int ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right);
  @param n dilation constant
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_dilation_n (const ho_bitmap * m, const ho_uchar n);
+ho_bitmap *ho_bitmap_dilation_n (const ho_bitmap * m, const unsigned char n);
 
 /**
  erosion of a a bitmap with 3x3 box
@@ -124,7 +132,7 @@ ho_bitmap *ho_bitmap_dilation_n (const ho_bitmap * m, const ho_uchar n);
  @param n erosion constant
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_erosion_n (const ho_bitmap * m, const ho_uchar n);
+ho_bitmap *ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n);
 
 /**
  take only top height black pixels of bitmap
@@ -132,8 +140,8 @@ ho_bitmap *ho_bitmap_erosion_n (const ho_bitmap * m, const ho_uchar n);
  @param height the height to take
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_max_height (const ho_bitmap * m, const ho_uint spacer,
-				 const ho_uint height);
+ho_bitmap *ho_bitmap_max_height (const ho_bitmap * m, const int spacer,
+				 const int height);
 
 /**
  draw a black box on bitmap
@@ -142,11 +150,11 @@ ho_bitmap *ho_bitmap_max_height (const ho_bitmap * m, const ho_uint spacer,
  @param y y-start of box
  @param width width of box
  @param height height of box
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_bitmap_draw_box (ho_bitmap * m, const ho_uint x, const ho_uint y,
-		    const ho_uint width, const ho_uint height);
+ho_bitmap_draw_box (ho_bitmap * m, const int x, const int y,
+		    const int width, const int height);
 
 /**
  draw a black empty box on bitmap
@@ -155,11 +163,11 @@ ho_bitmap_draw_box (ho_bitmap * m, const ho_uint x, const ho_uint y,
  @param y y-start of box
  @param width width of box
  @param height height of box
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_bitmap_draw_box_empty (ho_bitmap * m, const ho_uint x, const ho_uint y,
-			  const ho_uint width, const ho_uint height);
+ho_bitmap_draw_box_empty (ho_bitmap * m, const int x, const int y,
+			  const int width, const int height);
 
 /**
  draw vertical line on bitmap
@@ -167,11 +175,11 @@ ho_bitmap_draw_box_empty (ho_bitmap * m, const ho_uint x, const ho_uint y,
  @param x x-start of line
  @param y y-start of line
  @param height height of line
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_bitmap_draw_vline (ho_bitmap * m, const ho_uint x, const ho_uint y,
-		      const ho_uint height);
+ho_bitmap_draw_vline (ho_bitmap * m, const int x, const int y,
+		      const int height);
 
 /**
  delete vertical line on bitmap
@@ -179,11 +187,11 @@ ho_bitmap_draw_vline (ho_bitmap * m, const ho_uint x, const ho_uint y,
  @param x x-start of line
  @param y y-start of line
  @param height height of line
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_bitmap_delete_vline (ho_bitmap * m, const ho_uint x, const ho_uint y,
-			const ho_uint height);
+ho_bitmap_delete_vline (ho_bitmap * m, const int x, const int y,
+			const int height);
 
 /**
  draw horizontal line on bitmap
@@ -191,11 +199,11 @@ ho_bitmap_delete_vline (ho_bitmap * m, const ho_uint x, const ho_uint y,
  @param x x-start of line
  @param y y-start of line
  @param width height of line
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_bitmap_draw_hline (ho_bitmap * m, const ho_uint x, const ho_uint y,
-		      const ho_uint width);
+ho_bitmap_draw_hline (ho_bitmap * m, const int x, const int y,
+		      const int width);
 
 /**
  delete horizontal line on bitmap
@@ -203,11 +211,11 @@ ho_bitmap_draw_hline (ho_bitmap * m, const ho_uint x, const ho_uint y,
  @param x x-start of line
  @param y y-start of line
  @param width height of line
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_bitmap_delete_hline (ho_bitmap * m, const ho_uint x, const ho_uint y,
-		      const ho_uint width);
+ho_bitmap_delete_hline (ho_bitmap * m, const int x, const int y,
+		      const int width);
 
 /**
  dilation of a a bitmap with 3x3 box
@@ -243,7 +251,7 @@ ho_bitmap *ho_bitmap_closing (const ho_bitmap * m);
  @patam size maximum distance
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_hlink (ho_bitmap * m, ho_uint size);
+ho_bitmap *ho_bitmap_hlink (ho_bitmap * m, int size);
 
 /**
  horizontaly erode black dots in a bitmap
@@ -252,7 +260,7 @@ ho_bitmap *ho_bitmap_hlink (ho_bitmap * m, ho_uint size);
  @return newly allocated ho_bitmap
  */
 ho_bitmap *
-ho_bitmap_herode (ho_bitmap * m, ho_uint size);
+ho_bitmap_herode (ho_bitmap * m, int size);
 
 /**
  verticaly link black dots in a bitmap
@@ -260,7 +268,7 @@ ho_bitmap_herode (ho_bitmap * m, ho_uint size);
  @patam size maximum distance
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_vlink (ho_bitmap * m, ho_uint size);
+ho_bitmap *ho_bitmap_vlink (ho_bitmap * m, int size);
 
 /**
  copy edges in bitmap

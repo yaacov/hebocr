@@ -25,7 +25,16 @@
 #ifndef HO_PIXBUF_H
 #define HO_PIXBUF_H 1
 
-#include <ho_common.h>
+#ifndef TRUE
+#define TRUE -1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
@@ -46,11 +55,11 @@
 /* hocr pixbuf: copy of gtk_pixbuf */
 typedef struct
 {
-  ho_uchar n_channels;
-  ho_uint height;
-  ho_uint width;
-  ho_uint rowstride;
-  ho_uchar *data;
+  unsigned char n_channels;
+  int height;
+  int width;
+  int rowstride;
+  unsigned char *data;
 } ho_pixbuf;
 
 /**
@@ -61,9 +70,9 @@ typedef struct
  @param rowstride number of bytes in a row
  @return newly allocated ho_pixbuf
  */
-ho_pixbuf *ho_pixbuf_new (const ho_uchar n_channels,
-			  const ho_uint width, const ho_uint height,
-			  const ho_uint rowstride);
+ho_pixbuf *ho_pixbuf_new (const unsigned char n_channels,
+			  const int width, const int height,
+			  const int rowstride);
 
 /**
  clone ho_pixbuf
@@ -88,7 +97,7 @@ ho_pixbuf *ho_pixbuf_new_from_bitmap (const ho_bitmap * bit_in);
  @return newly allocated color ho_pixbuf
  */
 ho_pixbuf *ho_pixbuf_new_from_objmap (const ho_objmap * obj_in,
-				      const ho_uchar min, const ho_uchar max);
+				      const unsigned char min, const unsigned char max);
 
 /**
  new rgb ho_pixbuf from non rgb pixbuf
@@ -100,7 +109,7 @@ ho_pixbuf *ho_pixbuf_to_rgb (const ho_pixbuf * pix_in);
 /**
  free an ho_pixbuf 
  @param pix pointer to an ho_pixbuf
- @return HO_FALSE
+ @return FALSE
  */
 int ho_pixbuf_free (ho_pixbuf * pix);
 
@@ -115,7 +124,7 @@ ho_pixbuf *ho_pixbuf_new_from_pnm (const char *filename);
  writes ho_pixbuf to pnm file
  @param pix ho_pixbuf 8 or 24 bpp
  @param filenme save as file name 
- @return HO_FALSE
+ @return FALSE
  */
 int ho_pixbuf_save_pnm (const ho_pixbuf * pix, const char *filename);
 
@@ -146,17 +155,17 @@ ho_pixbuf *ho_pixbuf_scale3 (const ho_pixbuf * pix);
  @param scale scale by this factor
  @return newly allocated gray ho_pixbuf
  */
-ho_pixbuf *ho_pixbuf_scale (const ho_pixbuf * pix, const ho_uchar scale);
+ho_pixbuf *ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale);
 
 /**
  get the min and max values in a gray pixbuf
  @param pix gray ho_pixbuf 
  @param min a pointer to return the min 
  @param max a pointer to return the max 
- @return HO_FALSE
+ @return FALSE
  */
-ho_uchar
-ho_pixbuf_minmax (const ho_pixbuf * pix, ho_uchar * min, ho_uchar * max);
+unsigned char
+ho_pixbuf_minmax (const ho_pixbuf * pix, unsigned char * min, unsigned char * max);
 
 /**
  draw a line from x1,y1 to x2,y2
@@ -168,12 +177,12 @@ ho_pixbuf_minmax (const ho_pixbuf * pix, ho_uchar * min, ho_uchar * max);
  @param red value of red channel 
  @param green value of green channel 
  @param blue value of blue channel 
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_pixbuf_draw_line (ho_pixbuf * m, const ho_uint x1, const ho_uint y1,
-		     const ho_uint x2, const ho_uint y2, const ho_uchar red,
-		     const ho_uchar green, const ho_uchar blue);
+ho_pixbuf_draw_line (ho_pixbuf * m, const int x1, const int y1,
+		     const int x2, const int y2, const unsigned char red,
+		     const unsigned char green, const unsigned char blue);
 
 /**
  draw a scale line from x1,y1
@@ -185,13 +194,13 @@ ho_pixbuf_draw_line (ho_pixbuf * m, const ho_uint x1, const ho_uint y1,
  @param red value of red channel 
  @param green value of green channel 
  @param blue value of blue channel 
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const ho_uint x1,
-				 const ho_uint y1, const ho_uint length,
-				 const ho_uint step, const ho_uchar red,
-				 const ho_uchar green, const ho_uchar blue);
+ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const int x1,
+				 const int y1, const int length,
+				 const int step, const unsigned char red,
+				 const unsigned char green, const unsigned char blue);
 
 /**
   draw a scale line from x1,y1
@@ -203,13 +212,13 @@ ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const ho_uint x1,
  @param red value of red channel 
  @param green value of green channel 
  @param blue value of blue channel 
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const ho_uint x1,
-			       const ho_uint y1, const ho_uint length,
-			       const ho_uint step, const ho_uchar red,
-			       const ho_uchar green, const ho_uchar blue);
+ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const int x1,
+			       const int y1, const int length,
+			       const int step, const unsigned char red,
+			       const unsigned char green, const unsigned char blue);
 
 /**
   draw a grid
@@ -219,12 +228,12 @@ ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const ho_uint x1,
  @param red value of red channel 
  @param green value of green channel 
  @param blue value of blue channel 
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_pixbuf_draw_grid (ho_pixbuf * m, const ho_uint size, const ho_uint step,
-		     const ho_uchar red, const ho_uchar green,
-		     const ho_uchar blue);
+ho_pixbuf_draw_grid (ho_pixbuf * m, const int size, const int step,
+		     const unsigned char red, const unsigned char green,
+		     const unsigned char blue);
 
 /**
   draw a bitmap
@@ -233,12 +242,12 @@ ho_pixbuf_draw_grid (ho_pixbuf * m, const ho_uint size, const ho_uint step,
  @param red value of red channel 
  @param green value of green channel 
  @param blue value of blue channel 
- @return HO_FALSE
+ @return FALSE
  */
 int
 ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
-		       const ho_uchar red, const ho_uchar green,
-		       const ho_uchar blue);
+		       const unsigned char red, const unsigned char green,
+		       const unsigned char blue);
 
 /**
   draw a bitmap
@@ -249,13 +258,13 @@ ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
  @param red value of red channel 
  @param green value of green channel 
  @param blue value of blue channel 
- @return HO_FALSE
+ @return FALSE
  */
 int
 ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
-			  const ho_uint x1, const ho_uint y1,
-			  const ho_uchar red, const ho_uchar green,
-			  const ho_uchar blue);
+			  const int x1, const int y1,
+			  const unsigned char red, const unsigned char green,
+			  const unsigned char blue);
         
 /**
  aplay a linear filter to a gray pixbuf 
@@ -270,7 +279,7 @@ ho_pixbuf *ho_pixbuf_linear_filter (const ho_pixbuf * pix);
  @param threshold the threshold to use 0..100
  @return newly allocated gray ho_bitmap
  */
-ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, ho_uchar threshold);
+ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold);
 
 /**
  convert a gray pixbuf to bitmap using adaptive thresholding
@@ -281,8 +290,8 @@ ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, ho_uchar threshold);
  @return newly allocated gray ho_bitmap
  */
 ho_bitmap *ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf * pix,
-					 ho_uchar threshold, ho_uchar size,
-					 ho_uchar adaptive_threshold);
+					 unsigned char threshold, unsigned char size,
+					 unsigned char adaptive_threshold);
 
 /**
  convert a gray pixbuf to bitmap using better adaptive thresholding
@@ -294,9 +303,9 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf * pix,
  */
 ho_bitmap *ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
 					      pix,
-					      ho_uchar threshold,
-					      ho_uchar size,
-					      ho_uchar adaptive_threshold);
+					      unsigned char threshold,
+					      unsigned char size,
+					      unsigned char adaptive_threshold);
 
 /**
  convert a gray pixbuf to bitmap wrapper function
@@ -308,9 +317,9 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
  @return newly allocated gray ho_bitmap
  */
 ho_bitmap *ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
-					const ho_uchar scale,
-					const ho_uchar adaptive,
-					const ho_uchar threshold,
-					const ho_uchar a_threshold);
+					const unsigned char scale,
+					const unsigned char adaptive,
+					const unsigned char threshold,
+					const unsigned char a_threshold);
 
 #endif /* HO_PIXBUF_H */

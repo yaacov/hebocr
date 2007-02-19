@@ -25,7 +25,16 @@
 #ifndef HO_DIMENTIONS_H
 #define HO_DIMENTIONS_H 1
 
-#include <ho_common.h>
+#ifndef TRUE
+#define TRUE -1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
@@ -38,14 +47,14 @@
  @param max_width only objects with this maximal width are used
  @param height pointer to return the guessed font average  height
  @param width pointer to return the guessed font average  width
- @return HO_FALSE
+ @return FALSE
  */
 int
-ho_dimentions_font (const ho_bitmap * m, const ho_uint min_height,
-			      const ho_uint max_height,
-			      const ho_uint min_width,
-			      const ho_uint max_width, ho_usint * height,
-			      ho_usint * width, ho_uchar * nikud);
+ho_dimentions_font (const ho_bitmap * m, const int min_height,
+			      const int max_height,
+			      const int min_width,
+			      const int max_width, int * height,
+			      int * width, unsigned char * nikud);
 
 /**
  guess line dimentions
@@ -54,13 +63,13 @@ ho_dimentions_font (const ho_bitmap * m, const ho_uint min_height,
  @param font_width guessed font width
  @param nikud guessed existance of nikud
  @param interline_height pointer to return the guessed interline height
- @return HO_FALSE
+ @return FALSE
  */
 int
 ho_dimentions_line (const ho_bitmap * m,
-			      const ho_uint font_height,
-			      const ho_uint font_width,
-			      const ho_uchar nikud,
-			      ho_usint * interline_height);
+			      const int font_height,
+			      const int font_width,
+			      const unsigned char nikud,
+			      int * interline_height);
 
 #endif /* HO_DIMENTIONS_H */

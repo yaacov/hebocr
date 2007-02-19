@@ -27,14 +27,14 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "ho_common.h"
+
 #include "ho_obj.h"
 #include "ho_objmap.h"
 
 ho_objmap *
-ho_objmap_new (const ho_uint width, const ho_uint height)
+ho_objmap_new (const int width, const int height)
 {
-  ho_objmap *m_new = HO_NULL;
+  ho_objmap *m_new = NULL;
 
   /*
    * allocate memory for pixbuf 
@@ -42,7 +42,7 @@ ho_objmap_new (const ho_uint width, const ho_uint height)
   m_new = (ho_objmap *) malloc (sizeof (ho_objmap));
   if (!m_new)
     {
-      return HO_NULL;
+      return NULL;
     }
 
   /* read header */
@@ -51,11 +51,11 @@ ho_objmap_new (const ho_uint width, const ho_uint height)
 
   /* allocate memory for data (and set to zero) */
   m_new->map =
-    (ho_usint *) calloc (m_new->height * m_new->width, sizeof (ho_usint));
+    (int *) calloc (m_new->height * m_new->width, sizeof (int));
   if (!(m_new->map))
     {
       free (m_new);
-      return HO_NULL;
+      return NULL;
     }
 
   /* allocate initial object list */
@@ -64,7 +64,7 @@ ho_objmap_new (const ho_uint width, const ho_uint height)
     {
       free (m_new->map);
       free (m_new);
-      return HO_NULL;
+      return NULL;
     }
 
   return m_new;
@@ -74,22 +74,22 @@ int
 ho_objmap_free (ho_objmap * m)
 {
   if (!m)
-    return HO_TRUE;
+    return TRUE;
 
   ho_objlist_free (m->obj_list);
   if (m->map)
     free (m->map);
   free (m);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
 ho_objmap_clean (ho_objmap * m)
 {
-  ho_uint x, y, k;
-  ho_usint index;
-  ho_usint *map = NULL;
+  int x, y, k;
+  int index;
+  int *map = NULL;
 
   /* relax the object matrix */
   for (x = 0; x < m->width; x++)
@@ -123,15 +123,15 @@ ho_objmap_clean (ho_objmap * m)
   if (map)
     free (map);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
 ho_objmap_sort_by_reading_index (ho_objmap * m)
 {
-  ho_uint x, y, k;
-  ho_usint index;
-  ho_usint *map = NULL;
+  int x, y, k;
+  int index;
+  int *map = NULL;
 
   /* make sure reading order is set */
   ho_objmap_update_reading_index_rtl (m);
@@ -155,20 +155,20 @@ ho_objmap_sort_by_reading_index (ho_objmap * m)
   if (map)
     free (map);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 ho_objmap *
 ho_objmap_new_from_bitmap (const ho_bitmap * bit_in)
 {
-  ho_objmap *m_new = HO_NULL;
+  ho_objmap *m_new = NULL;
 
-  ho_uint x, y, k;
+  int x, y, k;
   double sum;
   double neigbors[4];
-  ho_usint min;
-  ho_usint index, indexes[4];
-  ho_usint *map = NULL;
+  int min;
+  int index, indexes[4];
+  int *map = NULL;
 
   /* allocate memory */
   m_new = ho_objmap_new (bit_in->width, bit_in->height);
@@ -195,7 +195,7 @@ ho_objmap_new_from_bitmap (const ho_bitmap * bit_in)
 		  {
 		    /* can't add to objects :-( */
 		    ho_objmap_free (m_new);
-		    return HO_NULL;
+		    return NULL;
 		  }
 
 		/* in the matrix we insert index+1 */
@@ -244,28 +244,28 @@ ho_objmap_new_from_bitmap (const ho_bitmap * bit_in)
 }
 
 int
-ho_objmap_font_metrix (const ho_objmap * m, const ho_uint min_height,
-		       const ho_uint max_height,
-		       const ho_uint min_width,
-		       const ho_uint max_width, ho_usint * height,
-		       ho_usint * width, ho_uchar * nikud)
+ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
+		       const int max_height,
+		       const int min_width,
+		       const int max_width, int * height,
+		       int * width, unsigned char * nikud)
 {
-  ho_uint i, j;
-  ho_usint counter;
+  int i, j;
+  int counter;
   double weight_avg;
   double weight_com;
   double weight_min;
   double weight_max;
-  ho_uint height_avg;
-  ho_uint height_com;
-  ho_uint height_min;
-  ho_uint height_max;
-  ho_uint width_avg;
-  ho_uint width_com;
-  ho_uint width_min;
-  ho_uint width_max;
+  int height_avg;
+  int height_com;
+  int height_min;
+  int height_max;
+  int width_avg;
+  int width_com;
+  int width_min;
+  int width_max;
 
-  *nikud = HO_FALSE;
+  *nikud = FALSE;
 
   /* get stats */
   ho_objlist_statistics (m->obj_list,
@@ -281,13 +281,13 @@ ho_objmap_font_metrix (const ho_objmap * m, const ho_uint min_height,
   /* does it look like nikud ? */
   if (height_avg < (2 * height_com / 3))
     {
-      *nikud = HO_TRUE;
+      *nikud = TRUE;
     }
 
   /* did we find the nikud ? */
   if (height_com < (2 * height_avg / 3))
     {
-      *nikud = HO_TRUE;
+      *nikud = TRUE;
 
       /* re-get stats, now limit minial size */
       ho_objlist_statistics (m->obj_list, 3 * height_avg / 2, 300,
@@ -305,24 +305,24 @@ ho_objmap_font_metrix (const ho_objmap * m, const ho_uint min_height,
   *height = height_com;
   *width = width_com;
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 ho_bitmap *
 ho_objmap_to_bitmap_by_size (const ho_objmap * m,
-			     ho_uint min_height, ho_uint max_height,
-			     ho_uint min_width, ho_uint max_width)
+			     int min_height, int max_height,
+			     int min_width, int max_width)
 {
-  ho_uint x, y;
-  ho_usint index;
-  ho_uint height;
-  ho_uint width;
+  int x, y;
+  int index;
+  int height;
+  int width;
   ho_bitmap *m_out;
 
   /* allocate memory */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
-    return HO_NULL;
+    return NULL;
 
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
@@ -349,29 +349,29 @@ ho_objmap_to_bitmap_by_size (const ho_objmap * m,
 }
 
 ho_bitmap *
-ho_objmap_to_bitmap_by_index (const ho_objmap * m, const ho_usint index)
+ho_objmap_to_bitmap_by_index (const ho_objmap * m, const int index)
 {
-  ho_uint x, y;
+  int x, y;
   ho_bitmap *m_out;
-  ho_usint current_index;
-  ho_uint height;
-  ho_uint width;
+  int current_index;
+  int height;
+  int width;
 
   /* is this object realy an object ? */
   if (index >= (m->obj_list)->size)
-    return HO_NULL;
+    return NULL;
 
   width = (((m->obj_list)->objects)[index]).width;
   height = (((m->obj_list)->objects)[index]).height;
 
   /* is this object realy a big object ? */
   if (width < 2 || height < 2)
-    return HO_NULL;
+    return NULL;
 
   /* allocate memory */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
-    return HO_NULL;
+    return NULL;
 
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
@@ -389,31 +389,31 @@ ho_objmap_to_bitmap_by_index (const ho_objmap * m, const ho_usint index)
 
 ho_bitmap *
 ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
-				     const ho_usint index,
-				     const ho_uint frame)
+				     const int index,
+				     const int frame)
 {
-  ho_uint x, y;
-  ho_uint x1, y1;
+  int x, y;
+  int x1, y1;
   ho_bitmap *m_out;
-  ho_usint current_index;
-  ho_uint height;
-  ho_uint width;
+  int current_index;
+  int height;
+  int width;
 
   /* is this object realy an object ? */
   if (index >= (m->obj_list)->size)
-    return HO_NULL;
+    return NULL;
 
   width = (((m->obj_list)->objects)[index]).width;
   height = (((m->obj_list)->objects)[index]).height;
 
   /* is this object realy a big object ? */
   if (width < 2 || height < 2)
-    return HO_NULL;
+    return NULL;
 
   /* allocate memory */
   m_out = ho_bitmap_new (width + 2 * frame, height + 2 * frame);
   if (!m_out)
-    return HO_NULL;
+    return NULL;
 
   x1 = (((m->obj_list)->objects)[index]).x;
   y1 = (((m->obj_list)->objects)[index]).y;
@@ -436,23 +436,23 @@ int
 ho_objmap_update_reading_index_rtl (ho_objmap * m)
 {
   int q;
-  ho_usint index;
-  ho_usint sorting_list_index;
-  ho_usint sorting_lists_sizes[4] = { 0, 0, 0, 0 };
-  ho_usint *sorting_lists;
-  ho_usint reading_index;
+  int index;
+  int sorting_list_index;
+  int sorting_lists_sizes[4] = { 0, 0, 0, 0 };
+  int *sorting_lists;
+  int reading_index;
   int x, y;
-  ho_uint height;
-  ho_uint width;
+  int height;
+  int width;
 
   /* is this an object map */
   if ((m->obj_list)->size < 1)
-    return HO_TRUE;
+    return TRUE;
 
   /* allocate sorting lists memory */
-  sorting_lists = calloc (4 * ho_objmap_get_size (m), sizeof (ho_usint));
+  sorting_lists = calloc (4 * ho_objmap_get_size (m), sizeof (int));
   if (!sorting_lists)
-    return HO_TRUE;
+    return TRUE;
 
   /* sort by 1/4 of map */
   for (index = 0; index < (m->obj_list)->size; index++)
@@ -496,5 +496,5 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m)
 	  }
       }
 
-  return HO_FALSE;
+  return FALSE;
 }

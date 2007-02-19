@@ -25,7 +25,16 @@
 #ifndef HO_OBJMAP_H
 #define HO_OBJMAP_H 1
 
-#include <ho_common.h>
+#ifndef TRUE
+#define TRUE -1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
 #include <ho_bitmap.h>
 #include <ho_obj.h>
 
@@ -41,9 +50,9 @@
 
 typedef struct
 {
-  ho_uint height;
-  ho_uint width;
-  ho_usint *map;
+  int height;
+  int width;
+  int *map;
   ho_objlist *obj_list;
 } ho_objmap;
 
@@ -53,26 +62,26 @@ typedef struct
  @param width width of pixbuf in pixels
  @return newly allocated ho_pixbuf
  */
-ho_objmap *ho_objmap_new (const ho_uint width, const ho_uint height);
+ho_objmap *ho_objmap_new (const int width, const int height);
 
 /**
  free an ho_objmap
  @param m pointer to an ho_objmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_objmap_free (ho_objmap * m);
 
 /**
  clean the ho_objmap index list 
  @param m pointer to an ho_objmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_objmap_clean (ho_objmap * m);
 
 /**
  sort the ho_objmap by reading index
  @param m pointer to an ho_objmap
- @return HO_FALSE
+ @return FALSE
  */
 int
 ho_objmap_sort_by_reading_index (ho_objmap * m);
@@ -93,13 +102,13 @@ ho_objmap *ho_objmap_new_from_bitmap (const ho_bitmap * bit_in);
  @param max_width only objects with this maximal width are used
  @param height pointer to return the guessed font average  height
  @param width pointer to return the guessed font average  width
- @return HO_FALSE
+ @return FALSE
  */
-int ho_objmap_font_metrix (const ho_objmap * m, const ho_uint min_height,
-			   const ho_uint max_height,
-			   const ho_uint min_width,
-			   const ho_uint max_width, ho_usint * height,
-			   ho_usint * width, ho_uchar * nikud);
+int ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
+			   const int max_height,
+			   const int min_width,
+			   const int max_width, int * height,
+			   int * width, unsigned char * nikud);
 
 /**
  copy objects from objmap to bitmap by size
@@ -111,9 +120,9 @@ int ho_objmap_font_metrix (const ho_objmap * m, const ho_uint min_height,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_objmap_to_bitmap_by_size (const ho_objmap * m,
-					ho_uint min_height,
-					ho_uint max_height, ho_uint min_width,
-					ho_uint max_width);
+					int min_height,
+					int max_height, int min_width,
+					int max_width);
 
 /**
  copy objects from objmap to bitmap by index
@@ -122,7 +131,7 @@ ho_bitmap *ho_objmap_to_bitmap_by_size (const ho_objmap * m,
  @return a newly allocated bitmap size of objmap
  */
 ho_bitmap *ho_objmap_to_bitmap_by_index (const ho_objmap * m,
-					 const ho_usint index);
+					 const int index);
 
 /**
  copy objects from objmap to bitmap by index of the object
@@ -132,13 +141,13 @@ ho_bitmap *ho_objmap_to_bitmap_by_index (const ho_objmap * m,
  @return a newly allocated bitmap size of object + frame
  */
 ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
-						const ho_usint index,
-						const ho_uint frame);
+						const int index,
+						const int frame);
 
 /**
  guess reading_index
  @param m pointer to an ho_objmap
- @return HO_FALSE
+ @return FALSE
  */
 int ho_objmap_update_reading_index_rtl (ho_objmap * m);
 

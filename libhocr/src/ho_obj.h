@@ -25,25 +25,33 @@
 #ifndef HO_OBJ_H
 #define HO_OBJ_H 1
 
-#include <ho_common.h>
+#ifndef TRUE
+#define TRUE -1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
 
 /* hocr_object */
 typedef struct
 {
-  ho_usint index;
-  ho_usint reading_index;
+  int index;
+  int reading_index;
   double weight;
-  ho_uint x;
-  ho_uint y;
-  ho_uint width;
-  ho_uint height;
+  int x;
+  int y;
+  int width;
+  int height;
 } ho_obj;
 
 /* hocr_object_list */
 typedef struct
 {
-  ho_usint size;
-  ho_usint allocated_size;
+  int size;
+  int allocated_size;
   ho_obj *objects;
 } ho_objlist;
 
@@ -53,35 +61,35 @@ int ho_objlist_free (ho_objlist * object_list);
 
 int
 ho_objlist_add (ho_objlist * object_list, double weight,
-		 ho_uint x, ho_uint y, ho_uint width, ho_uint height);
+		 int x, int y, int width, int height);
 
-ho_usint ho_objlist_get_index (ho_objlist * object_list, ho_usint index);
-
-int
-ho_objlist_add_pixel (ho_objlist * object_list, ho_usint index,
-		       ho_uint x, ho_uint y);
+int ho_objlist_get_index (ho_objlist * object_list, int index);
 
 int
-ho_objlist_link (ho_objlist * object_list, ho_usint index1,
-		  ho_usint index2);
-
-int ho_objlist_clean (ho_objlist * object_list, ho_usint ** map);
+ho_objlist_add_pixel (ho_objlist * object_list, int index,
+		       int x, int y);
 
 int
-ho_objlist_clean_by_reading_index (ho_objlist * object_list, ho_usint ** map);
+ho_objlist_link (ho_objlist * object_list, int index1,
+		  int index2);
+
+int ho_objlist_clean (ho_objlist * object_list, int ** map);
+
+int
+ho_objlist_clean_by_reading_index (ho_objlist * object_list, int ** map);
 
 int ho_objlist_print (ho_objlist * object_list);
 
 int
 ho_objlist_statistics (ho_objlist * object_list,
-			     ho_uint min_height, ho_uint max_height,
-			     ho_uint min_width, ho_uint max_width,
-			     ho_usint * counter,
+			     int min_height, int max_height,
+			     int min_width, int max_width,
+			     int * counter,
 			     double *weight_avg, double *weight_com,
 			     double *weight_min, double *weight_max,
-			     ho_uint * height_avg, ho_uint * height_com,
-			     ho_uint * height_min, ho_uint * height_max,
-			     ho_uint * width_avg, ho_uint * width_com,
-			     ho_uint * width_min, ho_uint * width_max);
+			     int * height_avg, int * height_com,
+			     int * height_min, int * height_max,
+			     int * width_avg, int * width_com,
+			     int * width_min, int * width_max);
 
 #endif /* HO_OBJ_H */

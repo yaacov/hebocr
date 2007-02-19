@@ -56,7 +56,7 @@ ho_gtk_pixbuf_new_from_file (const char *filename);
  writes ho_pixbuf to file
  @param pix ho_pixbuf 8 or 24 bpp
  @param filenme save as file name 
- @return HO_FALSE
+ @return FALSE
  */
 int
 ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);

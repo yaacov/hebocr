@@ -127,7 +127,7 @@ main (int argc, char *argv[])
   GError *error = NULL;
   GOptionContext *context = NULL;
   gchar *text_out = NULL;
-  ho_usint index;
+  int index;
 
   ho_pixbuf *pix = NULL;
   ho_pixbuf *pix_temp = NULL;
@@ -143,16 +143,16 @@ main (int argc, char *argv[])
 
   int x;
   int y;
-  ho_uint height;
-  ho_uint width;
-  ho_usint font_height;
-  ho_usint font_width;
-  ho_usint interline_height;
-  ho_usint paragraph_font_height;
-  ho_usint paragraph_font_width;
-  ho_usint paragraph_interline_height;
-  ho_uchar nikud = FALSE;
-  ho_uchar is_text_block = TRUE;
+  int height;
+  int width;
+  int font_height;
+  int font_width;
+  int interline_height;
+  int paragraph_font_height;
+  int paragraph_font_width;
+  int paragraph_interline_height;
+  unsigned char nikud = FALSE;
+  unsigned char is_text_block = TRUE;
 
   /* start of argument analyzing section 
    */
@@ -229,8 +229,12 @@ main (int argc, char *argv[])
   if (!scale_by)
     {
       /* get fonts size for autoscale */
-      ho_dimentions_font (m_bw, 6, 200, 6, 200, &font_height,
-			  &font_width, &nikud);
+      if (ho_dimentions_font (m_bw, 6, 200, 6, 200, &font_height,
+			      &font_width, &nikud))
+	{
+	  hocr_printerr ("can't create object map\n");
+	  exit (1);
+	}
 
       /* if fonts are too small and user wants auto scale, re-scale image */
       if (font_height < 10)
@@ -301,7 +305,7 @@ main (int argc, char *argv[])
 
       /* create file name */
       if (no_gtk)
-	filename = g_strdup_printf ("%s-I.pnm", image_out_path);
+	filename = g_strdup_printf ("%s-I.pgm", image_out_path);
       else
 	filename = g_strdup_printf ("%s-I.jpeg", image_out_path);
 
@@ -370,12 +374,12 @@ main (int argc, char *argv[])
     case 0:			/* colums */
       m_paragraphs =
 	ho_segment_paragraphs (m_bw, font_height, font_width, nikud,
-				     interline_height, TRUE);
+			       interline_height, TRUE);
       break;
     case 1:			/* free setup */
       m_paragraphs =
 	ho_segment_paragraphs (m_bw, font_height, font_width, nikud,
-				     interline_height, FALSE);
+			       interline_height, FALSE);
       break;
     default:			/* defaults to error */
       hocr_printerr ("unrecognized paragraph setup");
@@ -483,9 +487,12 @@ main (int argc, char *argv[])
 	{
 	  m_lines =
 	    ho_segment_lines (m_current_paragraph,
-				    paragraph_font_height,
-				    paragraph_font_width,
-				    nikud, paragraph_interline_height);
+			      paragraph_font_height,
+			      paragraph_font_width,
+			      nikud, paragraph_interline_height);
+
+	  if (!m_lines)
+	    hocr_printerr ("can't get memory to create a line map");
 	}
 
       if (debug)
@@ -517,7 +524,7 @@ main (int argc, char *argv[])
 	  /* create file name */
 	  if (no_gtk)
 	    filename =
-	      g_strdup_printf ("%s-L-paragraph-%d.pnm", image_out_path,
+	      g_strdup_printf ("%s-L-paragraph-%d.pgm", image_out_path,
 			       ho_objmap_get_object (m_obj,
 						     index).reading_index +
 			       1);
@@ -562,7 +569,7 @@ main (int argc, char *argv[])
 
       /* create file name */
       if (no_gtk)
-	filename = g_strdup_printf ("%s-L.pnm", image_out_path);
+	filename = g_strdup_printf ("%s-L.pgm", image_out_path);
       else
 	filename = g_strdup_printf ("%s-L.jpeg", image_out_path);
 

@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "ho_common.h"
+
 #include "ho_obj.h"
 
 ho_objlist *
@@ -40,7 +40,7 @@ ho_objlist_new ()
 
   /* check for new memory */
   if (!new_hocr_object_list)
-    return HO_NULL;
+    return NULL;
 
   /* init struct values */
   new_hocr_object_list->size = 0;
@@ -55,7 +55,7 @@ ho_objlist_new ()
   if (!new_hocr_object_list->objects)
     {
       free (new_hocr_object_list);
-      return HO_NULL;
+      return NULL;
     }
 
   return new_hocr_object_list;
@@ -65,7 +65,7 @@ int
 ho_objlist_free (ho_objlist * object_list)
 {
   if (!object_list)
-    return HO_TRUE;
+    return TRUE;
 
   /* free the text */
   if (object_list->objects)
@@ -74,17 +74,17 @@ ho_objlist_free (ho_objlist * object_list)
   /* free the struct */
   free (object_list);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
 ho_objlist_add (ho_objlist * object_list, double weight,
-		ho_uint x, ho_uint y, ho_uint width, ho_uint height)
+		int x, int y, int width, int height)
 {
   ho_obj *new_object_list_objects;
 
-  if ((object_list->size + 1) > 65535)
-    return HO_TRUE;
+  if ((object_list->size + 1) > 2000000000)
+    return TRUE;
 
   /* check for allocated space and try to get more memory */
   if ((object_list->size + 1) >= object_list->allocated_size)
@@ -102,7 +102,7 @@ ho_objlist_add (ho_objlist * object_list, double weight,
       /* did not get new memory */
       else
 	{
-	  return HO_TRUE;
+	  return TRUE;
 	}
     }
 
@@ -116,11 +116,11 @@ ho_objlist_add (ho_objlist * object_list, double weight,
   (object_list->objects)[object_list->size].width = width;
   (object_list->size)++;
 
-  return HO_FALSE;
+  return FALSE;
 }
 
-ho_usint
-ho_objlist_get_index (ho_objlist * object_list, ho_usint index)
+int
+ho_objlist_get_index (ho_objlist * object_list, int index)
 {
   while ((object_list->objects)[index].index != index)
     index = (object_list->objects)[index].index;
@@ -129,14 +129,14 @@ ho_objlist_get_index (ho_objlist * object_list, ho_usint index)
 }
 
 int
-ho_objlist_add_pixel (ho_objlist * object_list, ho_usint index,
-		      ho_uint x, ho_uint y)
+ho_objlist_add_pixel (ho_objlist * object_list, int index,
+		      int x, int y)
 {
-  ho_uint x1 = (object_list->objects)[index].x;
-  ho_uint x2 =
+  int x1 = (object_list->objects)[index].x;
+  int x2 =
     (object_list->objects)[index].x + (object_list->objects)[index].width;
-  ho_uint y1 = (object_list->objects)[index].y;
-  ho_uint y2 =
+  int y1 = (object_list->objects)[index].y;
+  int y2 =
     (object_list->objects)[index].y + (object_list->objects)[index].height;
 
   (object_list->objects)[index].weight++;
@@ -154,19 +154,19 @@ ho_objlist_add_pixel (ho_objlist * object_list, ho_usint index,
   (object_list->objects)[index].height = y2 - y1;
   (object_list->objects)[index].width = x2 - x1;
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
-ho_objlist_link (ho_objlist * object_list, ho_usint index1, ho_usint index2)
+ho_objlist_link (ho_objlist * object_list, int index1, int index2)
 {
-  ho_usint index;
-  ho_uint x11, x12, y11, y12;
-  ho_uint x21, x22, y21, y22;
+  int index;
+  int x11, x12, y11, y12;
+  int x21, x22, y21, y22;
 
   /* just checking :-) */
   if (index1 == index2)
-    return HO_TRUE;
+    return TRUE;
 
   /* always use the lower index */
   if (index2 < index1)
@@ -214,25 +214,25 @@ ho_objlist_link (ho_objlist * object_list, ho_usint index1, ho_usint index2)
   (object_list->objects)[index1].height = (y12 - y11);
   (object_list->objects)[index1].width = (x12 - x11);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
-ho_objlist_clean (ho_objlist * object_list, ho_usint ** map)
+ho_objlist_clean (ho_objlist * object_list, int ** map)
 {
   ho_objlist *temp_object_list;
-  ho_usint new_index, i;
+  int new_index, i;
 
   /* allocate temporary list */
   temp_object_list = ho_objlist_new ();
   if (!temp_object_list)
-    return HO_TRUE;
+    return TRUE;
 
-  *map = (ho_usint *) calloc (object_list->size, sizeof (ho_usint));
+  *map = (int *) calloc (object_list->size, sizeof (int));
   if (!(*map))
     {
       ho_objlist_free (temp_object_list);
-      return HO_TRUE;
+      return TRUE;
     }
 
   /* copy only valid objects to temporary list */
@@ -271,25 +271,25 @@ ho_objlist_clean (ho_objlist * object_list, ho_usint ** map)
   /* unref the temporary list */
   ho_objlist_free (temp_object_list);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
-ho_objlist_clean_by_reading_index (ho_objlist * object_list, ho_usint ** map)
+ho_objlist_clean_by_reading_index (ho_objlist * object_list, int ** map)
 {
   ho_objlist *temp_object_list;
-  ho_usint new_index, i, j;
+  int new_index, i, j;
 
   /* allocate temporary list */
   temp_object_list = ho_objlist_new ();
   if (!temp_object_list)
-    return HO_TRUE;
+    return TRUE;
 
-  *map = (ho_usint *) calloc (object_list->size, sizeof (ho_usint));
+  *map = (int *) calloc (object_list->size, sizeof (int));
   if (!(*map))
     {
       ho_objlist_free (temp_object_list);
-      return HO_TRUE;
+      return TRUE;
     }
 
   /* map by reading index */
@@ -326,12 +326,12 @@ ho_objlist_clean_by_reading_index (ho_objlist * object_list, ho_usint ** map)
   /* unref the temporary list */
   ho_objlist_free (temp_object_list);
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int ho_objlist_print (ho_objlist * object_list)
 {
-  ho_usint i;
+  int i;
 
   printf ("list has %d objects\n---w\th\tw\n---\n", object_list->size);
 
@@ -342,36 +342,36 @@ int ho_objlist_print (ho_objlist * object_list)
 	      ((object_list->objects)[i]).width);
     }
 
-  return HO_FALSE;
+  return FALSE;
 }
 
 int
   ho_objlist_statistics (ho_objlist * object_list,
-			 ho_uint min_height, ho_uint max_height,
-			 ho_uint min_width, ho_uint max_width,
-			 ho_usint * counter,
+			 int min_height, int max_height,
+			 int min_width, int max_width,
+			 int * counter,
 			 double *weight_avg, double *weight_com,
 			 double *weight_min, double *weight_max,
-			 ho_uint * height_avg, ho_uint * height_com,
-			 ho_uint * height_min, ho_uint * height_max,
-			 ho_uint * width_avg, ho_uint * width_com,
-			 ho_uint * width_min, ho_uint * width_max)
+			 int * height_avg, int * height_com,
+			 int * height_min, int * height_max,
+			 int * width_avg, int * width_com,
+			 int * width_min, int * width_max)
 {
   /* historam boxes are 0 .. 300 -> 0 .. 60 (5 values into 1 histogram box) 
      for 1D attributes and 0 .. 1500 -> 0 .. 60 (25 into 1) for 2D attributes */
   double weight_histogram[60];
-  ho_uint height_histogram[60];
-  ho_uint width_histogram[60];
+  int height_histogram[60];
+  int width_histogram[60];
   double weight;
   double weight_sum;
-  ho_uint height;
+  int height;
   double height_sum;
-  ho_uint width;
+  int width;
   double width_sum;
-  ho_usint i, histogram_index;
-  ho_usint histogram_index_weight = 0;
-  ho_usint histogram_index_height = 0;
-  ho_usint histogram_index_width = 0;
+  int i, histogram_index;
+  int histogram_index_weight = 0;
+  int histogram_index_height = 0;
+  int histogram_index_width = 0;
 
   /* clean histograms */
   for (i = 0; i < 60; i++)
@@ -460,5 +460,5 @@ int
   *height_com = histogram_index_height * 5 + 2;
   *width_com = histogram_index_width * 5 + 2;
 
-  return HO_FALSE;
+  return FALSE;
 }

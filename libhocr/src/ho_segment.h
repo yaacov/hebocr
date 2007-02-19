@@ -25,7 +25,16 @@
 #ifndef HO_SEGMENT_H
 #define HO_SEGMENT_H 1
 
-#include <ho_common.h>
+#ifndef TRUE
+#define TRUE -1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
@@ -37,11 +46,11 @@
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_segment_paragraphs (const ho_bitmap * m,
-					const ho_uchar font_height,
-					const ho_uchar font_width,
-					const ho_uchar nikud,
-					ho_usint interline_height,
-					const ho_uchar box);
+					const unsigned char font_height,
+					const unsigned char font_width,
+					const unsigned char nikud,
+					const int interline_height,
+					const unsigned char box);
 
 /**
  return a bitmap of the lines
@@ -51,9 +60,9 @@ ho_bitmap *ho_segment_paragraphs (const ho_bitmap * m,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_segment_lines (const ho_bitmap * m,
-				   const ho_uchar font_height,
-				   const ho_uchar font_width,
-				   const ho_uchar nikud,
-				   const ho_usint interline_height);
+				   const unsigned char font_height,
+				   const unsigned char font_width,
+				   const unsigned char nikud,
+				   const int interline_height);
 
 #endif /* HO_SEGMENT_H */

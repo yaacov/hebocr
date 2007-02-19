@@ -27,24 +27,26 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "ho_common.h"
+
 #include "ho_bitmap.h"
 #include "ho_objmap.h"
 #include "ho_bitmap_filter.h"
 #include "ho_dimentions.h"
 
 int
-ho_dimentions_font (const ho_bitmap * m, const ho_uint min_height,
-			      const ho_uint max_height,
-			      const ho_uint min_width,
-			      const ho_uint max_width, ho_usint * height,
-			      ho_usint * width, ho_uchar * nikud)
+ho_dimentions_font (const ho_bitmap * m, const int min_height,
+		    const int max_height,
+		    const int min_width,
+		    const int max_width, int *height,
+		    int *width, unsigned char *nikud)
 {
   int return_val;
   ho_objmap *m_obj = NULL;
 
   /* create an object map from b/w image */
   m_obj = ho_objmap_new_from_bitmap (m);
+  if (!m_obj)
+    return TRUE;
 
   /* get fonts size */
   return_val =
@@ -58,10 +60,9 @@ ho_dimentions_font (const ho_bitmap * m, const ho_uint min_height,
 
 int
 ho_dimentions_line (const ho_bitmap * m,
-			      const ho_uint font_height,
-			      const ho_uint font_width,
-			      const ho_uchar nikud,
-			      ho_usint * interline_height)
+		    const int font_height,
+		    const int font_width,
+		    const unsigned char nikud, int *interline_height)
 {
   int return_val;
   ho_objmap *m_obj = NULL;
@@ -70,9 +71,9 @@ ho_dimentions_line (const ho_bitmap * m,
   ho_bitmap *m_temp1;
   ho_bitmap *m_temp2;
   ho_bitmap *m_out;
-  ho_uint x, y;
-  ho_uchar nikud_ret;
-  ho_usint width;
+  int x, y;
+  unsigned char nikud_ret;
+  int width;
 
   /* if nikud we need to be more careful */
   if (nikud)
@@ -87,12 +88,12 @@ ho_dimentions_line (const ho_bitmap * m,
   /* get common height betwine lines */
   m_temp1 = ho_bitmap_hlink (m_clean, font_width * 4);
   if (!m_temp1)
-    return HO_TRUE;
+    return TRUE;
   ho_bitmap_free (m_clean);
 
   m_temp2 = ho_bitmap_vlink (m_temp1, font_height * 4);
   if (!m_temp2)
-    return HO_TRUE;
+    return TRUE;
 
   ho_bitmap_andnot (m_temp2, m_temp1);
   ho_bitmap_free (m_temp1);

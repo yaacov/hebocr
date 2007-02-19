@@ -67,7 +67,7 @@ ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix)
 {
   GdkPixbuf *pix = NULL;
   ho_pixbuf *pix_color = NULL;
-  ho_uchar *data;
+  unsigned char *data;
 
   /* gdk has only RGB pixbufs */
   pix_color = ho_pixbuf_to_rgb (hocr_pix);

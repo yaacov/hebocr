@@ -22,7 +22,6 @@ libhocr_la_LDFLAGS = -version-info 0:0:0
 
 library_includedir = $(includedir)/libhocr
 library_include_HEADERS = hocr.h \
-         ho_common.h \
          ho_pixbuf.h \
          ho_bitmap.h \
          ho_bitmap_filter.h \

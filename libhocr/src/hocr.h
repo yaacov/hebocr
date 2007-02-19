@@ -52,7 +52,7 @@ BEGIN_C_DECLS
 /* object image map */
 #include <ho_objmap.h>
 #include <ho_dimentions.h>
-#include  <ho_segment.h>
+#include <ho_segment.h>
 /* image map for i/o operations */
 #include <ho_pixbuf.h>
 
