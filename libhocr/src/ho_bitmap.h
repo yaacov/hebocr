@@ -25,26 +25,22 @@
 #ifndef HO_BITMAP_H
 #define HO_BITMAP_H 1
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
 /* hocr bitmap set/get macros */
 #define ho_bitmap_get(m,x,y) ((((m)->data[(x) / 8 + (y) * (m)->rowstride]) & (0x80 >> ((x) % 8))) > 0)
 #define ho_bitmap_set(m,x,y) (((m)->data[(x) / 8 + (y) * (m)->rowstride]) |= (0x80 >> ((x) % 8)))
 #define ho_bitmap_unset(m,x,y) (((m)->data[(x) / 8 + (y) * (m)->rowstride]) &= ~(0x80 >> ((x) % 8)))
 
+#define ho_bitmap_get_x(m) ((m)->x)
+#define ho_bitmap_get_y(m) ((m)->y)
+#define ho_bitmap_set_x(m,new_x) ((m)->x=(new_x))
+#define ho_bitmap_set_y(m,new_y) ((m)->y=(new_y))
 #define ho_bitmap_get_width(m) ((m)->width)
 #define ho_bitmap_get_height(m) ((m)->height)
 
 typedef struct
 {
+  int x;
+  int y;
   int height;
   int width;
   int rowstride;

@@ -25,16 +25,6 @@
 #ifndef HO_PIXBUF_H
 #define HO_PIXBUF_H 1
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 

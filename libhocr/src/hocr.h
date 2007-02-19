@@ -45,7 +45,6 @@
 #endif /* __cplusplus */
 
 BEGIN_C_DECLS
-
 /* binary image map */
 #include <ho_bitmap.h>
 #include <ho_bitmap_filter.h>
@@ -55,7 +54,5 @@ BEGIN_C_DECLS
 #include <ho_segment.h>
 /* image map for i/o operations */
 #include <ho_pixbuf.h>
-
-END_C_DECLS
-
+  END_C_DECLS
 #endif /* HOCR_H */

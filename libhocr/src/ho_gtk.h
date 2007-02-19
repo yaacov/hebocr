@@ -26,7 +26,8 @@
 #define HO_GTK_H 1
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include "hocr.h"
+
+#include <hocr.h>
 
 /**
  new ho_pixbuf from a gdk_pixbuf

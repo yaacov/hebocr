@@ -1,5 +1,5 @@
 /***************************************************************************
- *            ho_bitmap.h
+ *            ho_dimentions.h
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -24,16 +24,6 @@
 
 #ifndef HO_DIMENTIONS_H
 #define HO_DIMENTIONS_H 1
-
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
 
 #include <ho_bitmap.h>
 #include <ho_objmap.h>

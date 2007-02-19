@@ -25,18 +25,9 @@
 #ifndef HO_BITMAP_FILTER_H
 #define HO_BITMAP_FILTER_H 1
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
+
 /**
  horizontaly link short objects in a bitmap
  @param m the bitmap to horizontaly link
@@ -44,9 +35,8 @@
  @patam max_height maximum hight of objects to link
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_filter_hlink (ho_bitmap * m, int size,
-					    int max_height);
-              
+ho_bitmap *ho_bitmap_filter_hlink (ho_bitmap * m, int size, int max_height);
+
 /**
  copy objects from bitmap to bitmap by size
  @param m pointer to an ho_bitmap
@@ -65,7 +55,8 @@ ho_bitmap *ho_bitmap_filter_by_size (const ho_bitmap * m,
  @param m pointer to an ho_bitmap
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down, const int leeway_up);
+ho_bitmap *ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
+				   const int leeway_up);
 
 /**
  copy filled objects from bitmap
@@ -81,8 +72,8 @@ ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
  @param hight of new objects
  @return a newly allocated bitmap
  */
-ho_bitmap *
-ho_bitmap_filter_obj_max_height (const ho_bitmap * m, const int height);
+ho_bitmap *ho_bitmap_filter_obj_max_height (const ho_bitmap * m,
+					    const int height);
 
 /**
  take extend objects lateraly
@@ -90,8 +81,8 @@ ho_bitmap_filter_obj_max_height (const ho_bitmap * m, const int height);
  @param ext_width width of lateral extention
  @return a newly allocated bitmap
  */
-ho_bitmap *
-ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m, const int ext_width);
+ho_bitmap *ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
+						 const int ext_width);
 
 /**
  remove halftone dots from bitmap

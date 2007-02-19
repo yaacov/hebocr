@@ -25,16 +25,6 @@
 #ifndef HO_OBJ_H
 #define HO_OBJ_H 1
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
 /* hocr_object */
 typedef struct
 {
