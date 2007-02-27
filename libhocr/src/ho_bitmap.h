@@ -39,6 +39,24 @@
 
 typedef struct
 {
+  unsigned char type;
+  int font_height;
+  int font_width;
+  unsigned char nikud;
+
+  int font_spacing;
+  int line_spacing;
+
+  int n_blocks;
+  int n_lines;
+  int n_words;
+  int n_fonts;
+
+  char *text;
+  unsigned char *probability;
+  unsigned char error;
+  unsigned char progress;
+
   int x;
   int y;
   int height;
@@ -136,82 +154,8 @@ ho_bitmap *ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n);
  @param height the height to take
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_max_height (const ho_bitmap * m, const int spacer,
-				 const int height);
-
-/**
- draw a black box on bitmap
- @param m the bitmap to draw on
- @param x x-start of box
- @param y y-start of box
- @param width width of box
- @param height height of box
- @return FALSE
- */
-int
-ho_bitmap_draw_box (ho_bitmap * m, const int x, const int y,
-		    const int width, const int height);
-
-/**
- draw a black empty box on bitmap
- @param m the bitmap to draw on
- @param x x-start of box
- @param y y-start of box
- @param width width of box
- @param height height of box
- @return FALSE
- */
-int
-ho_bitmap_draw_box_empty (ho_bitmap * m, const int x, const int y,
-			  const int width, const int height);
-
-/**
- draw vertical line on bitmap
- @param m the bitmap to draw on
- @param x x-start of line
- @param y y-start of line
- @param height height of line
- @return FALSE
- */
-int
-ho_bitmap_draw_vline (ho_bitmap * m, const int x, const int y,
-		      const int height);
-
-/**
- delete vertical line on bitmap
- @param m the bitmap to draw on
- @param x x-start of line
- @param y y-start of line
- @param height height of line
- @return FALSE
- */
-int
-ho_bitmap_delete_vline (ho_bitmap * m, const int x, const int y,
-			const int height);
-
-/**
- draw horizontal line on bitmap
- @param m the bitmap to draw on
- @param x x-start of line
- @param y y-start of line
- @param width height of line
- @return FALSE
- */
-int
-ho_bitmap_draw_hline (ho_bitmap * m, const int x, const int y,
-		      const int width);
-
-/**
- delete horizontal line on bitmap
- @param m the bitmap to draw on
- @param x x-start of line
- @param y y-start of line
- @param width height of line
- @return FALSE
- */
-int
-ho_bitmap_delete_hline (ho_bitmap * m, const int x, const int y,
-		      const int width);
+ho_bitmap *ho_bitmap_set_height (const ho_bitmap * m, const int height,
+				 const int top, const int bottom);
 
 /**
  dilation of a a bitmap with 3x3 box
@@ -247,7 +191,7 @@ ho_bitmap *ho_bitmap_closing (const ho_bitmap * m);
  @patam size maximum distance
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_hlink (ho_bitmap * m, int size);
+ho_bitmap *ho_bitmap_hlink (const ho_bitmap * m, const int size);
 
 /**
  horizontaly erode black dots in a bitmap
@@ -255,8 +199,7 @@ ho_bitmap *ho_bitmap_hlink (ho_bitmap * m, int size);
  @patam size maximum distance
  @return newly allocated ho_bitmap
  */
-ho_bitmap *
-ho_bitmap_herode (ho_bitmap * m, int size);
+ho_bitmap *ho_bitmap_herode (const ho_bitmap * m, const int size);
 
 /**
  verticaly link black dots in a bitmap
@@ -264,13 +207,14 @@ ho_bitmap_herode (ho_bitmap * m, int size);
  @patam size maximum distance
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_bitmap_vlink (ho_bitmap * m, int size);
+ho_bitmap *ho_bitmap_vlink (const ho_bitmap * m, const int size);
 
 /**
  copy edges in bitmap
  @param m pointer to an ho_bitmap
+ @param n width of egde
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_bitmap_edge (const ho_bitmap * m);
+ho_bitmap *ho_bitmap_edge (const ho_bitmap * m, const int n);
 
 #endif /* HO_BITMAP_H */

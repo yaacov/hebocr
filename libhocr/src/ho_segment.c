@@ -42,12 +42,7 @@
 #include "ho_bitmap_filter.h"
 
 ho_bitmap *
-ho_segment_paragraphs (const ho_bitmap * m,
-		       const unsigned char font_height,
-		       const unsigned char font_width,
-		       const unsigned char nikud,
-		       const int interline_height,
-		       const unsigned char box)
+ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
 {
   ho_bitmap *m_clean;
   ho_bitmap *m_temp1;
@@ -55,28 +50,28 @@ ho_segment_paragraphs (const ho_bitmap * m,
   int x, y;
 
   /* if nikud we need to be more careful */
-  if (nikud)
+  if (m->nikud)
     m_clean = ho_bitmap_filter_by_size (m,
-					font_height / 2, font_height * 4,
-					font_width / 3, font_width * 5);
+					m->font_height / 2, m->font_height * 4,
+					m->font_width / 3, m->font_width * 5);
   else
     m_clean = ho_bitmap_filter_by_size (m,
-					font_height / 4, font_height * 4,
-					font_width / 4, font_width * 5);
+					m->font_height / 4, m->font_height * 4,
+					m->font_width / 4, m->font_width * 5);
 
   /* link paragraphs */
-  m_temp1 = ho_bitmap_vlink (m_clean, interline_height * 1.2);
+  m_temp1 = ho_bitmap_vlink (m_clean, m->line_spacing * 1.2);
   if (!m_temp1)
     return NULL;
 
-  m_out = ho_bitmap_hlink (m_temp1, font_width * 2);
+  m_out = ho_bitmap_hlink (m_temp1, m->font_width * 2);
   if (!m_out)
     return NULL;
 
   ho_bitmap_free (m_temp1);
 
   if (box)
-    m_temp1 = ho_bitmap_filter_boxes (m_out, font_height / 2, 0);
+    m_temp1 = ho_bitmap_filter_boxes (m_out, 0, 0);
   else
     m_temp1 = ho_bitmap_filter_fill (m_out);
 
@@ -84,15 +79,15 @@ ho_segment_paragraphs (const ho_bitmap * m,
   ho_bitmap_free (m_clean);
 
   /* try and link one/two line broken paragraphs */
-  m_out = ho_bitmap_filter_hlink (m_temp1, font_width * 6,
-				  font_height * 2 + interline_height * 2);
+  m_out = ho_bitmap_filter_hlink (m_temp1, m->font_width * 6,
+				  m->font_height * 2 + m->line_spacing * 2);
 
   ho_bitmap_free (m_temp1);
 
   /* check all paragraphs for artefacts, too small or large */
   m_temp1 =
-    ho_bitmap_filter_by_size (m_out, 2 * font_height / 3, m->height,
-			      font_width * 3, m->width);
+    ho_bitmap_filter_by_size (m_out, 2 * m->font_height / 3, m->height,
+			      m->font_width * 3, m->width);
 
   ho_bitmap_free (m_out);
 
@@ -100,61 +95,107 @@ ho_segment_paragraphs (const ho_bitmap * m,
 }
 
 ho_bitmap *
-ho_segment_lines (const ho_bitmap * m,
-		  const unsigned char font_height,
-		  const unsigned char font_width,
-		  const unsigned char nikud, const int interline_height)
+ho_segment_lines (const ho_bitmap * m)
 {
-  ho_objmap *m_obj;
-
-  ho_bitmap *m_clean;
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
-  int x, y;
-  int index;
-  int width, height;
-
-  m_clean = ho_bitmap_filter_by_size (m,
-				      4 * font_height / 5, font_height * 1.2,
-				      font_width / 3, font_width * 5);
+  /* filter only "regular" sized fonts */
+  m_temp = ho_bitmap_filter_by_size (m,
+				     8 * m->font_height / 10,
+				     12 * m->font_height / 10, m->font_width / 3,
+				     m->font_width * 5);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
 
   /* link lines */
-  m_temp = ho_bitmap_hlink (m_clean, font_width * 6);
-  ho_bitmap_free (m_clean);
+  m_temp = ho_bitmap_hlink (m_out, m->font_width * 6);
+  ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
+  m_out = m_temp;
 
   /* add sideways leeway */
-  m_out = ho_bitmap_filter_obj_extend_lateraly (m_temp, font_width * 4);
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 4);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
 
   /* remove little things up and down the line */
-  m_temp = ho_bitmap_herode (m_out, font_width * 6);
+  m_temp = ho_bitmap_herode (m_out, m->font_width * 6);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
-
-  /* re link lines, helps connect broken lines */
-  m_out = ho_bitmap_hlink (m_temp, font_width * 6);
-  ho_bitmap_free (m_temp);
-  if (!m_out)
-    return NULL;
+  m_out = m_temp;
 
   /* add more sideways leeway */
-  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, font_width * 4);
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 4);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
+  m_out = m_temp;
 
   /* set out matrix height, we want clean lines of known height */
-  m_out = ho_bitmap_filter_obj_max_height (m_temp, font_height);
-  ho_bitmap_free (m_temp);
-  if (!m_out)
-    return NULL;
-
-  /* final touch remove little things up and down the line */
-  m_temp = ho_bitmap_herode (m_out, font_width * 6);
+  m_temp = ho_bitmap_filter_set_height (m_out, m->font_height, 0, 0);
   ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
 
-  return m_temp;
+  /* try to link broken lines */
+  m_temp = ho_bitmap_hlink (m_out, m->font_width * 3);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* remove little things up and down the line */
+  m_temp = ho_bitmap_herode (m_out, m->font_width * 3);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  return m_out;
+}
+
+ho_bitmap *
+ho_segment_words (const ho_bitmap * m)
+{
+  ho_bitmap *m_temp;
+  ho_bitmap *m_out;
+
+  /* filter only "regular" sized fonts */
+  m_temp = ho_bitmap_filter_by_size (m,
+				     m->font_height / 6,
+				     m->font_height * 6, m->font_width / 6,
+				     m->font_width * 6);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* try to link broken letters */
+  m_temp = ho_bitmap_vlink (m_out, m->font_height * 2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+  
+  /* try to link words */
+  m_temp = ho_bitmap_hlink (m_out, m->font_width / 2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* make words a block */
+  m_temp = ho_bitmap_filter_boxes (m_out, 0, 0);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  return m_out;
 }

@@ -99,7 +99,7 @@ ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix)
 }
 
 ho_pixbuf *
-ho_gtk_pixbuf_new_from_file (const char *filename)
+ho_gtk_pixbuf_load (const char *filename)
 {
   ho_pixbuf *pix = NULL;
   GdkPixbuf *gdk_pix = NULL;

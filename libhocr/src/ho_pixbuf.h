@@ -104,21 +104,6 @@ ho_pixbuf *ho_pixbuf_to_rgb (const ho_pixbuf * pix_in);
 int ho_pixbuf_free (ho_pixbuf * pix);
 
 /**
- read ho_pixbuf from pnm file 8 or 24 bpp
- @param filenme file name of pnm file 
- @return newly allocated ho_pixbuf
- */
-ho_pixbuf *ho_pixbuf_new_from_pnm (const char *filename);
-
-/**
- writes ho_pixbuf to pnm file
- @param pix ho_pixbuf 8 or 24 bpp
- @param filenme save as file name 
- @return FALSE
- */
-int ho_pixbuf_save_pnm (const ho_pixbuf * pix, const char *filename);
-
-/**
  converts a color pixbuf to gray one
  @param pix the color ho_pixbuf
  @return newly allocated gray ho_pixbuf
@@ -156,105 +141,6 @@ ho_pixbuf *ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale);
  */
 unsigned char
 ho_pixbuf_minmax (const ho_pixbuf * pix, unsigned char * min, unsigned char * max);
-
-/**
- draw a line from x1,y1 to x2,y2
- @param pix a ho_pixbuf 
- @param x1 x cordinate of start point 
- @param y1 y cordinate of start point 
- @param x2 x cordinate of end point 
- @param y2 y cordinate of end point 
- @param red value of red channel 
- @param green value of green channel 
- @param blue value of blue channel 
- @return FALSE
- */
-int
-ho_pixbuf_draw_line (ho_pixbuf * m, const int x1, const int y1,
-		     const int x2, const int y2, const unsigned char red,
-		     const unsigned char green, const unsigned char blue);
-
-/**
- draw a scale line from x1,y1
- @param pix a ho_pixbuf 
- @param x1 x cordinate of start point 
- @param y1 y cordinate of start point 
- @param length length of scale line 
- @param step size of scale marks
- @param red value of red channel 
- @param green value of green channel 
- @param blue value of blue channel 
- @return FALSE
- */
-int
-ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const int x1,
-				 const int y1, const int length,
-				 const int step, const unsigned char red,
-				 const unsigned char green, const unsigned char blue);
-
-/**
-  draw a scale line from x1,y1
- @param pix a ho_pixbuf 
- @param x1 x cordinate of start point 
- @param y1 y cordinate of start point 
- @param length length of scale line 
- @param step size of scale marks
- @param red value of red channel 
- @param green value of green channel 
- @param blue value of blue channel 
- @return FALSE
- */
-int
-ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const int x1,
-			       const int y1, const int length,
-			       const int step, const unsigned char red,
-			       const unsigned char green, const unsigned char blue);
-
-/**
-  draw a grid
- @param pix a ho_pixbuf 
- @param size size of grid boxes
- @param step size of scale marks
- @param red value of red channel 
- @param green value of green channel 
- @param blue value of blue channel 
- @return FALSE
- */
-int
-ho_pixbuf_draw_grid (ho_pixbuf * m, const int size, const int step,
-		     const unsigned char red, const unsigned char green,
-		     const unsigned char blue);
-
-/**
-  draw a bitmap
- @param m a ho_pixbuf 
- @param bit_in the bitmap to draw on the pixbuf
- @param red value of red channel 
- @param green value of green channel 
- @param blue value of blue channel 
- @return FALSE
- */
-int
-ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
-		       const unsigned char red, const unsigned char green,
-		       const unsigned char blue);
-
-/**
-  draw a bitmap
- @param m a ho_pixbuf 
- @param bit_in the bitmap to draw on the pixbuf
- @param x1 x of upper right start of drawing
- @param y1 y of upper right start of drawing
- @param red value of red channel 
- @param green value of green channel 
- @param blue value of blue channel 
- @return FALSE
- */
-int
-ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
-			  const int x1, const int y1,
-			  const unsigned char red, const unsigned char green,
-			  const unsigned char blue);
         
 /**
  aplay a linear filter to a gray pixbuf 
@@ -291,7 +177,7 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf * pix,
  @param adaptive_threshold the threshold to use for adaptive thresholding 0..100
  @return newly allocated gray ho_bitmap
  */
-ho_bitmap *ho_pixbuf_to_bitmap_adaptive_best (const ho_pixbuf *
+ho_bitmap *ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
 					      pix,
 					      unsigned char threshold,
 					      unsigned char size,

@@ -55,12 +55,13 @@ ho_objmap_new (const int width, const int height)
     }
 
   /* read header */
+  m_new->x = 0;
+  m_new->y = 0;
   m_new->width = width;
   m_new->height = height;
 
   /* allocate memory for data (and set to zero) */
-  m_new->map =
-    (int *) calloc (m_new->height * m_new->width, sizeof (int));
+  m_new->map = (int *) calloc (m_new->height * m_new->width, sizeof (int));
   if (!(m_new->map))
     {
       free (m_new);
@@ -136,15 +137,15 @@ ho_objmap_clean (ho_objmap * m)
 }
 
 int
-ho_objmap_sort_by_reading_index (ho_objmap * m)
+ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col)
 {
   int x, y, k;
   int index;
   int *map = NULL;
 
   /* make sure reading order is set */
-  ho_objmap_update_reading_index_rtl (m);
-  
+  ho_objmap_update_reading_index_rtl (m, col);
+
   /* clean the object list */
   ho_objlist_clean_by_reading_index ((m->obj_list), &map);
 
@@ -181,6 +182,10 @@ ho_objmap_new_from_bitmap (const ho_bitmap * bit_in)
 
   /* allocate memory */
   m_new = ho_objmap_new (bit_in->width, bit_in->height);
+  if (!m_new)
+    return NULL;
+  m_new->x = bit_in->x;
+  m_new->y = bit_in->y;
 
   /* link all concted black pixels */
   for (x = 1; x < bit_in->width; x++)
@@ -256,8 +261,8 @@ int
 ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
 		       const int max_height,
 		       const int min_width,
-		       const int max_width, int * height,
-		       int * width, unsigned char * nikud)
+		       const int max_width, int *height,
+		       int *width, unsigned char *nikud)
 {
   int i, j;
   int counter;
@@ -333,6 +338,9 @@ ho_objmap_to_bitmap_by_size (const ho_objmap * m,
   if (!m_out)
     return NULL;
 
+  m_out->x = m->x;
+  m_out->y = m->y;
+
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
       {
@@ -382,6 +390,9 @@ ho_objmap_to_bitmap_by_index (const ho_objmap * m, const int index)
   if (!m_out)
     return NULL;
 
+  m_out->x = m->x;
+  m_out->y = m->y;
+
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
       {
@@ -398,8 +409,7 @@ ho_objmap_to_bitmap_by_index (const ho_objmap * m, const int index)
 
 ho_bitmap *
 ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
-				     const int index,
-				     const int frame)
+				     const int index, const int frame)
 {
   int x, y;
   int x1, y1;
@@ -427,6 +437,9 @@ ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
   x1 = (((m->obj_list)->objects)[index]).x;
   y1 = (((m->obj_list)->objects)[index]).y;
 
+  m_out->x = m->x + x1 - frame;
+  m_out->y = m->y + y1 - frame;
+
   for (x = 0; x < width; x++)
     for (y = 0; y < height; y++)
       {
@@ -442,24 +455,32 @@ ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
 }
 
 int
-ho_objmap_update_reading_index_rtl (ho_objmap * m)
+ho_objmap_update_reading_index_rtl (ho_objmap * m, const unsigned char n_columns)
 {
   int q;
   int index;
   int sorting_list_index;
-  int sorting_lists_sizes[4] = { 0, 0, 0, 0 };
+  int *sorting_lists_sizes;
   int *sorting_lists;
   int reading_index;
   int x, y;
   int height;
   int width;
+  unsigned char n_col = n_columns;
+
+  /* sanity check */
+  if (n_col < 2 || n_col > 6)
+    n_col = 2;
 
   /* is this an object map */
   if ((m->obj_list)->size < 1)
     return TRUE;
 
   /* allocate sorting lists memory */
-  sorting_lists = calloc (4 * ho_objmap_get_size (m), sizeof (int));
+  sorting_lists_sizes = calloc (n_col, sizeof (int));
+  if (!sorting_lists_sizes)
+    return TRUE;
+  sorting_lists = calloc (n_col * ho_objmap_get_size (m), sizeof (int));
   if (!sorting_lists)
     return TRUE;
 
@@ -471,8 +492,8 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m)
       width = ho_objmap_get_object (m, index).width;
       height = ho_objmap_get_object (m, index).height;
 
-      /* what 1/4 ? */
-      q = 3 - 4 * (x + width) / m->width;
+      /* what column ? */
+      q = n_col - 1 - n_col * (x + width) / m->width;
 
       /* sanity check */
       if (q < 0)
@@ -487,7 +508,7 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m)
   /* sort by height for each 1/4 */
   reading_index = 0;
 
-  for (q = 0; q < 4; q++)
+  for (q = 0; q < n_col; q++)
     for (y = 0; y < m->height; y++)
       {
 	for (sorting_list_index = 0;
@@ -504,6 +525,9 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m)
 	      }
 	  }
       }
+
+  free (sorting_lists);
+  free (sorting_lists_sizes);
 
   return FALSE;
 }

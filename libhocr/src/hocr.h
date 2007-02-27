@@ -47,12 +47,19 @@
 BEGIN_C_DECLS
 /* binary image map */
 #include <ho_bitmap.h>
+#include <ho_bitmap_draw.h>
+#include <ho_bitmap_pnm.h>
 #include <ho_bitmap_filter.h>
+/* color image map */
+#include <ho_pixbuf.h>
+#include <ho_pixbuf_pnm.h>
+#include <ho_pixbuf_draw.h>
 /* object image map */
+#include <ho_obj.h>
 #include <ho_objmap.h>
 #include <ho_dimentions.h>
 #include <ho_segment.h>
-/* image map for i/o operations */
-#include <ho_pixbuf.h>
+/* layout container for hocr layout */
+#include <ho_layout.h>
   END_C_DECLS
 #endif /* HOCR_H */

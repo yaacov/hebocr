@@ -1,6 +1,6 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-SUBDIRS = src
+SUBDIRS = src www
 
 EXTRA_DIST = \
         bootstrap.sh HACKING libhocr.prj

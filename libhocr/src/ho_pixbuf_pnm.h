@@ -1,5 +1,5 @@
 /***************************************************************************
- *            ho_dimentions.h
+ *            ho_pixbuf_pnm.h
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -22,41 +22,26 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-#ifndef HO_DIMENTIONS_H
-#define HO_DIMENTIONS_H 1
+#ifndef HO_PIXBUF_PNM_H
+#define HO_PIXBUF_PNM_H 1
 
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
+#include <ho_pixbuf.h>
 
 /**
- guess font dimentions, sets: font_height, font_width and nikud  [for a page or block]
- @param m pointer to an ho_bitmap
- @param min_height only objects with this minimal height are used
- @param max_height only objects with this maximal height are used
- @param min_width only objects with this minimal width are used
- @param max_width only objects with this maximal width are used
- @return FALSE
+ read ho_pixbuf from pnm file 8 or 24 bpp
+ @param filenme file name of pnm file 
+ @return newly allocated ho_pixbuf
  */
-int
-ho_dimentions_font_width_height_nikud (ho_bitmap * m, const int min_height,
-			      const int max_height,
-			      const int min_width,
-			      const int max_width);
+ho_pixbuf *ho_pixbuf_pnm_load (const char *filename);
 
 /**
- guess line dimentions, sets line_spacing [for a block]
- @param m pointer to an ho_bitmap
+ writes ho_pixbuf to pnm file
+ @param pix ho_pixbuf 8 or 24 bpp
+ @param filenme save as file name 
  @return FALSE
  */
-int
-ho_dimentions_line_spacing (ho_bitmap * m);
-
-/**
- guess line dimentions, sets font_spacing [for a line]
- @param m pointer to an ho_bitmap
- @return FALSE
- */
-int
-ho_dimentions_font_spacing (ho_bitmap * m);
-
-#endif /* HO_DIMENTIONS_H */
+int ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename);
+ 
+#endif /* HO_PIXBUF_PNM_H */

@@ -29,30 +29,27 @@
 #include <ho_objmap.h>
 
 /**
- return a bitmap of the paragraphs
+ return a bitmap of the paragraphs, 
+ font and line dimentions _must_ be set
  @param m pointer to an ho_bitmap
- @param font_height guessed font height in document
- @param font_width guessed font width in document
+ @param box squre (boxes) or free formed text blocks 
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_segment_paragraphs (const ho_bitmap * m,
-					const unsigned char font_height,
-					const unsigned char font_width,
-					const unsigned char nikud,
-					const int interline_height,
-					const unsigned char box);
+				  const unsigned char box);
 
 /**
  return a bitmap of the lines
  @param m pointer to an ho_bitmap
- @param font_height guessed font height in document
- @param font_width guessed font width in document
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_segment_lines (const ho_bitmap * m,
-				   const unsigned char font_height,
-				   const unsigned char font_width,
-				   const unsigned char nikud,
-				   const int interline_height);
+ho_bitmap *ho_segment_lines (const ho_bitmap * m);
+
+/**
+ return a bitmap of the words
+ @param m pointer to an ho_bitmap
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_segment_words (const ho_bitmap * m);
 
 #endif /* HO_SEGMENT_H */

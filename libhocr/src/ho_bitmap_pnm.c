@@ -1,5 +1,5 @@
 /***************************************************************************
- *            ho_gtk.h
+ *            ho_bitmap_pnm.c
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -22,44 +22,40 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-#ifndef HO_GTK_H
-#define HO_GTK_H 1
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#ifndef TRUE
+#define TRUE -1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
 
-#include <hocr.h>
+#include "ho_bitmap.h"
+#include "ho_bitmap_pnm.h"
 
-/**
- new ho_pixbuf from a gdk_pixbuf
- @param gdk_pix the pixbuf to copy
- @return newly allocated ho_pixbuf
- */
-ho_pixbuf *
-ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix);
-
-/**
- new gdk_pixbuf from a ho_pixbuf
- @param hocr_pix the pixbuf to copy
- @return newly allocated gdk_pixbuf
- */
-GdkPixbuf *
-ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix);
-
-/**
- read ho_pixbuf from file
- @param filenme file name
- @return newly allocated ho_pixbuf
- */
-ho_pixbuf *
-ho_gtk_pixbuf_load (const char *filename);
-
-/**
- writes ho_pixbuf to file
- @param pix ho_pixbuf 8 or 24 bpp
- @param filenme save as file name 
- @return FALSE
- */
 int
-ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
+ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename)
+{
+  FILE *file = NULL;
 
-#endif /* HO_GTK_H */
+  file = fopen (filename, "wb");
+
+  if (!file)
+    return TRUE;
+
+  /* print header */
+  fprintf (file, "P4 %d %d\n", m->width, m->height);
+
+  /* this might be a huge write... */
+  fwrite (m->data, 1, m->height * m->rowstride, file);
+  fclose (file);
+
+  return FALSE;
+}

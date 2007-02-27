@@ -79,6 +79,9 @@ ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
   if (!m_obj)
     return NULL;
   m_out = ho_bitmap_new (m->width, m->height);
+  m_out->x = m->x;
+  m_out->y = m->y;
+
   if (!m_out)
     {
       ho_objmap_free (m_obj);
@@ -127,6 +130,8 @@ ho_bitmap_filter_fill (const ho_bitmap * m)
       ho_objmap_free (m_obj);
       return NULL;
     }
+  m_out->x = m->x;
+  m_out->y = m->y;
 
   /* loop over all the objects and box them */
   for (index = 0; index < m_obj->obj_list->size; index++)
@@ -153,7 +158,8 @@ ho_bitmap_filter_fill (const ho_bitmap * m)
 }
 
 ho_bitmap *
-ho_bitmap_filter_obj_max_height (const ho_bitmap * m, const int height)
+ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
+			     const int top, const int bottom)
 {
   ho_objmap *m_obj;
   ho_bitmap *m_out;
@@ -172,6 +178,8 @@ ho_bitmap_filter_obj_max_height (const ho_bitmap * m, const int height)
       ho_objmap_free (m_obj);
       return NULL;
     }
+  m_out->x = m->x;
+  m_out->y = m->y;
 
   /* loop over all the objects and box them */
   for (index = 0; index < m_obj->obj_list->size; index++)
@@ -182,7 +190,7 @@ ho_bitmap_filter_obj_max_height (const ho_bitmap * m, const int height)
 	continue;
 
       /* take height pixels from this object */
-      m_temp2 = ho_bitmap_max_height (m_temp1, 0, height);
+      m_temp2 = ho_bitmap_set_height (m_temp1, height, top, bottom);
       ho_bitmap_free (m_temp1);
       if (!m_temp2)
 	continue;
@@ -235,6 +243,8 @@ ho_bitmap_filter_remove_dots (const ho_bitmap * m,
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;
+  m_out->x = m->x;
+  m_out->y = m->y;
 
   /* connect all the small dots */
   m_temp = ho_bitmap_dilation (m);
@@ -371,6 +381,10 @@ ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
     }
 
   ho_objmap_free (m_obj);
+
+  /* set origin */
+  m_out->x = m->x;
+  m_out->y = m->y;
 
   return m_out;
 }

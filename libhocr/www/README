@@ -1,0 +1,34 @@
+About:
+
+  HOCR WWW is a web interface to libhocr, Hebrew character recognition library
+  http://hocr.berlios.de
+
+WARNING: THIS IS *NOT* A SECURE SERVICE, DO NOT INSTALL ON SYSTEMS WITH WEB ACCES
+
+Install:
+  1) install apache web server with php module on your server system.
+  3) install ImageMagic and hocr on your server system
+  4) configure the web server maximum upload file size
+  5) copy the contents of libhocr/www directory to your web page.
+  6) make sure the web server user (on debian www-data) 
+      have write permissions on the install directory.
+
+Copying:
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+ 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Library General Public License for more details.
+ 
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+
+Copyright 2005-2007, Yaacov Zamir kzamir_at_walla.co.il
+
+Yaacov Zamir <kzamir_at_walla.co.il> 
+Monday, 10 Av 5765, August 15 2005

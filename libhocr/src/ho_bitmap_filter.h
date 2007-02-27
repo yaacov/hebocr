@@ -72,8 +72,8 @@ ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
  @param hight of new objects
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_bitmap_filter_obj_max_height (const ho_bitmap * m,
-					    const int height);
+ho_bitmap *ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
+					const int top, const int bottom);
 
 /**
  take extend objects lateraly

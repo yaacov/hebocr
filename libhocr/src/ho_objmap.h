@@ -40,6 +40,8 @@
 
 typedef struct
 {
+  int x;
+  int y;
   int height;
   int width;
   int *map;
@@ -73,8 +75,7 @@ int ho_objmap_clean (ho_objmap * m);
  @param m pointer to an ho_objmap
  @return FALSE
  */
-int
-ho_objmap_sort_by_reading_index (ho_objmap * m);
+int ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col);
 
 /**
  new ho_objmap from ho_bitmap
@@ -97,8 +98,8 @@ ho_objmap *ho_objmap_new_from_bitmap (const ho_bitmap * bit_in);
 int ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
 			   const int max_height,
 			   const int min_width,
-			   const int max_width, int * height,
-			   int * width, unsigned char * nikud);
+			   const int max_width, int *height,
+			   int *width, unsigned char *nikud);
 
 /**
  copy objects from objmap to bitmap by size
@@ -139,6 +140,6 @@ ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
  @param m pointer to an ho_objmap
  @return FALSE
  */
-int ho_objmap_update_reading_index_rtl (ho_objmap * m);
+int ho_objmap_update_reading_index_rtl (ho_objmap * m, const unsigned char n_columns);
 
 #endif /* HO_OBJMAP_H */

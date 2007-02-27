@@ -9,8 +9,8 @@ libhocr (0.10.2)
  * paragraph segmentation functions
  * line segmentation functions
  * word segmentation functions
- * letter segmentation functions
  * reading order sorting functions
+ * add php web interface 
  
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 15 February 2007 19:12
  

@@ -37,7 +37,6 @@ gboolean version = FALSE;
 gboolean debug = FALSE;
 gboolean no_gtk = FALSE;
 
-
 gint threshold = 0;
 gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
@@ -47,10 +46,26 @@ gboolean remove_images = FALSE;
 
 gint paragraph_setup = 0;
 gboolean show_grid = FALSE;
-gboolean save_paragraph_images = FALSE;
+gboolean save_bw = FALSE;
+gboolean save_layout = FALSE;
 
 gboolean only_image_proccesing = FALSE;
 gboolean only_layout_analysis = FALSE;
+
+gint spacing_code = 0;
+gint lang_code = 0;
+gint font_code = 0;
+
+GError *error = NULL;
+
+/* black and white text image */
+ho_bitmap *m_text = NULL;
+
+/* text layout */
+ho_layout *l_page = NULL;
+
+/* text for output */
+gchar *text_out = NULL;
 
 static gchar *copyright_message = "hocr - Hebrew OCR utility\n\
 %s\n\
@@ -76,11 +91,11 @@ static GOptionEntry entries[] = {
    "use FILE as input image file name", "FILE"},
   {"text-out", 'o', 0, G_OPTION_ARG_FILENAME, &text_out_filename,
    "use FILE as output text file name", "FILE"},
-  {"images-out-path", 'p', 0, G_OPTION_ARG_FILENAME, &image_out_path,
-   "use PATH as output images directory path", "PATH"},
+  {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
+   "use PATH for output images", "PATH"},
   {"thresholding-type", 'a', 0, G_OPTION_ARG_INT,
    &adaptive_threshold_type,
-   "thresholding type, 0-normal, 1-none, 2-best",
+   "thresholding type, 0 normal, 1 none, 2 fine",
    "NUM"},
   {"threshold", 't', 0, G_OPTION_ARG_INT, &threshold,
    "use NUM as threshold value, 1..100",
@@ -89,7 +104,7 @@ static GOptionEntry entries[] = {
    "use NUM as adaptive threshold value, 1..100",
    "NUM"},
   {"scale", 's', 0, G_OPTION_ARG_INT, &scale_by,
-   "scale input image by SCALE 1..9, 0-auto",
+   "scale input image by SCALE 1..9, 0 auto",
    "SCALE"},
   {"remove-halfton", 'r', 0, G_OPTION_ARG_NONE, &remove_dots,
    "remove halfton dots from input image",
@@ -97,23 +112,25 @@ static GOptionEntry entries[] = {
   {"remove-images", 'R', 0, G_OPTION_ARG_NONE, &remove_images,
    "remove images from input image",
    NULL},
-  {"paragraph-setup", 'P', 0, G_OPTION_ARG_INT, &paragraph_setup,
-   "paragraph setup: 0-colums 1-free",
+  {"colums setup", 'c', 0, G_OPTION_ARG_INT, &paragraph_setup,
+   "colums setup: 1 free, 2.. #colums, 0 auto",
    "NUM"},
   {"draw-grid", 'g', 0, G_OPTION_ARG_NONE, &show_grid,
    "draw grid on output images", NULL},
-  {"save_paragraphs", 'l', 0, G_OPTION_ARG_NONE, &save_paragraph_images,
-   "save individual paragraph images", NULL},
-  {"image-proccesing", 'I', 0, G_OPTION_ARG_NONE, &only_image_proccesing,
-   "run image proccesing and exit", NULL},
-  {"layout-analysis", 'L', 0, G_OPTION_ARG_NONE, &only_layout_analysis,
-   "run layout analysis and exit", NULL},
+  {"save-bw", 'b', 0, G_OPTION_ARG_NONE, &save_bw,
+   "save proccesd bw image", NULL},
+  {"save-bw-exit", 'B', 0, G_OPTION_ARG_NONE, &only_image_proccesing,
+   "save proccesd bw image and exit", NULL},
+  {"save-layout", 'l', 0, G_OPTION_ARG_NONE, &save_layout,
+   "save layout image", NULL},
+  {"save-layout-exit", 'L', 0, G_OPTION_ARG_NONE, &only_layout_analysis,
+   "save layout image and exit", NULL},
   {"no-gtk", 'n', 0, G_OPTION_ARG_NONE, &no_gtk,
    "do not use gtk for file input and output", NULL},
   {"debug", 'd', 0, G_OPTION_ARG_NONE, &debug,
-   "output debuging information while running", NULL},
+   "print debuging information while running", NULL},
   {"version", 'v', 0, G_OPTION_ARG_NONE, &version,
-   "output version information and exit", NULL},
+   "print version information and exit", NULL},
   {NULL}
 };
 
@@ -126,47 +143,15 @@ Try `--help' for more information.\n", g_get_prgname (), msg);
 }
 
 int
-main (int argc, char *argv[])
+hocr_cmd_parser (int *argc, char **argv[])
 {
-  GError *error = NULL;
-  GOptionContext *context = NULL;
-  gchar *text_out = NULL;
-  int index;
-
-  ho_pixbuf *pix = NULL;
-  ho_pixbuf *pix_temp = NULL;
-  ho_pixbuf *pix_out = NULL;
-
-  ho_bitmap *m_bw = NULL;
-  ho_bitmap *m_bw_temp = NULL;
-  ho_bitmap *m_bw_temp2 = NULL;
-  ho_bitmap *m_current_paragraph = NULL;
-  ho_bitmap *m_paragraphs = NULL;
-  ho_bitmap *m_lines = NULL;
-
-  ho_objmap *m_obj = NULL;
-
-  int x;
-  int y;
-  int height;
-  int width;
-  int font_height;
-  int font_width;
-  int interline_height;
-  int paragraph_font_height;
-  int paragraph_font_width;
-  int paragraph_interline_height;
-  unsigned char nikud = FALSE;
-  unsigned char is_text_block = TRUE;
-
-  /* start of argument analyzing section 
-   */
+  GOptionContext *context;
 
   /* get user args */
   context = g_option_context_new ("- Hebrew OCR utility.");
 
   g_option_context_add_main_entries (context, entries, PACKAGE_NAME);
-  g_option_context_parse (context, &argc, &argv, &error);
+  g_option_context_parse (context, argc, argv, &error);
 
   /* free allocated memory */
   g_option_context_free (context);
@@ -174,6 +159,12 @@ main (int argc, char *argv[])
   if (error)
     {
       hocr_printerr ("unrecognized option");
+      exit (1);
+    }
+
+  if (!no_gtk && !image_in_filename)
+    {
+      hocr_printerr ("no input image file name (use -n for pipeing)");
       exit (1);
     }
 
@@ -186,22 +177,55 @@ main (int argc, char *argv[])
   if (debug)
     g_print ("%s - Hebrew OCR utility\n", PACKAGE_STRING);
 
-  /* end of argument analyzing section */
+  /* sanity check */
+  if (adaptive_threshold_type > 2 || adaptive_threshold_type < 0)
+    {
+      hocr_printerr ("unknown thresholding type using normal settings");
+      adaptive_threshold_type = 0;
+    }
 
-  /* init gtk */
-  if (!no_gtk)
-    gtk_init (&argc, &argv);
+  if (scale_by > 9 || scale_by < 0)
+    {
+      hocr_printerr ("unknown scaling factor using auto settings");
+      scale_by = 0;
+    }
 
-  /* start of image proccesing section 
-   */
-  if (debug)
-    g_print ("start image proccesing.\n");
+  if (paragraph_setup > 4 || paragraph_setup < 0)
+    {
+      hocr_printerr ("unknown paragraph setup using auto settings");
+      paragraph_setup = 0;
+    }
+
+  if (threshold > 100 || threshold < 0)
+    {
+      hocr_printerr ("unknown thresholding value using auto settings");
+      threshold = 0;
+    }
+
+  if (adaptive_threshold > 100 || adaptive_threshold < 0)
+    {
+      hocr_printerr ("unknown thresholding value using auto settings");
+      adaptive_threshold = 0;
+    }
+
+  return FALSE;
+}
+
+/* FIXME: this function use globals */
+ho_bitmap *
+hocr_load_input_bitmap ()
+{
+  ho_pixbuf *pix = NULL;
+  ho_bitmap *m_bw = NULL;
+
+  ho_bitmap *m_bw_temp = NULL;
+  ho_bitmap *m_bw_temp2 = NULL;
 
   /* read image from file */
   if (no_gtk)
-    pix = ho_pixbuf_new_from_pnm (image_in_filename);
+    pix = ho_pixbuf_pnm_load (image_in_filename);
   else
-    pix = ho_gtk_pixbuf_new_from_file (image_in_filename);
+    pix = ho_gtk_pixbuf_load (image_in_filename);
 
   if (!pix)
     {
@@ -234,17 +258,16 @@ main (int argc, char *argv[])
   if (!scale_by)
     {
       /* get fonts size for autoscale */
-      if (ho_dimentions_font (m_bw, 6, 200, 6, 200, &font_height,
-			      &font_width, &nikud))
+      if (ho_dimentions_font_width_height_nikud (m_bw, 6, 200, 6, 200))
 	{
 	  hocr_printerr ("can't create object map\n");
 	  exit (1);
 	}
 
       /* if fonts are too small and user wants auto scale, re-scale image */
-      if (font_height < 10)
+      if (m_bw->font_height < 10)
 	scale_by = 4;
-      else if (font_height < 25)
+      else if (m_bw->font_height < 25)
 	scale_by = 2;
       else
 	scale_by = 1;
@@ -308,8 +331,7 @@ main (int argc, char *argv[])
 	}
 
       /* get fonts size for autoscale */
-      if (ho_dimentions_font (m_bw, 6, 200, 6, 200, &font_height,
-			      &font_width, &nikud))
+      if (ho_dimentions_font_width_height_nikud (m_bw, 6, 200, 6, 200))
 	{
 	  hocr_printerr ("can't create object map\n");
 	  exit (1);
@@ -317,10 +339,11 @@ main (int argc, char *argv[])
 
       /* remove big objects */
       m_bw_temp2 = ho_bitmap_filter_by_size (m_bw_temp,
-					     font_height * 4,
+					     m_bw->font_height * 4,
 					     m_bw_temp->height,
-					     font_width * 9,
+					     m_bw->font_width * 9,
 					     m_bw_temp->width);
+
       if (!m_bw_temp2)
 	{
 	  hocr_printerr
@@ -334,9 +357,10 @@ main (int argc, char *argv[])
       /* remove small objects */
       m_bw_temp2 = ho_bitmap_filter_by_size (m_bw_temp,
 					     1,
-					     font_height / 5,
-					     1, font_width / 8);
+					     m_bw->font_height / 5,
+					     1, m_bw->font_width / 8);
       ho_bitmap_free (m_bw_temp);
+
       if (!m_bw_temp2)
 	{
 	  hocr_printerr
@@ -346,26 +370,90 @@ main (int argc, char *argv[])
 
       ho_bitmap_andnot (m_bw, m_bw_temp2);
       ho_bitmap_free (m_bw_temp2);
-
     }
+
+  /* free input pixbuf */
+  ho_pixbuf_free (pix);
+
+  return m_bw;
+}
+
+/* FIXME: this functions use globals */
+
+int
+hocr_exit ()
+{
+  int block_index;
+  int line_index;
+
+  /* allert user */
+  if (debug)
+    g_print ("free memory.\n");
+
+  /* free image matrixes */
+  ho_bitmap_free (m_text);
+
+  /* free page layout  masks */
+  ho_layout_free (l_page);
+
+  /* free text */
+  if (text_out)
+    g_free (text_out);
+
+  /* free file names */
+  if (image_in_filename)
+    g_free (image_in_filename);
+  if (image_out_path)
+    g_free (image_out_path);
+  if (text_out_filename)
+    g_free (text_out_filename);
+
+  /* exit program */
+  exit (0);
+
+  return FALSE;
+}
+
+int
+main (int argc, char *argv[])
+{
+  /* start of argument analyzing section 
+   */
+
+  hocr_cmd_parser (&argc, &argv);
+
+  /* init gtk */
+  if (!no_gtk)
+    gtk_init (&argc, &argv);
+
+  /* end of argument analyzing section */
+
+  /* start of image proccesing section 
+   */
+  if (debug)
+    g_print ("start image proccesing.\n");
+
+  /* load the image from input filename */
+  m_text = hocr_load_input_bitmap ();
 
   if (debug)
     if (scale_by > 1)
       g_print (" procced image is %d by %d pixels (origianl scaled by %d)\n",
-	       m_bw->width, m_bw->height, scale_by);
+	       m_text->width, m_text->height, scale_by);
     else
       g_print (" procced image is %d by %d pixels\n",
-	       m_bw->width, m_bw->height);
+	       m_text->width, m_text->height);
 
-  /* if debug mode or only image proccesing, save b/w image */
-  if (only_image_proccesing || debug)
+  /* if only image proccesing or save b/w image */
+  if (save_bw || only_image_proccesing)
     {
       gchar *filename;
+      ho_pixbuf *pix_out;
 
-      pix_temp = ho_pixbuf_new_from_bitmap (m_bw);
+      pix_out = ho_pixbuf_new_from_bitmap (m_text);
 
       if (show_grid)
-	ho_pixbuf_draw_grid (pix_temp, 120, 30, 0, 0, 0);
+	ho_pixbuf_draw_grid (pix_out, 120, 30, 0, 0, 0);
 
       /* create file name */
       if (no_gtk)
@@ -377,11 +465,12 @@ main (int argc, char *argv[])
       if (filename)
 	{
 	  if (no_gtk)
-	    ho_pixbuf_save_pnm (pix_temp, filename);
+	    ho_pixbuf_pnm_save (pix_out, filename);
 	  else
-	    ho_gtk_pixbuf_save (pix_temp, filename);
+	    ho_gtk_pixbuf_save (pix_out, filename);
 
-	  ho_pixbuf_free (pix_temp);
+	  /* free locale memory */
+	  ho_pixbuf_free (pix_out);
 	  g_free (filename);
 	}
     }
@@ -391,245 +480,95 @@ main (int argc, char *argv[])
 
   /* if user want save the b/w picture image proccesing produced */
   if (only_image_proccesing)
-    {
-      /* free images */
-      ho_bitmap_free (m_bw);
-      ho_pixbuf_free (pix);
-
-      /* free file names */
-      if (image_in_filename)
-	g_free (image_in_filename);
-      if (image_out_path)
-	g_free (image_out_path);
-      if (text_out_filename)
-	g_free (text_out_filename);
-
-      exit (0);
-    }
+    hocr_exit ();
 
   /* end of image proccesing section */
+  /* remember: by now you have allocated and not freed: m_text */
 
   /* start of layout analyzing section
    */
   if (debug)
     g_print ("start image layout analysis.\n");
 
-  ho_dimentions_font (m_bw, 6, 200, 6, 200, &font_height,
-		      &font_width, &nikud);
+  l_page = ho_layout_new (m_text, paragraph_setup != 1);
+
+  ho_layout_create_block_mask (l_page);
 
   if (debug)
-    if (nikud)
-      g_print (" font height %d, width %d. with nikud.\n", font_height,
-	       font_width);
-    else
-      g_print (" font height %d, width %d. without nikud.\n", font_height,
-	       font_width);
+    g_print ("  found %d blocks.\n", l_page->n_blocks);
 
-  /* get interline height */
-  ho_dimentions_line (m_bw, font_height, font_width, nikud,
-		      &interline_height);
+  /* look for lines inside blocks */
+  {
+    int block_index;
+    int line_index;
 
-  if (debug)
-    g_print (" inter-line space height %d\n", interline_height);
+    for (block_index = 0; block_index < l_page->n_blocks; block_index++)
+      {
+	if (debug)
+	  g_print ("  analyzing block %d.\n", block_index + 1);
+	ho_layout_create_line_mask (l_page, block_index);
 
-  /* get paragraphs */
-  switch (paragraph_setup)
-    {
-    case 0:			/* colums */
-      m_paragraphs =
-	ho_segment_paragraphs (m_bw, font_height, font_width, nikud,
-			       interline_height, TRUE);
-      break;
-    case 1:			/* free setup */
-      m_paragraphs =
-	ho_segment_paragraphs (m_bw, font_height, font_width, nikud,
-			       interline_height, FALSE);
-      break;
-    default:			/* defaults to error */
-      hocr_printerr ("unrecognized paragraph setup");
-      exit (1);
-      break;
-    }
+	if (debug)
+	  g_print ("    found %d lines.\n", l_page->n_lines[block_index]);
 
-  /* get paragraph objmap */
-  m_obj = ho_objmap_new_from_bitmap (m_paragraphs);
+	/* look for words inside line */
+	for (line_index = 0; line_index < l_page->n_lines[block_index];
+	     line_index++)
+	  {
+	    if (debug)
+	      g_print ("    analyzing line %d.\n", line_index + 1);
+	    ho_layout_create_word_mask (l_page, block_index, line_index);
 
-  /* sort paragraph by reading order */
-  ho_objmap_sort_by_reading_index (m_obj);
+	    if (debug)
+	      g_print ("      found %d words.\n",
+		       l_page->n_words[block_index][line_index]);
+	  }
+      }
+  }
 
-  /* create new pixbuf to print out */
-  pix_out = ho_pixbuf_new (3, m_bw->width, m_bw->height, 0);
-
-  /* add paragraph in light gray */
-  ho_pixbuf_draw_bitmap (pix_out, m_paragraphs, 220, 220, 220);
-
-  /* get lines in each paragraph */
-  if (debug)
-    g_print
-      (" proccesing layout of paragraphs\n  num\tx\ty\twidth\theight\n");
-
-  for (index = 0; index < ho_objmap_get_size (m_obj); index++)
-    {
-      x = ho_objmap_get_object (m_obj, index).x;
-      y = ho_objmap_get_object (m_obj, index).y;
-      width = ho_objmap_get_object (m_obj, index).width;
-      height = ho_objmap_get_object (m_obj, index).height;
-
-      /* get sum leeway */
-      x -= font_width;
-      y -= font_height;
-      width += font_width * 2;
-      height += font_height * 2;
-
-      /* sanity check */
-      if (x < 0)
-	x = 0;
-      if (x + width > m_bw->width)
-	width = m_bw->width - x;
-      if (y < 0)
-	y = 0;
-      if (y + height > m_bw->height)
-	height = m_bw->height - y;
-
-      if (debug)
-	g_print ("  %d\t%d\t%d\t%d\t%d\n", ho_objmap_get_object (m_obj,
-								 index).
-		 reading_index + 1, x, y, width, height);
-
-      /* get the paragraph bitmap */
-      /* we need to be more cerful with free form paragraphs */
-      switch (paragraph_setup)
-	{
-	case 0:		/* colums */
-	  m_current_paragraph =
-	    ho_bitmap_clone_window (m_bw, x, y, width, height);
-	  break;
-
-	case 1:		/* free setup */
-	  m_bw_temp = ho_objmap_to_bitmap_by_index (m_obj, index);
-	  ho_bitmap_and (m_bw_temp, m_bw);
-	  m_current_paragraph =
-	    ho_bitmap_clone_window (m_bw_temp, x, y, width, height);
-	  ho_bitmap_free (m_bw_temp);
-	  break;
-
-	default:		/* defaults to error */
-	  hocr_printerr ("unrecognized paragraph setup");
-	  exit (1);
-	  break;
-	}
-
-      /* get paragraph metrix */
-      ho_dimentions_font (m_current_paragraph, 6, 200, 6, 200,
-			  &paragraph_font_height,
-			  &paragraph_font_width, &nikud);
-
-      if (debug)
-	if (nikud)
-	  g_print ("   font height %d, width %d. with nikud.\n",
-		   paragraph_font_height, paragraph_font_width);
-	else
-	  g_print ("   font height %d, width %d. without nikud.\n",
-		   paragraph_font_height, paragraph_font_width);
-
-      /* get interline height */
-      ho_dimentions_line (m_current_paragraph,
-			  paragraph_font_height,
-			  paragraph_font_width, nikud,
-			  &paragraph_interline_height);
-
-      if (debug)
-	g_print ("   inter-line space height %d\n",
-		 paragraph_interline_height);
-
-      is_text_block = (paragraph_font_height > 10
-		       && paragraph_font_height * 1.1 > paragraph_font_width
-		       && paragraph_font_height < font_height * 4);
-
-      /* look for text lines */
-      if (is_text_block)
-	{
-	  m_lines =
-	    ho_segment_lines (m_current_paragraph,
-			      paragraph_font_height,
-			      paragraph_font_width,
-			      nikud, paragraph_interline_height);
-
-	  if (!m_lines)
-	    hocr_printerr ("can't get memory to create a line map");
-	}
-
-      if (debug)
-	if (is_text_block)
-	  g_print ("   looks like text block\n");
-	else
-	  g_print ("   does not look like text block\n");
-
-      /* if text block add lines to pix out */
-      if (is_text_block)
-	{
-	  m_bw_temp = ho_bitmap_edge (m_lines);
-	  ho_pixbuf_draw_bitmap_at (pix_out, m_bw_temp, x, y, 0, 0, 255);
-	  ho_bitmap_free (m_bw_temp);
-	}
-
-      /* if debug write current paragraph to disk */
-      if (is_text_block && save_paragraph_images)
-	{
-	  gchar *filename;
-
-	  /* create paragraph  pixbuf */
-	  pix_temp = ho_pixbuf_new (3, m_lines->width, m_lines->height, 0);
-	  ho_pixbuf_draw_bitmap (pix_temp, m_current_paragraph, 0, 0, 0);
-	  /* add grid to layout pixbuf */
-	  if (show_grid)
-	    ho_pixbuf_draw_grid (pix_temp, 120, 30, 0, 0, 0);
-
-	  /* create file name */
-	  if (no_gtk)
-	    filename =
-	      g_strdup_printf ("%s-L-paragraph-%d.pgm", image_out_path,
-			       ho_objmap_get_object (m_obj,
-						     index).reading_index +
-			       1);
-	  else
-	    filename =
-	      g_strdup_printf ("%s-L-paragraph-%d.jpeg", image_out_path,
-			       ho_objmap_get_object (m_obj,
-						     index).reading_index +
-			       1);
-
-	  /* save to file system */
-	  if (filename)
-	    {
-	      if (no_gtk)
-		ho_pixbuf_save_pnm (pix_temp, filename);
-	      else
-		ho_gtk_pixbuf_save (pix_temp, filename);
-	      ho_pixbuf_free (pix_temp);
-	      g_free (filename);
-	    }
-	}
-
-      /* free this paragraph bitmap */
-      ho_bitmap_free (m_current_paragraph);
-    }
-
-  /* free pragraph objects */
-  ho_objmap_free (m_obj);
   if (debug)
     g_print ("end of image layout analysis.\n");
-  /* if debug mode or only layout analysis, save layout image */
-  if (only_layout_analysis || debug)
+
+  /* if only layout analysis or save layout image */
+  if (save_layout || only_layout_analysis)
     {
       gchar *filename;
+      ho_pixbuf *pix_out;
+      ho_bitmap *m_block_frame;
+      int block_index;
+      int line_index;
 
-      /* add grid in yellow */
+      /* allocate */
+      pix_out = ho_pixbuf_new (3, m_text->width, m_text->height, 0);
+
+      /* add text blocks */
+      m_block_frame = ho_bitmap_edge (l_page->m_blocks_mask, 10);
+      ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 0, 0, 255, 150);
+      ho_bitmap_free (m_block_frame);
+
+      /* loop on all text blocks */
+      for (block_index = 0; block_index < l_page->n_blocks; block_index++)
+	{
+	  for (line_index = 0; line_index < l_page->n_lines[block_index];
+	       line_index++)
+	    {
+	      ho_pixbuf_draw_bitmap (pix_out,
+				     l_page->
+				     m_words_mask[block_index][line_index],
+				     255, 0, 0, 220);
+	    }
+	  m_block_frame =
+	    ho_bitmap_edge (l_page->m_lines_mask[block_index], 5);
+	  ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 0, 255, 0, 250);
+	  ho_bitmap_free (m_block_frame);
+	}
+
+      /* add grid */
       if (show_grid)
 	ho_pixbuf_draw_grid (pix_out, 120, 30, 255, 0, 0);
 
       /* add text in black */
-      ho_pixbuf_draw_bitmap (pix_out, m_bw, 0, 0, 0);
+      ho_pixbuf_draw_bitmap (pix_out, m_text, 0, 0, 0, 255);
 
       /* create file name */
       if (no_gtk)
@@ -641,7 +580,7 @@ main (int argc, char *argv[])
       if (filename)
 	{
 	  if (no_gtk)
-	    ho_pixbuf_save_pnm (pix_out, filename);
+	    ho_pixbuf_pnm_save (pix_out, filename);
 	  else
 	    ho_gtk_pixbuf_save (pix_out, filename);
 
@@ -650,40 +589,24 @@ main (int argc, char *argv[])
 	}
     }
 
-  /* if user only want bw image exit now */
+  /* if user only want layout image exit now */
   if (only_layout_analysis)
-    {
-      /* free images */
-      ho_bitmap_free (m_bw);
-      ho_objmap_free (m_obj);
-      ho_pixbuf_free (pix);
-      /* free file names */
-      if (image_in_filename)
-	g_free (image_in_filename);
-      if (image_out_path)
-	g_free (image_out_path);
-      if (text_out_filename)
-	g_free (text_out_filename);
-      exit (0);
-    }
+    hocr_exit ();
 
-  /* start text recognition section 
-   */
-  if (debug)
-    g_print ("start text recognition.\n");
-  /* for each paragraph get lines */
-  /* for each line get words */
-  /* for each word get letters probability */
-  /* use letters probability and linguistic knowlage to get words */
-  if (debug)
-    g_print ("end text recognition.\n");
-  /* end text recognition section  */
+  /* remember: by now you have allocated and not freed: m_text 
+     m_blocks_mask, m_lines_mask, m_words_mask */
+
   /* start user output section 
    */
   /* save text */
-  if (text_out_filename)
+  if (text_out_filename && text_out)
     {
-      g_file_set_contents (text_out_filename, text_out, -1, &error);
+      /* if filename is '-' print to stdout */
+      if (text_out_filename[0] == '-' && text_out_filename[1] == '\0')
+	g_printf (text_out);
+      else
+	g_file_set_contents (text_out_filename, text_out, -1, &error);
+
       if (error)
 	{
 	  hocr_printerr ("can't write text to file");
@@ -695,18 +618,7 @@ main (int argc, char *argv[])
   /* start of memory cleanup section 
    */
 
-  if (debug)
-    g_print ("free memory.\n");
-  /* free matrixes */
-  ho_bitmap_free (m_bw);
-  ho_bitmap_free (m_paragraphs);
-  /* free file names */
-  if (image_in_filename)
-    g_free (image_in_filename);
-  if (image_out_path)
-    g_free (image_out_path);
-  if (text_out_filename)
-    g_free (text_out_filename);
+  hocr_exit ();
 
   return FALSE;
 }

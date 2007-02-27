@@ -43,14 +43,17 @@
 #include "ho_dimentions.h"
 
 int
-ho_dimentions_font (const ho_bitmap * m, const int min_height,
-		    const int max_height,
-		    const int min_width,
-		    const int max_width, int *height,
-		    int *width, unsigned char *nikud)
+ho_dimentions_font_width_height_nikud (ho_bitmap * m,
+				       const int min_height,
+				       const int max_height,
+				       const int min_width,
+				       const int max_width)
 {
   int return_val;
   ho_objmap *m_obj = NULL;
+  int height;
+  int width;
+  unsigned char nikud;
 
   /* create an object map from b/w image */
   m_obj = ho_objmap_new_from_bitmap (m);
@@ -60,18 +63,19 @@ ho_dimentions_font (const ho_bitmap * m, const int min_height,
   /* get fonts size */
   return_val =
     ho_objmap_font_metrix (m_obj, min_height, max_height, min_width,
-			   max_width, height, width, nikud);
+			   max_width, &height, &width, &nikud);
 
   ho_objmap_free (m_obj);
 
+  m->font_width = width;
+  m->font_height = height;
+  m->nikud = nikud;
+  
   return return_val;
 }
 
 int
-ho_dimentions_line (const ho_bitmap * m,
-		    const int font_height,
-		    const int font_width,
-		    const unsigned char nikud, int *interline_height)
+ho_dimentions_line_spacing (ho_bitmap * m)
 {
   int return_val;
   ho_objmap *m_obj = NULL;
@@ -81,9 +85,14 @@ ho_dimentions_line (const ho_bitmap * m,
   ho_bitmap *m_temp2;
   ho_bitmap *m_out;
   int x, y;
-  unsigned char nikud_ret;
   int width;
+  int height;
+  unsigned char nikud_ret;
 
+  int font_height = m->font_height;
+  int font_width = m->font_width;
+  unsigned char nikud = m->nikud;
+  
   /* if nikud we need to be more careful */
   if (nikud)
     m_clean = ho_bitmap_filter_by_size (m,
@@ -119,14 +128,24 @@ ho_dimentions_line (const ho_bitmap * m,
   /* get interline size */
   return_val =
     ho_objmap_font_metrix (m_obj, font_height / 2, font_height * 4,
-			   font_width * 2, font_width * 4, interline_height,
+			   font_width * 2, font_width * 4, &height,
 			   &width, &nikud_ret);
 
   ho_objmap_free (m_obj);
 
   /* sanity chack */
-  if (*interline_height < font_height || *interline_height > font_height * 4)
-    *interline_height = font_height * 1.5;
+  if (height < font_height || height > font_height * 4)
+    height = font_height * 1.5;
+
+  m->line_spacing = height;
+  
+  return return_val;
+}
+
+int
+ho_dimentions_font_spacing (ho_bitmap * m)
+{
+  int return_val;
 
   return return_val;
 }
