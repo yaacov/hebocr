@@ -593,9 +593,9 @@ main (int argc, char *argv[])
   if (only_layout_analysis)
     hocr_exit ();
 
-  /* remember: by now you have allocated and not freed: m_text 
-     m_blocks_mask, m_lines_mask, m_words_mask */
-
+  /* just testing */
+  text_out = g_strdup_printf ("Hi, testing one, two three ...");
+  
   /* start user output section 
    */
   /* save text */
