@@ -70,7 +70,7 @@ ho_dimentions_font_width_height_nikud (ho_bitmap * m,
   m->font_width = width;
   m->font_height = height;
   m->nikud = nikud;
-  
+
   return return_val;
 }
 
@@ -80,10 +80,10 @@ ho_dimentions_line_spacing (ho_bitmap * m)
   int return_val;
   ho_objmap *m_obj = NULL;
 
-  ho_bitmap *m_clean;
-  ho_bitmap *m_temp1;
-  ho_bitmap *m_temp2;
-  ho_bitmap *m_out;
+  ho_bitmap *m_clean = NULL;
+  ho_bitmap *m_temp1 = NULL;
+  ho_bitmap *m_temp2 = NULL;
+
   int x, y;
   int width;
   int height;
@@ -92,7 +92,7 @@ ho_dimentions_line_spacing (ho_bitmap * m)
   int font_height = m->font_height;
   int font_width = m->font_width;
   unsigned char nikud = m->nikud;
-  
+
   /* if nikud we need to be more careful */
   if (nikud)
     m_clean = ho_bitmap_filter_by_size (m,
@@ -117,7 +117,7 @@ ho_dimentions_line_spacing (ho_bitmap * m)
   ho_bitmap_free (m_temp1);
 
   /* cut the betwine lines objects to word size objects */
-  for (x = font_width * 3; x < m->width; x += font_width * 3)
+  for (x = font_width * 3; x < m->width; x += font_width * 3 + 2)
     for (y = 0; y < m->height; y++)
       ho_bitmap_unset (m_temp2, x, y);
 
@@ -138,7 +138,7 @@ ho_dimentions_line_spacing (ho_bitmap * m)
     height = font_height * 1.5;
 
   m->line_spacing = height;
-  
+
   return return_val;
 }
 
@@ -146,6 +146,54 @@ int
 ho_dimentions_font_spacing (ho_bitmap * m)
 {
   int return_val;
+  ho_objmap *m_obj = NULL;
+
+  ho_bitmap *m_clean = NULL;
+  ho_bitmap *m_temp1 = NULL;
+  ho_bitmap *m_temp2 = NULL;
+
+  int x, y;
+  int width;
+  int height;
+  unsigned char nikud_ret;
+
+  int font_height = m->font_height;
+  int font_width = m->font_width;
+  unsigned char nikud = m->nikud;
+
+  m_temp1 =
+    ho_bitmap_set_height (m, font_height * 4, font_height, font_height);
+  if (!m_temp1)
+    return TRUE;
+
+  m_temp2 = ho_bitmap_hlink (m_temp1, font_width * 3);
+  if (!m_temp2)
+    return TRUE;
+
+  ho_bitmap_andnot (m_temp2, m_temp1);
+  ho_bitmap_free (m_temp1);
+
+  /* cut the betwine lines objects to word size objects */
+  for (y = font_height; y < m->height; y += font_height / 10 + 2)
+    for (x = 0; x < m->width; x++)
+      ho_bitmap_unset (m_temp2, x, y);
+  /* create an object map from b/w image */
+  m_obj = ho_objmap_new_from_bitmap (m_temp2);
+  ho_bitmap_free (m_temp2);
+
+  /* get interline size */
+  return_val =
+    ho_objmap_font_metrix (m_obj, font_height / 12, font_height / 8,
+			   font_width / 8, font_width * 4, &height,
+			   &width, &nikud_ret);
+
+  ho_objmap_free (m_obj);
+
+  /* sanity chack */
+  if (width < font_width / 5 || width > font_width)
+    width = font_width / 2;
+
+  m->font_spacing = width;
 
   return return_val;
 }

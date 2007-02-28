@@ -509,7 +509,12 @@ main (int argc, char *argv[])
 	ho_layout_create_line_mask (l_page, block_index);
 
 	if (debug)
-	  g_print ("    found %d lines.\n", l_page->n_lines[block_index]);
+	  g_print
+	    ("    found %d lines. font height %d width %d, line spacing %d\n",
+	     l_page->n_lines[block_index],
+	     l_page->m_blocks_text[block_index]->font_height,
+	     l_page->m_blocks_text[block_index]->font_width,
+	     l_page->m_blocks_text[block_index]->line_spacing);
 
 	/* look for words inside line */
 	for (line_index = 0; line_index < l_page->n_lines[block_index];
@@ -520,8 +525,10 @@ main (int argc, char *argv[])
 	    ho_layout_create_word_mask (l_page, block_index, line_index);
 
 	    if (debug)
-	      g_print ("      found %d words.\n",
-		       l_page->n_words[block_index][line_index]);
+	      g_print ("      found %d words. font spacing %d\n",
+		       l_page->n_words[block_index][line_index],
+		       l_page->m_lines_text[block_index][line_index]->
+		       font_spacing);
 	  }
       }
   }
@@ -555,11 +562,11 @@ main (int argc, char *argv[])
 	      ho_pixbuf_draw_bitmap (pix_out,
 				     l_page->
 				     m_words_mask[block_index][line_index],
-				     255, 0, 0, 220);
+				     255, 240, 0, 180);
 	    }
 	  m_block_frame =
 	    ho_bitmap_edge (l_page->m_lines_mask[block_index], 5);
-	  ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 0, 255, 0, 250);
+	  ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 255, 0, 0, 255);
 	  ho_bitmap_free (m_block_frame);
 	}
 
@@ -595,7 +602,7 @@ main (int argc, char *argv[])
 
   /* just testing */
   text_out = g_strdup_printf ("Hi, testing one, two three ...");
-  
+
   /* start user output section 
    */
   /* save text */

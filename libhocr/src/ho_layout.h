@@ -95,4 +95,7 @@ ho_bitmap *ho_layout_get_block_text (ho_layout * l_page, int block_index);
 ho_bitmap *ho_layout_get_line_text (ho_layout * l_page, int block_index,
 				    int line_index);
 
+ho_bitmap *ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
+					 int line_index);
+
 #endif /* HO_LAYOUT_H */

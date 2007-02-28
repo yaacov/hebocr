@@ -270,19 +270,24 @@ ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
 			    const int line_index)
 {
   ho_objmap *o_map_blocks = NULL;
-  ho_bitmap * m_line_text = NULL;
+  ho_bitmap *m_line_text = NULL;
+  ho_bitmap *m_line_line_mask = NULL;
   int x, y, height, width;
   int i;
 
   m_line_text = ho_layout_get_line_text (l_page, block_index, line_index);
   ho_dimentions_font_width_height_nikud (m_line_text, 6, 200, 6, 200);
-  ho_dimentions_line_spacing (m_line_text);
+  m_line_text->line_spacing = l_page->m_blocks_text[block_index]->line_spacing;
+  ho_dimentions_font_spacing (m_line_text);
 
   l_page->m_lines_text[block_index][line_index] = m_line_text;
 
   /* create the words mask */
+  m_line_line_mask =
+    ho_layout_get_line_line_mask (l_page, block_index, line_index);
   l_page->m_words_mask[block_index][line_index] =
-    ho_segment_words (m_line_text);
+    ho_segment_words (m_line_text, m_line_line_mask);
+  ho_bitmap_free (m_line_line_mask);
 
   /* count lines */
   o_map_blocks =
@@ -389,17 +394,68 @@ ho_layout_get_line_text (ho_layout * l_page, int block_index, int line_index)
 
   m_temp = ho_objmap_to_bitmap_by_index (o_map_lines, line_index);
   m_temp2 = ho_bitmap_set_height (m_temp,
-				  l_page->m_blocks_text[block_index]->
-				  font_height * 2,
-				  l_page->m_blocks_text[block_index]->
-				  font_height / 2,
-				  l_page->m_blocks_text[block_index]->
-				  font_height / 2);
+				  4 * l_page->m_blocks_text[block_index]->
+				  font_height / 3,
+				  2 * l_page->m_blocks_text[block_index]->
+				  font_height / 3,
+				  2 * l_page->m_blocks_text[block_index]->
+				  font_height / 3);
+  ho_bitmap_free (m_temp);
 
   ho_objmap_free (o_map_lines);
   ho_bitmap_and (m_temp2, l_page->m_blocks_text[block_index]);
 
   m_line_text = ho_bitmap_clone_window (m_temp2, x, y, width, height);
 
+  ho_bitmap_free (m_temp2);
+
   return m_line_text;
+}
+
+ho_bitmap *
+ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
+			      int line_index)
+{
+  ho_bitmap *m_line_mask = NULL;
+  ho_bitmap *m_temp = NULL;
+  ho_bitmap *m_temp2 = NULL;
+  ho_objmap *o_map_lines = NULL;
+  int x, y, height, width;
+  int i;
+
+  /* get paragraph objmap */
+  o_map_lines = ho_objmap_new_from_bitmap (l_page->m_lines_mask[block_index]);
+
+  /* sort lines by reading order */
+  ho_objmap_sort_by_reading_index (o_map_lines, 2);
+
+  x = ho_objmap_get_object (o_map_lines, line_index).x;
+  y = ho_objmap_get_object (o_map_lines, line_index).y;
+  width = ho_objmap_get_object (o_map_lines, line_index).width;
+  height = ho_objmap_get_object (o_map_lines, line_index).height;
+
+  /* get sum leeway */
+  x -= l_page->m_blocks_text[block_index]->font_width;
+  y -= l_page->m_blocks_text[block_index]->font_height;
+  width += l_page->m_blocks_text[block_index]->font_width * 2;
+  height += l_page->m_blocks_text[block_index]->font_height * 2;
+
+  /* sanity check */
+  if (x < 0)
+    x = 0;
+  if (x + width > l_page->m_blocks_text[block_index]->width)
+    width = l_page->m_blocks_text[block_index]->width - x;
+  if (y < 0)
+    y = 0;
+  if (y + height > l_page->m_blocks_text[block_index]->height)
+    height = l_page->m_blocks_text[block_index]->height - y;
+
+  m_temp = ho_objmap_to_bitmap_by_index (o_map_lines, line_index);
+
+  ho_objmap_free (o_map_lines);
+
+  m_line_mask = ho_bitmap_clone_window (m_temp, x, y, width, height);
+  ho_bitmap_free (m_temp);
+
+  return m_line_mask;
 }

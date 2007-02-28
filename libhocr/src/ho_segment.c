@@ -52,12 +52,14 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
   /* if nikud we need to be more careful */
   if (m->nikud)
     m_clean = ho_bitmap_filter_by_size (m,
-					m->font_height / 2, m->font_height * 4,
-					m->font_width / 3, m->font_width * 5);
+					m->font_height / 2,
+					m->font_height * 4, m->font_width / 3,
+					m->font_width * 5);
   else
     m_clean = ho_bitmap_filter_by_size (m,
-					m->font_height / 4, m->font_height * 4,
-					m->font_width / 4, m->font_width * 5);
+					m->font_height / 4,
+					m->font_height * 4, m->font_width / 4,
+					m->font_width * 5);
 
   /* link paragraphs */
   m_temp1 = ho_bitmap_vlink (m_clean, m->line_spacing * 1.2);
@@ -103,8 +105,8 @@ ho_segment_lines (const ho_bitmap * m)
   /* filter only "regular" sized fonts */
   m_temp = ho_bitmap_filter_by_size (m,
 				     8 * m->font_height / 10,
-				     12 * m->font_height / 10, m->font_width / 3,
-				     m->font_width * 5);
+				     12 * m->font_height / 10,
+				     m->font_width / 3, m->font_width * 5);
   if (!m_temp)
     return NULL;
   m_out = m_temp;
@@ -162,40 +164,95 @@ ho_segment_lines (const ho_bitmap * m)
 }
 
 ho_bitmap *
-ho_segment_words (const ho_bitmap * m)
+ho_segment_words (const ho_bitmap * m, const ho_bitmap * line_map)
 {
+  int return_val;
+  ho_objmap *m_obj = NULL;
+
+  ho_bitmap *m_temp2;
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
-  /* filter only "regular" sized fonts */
-  m_temp = ho_bitmap_filter_by_size (m,
-				     m->font_height / 6,
-				     m->font_height * 6, m->font_width / 6,
-				     m->font_width * 6);
-  if (!m_temp)
-    return NULL;
-  m_out = m_temp;
+  int width;
+  int height;
+  unsigned char nikud_ret;
 
   /* try to link broken letters */
-  m_temp = ho_bitmap_vlink (m_out, m->font_height * 2);
-  ho_bitmap_free (m_out);
-  if (!m_temp)
+  m_temp2 = ho_bitmap_vlink (m, m->font_height * 2);
+  if (!m_temp2)
     return NULL;
-  m_out = m_temp;
-  
+  m_out = m_temp2;
+
+  /* chop of line thigs */
+  ho_bitmap_and (m_out, line_map);
+
   /* try to link words */
-  m_temp = ho_bitmap_hlink (m_out, m->font_width / 2);
-  ho_bitmap_free (m_out);
+  m_temp = ho_bitmap_hlink (m_out, 2 * m->font_spacing);
   if (!m_temp)
     return NULL;
   m_out = m_temp;
 
   /* make words a block */
-  m_temp = ho_bitmap_filter_boxes (m_out, 0, 0);
+  m_temp =
+    ho_bitmap_filter_boxes (m_out, m->line_spacing / 2, m->font_height / 2);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
   m_out = m_temp;
+
+  /* check dimentions */
+  m_obj = ho_objmap_new_from_bitmap (m_out);
+
+  /* get interline size */
+  return_val =
+    ho_objmap_font_metrix (m_obj, m->font_height, m->font_height * 2,
+			   m->font_width / 2, m->width, &height,
+			   &width, &nikud_ret);
+
+  ho_objmap_free (m_obj);
+
+  /* sanity chack */
+  if (width < m->font_width * 2)	/* broken words */
+    {
+      ho_bitmap_free (m_out);
+      m_out = m_temp2;
+
+      /* try to link words */
+      m_temp = ho_bitmap_hlink (m_out, 3 * m->font_spacing);
+      if (!m_temp)
+	return NULL;
+      m_out = m_temp;
+
+      /* make words a block */
+      m_temp =
+	ho_bitmap_filter_boxes (m_out, m->line_spacing / 2,
+				m->font_height / 2);
+      ho_bitmap_free (m_out);
+      if (!m_temp)
+	return NULL;
+      m_out = m_temp;
+    }
+  else if (width == 2)	/* linked words */
+    {
+      ho_bitmap_free (m_out);
+      m_out = m_temp2;
+
+      /* try to link words */
+      m_temp = ho_bitmap_hlink (m_out, m->font_width / 8);
+      if (!m_temp)
+	return NULL;
+      m_out = m_temp;
+
+      /* make words a block */
+      m_temp =
+	ho_bitmap_filter_boxes (m_out, m->font_width / 2, m->font_height / 2);
+      ho_bitmap_free (m_out);
+      if (!m_temp)
+	return NULL;
+      m_out = m_temp;
+    }
+    
+    ho_bitmap_free (m_temp2);
 
   return m_out;
 }
