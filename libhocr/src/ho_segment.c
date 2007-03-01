@@ -196,7 +196,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
   /* chop of line thigs */
   m_temp = ho_bitmap_clone (m);
   if (!m_temp)
-    return TRUE;
+    return NULL;
   ho_bitmap_and (m_temp, m_line_map);
   m_out = m_temp;
 

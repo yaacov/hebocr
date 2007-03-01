@@ -484,3 +484,63 @@ ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
 
   return m_line_mask;
 }
+
+ho_bitmap *
+ho_layout_get_word_text (ho_layout * l_page, int block_index, int line_index,
+			 int word_index)
+{
+  ho_bitmap *m_word_text = NULL;
+  ho_bitmap *m_line_text = NULL;
+  ho_bitmap *m_temp = NULL;
+  ho_objmap *o_map_words = NULL;
+  int x, width;
+  int i;
+
+  /* get paragraph objmap */
+  o_map_words =
+    ho_objmap_new_from_bitmap (l_page->
+			       m_lines_words_mask[block_index][line_index]);
+
+  /* sort lines by reading order */
+  ho_objmap_sort_by_reading_index_words (o_map_words, 255);
+
+  x = ho_objmap_get_object (o_map_words, word_index).x;
+  width = ho_objmap_get_object (o_map_words, word_index).width;
+  ho_objmap_free (o_map_words);
+
+  m_line_text = l_page->m_lines_text[block_index][line_index];
+  m_word_text =
+    ho_bitmap_clone_window (m_line_text, x, 0, width, m_line_text->height);
+
+  return m_word_text;
+}
+
+ho_bitmap *
+ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
+			      int line_index, int word_index)
+{
+  ho_bitmap *m_word_line_mask = NULL;
+  ho_bitmap *m_line_mask = NULL;
+  ho_bitmap *m_temp = NULL;
+  ho_objmap *o_map_words = NULL;
+  int x, width;
+  int i;
+
+  /* get paragraph objmap */
+  o_map_words =
+    ho_objmap_new_from_bitmap (l_page->
+			       m_lines_words_mask[block_index][line_index]);
+
+  /* sort lines by reading order */
+  ho_objmap_sort_by_reading_index (o_map_words, 255);
+
+  x = ho_objmap_get_object (o_map_words, word_index).x;
+  width = ho_objmap_get_object (o_map_words, word_index).width;
+  ho_objmap_free (o_map_words);
+
+  m_line_mask = l_page->m_lines_line_mask[block_index][line_index];
+  m_word_line_mask =
+    ho_bitmap_clone_window (m_line_mask, x, 0, width, m_line_mask->height);
+
+  return m_word_line_mask;
+}

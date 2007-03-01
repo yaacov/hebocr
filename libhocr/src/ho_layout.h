@@ -49,10 +49,8 @@ typedef struct
   ho_bitmap ***m_lines_line_mask;
   ho_bitmap ***m_lines_words_mask;
 
-  /* letters text and masks arrays [block][line][word] */
+  /* number of words in a line */
   int **n_words;
-  ho_bitmap ****m_words_text;
-  ho_bitmap ****m_words_line_mask;
 } ho_layout;
 
 /**
@@ -104,5 +102,11 @@ ho_bitmap *ho_layout_get_line_text (ho_layout * l_page, int block_index,
 
 ho_bitmap *ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
 					 int line_index);
+
+ho_bitmap *ho_layout_get_word_text (ho_layout * l_page, int block_index,
+				    int line_index, int word_index);
+
+ho_bitmap *ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
+					 int line_index, int word_index);
 
 #endif /* HO_LAYOUT_H */

@@ -455,7 +455,8 @@ ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
 }
 
 int
-ho_objmap_update_reading_index_rtl (ho_objmap * m, const unsigned char n_columns)
+ho_objmap_update_reading_index_rtl (ho_objmap * m,
+				    const unsigned char n_columns)
 {
   int q;
   int index;
@@ -467,6 +468,26 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m, const unsigned char n_columns
   int height;
   int width;
   unsigned char n_col = n_columns;
+
+  /* if n_columns == 255 then this is a one line sorting */
+  if (n_col == 255)
+    {
+      reading_index = 0;
+      for (y = m->height - 1; y >= 0; y--)
+	{
+	  for (index = 0; index < ho_objmap_get_size (m); index++)
+	    {
+	      if (ho_objmap_get_object (m, index).y == y)
+		{
+		  ho_objmap_get_object (m, index).reading_index =
+		    reading_index;
+		  reading_index++;
+		}
+	    }
+	}
+
+      return FALSE;
+    }
 
   /* sanity check */
   if (n_col < 2 || n_col > 6)
