@@ -33,28 +33,35 @@ typedef struct
 {
   /* paragraph settings type */
   unsigned char type;
+
   /* black and white text image */
-  ho_bitmap *m_text;
-  /* text blocks mask */
-  int n_blocks;
-  ho_bitmap *m_blocks_mask;
+  ho_bitmap *m_page_text;
+  ho_bitmap *m_page_blocks_mask;
+
   /* line text and masks arrays [number of text blocks] */
-  int *n_lines;
+  int n_blocks;
   ho_bitmap **m_blocks_text;
-  ho_bitmap **m_lines_mask;
+  ho_bitmap **m_blocks_lines_mask;
 
   /* words text and masks arrays [number of text blocks][number of lines in block] */
-  int **n_words;
+  int *n_lines;
   ho_bitmap ***m_lines_text;
-  ho_bitmap ***m_words_mask;
+  ho_bitmap ***m_lines_line_mask;
+  ho_bitmap ***m_lines_words_mask;
+
+  /* letters text and masks arrays [block][line][word] */
+  int **n_words;
+  ho_bitmap ****m_words_text;
+  ho_bitmap ****m_words_line_mask;
 } ho_layout;
 
 /**
  new ho_layout 
- @param m_text a pointer to a text bitmap
+ @param m_page_text a pointer to a text bitmap
  @param type free text blocks or boxed 
  */
-ho_layout *ho_layout_new (const ho_bitmap * m_text, const unsigned char type);
+ho_layout *ho_layout_new (const ho_bitmap * m_page_text,
+			  const unsigned char type);
 
 /**
  free a ho_layout
@@ -63,7 +70,7 @@ ho_layout *ho_layout_new (const ho_bitmap * m_text, const unsigned char type);
 int ho_layout_free (ho_layout * l_page);
 
 /**
- create a full ho_layout from it's m_text
+ create a full ho_layout from it's m_page_text
  @param l_page a pointer to a ho_layout 
  */
 int ho_layout_create (ho_layout * l_page);

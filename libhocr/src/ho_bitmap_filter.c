@@ -82,6 +82,11 @@ ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
   m_out->x = m->x;
   m_out->y = m->y;
 
+  m_out->type = m->type;
+  m_out->font_height = m->font_height;
+  m_out->font_width = m->font_width;
+  m_out->nikud = m->nikud;
+
   if (!m_out)
     {
       ho_objmap_free (m_obj);
@@ -133,6 +138,11 @@ ho_bitmap_filter_fill (const ho_bitmap * m)
   m_out->x = m->x;
   m_out->y = m->y;
 
+  m_out->type = m->type;
+  m_out->font_height = m->font_height;
+  m_out->font_width = m->font_width;
+  m_out->nikud = m->nikud;
+
   /* loop over all the objects and box them */
   for (index = 0; index < m_obj->obj_list->size; index++)
     {
@@ -180,6 +190,11 @@ ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
     }
   m_out->x = m->x;
   m_out->y = m->y;
+
+  m_out->type = m->type;
+  m_out->font_height = m->font_height;
+  m_out->font_width = m->font_width;
+  m_out->nikud = m->nikud;
 
   /* loop over all the objects and box them */
   for (index = 0; index < m_obj->obj_list->size; index++)
@@ -245,6 +260,11 @@ ho_bitmap_filter_remove_dots (const ho_bitmap * m,
     return NULL;
   m_out->x = m->x;
   m_out->y = m->y;
+
+  m_out->type = m->type;
+  m_out->font_height = m->font_height;
+  m_out->font_width = m->font_width;
+  m_out->nikud = m->nikud;
 
   /* connect all the small dots */
   m_temp = ho_bitmap_dilation (m);
@@ -358,7 +378,7 @@ ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
     }
 
   /* extend */
-  m_out = ho_bitmap_hlink (m_temp, 5 * ext_width / 4);
+  m_out = ho_bitmap_hlink (m_temp, 3 * ext_width / 2);
   ho_bitmap_free (m_temp);
   if (!m_out)
     return NULL;
@@ -386,5 +406,23 @@ ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
   m_out->x = m->x;
   m_out->y = m->y;
 
+  m_out->type = m->type;
+  m_out->font_height = m->font_height;
+  m_out->font_width = m->font_width;
+  m_out->nikud = m->nikud;
+
   return m_out;
+}
+
+int
+ho_bitmap_filter_count_objects (const ho_bitmap * m)
+{
+  ho_objmap * o_obj;
+  int count;
+  
+  o_obj = ho_objmap_new_from_bitmap (m);
+  count =  ho_objmap_get_size(o_obj);
+  ho_objmap_free (o_obj);
+  
+  return count;
 }

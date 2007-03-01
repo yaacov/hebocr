@@ -39,24 +39,22 @@
  */
 int
 ho_dimentions_font_width_height_nikud (ho_bitmap * m, const int min_height,
-			      const int max_height,
-			      const int min_width,
-			      const int max_width);
+				       const int max_height,
+				       const int min_width,
+				       const int max_width);
 
 /**
  guess line dimentions, sets line_spacing [for a block]
  @param m pointer to an ho_bitmap
  @return FALSE
  */
-int
-ho_dimentions_line_spacing (ho_bitmap * m);
+int ho_dimentions_line_spacing (ho_bitmap * m);
 
 /**
  guess line dimentions, sets font_spacing [for a line]
  @param m pointer to an ho_bitmap
  @return FALSE
  */
-int
-ho_dimentions_font_spacing (ho_bitmap * m);
+int ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map);
 
 #endif /* HO_DIMENTIONS_H */

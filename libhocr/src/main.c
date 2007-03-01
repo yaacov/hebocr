@@ -59,7 +59,7 @@ gint font_code = 0;
 GError *error = NULL;
 
 /* black and white text image */
-ho_bitmap *m_text = NULL;
+ho_bitmap *m_page_text = NULL;
 
 /* text layout */
 ho_layout *l_page = NULL;
@@ -391,7 +391,7 @@ hocr_exit ()
     g_print ("free memory.\n");
 
   /* free image matrixes */
-  ho_bitmap_free (m_text);
+  ho_bitmap_free (m_page_text);
 
   /* free page layout  masks */
   ho_layout_free (l_page);
@@ -434,15 +434,15 @@ main (int argc, char *argv[])
     g_print ("start image proccesing.\n");
 
   /* load the image from input filename */
-  m_text = hocr_load_input_bitmap ();
+  m_page_text = hocr_load_input_bitmap ();
 
   if (debug)
     if (scale_by > 1)
       g_print (" procced image is %d by %d pixels (origianl scaled by %d)\n",
-	       m_text->width, m_text->height, scale_by);
+	       m_page_text->width, m_page_text->height, scale_by);
     else
       g_print (" procced image is %d by %d pixels\n",
-	       m_text->width, m_text->height);
+	       m_page_text->width, m_page_text->height);
 
   /* if only image proccesing or save b/w image */
   if (save_bw || only_image_proccesing)
@@ -450,7 +450,7 @@ main (int argc, char *argv[])
       gchar *filename;
       ho_pixbuf *pix_out;
 
-      pix_out = ho_pixbuf_new_from_bitmap (m_text);
+      pix_out = ho_pixbuf_new_from_bitmap (m_page_text);
 
       if (show_grid)
 	ho_pixbuf_draw_grid (pix_out, 120, 30, 0, 0, 0);
@@ -483,14 +483,14 @@ main (int argc, char *argv[])
     hocr_exit ();
 
   /* end of image proccesing section */
-  /* remember: by now you have allocated and not freed: m_text */
+  /* remember: by now you have allocated and not freed: m_page_text */
 
   /* start of layout analyzing section
    */
   if (debug)
     g_print ("start image layout analysis.\n");
 
-  l_page = ho_layout_new (m_text, paragraph_setup != 1);
+  l_page = ho_layout_new (m_page_text, paragraph_setup != 1);
 
   ho_layout_create_block_mask (l_page);
 
@@ -521,11 +521,11 @@ main (int argc, char *argv[])
 	     line_index++)
 	  {
 	    if (debug)
-	      g_print ("    analyzing line %d.\n", line_index + 1);
+	      g_print ("      analyzing line %d.\n", line_index + 1);
 	    ho_layout_create_word_mask (l_page, block_index, line_index);
 
 	    if (debug)
-	      g_print ("      found %d words. font spacing %d\n",
+	      g_print ("        found %d words. font spacing %d\n",
 		       l_page->n_words[block_index][line_index],
 		       l_page->m_lines_text[block_index][line_index]->
 		       font_spacing);
@@ -546,10 +546,10 @@ main (int argc, char *argv[])
       int line_index;
 
       /* allocate */
-      pix_out = ho_pixbuf_new (3, m_text->width, m_text->height, 0);
+      pix_out = ho_pixbuf_new (3, m_page_text->width, m_page_text->height, 0);
 
       /* add text blocks */
-      m_block_frame = ho_bitmap_edge (l_page->m_blocks_mask, 10);
+      m_block_frame = ho_bitmap_edge (l_page->m_page_blocks_mask, 5);
       ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 0, 0, 255, 150);
       ho_bitmap_free (m_block_frame);
 
@@ -561,13 +561,16 @@ main (int argc, char *argv[])
 	    {
 	      ho_pixbuf_draw_bitmap (pix_out,
 				     l_page->
-				     m_words_mask[block_index][line_index],
-				     255, 240, 0, 180);
+				     m_lines_words_mask[block_index]
+				     [line_index], 255, 240, 0, 180);
+
+	      m_block_frame =
+		ho_bitmap_edge (l_page->
+				m_lines_line_mask[block_index][line_index],
+				5);
+	      ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 255, 0, 0, 255);
+	      ho_bitmap_free (m_block_frame);
 	    }
-	  m_block_frame =
-	    ho_bitmap_edge (l_page->m_lines_mask[block_index], 5);
-	  ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 255, 0, 0, 255);
-	  ho_bitmap_free (m_block_frame);
 	}
 
       /* add grid */
@@ -575,7 +578,7 @@ main (int argc, char *argv[])
 	ho_pixbuf_draw_grid (pix_out, 120, 30, 255, 0, 0);
 
       /* add text in black */
-      ho_pixbuf_draw_bitmap (pix_out, m_text, 0, 0, 0, 255);
+      ho_pixbuf_draw_bitmap (pix_out, m_page_text, 0, 0, 0, 255);
 
       /* create file name */
       if (no_gtk)
