@@ -189,7 +189,7 @@ ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map)
   if (n_fonts_block < 4 * n_fonts_free / 5)
     {
       /* zero font spacing */
-      m->font_spacing = m->font_width / 4;
+      m->font_spacing = m->font_width / 5;
       ho_bitmap_free (m_out);
       return FALSE;
     }
@@ -232,8 +232,8 @@ ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map)
     if (font_spacing < ho_objmap_get_object (o_obj, i).width)
       font_spacing = ho_objmap_get_object (o_obj, i).width;
 
-  if (font_spacing < m->font_width / 4)
-    font_spacing = m->font_width / 4;
+  if (font_spacing < m->font_width / 5)
+    font_spacing = m->font_width / 5;
 
   m->font_spacing = font_spacing;
 
