@@ -502,7 +502,7 @@ ho_layout_get_word_text (ho_layout * l_page, int block_index, int line_index,
 			       m_lines_words_mask[block_index][line_index]);
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index_words (o_map_words, 255);
+  ho_objmap_sort_by_reading_index (o_map_words, 255);
 
   x = ho_objmap_get_object (o_map_words, word_index).x;
   width = ho_objmap_get_object (o_map_words, word_index).width;

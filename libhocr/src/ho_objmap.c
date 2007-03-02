@@ -473,11 +473,11 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m,
   if (n_col == 255)
     {
       reading_index = 0;
-      for (y = m->height - 1; y >= 0; y--)
+      for (x = m->width - 1; x >= 0; x--)
 	{
 	  for (index = 0; index < ho_objmap_get_size (m); index++)
 	    {
-	      if (ho_objmap_get_object (m, index).y == y)
+	      if (ho_objmap_get_object (m, index).x == x)
 		{
 		  ho_objmap_get_object (m, index).reading_index =
 		    reading_index;
