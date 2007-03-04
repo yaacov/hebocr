@@ -66,10 +66,11 @@ ho_bitmap_new (const int width, const int height)
   m_new->type = 0;
   m_new->font_height = 0;
   m_new->font_width = 0;
+  m_new->line_spacing = 0;
+  m_new->font_spacing = 0;
+  m_new->avg_line_fill = 0;
+  m_new->com_line_fill = 0;
   m_new->nikud = FALSE;
-
-  int font_spacing;
-  int line_spacing;
 
   /*
    * allocate memory for data (and set to zero)
@@ -114,6 +115,10 @@ ho_bitmap_clone (const ho_bitmap * m)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   /* copy data */
@@ -141,6 +146,10 @@ ho_bitmap_clone_window (const ho_bitmap * m, const int x, const int y,
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   /* copy data */
@@ -270,6 +279,10 @@ ho_bitmap_dilation_n (const ho_bitmap * m, const unsigned char n)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   /*  do dilation */
@@ -313,8 +326,12 @@ ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
-  
+
   /*  do erosion */
   for (x = 1; x < m->width - 1; x++)
     for (y = 1; y < m->height - 1; y++)
@@ -355,8 +372,12 @@ ho_bitmap_set_height (const ho_bitmap * m, const int height, const int top,
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
-  
+
   /*  do max_height */
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
@@ -441,8 +462,12 @@ ho_bitmap_hlink (const ho_bitmap * m, const int size)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
-  
+
   for (y = 0; y < m->height; y++)
     {
       last = -size;
@@ -485,8 +510,12 @@ ho_bitmap_herode (const ho_bitmap * m, const int size)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
-  
+
   /* set all bitmap black */
   memset ((void *) (m_out->data), 0xff, m_out->height * m_out->rowstride);
 
@@ -532,8 +561,12 @@ ho_bitmap_vlink (const ho_bitmap * m, const int size)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
-  
+
   for (x = 0; x < m->width; x++)
     {
       last = -size;
@@ -586,8 +619,12 @@ ho_bitmap_edge (const ho_bitmap * m, const int n)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
-  
+
   ho_bitmap_andnot (m_out, m_temp1);
   ho_bitmap_free (m_temp1);
 

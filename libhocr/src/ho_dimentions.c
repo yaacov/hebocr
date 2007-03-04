@@ -184,12 +184,18 @@ ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map)
   ho_bitmap_free (m_out);
   m_out = m_temp;
 
+  m_temp = ho_bitmap_hlink (m_out, m->font_width / 4);
+  if (!m_temp)
+    return TRUE;
+  ho_bitmap_free (m_out);
+  m_out = m_temp;
+
   /* look for zero width font spacing */
   n_fonts_block = ho_bitmap_filter_count_objects (m_out);
   if (n_fonts_block < 4 * n_fonts_free / 5)
     {
       /* zero font spacing */
-      m->font_spacing = m->font_width / 5;
+      m->font_spacing = 0;
       ho_bitmap_free (m_out);
       return FALSE;
     }
@@ -222,7 +228,7 @@ ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map)
   if (ho_objmap_get_size (o_obj) < 4)
     {
       /* big font spacing */
-      m->font_spacing = m->font_width;
+      m->font_spacing = 255;
       ho_objmap_free (o_obj);
       return FALSE;
     }
@@ -238,6 +244,92 @@ ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map)
   m->font_spacing = font_spacing;
 
   ho_objmap_free (o_obj);
+
+  return FALSE;
+}
+
+int
+ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
+{
+  ho_bitmap * m_temp;
+  int avg_line_fill;
+  int com_line_fill;
+  int *line_fill;
+  int *line_fill_hist;
+  int counter;
+  int x, y;
+  int line_height;
+
+  /* get line_height */
+  x = m_line_map->width / 2;
+  for (y = 0; y < m_line_map->height && !ho_bitmap_get (m_line_map, x, y);
+       y++);
+  line_height = y;
+  for (; y < m_line_map->height && ho_bitmap_get (m_line_map, x, y); y++);
+  line_height = y - line_height;
+  
+  /* create a fill arrays fill with {0, 0 ... } */
+  line_fill = (int *) calloc (m->width, sizeof (int));
+  if (!line_fill)
+    return TRUE;
+  line_fill_hist = (int *) calloc (m->height, sizeof (int));
+  if (!line_fill_hist)
+    return TRUE;
+
+  /* chop of none line thigs */
+  m_temp = ho_bitmap_clone (m);
+  if (!m_temp)
+    return TRUE;
+  ho_bitmap_and (m_temp, m_line_map);
+
+  /* get line fill data */
+  avg_line_fill = 0;
+  counter = 0;
+  for (x = 0; x < m->width; x++)
+    {
+      for (y = 0; y < m->height; y++)
+	{
+	  line_fill[x] += ho_bitmap_get (m_temp, x, y);
+	}
+      avg_line_fill += line_fill[x];
+      if (line_fill[x])
+	counter++;
+    }
+
+  /* we do not need the temp text bitmap */
+  ho_bitmap_free (m_temp);
+
+  if (!counter)
+    {
+      return TRUE;
+    }
+
+  /* fill common fill histogram */
+  for (y = 1; y < m->height; y++)
+    {
+      for (x = 0; x < m->width; x++)
+	if (line_fill[x] == y)
+	  line_fill_hist[y]++;
+    }
+    
+  /* get the most common fill */
+  com_line_fill = 1;
+  for (y = 2; y < m->height; y++)
+    {
+      if (line_fill_hist[com_line_fill] < line_fill_hist[y])
+	com_line_fill = y;
+    }
+
+  /* get avg fill */
+  avg_line_fill = avg_line_fill / counter;
+
+  /* free fill arrays */
+  free (line_fill);
+  free (line_fill_hist);
+
+  /* set to precent of line height */
+  m->avg_line_fill = 100 * avg_line_fill / line_height;
+  m->com_line_fill = 100 * com_line_fill / line_height;
 
   return FALSE;
 }

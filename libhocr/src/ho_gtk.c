@@ -56,6 +56,35 @@ ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix)
   return pix;
 }
 
+ho_pixbuf *
+ho_gtk_pixbuf_from_gdk_share_data (const GdkPixbuf * gdk_pix)
+{
+  ho_pixbuf *pix = NULL;
+
+  if (!gdk_pix)
+    {
+      return NULL;
+    }
+
+  /* create hocr pixbuf from gkd pixbuf */
+  pix = ho_pixbuf_new (gdk_pixbuf_get_n_channels
+		       (gdk_pix), gdk_pixbuf_get_width
+		       (gdk_pix), gdk_pixbuf_get_height (gdk_pix),
+		       gdk_pixbuf_get_rowstride (gdk_pix));
+
+  if (!pix)
+    return NULL;
+
+  /* free ho_pixbuf data */
+  if (pix->data)
+  free (pix->data);
+
+  /* share the pixels */
+  pix->data = gdk_pixbuf_get_pixels (gdk_pix);
+
+  return pix;
+}
+
 void
 ho_gdk_free_pixels (guchar * pixels, gpointer data)
 {

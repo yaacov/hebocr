@@ -525,6 +525,13 @@ main (int argc, char *argv[])
 	    ho_layout_create_word_mask (l_page, block_index, line_index);
 
 	    if (debug)
+	      g_print ("        line avg fill %d common fill %d\n",
+		       l_page->m_lines_text[block_index][line_index]->
+		       avg_line_fill,
+		       l_page->m_lines_text[block_index][line_index]->
+		       com_line_fill);
+
+	    if (debug)
 	      g_print ("        found %d words. font spacing %d\n",
 		       l_page->n_words[block_index][line_index],
 		       l_page->m_lines_text[block_index][line_index]->
@@ -539,11 +546,15 @@ main (int argc, char *argv[])
   /* if only layout analysis or save layout image */
   if (save_layout || only_layout_analysis)
     {
-      gchar *filename;
-      ho_pixbuf *pix_out;
-      ho_bitmap *m_block_frame;
+      gchar *filename = NULL;
+      ho_pixbuf *pix_out = NULL;
+      ho_bitmap *m_block_frame = NULL;
+      ho_bitmap * m_word_text = NULL;
+      ho_bitmap * m_word_mask = NULL;
+      ho_bitmap * m_word_font_mask = NULL;
       int block_index;
       int line_index;
+      int word_index;
 
       /* allocate */
       pix_out = ho_pixbuf_new (3, m_page_text->width, m_page_text->height, 0);
@@ -570,6 +581,25 @@ main (int argc, char *argv[])
 				5);
 	      ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 255, 0, 0, 255);
 	      ho_bitmap_free (m_block_frame);
+
+	      for (word_index = 0;
+		   word_index < l_page->n_words[block_index][line_index];
+		   word_index++)
+		{
+		  m_word_text = ho_layout_get_word_text (l_page, block_index,
+							 line_index,
+							 word_index);
+		  m_word_mask =
+		    ho_layout_get_word_line_mask (l_page, block_index,
+						  line_index, word_index);
+		  m_word_font_mask = ho_segment_fonts (m_word_text, m_word_mask);
+
+      ho_pixbuf_draw_bitmap (pix_out, m_word_font_mask, 0, 250, 0, 235);
+      
+      ho_bitmap_free (m_word_font_mask);
+      ho_bitmap_free (m_word_mask);
+      ho_bitmap_free (m_word_text);
+		}
 	    }
 	}
 
@@ -602,6 +632,59 @@ main (int argc, char *argv[])
   /* if user only want layout image exit now */
   if (only_layout_analysis)
     hocr_exit ();
+
+  /* start of word recognition section
+   */
+  if (debug)
+    g_print ("start word recognition section.\n");
+
+  {
+    int block_index;
+    int line_index;
+    int word_index;
+    gchar *filename = NULL;
+    ho_pixbuf *pix_out = NULL;
+    ho_bitmap *m_text = NULL;
+    ho_bitmap *m_mask = NULL;
+    ho_bitmap *m_font_mask = NULL;
+    ho_bitmap *m_edge = NULL;
+    ho_objmap *o_fonts = NULL;
+
+    for (block_index = 0; block_index < l_page->n_blocks; block_index++)
+      {
+	for (line_index = 0; line_index < l_page->n_lines[block_index];
+	     line_index++)
+	  {
+	    for (word_index = 0;
+		 word_index < l_page->n_words[block_index][line_index];
+		 word_index++)
+	      {
+		if (debug)
+		 g_print ("  recognizing word %d %d %d.\n", block_index + 1,
+		         line_index + 1, word_index + 1);
+
+		m_text = ho_layout_get_word_text (l_page, block_index,
+						  line_index, word_index);
+
+		m_mask = ho_layout_get_word_line_mask (l_page, block_index,
+						       line_index,
+						       word_index);
+		m_font_mask = ho_segment_fonts (m_text, m_mask);
+		
+    /* TODO: do ocr on the fonts */
+    
+    /* oh ... */
+		ho_bitmap_free (m_text);
+		ho_bitmap_free (m_mask);
+		ho_bitmap_free (m_font_mask);
+	      }
+	  }
+      }
+  }
+
+  if (debug)
+    g_print ("end word recognition section.\n");
+  /* end of word recognition section */
 
   /* just testing */
   text_out = g_strdup_printf ("Hi, testing one, two three ...");

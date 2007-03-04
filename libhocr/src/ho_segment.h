@@ -52,4 +52,12 @@ ho_bitmap *ho_segment_lines (const ho_bitmap * m);
  */
 ho_bitmap *ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map);
 
+/**
+ return a bitmap of the interfont spaces
+ @param m pointer to an ho_bitmap
+ @return a newly allocated bitmap
+ */
+ho_bitmap *
+ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map);
+
 #endif /* HO_SEGMENT_H */

@@ -57,4 +57,12 @@ int ho_dimentions_line_spacing (ho_bitmap * m);
  */
 int ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map);
 
+/**
+ get line fill parameters [for a line]
+ @param m pointer to an ho_bitmap
+ @return FALSE
+ */
+int
+ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map);
+
 #endif /* HO_DIMENTIONS_H */

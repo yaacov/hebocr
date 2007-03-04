@@ -38,6 +38,14 @@ ho_pixbuf *
 ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix);
 
 /**
+ new ho_pixbuf from a gdk_pixbuf
+ @param gdk_pix the pixbuf to share data with
+ @return newly allocated ho_pixbuf, share data with gtk pixbuf
+ */
+ho_pixbuf *
+ho_gtk_pixbuf_from_gdk_share_data (const GdkPixbuf * gdk_pix);
+
+/**
  new gdk_pixbuf from a ho_pixbuf
  @param hocr_pix the pixbuf to copy
  @return newly allocated gdk_pixbuf

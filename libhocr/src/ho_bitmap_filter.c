@@ -85,6 +85,10 @@ ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   if (!m_out)
@@ -141,6 +145,10 @@ ho_bitmap_filter_fill (const ho_bitmap * m)
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   /* loop over all the objects and box them */
@@ -194,6 +202,10 @@ ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   /* loop over all the objects and box them */
@@ -264,6 +276,10 @@ ho_bitmap_filter_remove_dots (const ho_bitmap * m,
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   /* connect all the small dots */
@@ -409,6 +425,10 @@ ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
   return m_out;
@@ -417,12 +437,12 @@ ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
 int
 ho_bitmap_filter_count_objects (const ho_bitmap * m)
 {
-  ho_objmap * o_obj;
+  ho_objmap *o_obj;
   int count;
-  
+
   o_obj = ho_objmap_new_from_bitmap (m);
-  count =  ho_objmap_get_size(o_obj);
+  count = ho_objmap_get_size (o_obj);
   ho_objmap_free (o_obj);
-  
+
   return count;
 }

@@ -42,21 +42,14 @@ typedef struct
   unsigned char type;
   int font_height;
   int font_width;
-  unsigned char nikud;
 
   int font_spacing;
   int line_spacing;
-
-  int n_blocks;
-  int n_lines;
-  int n_words;
-  int n_fonts;
-
-  char *text;
-  unsigned char *probability;
-  unsigned char error;
-  unsigned char progress;
-
+  int avg_line_fill;
+  int com_line_fill;
+  
+  unsigned char nikud;
+  
   int x;
   int y;
   int height;
