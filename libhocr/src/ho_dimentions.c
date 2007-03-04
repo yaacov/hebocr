@@ -251,7 +251,7 @@ ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map)
 int
 ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
 {
-  ho_bitmap * m_temp;
+  ho_bitmap *m_temp;
   int avg_line_fill;
   int com_line_fill;
   int *line_fill;
@@ -267,7 +267,7 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
   line_height = y;
   for (; y < m_line_map->height && ho_bitmap_get (m_line_map, x, y); y++);
   line_height = y - line_height;
-  
+
   /* create a fill arrays fill with {0, 0 ... } */
   line_fill = (int *) calloc (m->width, sizeof (int));
   if (!line_fill)
@@ -311,7 +311,7 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
 	if (line_fill[x] == y)
 	  line_fill_hist[y]++;
     }
-    
+
   /* get the most common fill */
   com_line_fill = 1;
   for (y = 2; y < m->height; y++)
@@ -332,4 +332,32 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
   m->com_line_fill = 100 * com_line_fill / line_height;
 
   return FALSE;
+}
+
+int
+ho_dimentions_get_columns (const ho_bitmap * m)
+{
+  int return_val;
+  ho_bitmap *m_cols = NULL;
+  ho_bitmap *m_temp = NULL;
+  ho_objmap *m_obj = NULL;
+
+  /* link columns */
+  m_temp = ho_bitmap_set_height (m, m->height, m->height, m->height);
+  m_cols = ho_bitmap_hlink (m_temp, 40);
+  ho_bitmap_free (m_temp);
+
+  /* create an object map from b/w image */
+  m_obj = ho_objmap_new_from_bitmap (m_cols);
+  if (!m_obj)
+    return TRUE;
+
+  ho_bitmap_free (m_cols);
+
+  /* get number ot columns */
+  return_val = ho_objmap_get_size (m_obj);
+
+  ho_objmap_free (m_obj);
+
+  return return_val;
 }

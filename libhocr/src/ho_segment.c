@@ -256,6 +256,7 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map)
 
   ho_bitmap *m_temp;
   ho_bitmap *m_font;
+  ho_bitmap *m_font_temp;
   ho_bitmap *m_out;
   ho_objmap *o_obj;
 
@@ -298,7 +299,7 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map)
 	ho_bitmap_draw_vline (m_out, x, 10, m_out->height - 20);
     }
 
-  /* look for wide fonts, and try to break them using objects */
+  /* look for small overlaping */
   {
     int font_start;
     int font_end;
@@ -312,71 +313,140 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map)
 	for (; x < m->width && !ho_bitmap_get (m_out, x, 11); x++);
 	font_end = x;
 
-	/* if this is a wide font, try to break it using objects */
-	if ((font_end - font_start) > 6 * (m->font_width) / 4)
-	  {
-	    /* get the wide font bitmap */
-	    m_font =
-	      ho_bitmap_clone_window (m_temp, font_start, 0,
-				      font_end - font_start, m->height);
-	    o_obj = ho_objmap_new_from_bitmap (m_font);
+	{
+	  /* get the font bitmap */
+	  m_font =
+	    ho_bitmap_clone_window (m_temp, font_start, 0,
+				    font_end - font_start, m->height);
+	  /* look only for large objects that can be complete fonts */
+	  m_font_temp =
+	    ho_bitmap_filter_by_size (m_font, m->font_height / 4,
+				      2 * m->font_height, m->font_width / 5,
+				      3 * m->font_width);
+	  o_obj = ho_objmap_new_from_bitmap (m_font_temp);
+	  ho_bitmap_free (m_font_temp);
 
-	    /* if only one big object try to break using more force */
-	    if (ho_objmap_get_size (o_obj) <= 1)
-	      {			/* no objects to use, just use more force */
-		/* check for long '-', they are one long font, 
-		   use this method only if font is realy wide */
-		if ((ho_objmap_get_object (o_obj,
-					   0).height > m->font_height / 5)
-		    && ((font_end - font_start) > 3 * (m->font_width) / 2))
-		  for (i = 0; i < m->width; i++)
-		    {
-		      if (line_fill[i] <= m->avg_line_fill / 3)
-			ho_bitmap_draw_vline (m_out, i, 10,
-					      m_out->height - 20);
-		    }
-	      }
-	    else		/* use objects */
-	      {
-		/* search for a wide object to split by */
-		for (i = 0; i < ho_objmap_get_size (o_obj); i++)
-		  if (ho_objmap_get_object (o_obj,
-					    i).width > 3 * m->font_width / 4)
+	  ho_objmap_sort_by_reading_index (o_obj, 255);
+
+	  /* check for two or more objects */
+	  if (ho_objmap_get_size (o_obj) > 1)
+	    {
+	      /* search for little overlaping object */
+	      for (i = 0; i < ho_objmap_get_size (o_obj) - 1; i++)
+		{
+		  int i1, i2;
+		  int this_object_end;
+		  int next_object_start;
+		  int thin_object_width;
+		  int overlaping;
+
+		  i1 = i;
+		  i2 = i + 1;
+
+		  thin_object_width = ho_objmap_get_object (o_obj, i1).width;
+		  if (thin_object_width > ho_objmap_get_object (o_obj,
+								i2).width)
+		    thin_object_width =
+		      ho_objmap_get_object (o_obj, i2).width;
+
+		  this_object_end = ho_objmap_get_object (o_obj, i1).x;
+		  next_object_start = ho_objmap_get_object (o_obj, i2).x +
+		    ho_objmap_get_object (o_obj, i2).width;
+
+		  overlaping = next_object_start - this_object_end;
+
+		  /* check overlaping */
+		  if (overlaping >= 0 && overlaping < thin_object_width / 2)
 		    {
 		      /* draw lines at the objects egjes */
 		      ho_bitmap_draw_vline (m_out,
 					    ho_objmap_get_object (o_obj,
-								  i).x + 1 +
+								  i1).x +
 					    font_start, 10,
 					    m_out->height - 20);
-		      ho_bitmap_draw_vline (m_out,
-					    ho_objmap_get_object (o_obj,
-								  i).x +
-					    font_start +
-					    ho_objmap_get_object (o_obj,
-								  i).width -
-					    1, 10, m_out->height - 20);
 		    }
-	      }
-	    ho_objmap_free (o_obj);
+		}
+	    }
+	  ho_objmap_free (o_obj);
+	  ho_bitmap_free (m_font);
+	}
+      }
+  }
+
+  /* look for linked fonts, and try to break them using force */
+  {
+    int font_start;
+    int font_end;
+
+    x = 0;
+    while (x < m->width)
+      {
+	/* get start&end of font */
+	for (; x < m->width && ho_bitmap_get (m_out, x, 11); x++);
+	font_start = x;
+	for (; x < m->width && !ho_bitmap_get (m_out, x, 11); x++);
+	font_end = x;
+
+	/* if this is a wide font, try to break it using force */
+	if ((font_end - font_start) > 3 * (m->font_width) / 2)
+	  {
+	    /* get the font bitmap */
+	    m_font =
+	      ho_bitmap_clone_window (m_temp, font_start, 0,
+				      font_end - font_start, m->height);
+	    o_obj = ho_objmap_new_from_bitmap (m_font);
 	    ho_bitmap_free (m_font);
+
+	    /* check that it is not a long _ or - 's */
+	    if (!(ho_objmap_get_size (o_obj) == 1
+		  && ho_objmap_get_object (o_obj,
+					   0).height < m->font_height / 3))
+	      for (i = font_start; i < font_end; i++)
+		{
+		  if (line_fill[i] <= m->com_line_fill / 4)
+		    ho_bitmap_draw_vline (m_out, i, 10, m_out->height - 20);
+		}
+
+	    ho_objmap_free (o_obj);
 	  }
       }
   }
 
   ho_bitmap_free (m_temp);
-  free (line_fill);
 
-  /* wery thin things are not fonts  */
-  m_temp = ho_bitmap_hlink (m_out, m->font_width / 8);
+  /* thin interfont lines to one line per font */
+  m_temp = ho_bitmap_new (m->width, m->height);
   if (!m_temp)
     return NULL;
+
+  {
+    int min_x;
+
+    x = 1;
+    while (x < m->width)
+      {
+	/* get start&end of interfont line */
+	for (; x < m->width && !ho_bitmap_get (m_out, x, 11); x++);
+	min_x = x - 1;
+	for (; x < m->width && ho_bitmap_get (m_out, x, 11); x++)
+	  {
+	    if (line_fill[min_x] > line_fill[x])
+	      min_x = x;
+	    /* if it is open space draw a line too */
+	    if (line_fill[x] <= m->com_line_fill / 15)
+	      ho_bitmap_draw_vline (m_temp, x, 10, m_out->height - 20);
+	  }
+	/* draw one line per interfont space that is not just open space */
+	ho_bitmap_draw_vline (m_temp, min_x, 10, m_out->height - 20);
+      }
+  }
 
   /* set position in m_text */
   m_temp->x = m->x;
   m_temp->y = m->y;
 
   ho_bitmap_free (m_out);
+  free (line_fill);
 
   return m_temp;
 }

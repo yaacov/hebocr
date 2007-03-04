@@ -490,6 +490,21 @@ main (int argc, char *argv[])
   if (debug)
     g_print ("start image layout analysis.\n");
 
+  if (!paragraph_setup)
+    {
+      int cols;
+
+      cols = ho_dimentions_get_columns (m_page_text);
+      if (cols > 1)
+	{
+	  paragraph_setup = cols;
+	  if (debug)
+	    g_print ("  guessing %d columns.\n", cols);
+	}
+      else if (debug)
+	g_print ("  guessing one column.\n");
+    }
+
   l_page = ho_layout_new (m_page_text, paragraph_setup != 1);
 
   ho_layout_create_block_mask (l_page);
@@ -549,9 +564,9 @@ main (int argc, char *argv[])
       gchar *filename = NULL;
       ho_pixbuf *pix_out = NULL;
       ho_bitmap *m_block_frame = NULL;
-      ho_bitmap * m_word_text = NULL;
-      ho_bitmap * m_word_mask = NULL;
-      ho_bitmap * m_word_font_mask = NULL;
+      ho_bitmap *m_word_text = NULL;
+      ho_bitmap *m_word_mask = NULL;
+      ho_bitmap *m_word_font_mask = NULL;
       int block_index;
       int line_index;
       int word_index;
@@ -592,13 +607,15 @@ main (int argc, char *argv[])
 		  m_word_mask =
 		    ho_layout_get_word_line_mask (l_page, block_index,
 						  line_index, word_index);
-		  m_word_font_mask = ho_segment_fonts (m_word_text, m_word_mask);
+		  m_word_font_mask =
+		    ho_segment_fonts (m_word_text, m_word_mask);
 
-      ho_pixbuf_draw_bitmap (pix_out, m_word_font_mask, 0, 250, 0, 235);
-      
-      ho_bitmap_free (m_word_font_mask);
-      ho_bitmap_free (m_word_mask);
-      ho_bitmap_free (m_word_text);
+		  ho_pixbuf_draw_bitmap (pix_out, m_word_font_mask, 0, 250, 0,
+					 235);
+
+		  ho_bitmap_free (m_word_font_mask);
+		  ho_bitmap_free (m_word_mask);
+		  ho_bitmap_free (m_word_text);
 		}
 	    }
 	}
@@ -660,8 +677,8 @@ main (int argc, char *argv[])
 		 word_index++)
 	      {
 		if (debug)
-		 g_print ("  recognizing word %d %d %d.\n", block_index + 1,
-		         line_index + 1, word_index + 1);
+		  g_print ("  recognizing word %d %d %d.\n", block_index + 1,
+			   line_index + 1, word_index + 1);
 
 		m_text = ho_layout_get_word_text (l_page, block_index,
 						  line_index, word_index);
@@ -670,10 +687,10 @@ main (int argc, char *argv[])
 						       line_index,
 						       word_index);
 		m_font_mask = ho_segment_fonts (m_text, m_mask);
-		
-    /* TODO: do ocr on the fonts */
-    
-    /* oh ... */
+
+		/* TODO: do ocr on the fonts */
+
+		/* oh ... */
 		ho_bitmap_free (m_text);
 		ho_bitmap_free (m_mask);
 		ho_bitmap_free (m_font_mask);

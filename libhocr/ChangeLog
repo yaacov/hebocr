@@ -1,8 +1,9 @@
 libhocr (0.10.3)
 
  * font segmentation functions
+ * font recognition functions
  
- -- Yaacov Zamir <kzamir_at_walla.co.il> Monday, 19 February 2007 21:02
+ -- Yaacov Zamir <kzamir_at_walla.co.il> Monday, 4 March 2007 12:02
 
 libhocr (0.10.2)
 

@@ -62,7 +62,13 @@ int ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map);
  @param m pointer to an ho_bitmap
  @return FALSE
  */
-int
-ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map);
+int ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map);
+
+/**
+ guess number of columns in bitmap
+ @param m pointer to an ho_bitmap
+ @return guessed number of columns
+ */
+int ho_dimentions_get_columns (const ho_bitmap * m);
 
 #endif /* HO_DIMENTIONS_H */
