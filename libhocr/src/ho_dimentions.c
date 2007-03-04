@@ -337,7 +337,7 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
 int
 ho_dimentions_get_columns (const ho_bitmap * m)
 {
-  int return_val;
+  int i, return_val;
   ho_bitmap *m_cols = NULL;
   ho_bitmap *m_temp = NULL;
   ho_objmap *m_obj = NULL;
@@ -355,7 +355,10 @@ ho_dimentions_get_columns (const ho_bitmap * m)
   ho_bitmap_free (m_cols);
 
   /* get number ot columns */
-  return_val = ho_objmap_get_size (m_obj);
+  return_val = 0;
+  for (i = 0; i < ho_objmap_get_size (m_obj); i++)
+    if (ho_objmap_get_object (m_obj, i).width > m->width / 4)
+      return_val++;
 
   ho_objmap_free (m_obj);
 
