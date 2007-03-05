@@ -259,6 +259,7 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
   int counter;
   int x, y;
   int line_height;
+  int cell_size_for_common_fill_hist = 3;
 
   /* get line_height */
   x = m_line_map->width / 2;
@@ -272,9 +273,17 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
   line_fill = (int *) calloc (m->width, sizeof (int));
   if (!line_fill)
     return TRUE;
-  line_fill_hist = (int *) calloc (m->height, sizeof (int));
+  line_fill_hist =
+    (int *) malloc (m->height / cell_size_for_common_fill_hist *
+		    sizeof (int));
   if (!line_fill_hist)
     return TRUE;
+
+  /* fill hist with max value */
+  for (y = 0; y < m->height / cell_size_for_common_fill_hist; y++)
+    {
+      line_fill_hist[y] = line_height;
+    }
 
   /* chop of none line thigs */
   m_temp = ho_bitmap_clone (m);
@@ -305,20 +314,22 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
     }
 
   /* fill common fill histogram */
-  for (y = 1; y < m->height; y++)
+  for (y = cell_size_for_common_fill_hist + 1; y < m->height; y++)
     {
       for (x = 0; x < m->width; x++)
-	if (line_fill[x] == y)
-	  line_fill_hist[y]++;
+	if (line_fill[x] / cell_size_for_common_fill_hist ==
+	    y / cell_size_for_common_fill_hist)
+	  line_fill_hist[y / cell_size_for_common_fill_hist]++;
     }
 
   /* get the most common fill */
   com_line_fill = 1;
-  for (y = 2; y < m->height; y++)
+  for (y = 1; y < line_height / cell_size_for_common_fill_hist; y++)
     {
       if (line_fill_hist[com_line_fill] < line_fill_hist[y])
 	com_line_fill = y;
     }
+  com_line_fill *= cell_size_for_common_fill_hist;
 
   /* get avg fill */
   avg_line_fill = avg_line_fill / counter;

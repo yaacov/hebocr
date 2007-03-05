@@ -262,6 +262,40 @@ ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right)
   return FALSE;
 }
 
+ho_bitmap * 
+ho_bitmap_not (const ho_bitmap * m)
+{
+  int i;
+
+  ho_bitmap * m_out;
+  
+  /* allocate m_out */
+  m_out = ho_bitmap_new (m->width, m->height);
+  
+  /* copy header data */
+  m_out->x = m->x;
+  m_out->y = m->y;
+  
+  m_out->type = m->type;
+  m_out->font_height = m->font_height;
+  m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
+  m_out->nikud = m->nikud;
+  
+  /* check valid memory */
+  if (!m_out)
+    return NULL;
+
+  /* copy data */
+  for (i = 0; i < m->height * m->rowstride; i++)
+    m_out->data[i] = ~m->data[i];
+
+  return m_out;
+}
+
 ho_bitmap *
 ho_bitmap_dilation_n (const ho_bitmap * m, const unsigned char n)
 {

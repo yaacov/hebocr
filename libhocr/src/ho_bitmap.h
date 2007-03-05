@@ -47,9 +47,9 @@ typedef struct
   int line_spacing;
   int avg_line_fill;
   int com_line_fill;
-  
+
   unsigned char nikud;
-  
+
   int x;
   int y;
   int height;
@@ -124,6 +124,13 @@ int ho_bitmap_xor (ho_bitmap * m_left, const ho_bitmap * m_right);
  @return FALSE
  */
 int ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right);
+
+/**
+ do bitwise not of a bitmap
+ @param m the left hand bitmap
+ @return a newly allocated bitmap 
+ */
+ho_bitmap *ho_bitmap_not (const ho_bitmap * m);
 
 /**
  dilation of a a bitmap with 3x3 box

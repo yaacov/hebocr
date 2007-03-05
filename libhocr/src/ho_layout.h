@@ -51,6 +51,12 @@ typedef struct
 
   /* number of words in a line */
   int **n_words;
+  ho_bitmap ****m_words_text;
+  ho_bitmap ****m_words_line_mask;
+  ho_bitmap ****m_words_font_mask;
+
+  int ***n_fonts;
+
 } ho_layout;
 
 /**
@@ -66,12 +72,6 @@ ho_layout *ho_layout_new (const ho_bitmap * m_page_text,
  @param l_page a pointer to a ho_layout 
  */
 int ho_layout_free (ho_layout * l_page);
-
-/**
- create a full ho_layout from it's m_page_text
- @param l_page a pointer to a ho_layout 
- */
-int ho_layout_create (ho_layout * l_page);
 
 /**
  create a text blocks mask and count blocks in n_blocks
@@ -95,6 +95,19 @@ int ho_layout_create_line_mask (ho_layout * l_page, const int block_index);
 int ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
 				const int line_index);
 
+/**
+ create a text word mask and count words in n_words[block_index][line_index]
+ @param l_page a pointer to a ho_layout
+ @param block_index the block_index to work on
+ @param line_index the line_index to work on
+ @param word_index the word_index to work on
+ @param line_index the line_index to work on
+ */
+int ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
+				const int line_index, const int word_index,
+				const unsigned char slicing_threshold,
+				const unsigned char slicing_width);
+
 ho_bitmap *ho_layout_get_block_text (ho_layout * l_page, int block_index);
 
 ho_bitmap *ho_layout_get_line_text (ho_layout * l_page, int block_index,
@@ -108,5 +121,13 @@ ho_bitmap *ho_layout_get_word_text (ho_layout * l_page, int block_index,
 
 ho_bitmap *ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
 					 int line_index, int word_index);
+
+ho_bitmap *ho_layout_get_font_text (ho_layout * l_page, int block_index,
+				    int line_index, int word_index,
+				    int font_index);
+
+ho_bitmap *ho_layout_get_font_line_mask (ho_layout * l_page, int block_index,
+					 int line_index, int word_index,
+					 int font_index);
 
 #endif /* HO_LAYOUT_H */

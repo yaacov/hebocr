@@ -41,13 +41,18 @@ gint threshold = 0;
 gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
 gint scale_by = 0;
+gboolean do_not_clean_image = FALSE;
 gboolean remove_dots = FALSE;
 gboolean remove_images = FALSE;
 
 gint paragraph_setup = 0;
+gint slicing_threshold = 0;
+gint slicing_width = 0;
+
 gboolean show_grid = FALSE;
 gboolean save_bw = FALSE;
 gboolean save_layout = FALSE;
+gboolean save_fonts = FALSE;
 
 gboolean only_image_proccesing = FALSE;
 gboolean only_layout_analysis = FALSE;
@@ -106,6 +111,9 @@ static GOptionEntry entries[] = {
   {"scale", 's', 0, G_OPTION_ARG_INT, &scale_by,
    "scale input image by SCALE 1..9, 0 auto",
    "SCALE"},
+  {"do-not-clean", 'e', 0, G_OPTION_ARG_NONE, &do_not_clean_image,
+   "do not try to remove artefacts from image",
+   NULL},
   {"remove-halfton", 'r', 0, G_OPTION_ARG_NONE, &remove_dots,
    "remove halfton dots from input image",
    NULL},
@@ -114,6 +122,12 @@ static GOptionEntry entries[] = {
    NULL},
   {"colums setup", 'c', 0, G_OPTION_ARG_INT, &paragraph_setup,
    "colums setup: 1 free, 2.. #colums, 0 auto",
+   "NUM"},
+  {"slicing-threshold", 'f', 0, G_OPTION_ARG_INT, &slicing_threshold,
+   "use NUM as font slicing threshold, 1..250",
+   "NUM"},
+  {"slicing-width", 'F', 0, G_OPTION_ARG_INT, &slicing_width,
+   "use NUM as font slicing width, 50..250",
    "NUM"},
   {"draw-grid", 'g', 0, G_OPTION_ARG_NONE, &show_grid,
    "draw grid on output images", NULL},
@@ -125,6 +139,8 @@ static GOptionEntry entries[] = {
    "save layout image", NULL},
   {"save-layout-exit", 'L', 0, G_OPTION_ARG_NONE, &only_layout_analysis,
    "save layout image and exit", NULL},
+  {"save-fonts", 'A', 0, G_OPTION_ARG_NONE, &save_fonts,
+   "save fonts", NULL},
   {"no-gtk", 'n', 0, G_OPTION_ARG_NONE, &no_gtk,
    "do not use gtk for file input and output", NULL},
   {"debug", 'd', 0, G_OPTION_ARG_NONE, &debug,
@@ -294,6 +310,20 @@ hocr_load_input_bitmap ()
 	      exit (1);
 	    }
 
+	}
+    }
+
+  /* remove very small and very large things */
+  if (!do_not_clean_image)
+    {
+      m_bw_temp =
+	ho_bitmap_filter_by_size (m_bw, 3, 3 * m_bw->height / 4, 3,
+				  3 * m_bw->width / 4);
+      if (m_bw_temp)
+	{
+	  ho_bitmap_free (m_bw);
+	  m_bw = m_bw_temp;
+	  m_bw_temp = NULL;
 	}
     }
 
@@ -516,6 +546,7 @@ main (int argc, char *argv[])
   {
     int block_index;
     int line_index;
+    int word_index;
 
     for (block_index = 0; block_index < l_page->n_blocks; block_index++)
       {
@@ -551,6 +582,23 @@ main (int argc, char *argv[])
 		       l_page->n_words[block_index][line_index],
 		       l_page->m_lines_text[block_index][line_index]->
 		       font_spacing);
+
+	    /* look for fonts inside word */
+	    for (word_index = 0;
+		 word_index < l_page->n_words[block_index][line_index];
+		 word_index++)
+	      {
+		if (debug)
+		  g_print ("        analyzing word %d.\n", word_index + 1);
+		ho_layout_create_font_mask (l_page, block_index, line_index,
+					    word_index, slicing_threshold,
+					    slicing_width);
+
+		if (debug)
+		  g_print ("          found %d fonts.\n",
+			   l_page->
+			   n_fonts[block_index][line_index][word_index]);
+	      }
 	  }
       }
   }
@@ -601,21 +649,12 @@ main (int argc, char *argv[])
 		   word_index < l_page->n_words[block_index][line_index];
 		   word_index++)
 		{
-		  m_word_text = ho_layout_get_word_text (l_page, block_index,
-							 line_index,
-							 word_index);
-		  m_word_mask =
-		    ho_layout_get_word_line_mask (l_page, block_index,
-						  line_index, word_index);
 		  m_word_font_mask =
-		    ho_segment_fonts (m_word_text, m_word_mask);
+		    l_page->
+		    m_words_font_mask[block_index][line_index][word_index];
 
 		  ho_pixbuf_draw_bitmap (pix_out, m_word_font_mask, 0, 250, 0,
 					 235);
-
-		  ho_bitmap_free (m_word_font_mask);
-		  ho_bitmap_free (m_word_mask);
-		  ho_bitmap_free (m_word_text);
 		}
 	    }
 	}
@@ -659,6 +698,7 @@ main (int argc, char *argv[])
     int block_index;
     int line_index;
     int word_index;
+    int font_index;
     gchar *filename = NULL;
     ho_pixbuf *pix_out = NULL;
     ho_bitmap *m_text = NULL;
@@ -676,27 +716,58 @@ main (int argc, char *argv[])
 		 word_index < l_page->n_words[block_index][line_index];
 		 word_index++)
 	      {
-		if (debug)
-		  g_print ("  recognizing word %d %d %d.\n", block_index + 1,
-			   line_index + 1, word_index + 1);
+		for (font_index = 0;
+		     font_index <
+		     l_page->n_fonts[block_index][line_index][word_index];
+		     font_index++)
+		  {
+		    if (debug)
+		      g_print ("  recognizing font %d %d %d %d.\n",
+			       block_index + 1, line_index + 1,
+			       word_index + 1, font_index + 1);
 
-		m_text = ho_layout_get_word_text (l_page, block_index,
-						  line_index, word_index);
+		    /* TODO: do ocr on the fonts */
 
-		m_mask = ho_layout_get_word_line_mask (l_page, block_index,
-						       line_index,
-						       word_index);
-		m_font_mask = ho_segment_fonts (m_text, m_mask);
+		    /* get the font */
+		    m_text =
+		      ho_layout_get_font_text (l_page, block_index,
+					       line_index, word_index,
+					       font_index);
+		    m_mask =
+		      ho_layout_get_font_line_mask (l_page, block_index,
+						    line_index, word_index,
+						    font_index);
 
-		/* TODO: do ocr on the fonts */
+		    /* if user ask, dump font images to disk */
+		    if (save_fonts)
+		      {
+			filename =
+			  g_strdup_printf ("%s-font%02d%02d%02d%02d.jpeg",
+					   image_out_path, block_index,
+					   line_index, word_index,
+					   font_index);
+			pix_out =
+			  ho_pixbuf_new (3, m_text->width, m_text->height, 0);
 
-		/* oh ... */
-		ho_bitmap_free (m_text);
-		ho_bitmap_free (m_mask);
-		ho_bitmap_free (m_font_mask);
-	      }
-	  }
-      }
+			ho_pixbuf_draw_bitmap_at (pix_out, m_mask, 0, 0, 255,
+						  0, 0, 155);
+			ho_pixbuf_draw_bitmap_at (pix_out, m_text, 0, 0, 0, 0,
+						  0, 255);
+			ho_gtk_pixbuf_save (pix_out, filename);
+			ho_pixbuf_free (pix_out);
+			g_free (filename);
+		      }
+
+		    /* free bitmaps and others */
+		    ho_bitmap_free (m_text);
+		    ho_bitmap_free (m_mask);
+
+		    /* oh ... */
+
+		  }		/* end of fonts loop */
+	      }			/* end of words loop */
+	  }			/* end of lines loop */
+      }				/* end of blocks loop */
   }
 
   if (debug)

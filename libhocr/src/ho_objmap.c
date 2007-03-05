@@ -494,6 +494,9 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m,
   if (n_col < 2 || n_col > 6)
     n_col = 2;
 
+  /* allways use an extra column */
+  n_col++;
+
   /* is this an object map */
   if ((m->obj_list)->size < 1)
     return TRUE;
@@ -515,7 +518,7 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m,
       height = ho_objmap_get_object (m, index).height;
 
       /* what column ? */
-      q = n_col - 1 - n_col * (x + width) / m->width;
+      q = n_col - 1 - n_col * (x + width / 2) / m->width;
 
       /* sanity check */
       if (q < 0)
@@ -540,7 +543,8 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m,
 	    index =
 	      sorting_lists[sorting_list_index + q * ho_objmap_get_size (m)];
 
-	    if (ho_objmap_get_object (m, index).y == y)
+	    if ((ho_objmap_get_object (m, index).y +
+		 ho_objmap_get_object (m, index).height / 2) == y)
 	      {
 		ho_objmap_get_object (m, index).reading_index = reading_index;
 		reading_index++;
