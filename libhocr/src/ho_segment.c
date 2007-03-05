@@ -278,12 +278,12 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
   /* set default slicing_threshold */
   if (slicing_threshold < 15)
-    s_threshold = 80;
+    s_threshold = 70;
   else
     s_threshold = slicing_threshold;
 
   if (slicing_width < 80)
-    s_width = 180;
+    s_width = 160;
   else
     s_width = slicing_width;
 
@@ -355,7 +355,7 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 	  o_obj = ho_objmap_new_from_bitmap (m_font_temp);
 	  ho_bitmap_free (m_font_temp);
 
-	  ho_objmap_sort_by_reading_index (o_obj, 255);
+	  ho_objmap_sort_by_reading_index (o_obj, 255, FALSE);
 
 	  /* check for two or more objects */
 	  if (ho_objmap_get_size (o_obj) > 1)
@@ -479,4 +479,92 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   free (line_fill);
 
   return m_temp;
+}
+
+ho_bitmap *
+ho_segment_font_main_sign (const ho_bitmap * m_text, const ho_bitmap * m_mask)
+{
+  ho_objmap *o_obj = NULL;
+  ho_bitmap *m_sign_mask = NULL;
+  ho_bitmap *m_current_object = NULL;
+  int x, y, y1, y2, x1, x2;
+  int i;
+  int line_start, line_end, line_height;
+  unsigned char is_inside;
+  unsigned char is_dot;
+  unsigned char is_long_font;
+  int count_dots;
+
+  /* get line_height */
+  x = m_mask->width / 2;
+  for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
+  line_start = y;
+  for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
+  line_end = y;
+  line_height = line_end - line_start;
+
+  /* get all the objects of the font */
+  o_obj = ho_objmap_new_from_bitmap (m_text);
+  if (!o_obj)
+    return NULL;
+
+  /* if only one object, just return it */
+  if (ho_objmap_get_size (o_obj) == 1)
+    {
+      ho_objmap_free (o_obj);
+      m_sign_mask = ho_bitmap_clone (m_text);
+      return m_sign_mask;
+    }
+
+  /* more than one object */
+  m_sign_mask = ho_bitmap_new (m_text->width, m_text->height);
+  if (!m_sign_mask)
+    return NULL;
+
+  /* copy all the objects inside the line */
+  count_dots = 0;
+  for (i = 0; i < ho_objmap_get_size (o_obj); i++)
+    {
+      /* is this object inside line ? */
+      y1 = ho_objmap_get_object (o_obj, i).y;
+      y2 =
+	ho_objmap_get_object (o_obj, i).y + ho_objmap_get_object (o_obj,
+								  i).height;
+
+      x1 = ho_objmap_get_object (o_obj, i).x;
+      x2 =
+	ho_objmap_get_object (o_obj, i).x + ho_objmap_get_object (o_obj,
+								  i).width;
+
+      is_inside = ((y1 >= line_start
+		    && y1 < line_end - line_height / 10)
+		   || (y2 > line_start + line_height / 10 && y2 <= line_end)
+		   || (y1 <= line_start && y2 >= line_end));
+
+      is_dot = ((y2 - y1) < line_height / 4 && (y2 - y1) > line_height / 16
+		&& (x2 - x1) < line_height / 4
+		&& (x2 - x1) > line_height / 16);
+
+      /* can't be more than two dots (one - dagesh, two - shva)*/
+      if (is_dot && is_inside)
+	count_dots++;
+      if (count_dots > 2)
+	is_dot = FALSE;
+
+      if (is_inside && !is_dot)
+	{
+	  /* copy the object to output bitmap */
+	  m_current_object = ho_objmap_to_bitmap_by_index (o_obj, i);
+	  if (m_current_object)
+	    {
+	      ho_bitmap_or (m_sign_mask, m_current_object);
+
+	      ho_bitmap_free (m_current_object);
+	    }
+	}
+    }
+
+  ho_objmap_free (o_obj);
+
+  return m_sign_mask;
 }

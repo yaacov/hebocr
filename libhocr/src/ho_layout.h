@@ -33,6 +33,7 @@ typedef struct
 {
   /* paragraph settings type */
   unsigned char type;
+  unsigned char dir;
 
   /* black and white text image */
   ho_bitmap *m_page_text;
@@ -63,9 +64,10 @@ typedef struct
  new ho_layout 
  @param m_page_text a pointer to a text bitmap
  @param type free text blocks or boxed 
+ @param dir true-ltr false-rtl
  */
 ho_layout *ho_layout_new (const ho_bitmap * m_page_text,
-			  const unsigned char type);
+			  const unsigned char type, const unsigned char dir);
 
 /**
  free a ho_layout

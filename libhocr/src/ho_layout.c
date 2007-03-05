@@ -41,7 +41,8 @@
 #include "ho_layout.h"
 
 ho_layout *
-ho_layout_new (const ho_bitmap * m_page_text, const unsigned char type)
+ho_layout_new (const ho_bitmap * m_page_text, const unsigned char type,
+	       const unsigned char dir)
 {
   ho_layout *l_new;
 
@@ -60,6 +61,7 @@ ho_layout_new (const ho_bitmap * m_page_text, const unsigned char type)
     }
 
   l_new->type = type;
+  l_new->dir = dir;
 
   /* link all pointers to NULL */
 
@@ -533,7 +535,7 @@ ho_layout_get_block_text (ho_layout * l_page, int block_index)
   o_map_blocks = ho_objmap_new_from_bitmap (l_page->m_page_blocks_mask);
 
   /* sort paragraph by reading order */
-  ho_objmap_sort_by_reading_index (o_map_blocks, l_page->type);
+  ho_objmap_sort_by_reading_index (o_map_blocks, l_page->type, l_page->dir);
 
   x = ho_objmap_get_object (o_map_blocks, block_index).x;
   y = ho_objmap_get_object (o_map_blocks, block_index).y;
@@ -589,7 +591,7 @@ ho_layout_get_line_text (ho_layout * l_page, int block_index, int line_index)
     ho_objmap_new_from_bitmap (l_page->m_blocks_lines_mask[block_index]);
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_lines, 2);
+  ho_objmap_sort_by_reading_index (o_map_lines, 254, l_page->dir);
 
   x = ho_objmap_get_object (o_map_lines, line_index).x;
   y = ho_objmap_get_object (o_map_lines, line_index).y;
@@ -648,7 +650,7 @@ ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
     ho_objmap_new_from_bitmap (l_page->m_blocks_lines_mask[block_index]);
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_lines, 2);
+  ho_objmap_sort_by_reading_index (o_map_lines, 254, l_page->dir);
 
   x = ho_objmap_get_object (o_map_lines, line_index).x;
   y = ho_objmap_get_object (o_map_lines, line_index).y;
@@ -702,7 +704,7 @@ ho_layout_get_word_text (ho_layout * l_page, int block_index, int line_index,
   y_start = l_page->m_lines_words_mask[block_index][line_index]->y;
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_words, 255);
+  ho_objmap_sort_by_reading_index (o_map_words, 255, l_page->dir);
 
   x = ho_objmap_get_object (o_map_words, word_index).x + x_start;
   y = ho_objmap_get_object (o_map_words, word_index).y + y_start;
@@ -745,7 +747,7 @@ ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
   y_start = l_page->m_lines_words_mask[block_index][line_index]->y;
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_words, 255);
+  ho_objmap_sort_by_reading_index (o_map_words, 255, l_page->dir);
 
   x = ho_objmap_get_object (o_map_words, word_index).x;
   y = ho_objmap_get_object (o_map_words, word_index).y;
@@ -772,16 +774,26 @@ ho_layout_get_font_text (ho_layout * l_page, int block_index, int line_index,
   int x, y, width, height;
   int x_start, x_end;
   int i;
+  int index;
+
+  /* if left to right font order is reversed */
+  if (l_page->dir)
+    {
+      index =
+	l_page->n_fonts[block_index][line_index][word_index] - font_index - 1;
+    }
+  else
+    index = font_index;
 
   m_word_text = l_page->m_words_text[block_index][line_index][word_index];
   m_word_font_mask =
-    l_page->m_words_font_mask[block_index][line_index][word_index];;
+    l_page->m_words_font_mask[block_index][line_index][word_index];
 
   /* get font start and end points */
   /* count fonts */
   i = -1;
   x = m_word_font_mask->width - 1;
-  while (x >= 0 && i < font_index)
+  while (x >= 0 && i < index)
     {
       /* get start&end of font */
       for (; x >= 0 && ho_bitmap_get (m_word_font_mask, x, 2); x--);
@@ -795,7 +807,7 @@ ho_layout_get_font_text (ho_layout * l_page, int block_index, int line_index,
   y = m_word_text->y;
   x = m_word_text->x + x_start;
   height = m_word_text->height;
-  width = x_end - x_start;
+  width = x_end - x_start + 1;
 
   m_font_text =
     ho_bitmap_clone_window (l_page->m_page_text, x, y, width, height);
@@ -812,8 +824,8 @@ ho_layout_get_font_text (ho_layout * l_page, int block_index, int line_index,
 }
 
 ho_bitmap *
-ho_layout_get_font_line_mask (ho_layout * l_page, int block_index, int line_index,
-			 int word_index, int font_index)
+ho_layout_get_font_line_mask (ho_layout * l_page, int block_index,
+			      int line_index, int word_index, int font_index)
 {
   ho_bitmap *m_font_line_mask = NULL;
   ho_bitmap *m_word_line_mask = NULL;
@@ -823,16 +835,27 @@ ho_layout_get_font_line_mask (ho_layout * l_page, int block_index, int line_inde
   int x, y, width, height;
   int x_start, x_end;
   int i;
+  int index;
 
-  m_word_line_mask = l_page->m_words_line_mask[block_index][line_index][word_index];
+  /* if left to right font order is reversed */
+  if (l_page->dir)
+    {
+      index =
+	l_page->n_fonts[block_index][line_index][word_index] - font_index - 1;
+    }
+  else
+    index = font_index;
+
+  m_word_line_mask =
+    l_page->m_words_line_mask[block_index][line_index][word_index];
   m_word_font_mask =
-    l_page->m_words_font_mask[block_index][line_index][word_index];;
+    l_page->m_words_font_mask[block_index][line_index][word_index];
 
   /* get font start and end points */
   /* count fonts */
   i = -1;
   x = m_word_font_mask->width - 1;
-  while (x >= 0 && i < font_index)
+  while (x >= 0 && i < index)
     {
       /* get start&end of font */
       for (; x >= 0 && ho_bitmap_get (m_word_font_mask, x, 2); x--);
@@ -844,7 +867,7 @@ ho_layout_get_font_line_mask (ho_layout * l_page, int block_index, int line_inde
 
   /* get font place on m_text */
   height = m_word_line_mask->height;
-  width = x_end - x_start;
+  width = x_end - x_start + 1;
 
   m_font_line_mask =
     ho_bitmap_clone_window (m_word_line_mask, x_start, 0, width, height);

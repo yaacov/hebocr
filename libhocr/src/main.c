@@ -36,6 +36,7 @@ gchar *image_out_path = NULL;
 gboolean version = FALSE;
 gboolean debug = FALSE;
 gboolean no_gtk = FALSE;
+gboolean dir_ltr = FALSE;
 
 gint threshold = 0;
 gint adaptive_threshold = 0;
@@ -44,6 +45,8 @@ gint scale_by = 0;
 gboolean do_not_clean_image = FALSE;
 gboolean remove_dots = FALSE;
 gboolean remove_images = FALSE;
+gboolean fix_broken_fonts = FALSE;
+gboolean fix_ligated_fonts = FALSE;
 
 gint paragraph_setup = 0;
 gint slicing_threshold = 0;
@@ -111,7 +114,7 @@ static GOptionEntry entries[] = {
   {"scale", 's', 0, G_OPTION_ARG_INT, &scale_by,
    "scale input image by SCALE 1..9, 0 auto",
    "SCALE"},
-  {"do-not-clean", 'e', 0, G_OPTION_ARG_NONE, &do_not_clean_image,
+  {"do-not-clean", 0, 0, G_OPTION_ARG_NONE, &do_not_clean_image,
    "do not try to remove artefacts from image",
    NULL},
   {"remove-halfton", 'r', 0, G_OPTION_ARG_NONE, &remove_dots,
@@ -120,13 +123,19 @@ static GOptionEntry entries[] = {
   {"remove-images", 'R', 0, G_OPTION_ARG_NONE, &remove_images,
    "remove images from input image",
    NULL},
+  {"fix-broken-fonts", 0, 0, G_OPTION_ARG_NONE, &fix_broken_fonts,
+   "try to link broken fonts",
+   NULL},
+  {"fix-ligated-fonts", 0, 0, G_OPTION_ARG_NONE, &fix_ligated_fonts,
+   "try to break ligated fonts",
+   NULL},
   {"colums setup", 'c', 0, G_OPTION_ARG_INT, &paragraph_setup,
    "colums setup: 1 free, 2.. #colums, 0 auto",
    "NUM"},
-  {"slicing-threshold", 'f', 0, G_OPTION_ARG_INT, &slicing_threshold,
+  {"slicing-threshold", 0, 0, G_OPTION_ARG_INT, &slicing_threshold,
    "use NUM as font slicing threshold, 1..250",
    "NUM"},
-  {"slicing-width", 'F', 0, G_OPTION_ARG_INT, &slicing_width,
+  {"slicing-width", 0, 0, G_OPTION_ARG_INT, &slicing_width,
    "use NUM as font slicing width, 50..250",
    "NUM"},
   {"draw-grid", 'g', 0, G_OPTION_ARG_NONE, &show_grid,
@@ -139,8 +148,10 @@ static GOptionEntry entries[] = {
    "save layout image", NULL},
   {"save-layout-exit", 'L', 0, G_OPTION_ARG_NONE, &only_layout_analysis,
    "save layout image and exit", NULL},
-  {"save-fonts", 'A', 0, G_OPTION_ARG_NONE, &save_fonts,
+  {"save-fonts", 0, 0, G_OPTION_ARG_NONE, &save_fonts,
    "save fonts", NULL},
+   {"ltr", 0, 0, G_OPTION_ARG_NONE, &dir_ltr,
+   "left to right text", NULL},
   {"no-gtk", 'n', 0, G_OPTION_ARG_NONE, &no_gtk,
    "do not use gtk for file input and output", NULL},
   {"debug", 'd', 0, G_OPTION_ARG_NONE, &debug,
@@ -343,6 +354,36 @@ hocr_load_input_bitmap ()
 	}
     }
 
+  /* fix_broken_fonts */
+  if (fix_broken_fonts)
+    {
+      if (debug)
+	g_print (" try to fix broken fonts.\n");
+
+      m_bw_temp = ho_bitmap_dilation (m_bw);
+      if (m_bw_temp)
+	{
+	  ho_bitmap_free (m_bw);
+	  m_bw = m_bw_temp;
+	  m_bw_temp = NULL;
+	}
+    }
+
+  /* fix_ligated_fonts */
+  if (fix_ligated_fonts)
+    {
+      if (debug)
+	g_print (" try to fix ligated fonts.\n");
+
+      m_bw_temp = ho_bitmap_opening (m_bw);
+      if (m_bw_temp)
+	{
+	  ho_bitmap_free (m_bw);
+	  m_bw = m_bw_temp;
+	  m_bw_temp = NULL;
+	}
+    }
+
   /* remove too big and too small objects */
   if (remove_images)
     {
@@ -535,7 +576,7 @@ main (int argc, char *argv[])
 	g_print ("  guessing one column.\n");
     }
 
-  l_page = ho_layout_new (m_page_text, paragraph_setup != 1);
+  l_page = ho_layout_new (m_page_text, paragraph_setup != 1, dir_ltr);
 
   ho_layout_create_block_mask (l_page);
 
@@ -737,6 +778,7 @@ main (int argc, char *argv[])
 		      ho_layout_get_font_line_mask (l_page, block_index,
 						    line_index, word_index,
 						    font_index);
+		    m_font_mask = ho_segment_font_main_sign (m_text, m_mask);
 
 		    /* if user ask, dump font images to disk */
 		    if (save_fonts)
@@ -752,13 +794,16 @@ main (int argc, char *argv[])
 			ho_pixbuf_draw_bitmap_at (pix_out, m_mask, 0, 0, 255,
 						  0, 0, 155);
 			ho_pixbuf_draw_bitmap_at (pix_out, m_text, 0, 0, 0, 0,
-						  0, 255);
+						  255, 255);
+			ho_pixbuf_draw_bitmap_at (pix_out, m_font_mask, 0, 0,
+						  0, 0, 0, 255);
 			ho_gtk_pixbuf_save (pix_out, filename);
 			ho_pixbuf_free (pix_out);
 			g_free (filename);
 		      }
 
 		    /* free bitmaps and others */
+		    ho_bitmap_free (m_font_mask);
 		    ho_bitmap_free (m_text);
 		    ho_bitmap_free (m_mask);
 

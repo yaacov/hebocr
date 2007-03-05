@@ -75,7 +75,8 @@ int ho_objmap_clean (ho_objmap * m);
  @param m pointer to an ho_objmap
  @return FALSE
  */
-int ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col);
+int ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col,
+				     const unsigned char dir_ltr);
 
 /**
  new ho_objmap from ho_bitmap
@@ -140,6 +141,8 @@ ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
  @param m pointer to an ho_objmap
  @return FALSE
  */
-int ho_objmap_update_reading_index_rtl (ho_objmap * m, const unsigned char n_columns);
+int ho_objmap_update_reading_index (ho_objmap * m,
+				    const unsigned char n_columns,
+				    const unsigned char dir_ltr);
 
 #endif /* HO_OBJMAP_H */

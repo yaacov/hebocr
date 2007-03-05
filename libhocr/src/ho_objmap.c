@@ -137,14 +137,15 @@ ho_objmap_clean (ho_objmap * m)
 }
 
 int
-ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col)
+ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col,
+				 const unsigned char dir_ltr)
 {
   int x, y, k;
   int index;
   int *map = NULL;
 
   /* make sure reading order is set */
-  ho_objmap_update_reading_index_rtl (m, col);
+  ho_objmap_update_reading_index (m, col, dir_ltr);
 
   /* clean the object list */
   ho_objlist_clean_by_reading_index ((m->obj_list), &map);
@@ -455,8 +456,9 @@ ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
 }
 
 int
-ho_objmap_update_reading_index_rtl (ho_objmap * m,
-				    const unsigned char n_columns)
+ho_objmap_update_reading_index (ho_objmap * m,
+				const unsigned char n_columns,
+				const unsigned char dir_ltr)
 {
   int q;
   int index;
@@ -469,16 +471,15 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m,
   int width;
   unsigned char n_col = n_columns;
 
-  /* if n_columns == 255 then this is a one line sorting */
-  if (n_col == 255)
+  /* if n_columns == 254 then this is a one column sorting */
+  if (n_col == 254)
     {
       reading_index = 0;
-      for (x = m->width; x >= 0; x--)
+      for (y = 0; y < m->height; y++)
 	{
 	  for (index = 0; index < ho_objmap_get_size (m); index++)
 	    {
-	      if ((ho_objmap_get_object (m, index).x +
-		   ho_objmap_get_object (m, index).width - 1) == x)
+	      if ((ho_objmap_get_object (m, index).y) == y)
 		{
 		  ho_objmap_get_object (m, index).reading_index =
 		    reading_index;
@@ -486,7 +487,45 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m,
 		}
 	    }
 	}
+      return FALSE;
+    }
 
+  /* if n_columns == 255 then this is a one line sorting */
+  if (n_col == 255)
+    {
+      reading_index = 0;
+      if (dir_ltr)
+	{
+	  for (x = 0; x < m->width; x++)
+	    {
+	      for (index = 0; index < ho_objmap_get_size (m); index++)
+		{
+		  if ((ho_objmap_get_object (m, index).x +
+		       ho_objmap_get_object (m, index).width - 1) == x)
+		    {
+		      ho_objmap_get_object (m, index).reading_index =
+			reading_index;
+		      reading_index++;
+		    }
+		}
+	    }
+	}
+      else
+	{
+	  for (x = m->width; x >= 0; x--)
+	    {
+	      for (index = 0; index < ho_objmap_get_size (m); index++)
+		{
+		  if ((ho_objmap_get_object (m, index).x +
+		       ho_objmap_get_object (m, index).width - 1) == x)
+		    {
+		      ho_objmap_get_object (m, index).reading_index =
+			reading_index;
+		      reading_index++;
+		    }
+		}
+	    }
+	}
       return FALSE;
     }
 
@@ -518,7 +557,10 @@ ho_objmap_update_reading_index_rtl (ho_objmap * m,
       height = ho_objmap_get_object (m, index).height;
 
       /* what column ? */
-      q = n_col - 1 - n_col * (x + width / 2) / m->width;
+      if (dir_ltr)
+	q = n_col * (x + width / 2) / m->width;
+      else
+	q = n_col - 1 - n_col * (x + width / 2) / m->width;
 
       /* sanity check */
       if (q < 0)
