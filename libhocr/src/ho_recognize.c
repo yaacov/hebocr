@@ -41,6 +41,9 @@
 #include "ho_objmap.h"
 #include "ho_bitmap_filter.h"
 #include "ho_segment.h"
+#include "ho_font.h"
+
+#include "ho_recognize.h"
 
 int
 ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
