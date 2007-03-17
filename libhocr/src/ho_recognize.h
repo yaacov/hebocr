@@ -1,5 +1,5 @@
 /***************************************************************************
- *            hocr.h
+ *            ho_recognize.h
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -22,45 +22,26 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-/** @mainpage libhocr
- * LIBrary for Hebrew Optical Character Recognition 
- *
- * @section README
- * @include README
- * 
- * @section ChangeLog
- * @include ChangeLog
- *
- */
+#ifndef HO_RECOGNIZE_H
+#define HO_RECOGNIZE_H 1
 
-#ifndef HOCR_H
-#define HOCR_H 1
-
-#ifdef __cplusplus
-#  define BEGIN_C_DECLS extern "C" {
-#  define END_C_DECLS   }
-#else /* !__cplusplus */
-#  define BEGIN_C_DECLS
-#  define END_C_DECLS
-#endif /* __cplusplus */
-
-BEGIN_C_DECLS
-/* binary image map */
 #include <ho_bitmap.h>
-#include <ho_bitmap_draw.h>
-#include <ho_bitmap_pnm.h>
-#include <ho_bitmap_filter.h>
-/* color image map */
-#include <ho_pixbuf.h>
-#include <ho_pixbuf_pnm.h>
-#include <ho_pixbuf_draw.h>
-/* object image map */
-#include <ho_obj.h>
 #include <ho_objmap.h>
-#include <ho_dimentions.h>
-#include <ho_segment.h>
-#include <ho_font.h>
-/* layout container for hocr layout */
-#include <ho_layout.h>
-  END_C_DECLS
-#endif /* HOCR_H */
+
+int
+ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+		      int *height, int *start, int *end);
+
+int
+ho_recognize_hbar_down (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			int *height, int *start, int *end);
+
+int
+ho_recognize_vbar_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			 int *width, int *start, int *end);
+
+int
+ho_recognize_vbar_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			int *width, int *start, int *end);
+
+#endif /* HO_RECOGNIZE_H */

@@ -18,6 +18,8 @@ libhocr_la_SOURCES = \
         ho_objmap.c \
         ho_dimentions.c \
         ho_segment.c \
+        ho_font.c \
+        ho_recognize.c \
         ho_layout.c
 
 libhocr_la_LIBADD = \
@@ -38,6 +40,8 @@ library_include_HEADERS = hocr.h \
          ho_objmap.h \
          ho_dimentions.h \
          ho_segment.h \
+         ho_font.h \
+         ho_recognize.h \
          ho_layout.h \
          ho_gtk.h 
 
@@ -56,12 +60,23 @@ libhocrgtk_la_LIBADD = \
 libhocrgtk_la_LDFLAGS = $(libhocr_la_LDFLAGS)
 
 # A demo hocr program
-bin_PROGRAMS = hocr
+bin_PROGRAMS = hocr \
+         hocr-teach
+         
 hocr_SOURCES = main.c
 hocr_CFLAGS = \
         $(gtk_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
 hocr_LDADD= \
+        $(gtk_LIBS) \
+        $(libhocr_la_LIBADD) \
+        -L. -lhocr -lhocrgtk -lm
+
+hocr_teach_SOURCES = main_teach.c
+hocr_teach_CFLAGS = \
+        $(gtk_CFLAGS) \
+        -DBUILD=\"$(BUILD_STR)\" 
+hocr_teach_LDADD= \
         $(gtk_LIBS) \
         $(libhocr_la_LIBADD) \
         -L. -lhocr -lhocrgtk -lm

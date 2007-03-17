@@ -95,6 +95,11 @@ ho_bitmap *ho_bitmap_filter_remove_dots (const ho_bitmap * m,
 					 const unsigned char erosion_n,
 					 const unsigned char dilation_n);
 
+/**
+ count the number of objects in a bitmap
+ @param m pointer to an ho_bitmap
+ @return the number of objects in a bitmap
+ */
 int ho_bitmap_filter_count_objects (const ho_bitmap * m);
 
 #endif /* HO_BITMAP_FILTER_H */

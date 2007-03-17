@@ -69,8 +69,7 @@ ho_pixbuf *ho_pixbuf_new (const unsigned char n_channels,
  @param m pointer to a ho_pixbuf image
  @return newly allocated gray ho_pixbuf
  */
-ho_pixbuf *
-ho_pixbuf_clone (const ho_pixbuf * m);
+ho_pixbuf *ho_pixbuf_clone (const ho_pixbuf * m);
 
 /**
  new ho_pixbuf from ho_bitmap
@@ -87,7 +86,8 @@ ho_pixbuf *ho_pixbuf_new_from_bitmap (const ho_bitmap * bit_in);
  @return newly allocated color ho_pixbuf
  */
 ho_pixbuf *ho_pixbuf_new_from_objmap (const ho_objmap * obj_in,
-				      const unsigned char min, const unsigned char max);
+				      const unsigned char min,
+				      const unsigned char max);
 
 /**
  new rgb ho_pixbuf from non rgb pixbuf
@@ -109,6 +109,27 @@ int ho_pixbuf_free (ho_pixbuf * pix);
  @return newly allocated gray ho_pixbuf
  */
 ho_pixbuf *ho_pixbuf_color_to_gray (const ho_pixbuf * pix);
+
+/**
+ take the Red channel from an RGB pixbuf
+ @param pix the color ho_pixbuf
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_color_to_red (const ho_pixbuf * pix);
+
+/**
+ take the Green channel from an RGB pixbuf
+ @param pix the color ho_pixbuf
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_color_to_green (const ho_pixbuf * pix);
+
+/**
+ take the Blue channel from an RGB pixbuf
+ @param pix the color ho_pixbuf
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_color_to_blue (const ho_pixbuf * pix);
 
 /**
  scale a gray pixbuf to by 2
@@ -140,8 +161,9 @@ ho_pixbuf *ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale);
  @return FALSE
  */
 unsigned char
-ho_pixbuf_minmax (const ho_pixbuf * pix, unsigned char * min, unsigned char * max);
-        
+ho_pixbuf_minmax (const ho_pixbuf * pix, unsigned char *min,
+		  unsigned char *max);
+
 /**
  aplay a linear filter to a gray pixbuf 
  @param pix the input ho_pixbuf
@@ -155,7 +177,8 @@ ho_pixbuf *ho_pixbuf_linear_filter (const ho_pixbuf * pix);
  @param threshold the threshold to use 0..100
  @return newly allocated gray ho_bitmap
  */
-ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold);
+ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix,
+				unsigned char threshold);
 
 /**
  convert a gray pixbuf to bitmap using adaptive thresholding
@@ -166,7 +189,8 @@ ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold);
  @return newly allocated gray ho_bitmap
  */
 ho_bitmap *ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf * pix,
-					 unsigned char threshold, unsigned char size,
+					 unsigned char threshold,
+					 unsigned char size,
 					 unsigned char adaptive_threshold);
 
 /**
@@ -181,7 +205,8 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
 					      pix,
 					      unsigned char threshold,
 					      unsigned char size,
-					      unsigned char adaptive_threshold);
+					      unsigned char
+					      adaptive_threshold);
 
 /**
  convert a gray pixbuf to bitmap wrapper function

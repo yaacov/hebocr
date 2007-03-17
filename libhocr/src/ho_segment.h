@@ -63,13 +63,4 @@ ho_bitmap *ho_segment_fonts (const ho_bitmap * m,
 			     const unsigned char slicing_threshold,
 			     const unsigned char slicing_width);
 
-/**
- return a bitmap of the main signs in the font
- @param m_text pointer to the text bitmap
- @param m_mask pointer to the line map
- @return a newly allocated bitmap
- */
-ho_bitmap *
-ho_segment_font_main_sign (const ho_bitmap * m_text, const ho_bitmap * m_mask);
-
 #endif /* HO_SEGMENT_H */

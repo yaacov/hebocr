@@ -126,6 +126,14 @@ int ho_bitmap_xor (ho_bitmap * m_left, const ho_bitmap * m_right);
 int ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right);
 
 /**
+ do bitwise copy of two bitmaps
+ @param m_left the left hand bitmap
+ @param m_right the right hand bitmap
+ @return FALSE
+ */
+int ho_bitmap_copy (ho_bitmap * m_left, const ho_bitmap * m_right);
+
+/**
  do bitwise not of a bitmap
  @param m the left hand bitmap
  @return a newly allocated bitmap 
@@ -216,5 +224,18 @@ ho_bitmap *ho_bitmap_vlink (const ho_bitmap * m, const int size);
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_edge (const ho_bitmap * m, const int n);
+
+/**
+ return the ratio fill/volume value of a rectangle in the bitmap
+ @param m pointer to an ho_bitmap
+ @param x x of rectangel
+ @param y y of rectangel
+ @param width width of rectangel
+ @param height height of rectangel
+ @return the ratio value
+ */
+double
+ho_bitmap_get_fill (const ho_bitmap * m, const int x, const int y,
+		    const int width, const int height);
 
 #endif /* HO_BITMAP_H */

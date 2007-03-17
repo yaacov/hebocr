@@ -262,20 +262,36 @@ ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right)
   return FALSE;
 }
 
-ho_bitmap * 
+int
+ho_bitmap_copy (ho_bitmap * m_left, const ho_bitmap * m_right)
+{
+  int i;
+
+  /* check sizes */
+  if (m_left->width != m_right->width || m_left->height != m_right->height)
+    return TRUE;
+
+  /* copy data */
+  for (i = 0; i < m_right->height * m_right->rowstride; i++)
+    m_left->data[i] = m_right->data[i];
+
+  return FALSE;
+}
+
+ho_bitmap *
 ho_bitmap_not (const ho_bitmap * m)
 {
   int i;
 
-  ho_bitmap * m_out;
-  
+  ho_bitmap *m_out;
+
   /* allocate m_out */
   m_out = ho_bitmap_new (m->width, m->height);
-  
+
   /* copy header data */
   m_out->x = m->x;
   m_out->y = m->y;
-  
+
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
@@ -284,7 +300,7 @@ ho_bitmap_not (const ho_bitmap * m)
   m_out->avg_line_fill = m->avg_line_fill;
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
-  
+
   /* check valid memory */
   if (!m_out)
     return NULL;
@@ -663,4 +679,23 @@ ho_bitmap_edge (const ho_bitmap * m, const int n)
   ho_bitmap_free (m_temp1);
 
   return m_out;
+}
+
+double
+ho_bitmap_get_fill (const ho_bitmap * m, const int x, const int y,
+		    const int width, const int height)
+{
+  int current_x, current_y;
+  int fill;
+
+  if (!width || !height || x < 0 || y < 0 || (x + width) > m->width
+      || (y + height) > m->height)
+    return -1.0;
+
+  fill = 0;
+  for (current_y = y; current_y < y + height; current_y++)
+    for (current_x = x; current_x < x + width; current_x++)
+      fill += ho_bitmap_get (m, current_x, current_y);
+
+  return (double) fill / (double) (width * height);
 }

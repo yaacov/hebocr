@@ -23,6 +23,7 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -33,8 +34,10 @@
 gchar *image_in_filename = NULL;
 gchar *text_out_filename = NULL;
 gchar *image_out_path = NULL;
+gchar *fann_net_filename = NULL;
 gboolean version = FALSE;
 gboolean debug = FALSE;
+gboolean verbose = FALSE;
 gboolean no_gtk = FALSE;
 gboolean dir_ltr = FALSE;
 
@@ -59,6 +62,7 @@ gboolean save_fonts = FALSE;
 
 gboolean only_image_proccesing = FALSE;
 gboolean only_layout_analysis = FALSE;
+gboolean only_save_fonts = FALSE;
 
 gint spacing_code = 0;
 gint lang_code = 0;
@@ -101,20 +105,22 @@ static GOptionEntry entries[] = {
    "use FILE as output text file name", "FILE"},
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
    "use PATH for output images", "PATH"},
-  {"thresholding-type", 'a', 0, G_OPTION_ARG_INT,
+  {"fann-net", 'n', 0, G_OPTION_ARG_FILENAME, &fann_net_filename,
+   "use FILE as font shapes memory file", "FILE"},
+  {"thresholding-type", 'T', 0, G_OPTION_ARG_INT,
    &adaptive_threshold_type,
    "thresholding type, 0 normal, 1 none, 2 fine",
    "NUM"},
   {"threshold", 't', 0, G_OPTION_ARG_INT, &threshold,
    "use NUM as threshold value, 1..100",
    "NUM"},
-  {"adaptive-threshold", 'T', 0, G_OPTION_ARG_INT, &adaptive_threshold,
+  {"adaptive-threshold", 'a', 0, G_OPTION_ARG_INT, &adaptive_threshold,
    "use NUM as adaptive threshold value, 1..100",
    "NUM"},
   {"scale", 's', 0, G_OPTION_ARG_INT, &scale_by,
    "scale input image by SCALE 1..9, 0 auto",
    "SCALE"},
-  {"do-not-clean", 0, 0, G_OPTION_ARG_NONE, &do_not_clean_image,
+  {"do-not-clean", 'n', 0, G_OPTION_ARG_NONE, &do_not_clean_image,
    "do not try to remove artefacts from image",
    NULL},
   {"remove-halfton", 'r', 0, G_OPTION_ARG_NONE, &remove_dots,
@@ -148,14 +154,18 @@ static GOptionEntry entries[] = {
    "save layout image", NULL},
   {"save-layout-exit", 'L', 0, G_OPTION_ARG_NONE, &only_layout_analysis,
    "save layout image and exit", NULL},
-  {"save-fonts", 0, 0, G_OPTION_ARG_NONE, &save_fonts,
+  {"save-fonts", 'f', 0, G_OPTION_ARG_NONE, &save_fonts,
    "save fonts", NULL},
-   {"ltr", 0, 0, G_OPTION_ARG_NONE, &dir_ltr,
+  {"save-fonts-exit", 'F', 0, G_OPTION_ARG_NONE, &only_save_fonts,
+   "save fonts images and exit", NULL},
+  {"ltr", 0, 0, G_OPTION_ARG_NONE, &dir_ltr,
    "left to right text", NULL},
-  {"no-gtk", 'n', 0, G_OPTION_ARG_NONE, &no_gtk,
+  {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
    "do not use gtk for file input and output", NULL},
-  {"debug", 'd', 0, G_OPTION_ARG_NONE, &debug,
+  {"debug", 'D', 0, G_OPTION_ARG_NONE, &debug,
    "print debuging information while running", NULL},
+  {"verbose", 'd', 0, G_OPTION_ARG_NONE, &verbose,
+   "print more information while running", NULL},
   {"version", 'v', 0, G_OPTION_ARG_NONE, &version,
    "print version information and exit", NULL},
   {NULL}
@@ -201,7 +211,7 @@ hocr_cmd_parser (int *argc, char **argv[])
       exit (0);
     }
 
-  if (debug)
+  if (debug || verbose)
     g_print ("%s - Hebrew OCR utility\n", PACKAGE_STRING);
 
   /* sanity check */
@@ -260,7 +270,7 @@ hocr_load_input_bitmap ()
       exit (1);
     }
 
-  if (debug)
+  if (debug || verbose)
     g_print (" input image is %d by %d pixels, with %d color channels\n",
 	     pix->width, pix->height, pix->n_channels);
 
@@ -478,6 +488,8 @@ hocr_exit ()
     g_free (image_out_path);
   if (text_out_filename)
     g_free (text_out_filename);
+  if (fann_net_filename)
+    g_free (fann_net_filename);
 
   /* exit program */
   exit (0);
@@ -488,6 +500,8 @@ hocr_exit ()
 int
 main (int argc, char *argv[])
 {
+  int number_of_fonts;
+
   /* start of argument analyzing section 
    */
 
@@ -501,18 +515,19 @@ main (int argc, char *argv[])
 
   /* start of image proccesing section 
    */
-  if (debug)
+  if (debug || verbose)
     g_print ("start image proccesing.\n");
 
   /* load the image from input filename */
   m_page_text = hocr_load_input_bitmap ();
 
-  if (debug)
+  if (debug || verbose)
     if (scale_by > 1)
-      g_print (" procced image is %d by %d pixels (origianl scaled by %d)\n",
-	       m_page_text->width, m_page_text->height, scale_by);
+      g_print
+	(" procced image is %d by %d pixels (origianl scaled by %d), one color bit.\n",
+	 m_page_text->width, m_page_text->height, scale_by);
     else
-      g_print (" procced image is %d by %d pixels\n",
+      g_print (" procced image is %d by %d pixels, one color bit.\n",
 	       m_page_text->width, m_page_text->height);
 
   /* if only image proccesing or save b/w image */
@@ -546,7 +561,7 @@ main (int argc, char *argv[])
 	}
     }
 
-  if (debug)
+  if (debug || verbose)
     g_print ("end image proccesing.\n");
 
   /* if user want save the b/w picture image proccesing produced */
@@ -558,7 +573,7 @@ main (int argc, char *argv[])
 
   /* start of layout analyzing section
    */
-  if (debug)
+  if (debug || verbose)
     g_print ("start image layout analysis.\n");
 
   if (!paragraph_setup)
@@ -580,8 +595,11 @@ main (int argc, char *argv[])
 
   ho_layout_create_block_mask (l_page);
 
-  if (debug)
+  if (debug || verbose)
     g_print ("  found %d blocks.\n", l_page->n_blocks);
+
+  /* start counting fonts */
+  number_of_fonts = 0;
 
   /* look for lines inside blocks */
   {
@@ -591,14 +609,16 @@ main (int argc, char *argv[])
 
     for (block_index = 0; block_index < l_page->n_blocks; block_index++)
       {
-	if (debug)
+	if (debug || verbose)
 	  g_print ("  analyzing block %d.\n", block_index + 1);
 	ho_layout_create_line_mask (l_page, block_index);
 
+	if (debug || verbose)
+	  g_print ("    found %d lines.\n", l_page->n_lines[block_index]);
+
 	if (debug)
 	  g_print
-	    ("    found %d lines. font height %d width %d, line spacing %d\n",
-	     l_page->n_lines[block_index],
+	    ("    font height %d width %d, line spacing %d\n",
 	     l_page->m_blocks_text[block_index]->font_height,
 	     l_page->m_blocks_text[block_index]->font_width,
 	     l_page->m_blocks_text[block_index]->line_spacing);
@@ -607,7 +627,7 @@ main (int argc, char *argv[])
 	for (line_index = 0; line_index < l_page->n_lines[block_index];
 	     line_index++)
 	  {
-	    if (debug)
+	    if (debug || verbose)
 	      g_print ("      analyzing line %d.\n", line_index + 1);
 	    ho_layout_create_word_mask (l_page, block_index, line_index);
 
@@ -639,12 +659,16 @@ main (int argc, char *argv[])
 		  g_print ("          found %d fonts.\n",
 			   l_page->
 			   n_fonts[block_index][line_index][word_index]);
+
+		/* count fonts */
+		number_of_fonts += l_page->
+		  n_fonts[block_index][line_index][word_index];
 	      }
 	  }
       }
   }
 
-  if (debug)
+  if (debug || verbose)
     g_print ("end of image layout analysis.\n");
 
   /* if only layout analysis or save layout image */
@@ -732,21 +756,39 @@ main (int argc, char *argv[])
 
   /* start of word recognition section
    */
-  if (debug)
+  if (debug || verbose)
     g_print ("start word recognition section.\n");
 
+  if (debug || verbose)
+    g_print ("  found %d fonts in page.\n", number_of_fonts);
+
   {
+    int i;
+    int font_number = 0;
     int block_index;
     int line_index;
     int word_index;
     int font_index;
-    gchar *filename = NULL;
+
     ho_pixbuf *pix_out = NULL;
     ho_bitmap *m_text = NULL;
     ho_bitmap *m_mask = NULL;
     ho_bitmap *m_font_mask = NULL;
+    ho_bitmap *m_font_filter = NULL;
     ho_bitmap *m_edge = NULL;
+
     ho_objmap *o_fonts = NULL;
+
+    gchar *filename = NULL;
+    gsize length;
+    gsize terminator_pos;
+    GError *error = NULL;
+
+    /* start the text out and fann net */
+    {
+      /* init text string */
+      text_out = g_strdup_printf ("");
+    }
 
     for (block_index = 0; block_index < l_page->n_blocks; block_index++)
       {
@@ -762,12 +804,16 @@ main (int argc, char *argv[])
 		     l_page->n_fonts[block_index][line_index][word_index];
 		     font_index++)
 		  {
+		    /* count recognized fonts */
+		    font_number++;
+
+		    if (verbose)
+		      g_print ("    recognizing font %d.\n", font_number);
+
 		    if (debug)
-		      g_print ("  recognizing font %d %d %d %d.\n",
+		      g_print ("    recognizing font %d %d %d %d.\n",
 			       block_index + 1, line_index + 1,
 			       word_index + 1, font_index + 1);
-
-		    /* TODO: do ocr on the fonts */
 
 		    /* get the font */
 		    m_text =
@@ -778,16 +824,16 @@ main (int argc, char *argv[])
 		      ho_layout_get_font_line_mask (l_page, block_index,
 						    line_index, word_index,
 						    font_index);
-		    m_font_mask = ho_segment_font_main_sign (m_text, m_mask);
+		    m_font_mask = ho_font_main_sign (m_text, m_mask);
+		    if (m_font_mask)
+		      m_font_filter =
+			ho_font_edges_right (m_font_mask, m_mask);
+
+		    /* recognize the font and send it out */
 
 		    /* if user ask, dump font images to disk */
 		    if (save_fonts)
 		      {
-			filename =
-			  g_strdup_printf ("%s-font%02d%02d%02d%02d.jpeg",
-					   image_out_path, block_index,
-					   line_index, word_index,
-					   font_index);
 			pix_out =
 			  ho_pixbuf_new (3, m_text->width, m_text->height, 0);
 
@@ -795,14 +841,22 @@ main (int argc, char *argv[])
 						  0, 0, 155);
 			ho_pixbuf_draw_bitmap_at (pix_out, m_text, 0, 0, 0, 0,
 						  255, 255);
-			ho_pixbuf_draw_bitmap_at (pix_out, m_font_mask, 0, 0,
-						  0, 0, 0, 255);
+			if (m_font_filter)
+			  ho_pixbuf_draw_bitmap_at (pix_out, m_font_filter, 0,
+						    0, 20, 0, 0, 195);
+
+			filename =
+			  g_strdup_printf ("%s-font-%02d%02d%02d%02d.jpeg",
+					   image_out_path, block_index,
+					   line_index, word_index,
+					   font_index);
 			ho_gtk_pixbuf_save (pix_out, filename);
 			ho_pixbuf_free (pix_out);
 			g_free (filename);
 		      }
 
 		    /* free bitmaps and others */
+		    ho_bitmap_free (m_font_filter);
 		    ho_bitmap_free (m_font_mask);
 		    ho_bitmap_free (m_text);
 		    ho_bitmap_free (m_mask);
@@ -810,20 +864,27 @@ main (int argc, char *argv[])
 		    /* oh ... */
 
 		  }		/* end of fonts loop */
+		/* add a space after a word to text out */
+
 	      }			/* end of words loop */
+	    /* add a line-end after a line to text out */
+
 	  }			/* end of lines loop */
+	/* add a line-end after a block end */
+
       }				/* end of blocks loop */
   }
 
-  if (debug)
+  if (debug || verbose)
     g_print ("end word recognition section.\n");
   /* end of word recognition section */
 
-  /* just testing */
-  text_out = g_strdup_printf ("Hi, testing one, two three ...");
-
   /* start user output section 
    */
+
+  /* convert text from ho_string to (gchar *) */
+
+
   /* save text */
   if (text_out_filename && text_out)
     {

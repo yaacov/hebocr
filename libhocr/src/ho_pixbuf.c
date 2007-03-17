@@ -242,6 +242,87 @@ ho_pixbuf_color_to_gray (const ho_pixbuf * pix)
 }
 
 ho_pixbuf *
+ho_pixbuf_color_to_red (const ho_pixbuf * pix)
+{
+  ho_pixbuf *pix_red = NULL;
+  int x, y;
+  unsigned char red;
+
+  /* does input has the rgb channels ? */
+  if (pix->n_channels < 3)
+    return NULL;
+
+  /* allocate memory */
+  pix_red = ho_pixbuf_new (1, pix->width, pix->height, 0);
+  if (!pix_red)
+    return NULL;
+
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+      {
+	red = ho_pixbuf_get (pix, x, y, 0);
+
+	ho_pixbuf_set (pix_red, x, y, 0, red);
+      }
+
+  return pix_red;
+}
+
+ho_pixbuf *
+ho_pixbuf_color_to_green (const ho_pixbuf * pix)
+{
+  ho_pixbuf *pix_green = NULL;
+  int x, y;
+  unsigned char green;
+
+  /* does input has the rgb channels ? */
+  if (pix->n_channels < 3)
+    return NULL;
+
+  /* allocate memory */
+  pix_green = ho_pixbuf_new (1, pix->width, pix->height, 0);
+  if (!pix_green)
+    return NULL;
+
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+      {
+	green = ho_pixbuf_get (pix, x, y, 1);
+
+	ho_pixbuf_set (pix_green, x, y, 0, green);
+      }
+
+  return pix_green;
+}
+
+ho_pixbuf *
+ho_pixbuf_color_to_blue (const ho_pixbuf * pix)
+{
+  ho_pixbuf *pix_blue = NULL;
+  int x, y;
+  unsigned char blue;
+
+  /* does input has the rgb channels ? */
+  if (pix->n_channels < 3)
+    return NULL;
+
+  /* allocate memory */
+  pix_blue = ho_pixbuf_new (1, pix->width, pix->height, 0);
+  if (!pix_blue)
+    return NULL;
+
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+      {
+	blue = ho_pixbuf_get (pix, x, y, 2);
+
+	ho_pixbuf_set (pix_blue, x, y, 0, blue);
+      }
+
+  return pix_blue;
+}
+
+ho_pixbuf *
 ho_pixbuf_scale2 (const ho_pixbuf * pix)
 {
   ho_pixbuf *pix_scaled = NULL;

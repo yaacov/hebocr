@@ -1,5 +1,5 @@
 /***************************************************************************
- *            hocr.h
+ *            main_teach.c
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -22,45 +22,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-/** @mainpage libhocr
- * LIBrary for Hebrew Optical Character Recognition 
- *
- * @section README
- * @include README
- * 
- * @section ChangeLog
- * @include ChangeLog
- *
- */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <glib.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
-#ifndef HOCR_H
-#define HOCR_H 1
+int
+main (int argc, char *argv[])
+{
 
-#ifdef __cplusplus
-#  define BEGIN_C_DECLS extern "C" {
-#  define END_C_DECLS   }
-#else /* !__cplusplus */
-#  define BEGIN_C_DECLS
-#  define END_C_DECLS
-#endif /* __cplusplus */
-
-BEGIN_C_DECLS
-/* binary image map */
-#include <ho_bitmap.h>
-#include <ho_bitmap_draw.h>
-#include <ho_bitmap_pnm.h>
-#include <ho_bitmap_filter.h>
-/* color image map */
-#include <ho_pixbuf.h>
-#include <ho_pixbuf_pnm.h>
-#include <ho_pixbuf_draw.h>
-/* object image map */
-#include <ho_obj.h>
-#include <ho_objmap.h>
-#include <ho_dimentions.h>
-#include <ho_segment.h>
-#include <ho_font.h>
-/* layout container for hocr layout */
-#include <ho_layout.h>
-  END_C_DECLS
-#endif /* HOCR_H */
+  return 0;
+}
