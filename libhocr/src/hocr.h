@@ -60,6 +60,8 @@ BEGIN_C_DECLS
 #include <ho_dimentions.h>
 #include <ho_segment.h>
 #include <ho_font.h>
+/* string utilities */
+#include <ho_string.h>
 /* layout container for hocr layout */
 #include <ho_layout.h>
   END_C_DECLS
