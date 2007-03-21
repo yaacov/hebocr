@@ -30,18 +30,47 @@
 
 int
 ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-		      int *height, int *start, int *end);
+		      double *height, double *start, double *end);
 
 int
-ho_recognize_hbar_down (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			int *height, int *start, int *end);
+ho_recognize_hbar_down (const ho_bitmap * m_text,
+			const ho_bitmap * m_mask, double *height,
+			double *start, double *end);
+
+int ho_recognize_vbar_right (const ho_bitmap * m_text,
+			     const ho_bitmap * m_mask, double *width,
+			     double *start, double *end);
+
+int ho_recognize_vbar_left (const ho_bitmap * m_text,
+			    const ho_bitmap * m_mask, double *width,
+			    double *start, double *end);
 
 int
-ho_recognize_vbar_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			 int *width, int *start, int *end);
+ho_recognize_dbar_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			double *width, double *start, double *end);
 
 int
-ho_recognize_vbar_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			int *width, int *start, int *end);
+ho_recognize_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			int *num, int *left, int *middle, int *right);
+
+int
+ho_recognize_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			   int *num, int *left, int *middle, int *right);
+
+int
+ho_recognize_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			 int *num, int *top, int *middle, int *bottom);
+
+int
+ho_recognize_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			  int *num, int *top, int *middle, int *bottom);
+
+int
+ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			 double *height, double *width, double *start, double *end);
+
+int
+ho_recognize_array (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+		    double *array);
 
 #endif /* HO_RECOGNIZE_H */

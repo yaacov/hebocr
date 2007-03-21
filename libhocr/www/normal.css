@@ -1,10 +1,11 @@
 
 body {
-   direction:rtl;
-   font:100% sans-serif;
+  direction:rtl;
+  font:100% sans-serif;
 	color:#000;
 	margin:0;
 	padding:0;
+  background: #bbf;
 }
 
 * {
@@ -13,7 +14,7 @@ body {
 }
 
 p.code {
-   direction:ltr;
+  direction:ltr;
 	padding:10px;
 	background:#eef;
 	margin:10px 0;
@@ -119,40 +120,35 @@ p.top {
 #wrapper {
 	width:700px;
 	margin: 0 auto;
-	padding: 0px 0px 0px 30px;
-	background: #fff url(art/lb.png) left repeat-y;
+	padding: 0px 0px 0px 0px;
+  background: #fff;
 }
 
 #footer {
-	
 	text-align:left;
 	margin:0;
-	padding:0;
+	padding:0px 30px 30px 30px;
 	color:#999;
-	background: url(art/rb.png) right repeat-y;
 }
 
 #header {
-   margin:0;
-	padding: 0px 30px 0px 0px;
-	background: url(art/rb.png) right repeat-y;
+  margin:0;
+	padding:0px 30px 0px 30px;
 }
 
 #header .description {
 	float:left;
 	padding:0px 0 0 0;
-    margin:40px 0 0 0;
+  margin:40px 0 0 0;
 	color:#222;
 }
 
 #header h1 {
 	font-family: sans-serif;
-	margin:15px 0px 0px 0px;
+	margin:0px 0px 0px 0px;
 	padding: 25px 10px 20px 0px;
 	border-bottom:1px solid #55f;
-	border-top:1px solid #55f;
 	color: #000;
-	background: url(art/header.png) right no-repeat;
 }
 
 #nav {
@@ -186,8 +182,7 @@ p.top {
 #content {
 	line-height:150%;
 	margin:0 0 0 0;
-	padding:0px 30px 0px 0;
-	background: url(art/rb.png) right repeat-y;
+	padding:0px 30px 0px 30px;
 }
 
 #content p {
@@ -205,7 +200,7 @@ p.top {
 }
 
 #content h2 {
-   color:#000;
+  color:#000;
 	border-bottom:1px solid #55f;
 	padding:20px 0 10px 0;
 	margin:0 0 10px 0;

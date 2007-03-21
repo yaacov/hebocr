@@ -34,7 +34,6 @@
 gchar *image_in_filename = NULL;
 gchar *text_out_filename = NULL;
 gchar *image_out_path = NULL;
-gchar *fann_net_filename = NULL;
 gboolean version = FALSE;
 gboolean debug = FALSE;
 gboolean verbose = FALSE;
@@ -105,8 +104,6 @@ static GOptionEntry entries[] = {
    "use FILE as output text file name", "FILE"},
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
    "use PATH for output images", "PATH"},
-  {"fann-net", 'n', 0, G_OPTION_ARG_FILENAME, &fann_net_filename,
-   "use FILE as font shapes memory file", "FILE"},
   {"thresholding-type", 'T', 0, G_OPTION_ARG_INT,
    &adaptive_threshold_type,
    "thresholding type, 0 normal, 1 none, 2 fine",
@@ -488,8 +485,6 @@ hocr_exit ()
     g_free (image_out_path);
   if (text_out_filename)
     g_free (text_out_filename);
-  if (fann_net_filename)
-    g_free (fann_net_filename);
 
   /* exit program */
   exit (0);
@@ -501,6 +496,7 @@ int
 main (int argc, char *argv[])
 {
   int number_of_fonts;
+  ho_string *s_text_out;
 
   /* start of argument analyzing section 
    */
@@ -784,11 +780,13 @@ main (int argc, char *argv[])
     gsize terminator_pos;
     GError *error = NULL;
 
-    /* start the text out and fann net */
-    {
-      /* init text string */
-      text_out = g_strdup_printf ("");
-    }
+    /* start the text out */
+    s_text_out = ho_string_new ();
+    if (!s_text_out)
+      {
+	hocr_printerr ("can't allocate text memory");
+	hocr_exit ();
+      }
 
     for (block_index = 0; block_index < l_page->n_blocks; block_index++)
       {
@@ -824,35 +822,46 @@ main (int argc, char *argv[])
 		      ho_layout_get_font_line_mask (l_page, block_index,
 						    line_index, word_index,
 						    font_index);
+
+		    /* get font main sign */
 		    m_font_mask = ho_font_main_sign (m_text, m_mask);
-		    if (m_font_mask)
-		      m_font_filter =
-			ho_font_edges_right (m_font_mask, m_mask);
+
+		    /* get nikud */
+		    m_font_filter = ho_bitmap_clone (m_text);
+		    if (m_font_filter && m_font_mask)
+		      ho_bitmap_andnot (m_font_filter, m_font_mask);
 
 		    /* recognize the font and send it out */
 
 		    /* if user ask, dump font images to disk */
-		    if (save_fonts)
+		    if (save_fonts && m_mask && m_font_filter && m_font_mask)
 		      {
-			pix_out =
-			  ho_pixbuf_new (3, m_text->width, m_text->height, 0);
-
-			ho_pixbuf_draw_bitmap_at (pix_out, m_mask, 0, 0, 255,
-						  0, 0, 155);
-			ho_pixbuf_draw_bitmap_at (pix_out, m_text, 0, 0, 0, 0,
-						  255, 255);
-			if (m_font_filter)
-			  ho_pixbuf_draw_bitmap_at (pix_out, m_font_filter, 0,
-						    0, 20, 0, 0, 195);
-
 			filename =
-			  g_strdup_printf ("%s-font-%02d%02d%02d%02d.jpeg",
-					   image_out_path, block_index,
-					   line_index, word_index,
-					   font_index);
-			ho_gtk_pixbuf_save (pix_out, filename);
-			ho_pixbuf_free (pix_out);
+			  g_strdup_printf ("%s-font-%d.pnm", image_out_path,
+					   font_number);
+			ho_font_pnm_save (m_font_mask, m_font_filter, m_mask,
+					  filename);
 			g_free (filename);
+		      }
+
+		    /* get data on font */
+		    if (m_font_mask)
+		      {
+			double fann_array[41];
+
+			ho_recognize_array (m_font_mask, m_mask, fann_array);
+
+			for (i = 0; i < 41; i++)
+      {
+			  g_print ("%+02.2f\t", fann_array[i]);
+        if (!((i + 1)%10))
+          g_print ("\n");
+      }
+			g_print ("\n");
+
+			/* insert font to text out */
+			ho_string_cat (s_text_out, "*");
+
 		      }
 
 		    /* free bitmaps and others */
@@ -861,16 +870,20 @@ main (int argc, char *argv[])
 		    ho_bitmap_free (m_text);
 		    ho_bitmap_free (m_mask);
 
+		    m_text = m_mask = m_font_filter = m_font_mask = NULL;
+
 		    /* oh ... */
 
 		  }		/* end of fonts loop */
 		/* add a space after a word to text out */
+		ho_string_cat (s_text_out, " ");
 
 	      }			/* end of words loop */
 	    /* add a line-end after a line to text out */
-
+	    ho_string_cat (s_text_out, "\n");
 	  }			/* end of lines loop */
 	/* add a line-end after a block end */
+	ho_string_cat (s_text_out, "\n");
 
       }				/* end of blocks loop */
   }
@@ -883,7 +896,8 @@ main (int argc, char *argv[])
    */
 
   /* convert text from ho_string to (gchar *) */
-
+  text_out = g_strdup_printf ("%s", s_text_out->string);
+  ho_string_free (s_text_out);
 
   /* save text */
   if (text_out_filename && text_out)

@@ -91,6 +91,9 @@ ho_layout_free (ho_layout * l_page)
 {
   int block_index, line_index, word_index;
 
+  if (!l_page)
+    return TRUE;
+  
   for (block_index = 0; block_index < l_page->n_blocks; block_index++)
     {
       for (line_index = 0; line_index < l_page->n_lines[block_index];

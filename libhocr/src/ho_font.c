@@ -38,6 +38,8 @@
 #endif
 
 #include "ho_bitmap.h"
+#include "ho_pixbuf.h"
+#include "ho_pixbuf_pnm.h"
 #include "ho_objmap.h"
 #include "ho_bitmap_filter.h"
 #include "ho_segment.h"
@@ -222,6 +224,18 @@ ho_font_hbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap_free (m_bars);
   ho_bitmap_and (m_out, m_text);
 
+  /* make bars */
+
+  for (y = y_start; y < y_start + line_height; y++)
+    for (x = 0; x < m_text->width; x++)
+      {
+	if (ho_bitmap_get (m_out, x, y))
+	  {
+	    ho_bitmap_draw_hline (m_out, 0, y, m_out->width);
+	    continue;
+	  }
+      }
+
   /* fix the x and y of the output bitmap */
   m_out->x = m_text->x;
   m_out->y = m_text->y;
@@ -284,6 +298,17 @@ ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   m_out = ho_bitmap_hlink (m_bars, 3);
   ho_bitmap_free (m_bars);
   ho_bitmap_and (m_out, m_text);
+
+  /* make bars */
+  for (x = 0; x < m_text->width; x++)
+    for (y = y_start; y < y_start + line_height; y++)
+      {
+	if (ho_bitmap_get (m_out, x, y))
+	  {
+	    ho_bitmap_draw_vline (m_out, x, y_start, line_height);
+	    continue;
+	  }
+      }
 
   /* fix the x and y of the output bitmap */
   m_out->x = m_text->x;
@@ -358,8 +383,7 @@ ho_font_diagonal (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 }
 
 ho_bitmap *
-ho_font_diagonal_left (const ho_bitmap * m_text,
-			       const ho_bitmap * m_mask)
+ho_font_diagonal_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_diagonal_mask = NULL;
   ho_bitmap *m_main_font = NULL;
@@ -424,8 +448,7 @@ ho_font_diagonal_left (const ho_bitmap * m_text,
 }
 
 ho_bitmap *
-ho_font_thin_naive (const ho_bitmap * m_text,
-			    const ho_bitmap * m_mask)
+ho_font_thin_naive (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
@@ -743,8 +766,7 @@ ho_font_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 }
 
 ho_bitmap *
-ho_font_edges_bottom (const ho_bitmap * m_text,
-			      const ho_bitmap * m_mask)
+ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
@@ -859,8 +881,7 @@ ho_font_edges_bottom (const ho_bitmap * m_text,
 }
 
 ho_bitmap *
-ho_font_edges_left (const ho_bitmap * m_text,
-			    const ho_bitmap * m_mask)
+ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
@@ -968,8 +989,7 @@ ho_font_edges_left (const ho_bitmap * m_text,
 }
 
 ho_bitmap *
-ho_font_edges_right (const ho_bitmap * m_text,
-			     const ho_bitmap * m_mask)
+ho_font_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
@@ -1060,7 +1080,8 @@ ho_font_edges_right (const ho_bitmap * m_text,
 	  }
 	/* draw line on minimal interfont space */
 	for (i = min_y_start; i <= min_y; i++)
-	  ho_bitmap_draw_hline (m_out, 2 * m_out->width / 3, i, m_out->width / 3 + 2);
+	  ho_bitmap_draw_hline (m_out, 2 * m_out->width / 3, i,
+				m_out->width / 3 + 2);
 
 	for (; y < y2 && !ho_bitmap_get (m_temp, 2, y); y++);
       }

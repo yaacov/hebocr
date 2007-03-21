@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
   $domain = $_SERVER['REMOTE_HOST']; 
   $client = $_SERVER['HTTP_USER_AGENT'];
   $command1 = 'convert '.$path.$filename.' '.$path.$name.'.pgm';
-  $command2 = 'hocr -nd -i '.$path.$name.'.pgm -O '.$path.$name;	
+  $command2 = 'hocr -Nd -i '.$path.$name.'.pgm -O '.$path.$name;	
   $command4 = 'echo ...';
   $command5 = 'echo ...';
   $command6 = 'rm '.$path.'*.pgm';
@@ -140,5 +140,4 @@ else
 <h2>סוף הדף</h2>
 <p>פעולת העלאת התמונה הסתיימה.</p>
 <p>אם פעולת הזיהוי הושלמה בהצלחה, קבצי הפלט ימצאו <a href="directory.php">בספריה</a>.</p>
-<p class="top"><a href="#hocr_web">ראשית</a></p> 
-
+<p class="top"><a href="#hocr_web">ראשית</a></p>

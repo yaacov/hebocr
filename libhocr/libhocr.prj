@@ -81,7 +81,9 @@ module.include.files=\
 	src/ho_bitmap_draw.h\
 	src/ho_bitmap_pnm.h\
 	src/ho_layout.h\
-	src/ho_recognize.h
+	src/ho_recognize.h\
+	src/ho_font.h\
+	src/ho_string.h
 
 module.source.name=.
 module.source.type=
@@ -100,7 +102,10 @@ module.source.files=\
 	src/ho_bitmap_draw.c\
 	src/ho_bitmap_pnm.c\
 	src/ho_layout.c\
-	src/ho_recognize.c
+	src/ho_recognize.c\
+	src/main_teach.c\
+	src/ho_font.c\
+	src/ho_string.c
 
 module.pixmap.name=.
 module.pixmap.type=

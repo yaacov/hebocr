@@ -1,7 +1,5 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-SUBDIRS = art
-
 EXTRA_DIST = \
         init.php \
         page.tpl.php \

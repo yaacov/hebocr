@@ -35,7 +35,7 @@
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_main_sign (const ho_bitmap * m_text,
-				      const ho_bitmap * m_mask);
+			      const ho_bitmap * m_mask);
 
 /**
  return a bitmap of holes in the bitmap
@@ -43,8 +43,7 @@ ho_bitmap *ho_font_main_sign (const ho_bitmap * m_text,
  @param m_mask pointer to the line map
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_font_holes (const ho_bitmap * m_text,
-				  const ho_bitmap * m_mask);
+ho_bitmap *ho_font_holes (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 /**
  return a bitmap of horizontal bars found in the bitmap
@@ -52,8 +51,7 @@ ho_bitmap *ho_font_holes (const ho_bitmap * m_text,
  @param m_mask pointer to the line map
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_font_hbars (const ho_bitmap * m_text,
-				  const ho_bitmap * m_mask);
+ho_bitmap *ho_font_hbars (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 /**
  return a bitmap of vertical bars found in the bitmap
@@ -61,8 +59,7 @@ ho_bitmap *ho_font_hbars (const ho_bitmap * m_text,
  @param m_mask pointer to the line map
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_font_vbars (const ho_bitmap * m_text,
-				  const ho_bitmap * m_mask);
+ho_bitmap *ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 /**
  return a bitmap of -45 deg. diagonals found in the bitmap
@@ -71,7 +68,7 @@ ho_bitmap *ho_font_vbars (const ho_bitmap * m_text,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_diagonal (const ho_bitmap * m_text,
-				     const ho_bitmap * m_mask);
+			     const ho_bitmap * m_mask);
 
 /**
  return a bitmap of +45 deg. diagonals found in the bitmap
@@ -80,7 +77,7 @@ ho_bitmap *ho_font_diagonal (const ho_bitmap * m_text,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_diagonal_left (const ho_bitmap * m_text,
-					  const ho_bitmap * m_mask);
+				  const ho_bitmap * m_mask);
 
 /**
  return a thinned bitmap without fixing artefacts
@@ -89,7 +86,7 @@ ho_bitmap *ho_font_diagonal_left (const ho_bitmap * m_text,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_thin_naive (const ho_bitmap * m_text,
-				       const ho_bitmap * m_mask);
+			       const ho_bitmap * m_mask);
 
 /**
  return a thinned bitmap and fix artefacts
@@ -97,8 +94,7 @@ ho_bitmap *ho_font_thin_naive (const ho_bitmap * m_text,
  @param m_mask pointer to the line map
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_font_thin (const ho_bitmap * m_text,
-				 const ho_bitmap * m_mask);
+ho_bitmap *ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 /**
  return a bitmap of top side notches in the font
@@ -107,7 +103,7 @@ ho_bitmap *ho_font_thin (const ho_bitmap * m_text,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_edges_top (const ho_bitmap * m_text,
-				      const ho_bitmap * m_mask);
+			      const ho_bitmap * m_mask);
 
 /**
  return a bitmap of bottom side notches in the font
@@ -116,7 +112,7 @@ ho_bitmap *ho_font_edges_top (const ho_bitmap * m_text,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_edges_bottom (const ho_bitmap * m_text,
-					 const ho_bitmap * m_mask);
+				 const ho_bitmap * m_mask);
 
 /**
  return a bitmap of left side notches in the font
@@ -125,7 +121,7 @@ ho_bitmap *ho_font_edges_bottom (const ho_bitmap * m_text,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_edges_left (const ho_bitmap * m_text,
-				       const ho_bitmap * m_mask);
+			       const ho_bitmap * m_mask);
 
 /**
  return a bitmap of right side notches in the font
@@ -134,6 +130,6 @@ ho_bitmap *ho_font_edges_left (const ho_bitmap * m_text,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_font_edges_right (const ho_bitmap * m_text,
-					const ho_bitmap * m_mask);
+				const ho_bitmap * m_mask);
 
 #endif /* HO_FONT_H */

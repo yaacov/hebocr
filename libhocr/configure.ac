@@ -59,7 +59,6 @@ libhocr.pc
 Doxyfile
 src/Makefile
 www/Makefile
-www/art/Makefile
 ])
 
 AC_OUTPUT
