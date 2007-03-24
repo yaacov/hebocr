@@ -30,20 +30,21 @@
 
 int
 ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-		      double *height, double *start, double *end);
+		      double *height, double *start, double *end,
+		      double *dist);
 
 int
 ho_recognize_hbar_down (const ho_bitmap * m_text,
 			const ho_bitmap * m_mask, double *height,
-			double *start, double *end);
+			double *start, double *end, double *dist);
 
 int ho_recognize_vbar_right (const ho_bitmap * m_text,
 			     const ho_bitmap * m_mask, double *width,
-			     double *start, double *end);
+			     double *start, double *end, double *dist);
 
 int ho_recognize_vbar_left (const ho_bitmap * m_text,
 			    const ho_bitmap * m_mask, double *width,
-			    double *start, double *end);
+			    double *start, double *end, double *dist);
 
 int
 ho_recognize_dbar_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
@@ -67,10 +68,17 @@ ho_recognize_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 
 int
 ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			 double *height, double *width, double *start, double *end);
+			 double *height, double *width, double *start,
+			 double *end);
 
 int
-ho_recognize_array (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-		    double *array);
+ho_recognize_create_array_in (const ho_bitmap * m_text,
+			      const ho_bitmap * m_mask, double *array_in);
+
+int ho_recognize_create_array_out (const double *array_in, double *array_out);
+
+char *ho_recognize_array_out_to_font (const double *array_out);
+
+char *ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 #endif /* HO_RECOGNIZE_H */

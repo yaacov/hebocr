@@ -805,11 +805,11 @@ main (int argc, char *argv[])
 		    /* count recognized fonts */
 		    font_number++;
 
-		    if (verbose)
+		    if (verbose || debug)
 		      g_print ("    recognizing font %d.\n", font_number);
 
 		    if (debug)
-		      g_print ("    recognizing font %d %d %d %d.\n",
+		      g_print ("    in - block:%d line:%d word:%d font:%d.\n",
 			       block_index + 1, line_index + 1,
 			       word_index + 1, font_index + 1);
 
@@ -826,10 +826,12 @@ main (int argc, char *argv[])
 		    /* get font main sign */
 		    m_font_mask = ho_font_main_sign (m_text, m_mask);
 
-		    /* get nikud */
-		    m_font_filter = ho_bitmap_clone (m_text);
-		    if (m_font_filter && m_font_mask)
-		      ho_bitmap_andnot (m_font_filter, m_font_mask);
+		    if (m_mask && m_font_mask)
+		      {
+			/* get nikud */
+			m_font_filter = ho_bitmap_clone (m_text);
+			ho_bitmap_andnot (m_font_filter, m_font_mask);
+		      }
 
 		    /* recognize the font and send it out */
 
@@ -845,22 +847,50 @@ main (int argc, char *argv[])
 		      }
 
 		    /* get data on font */
-		    if (m_font_mask)
+		    if (m_font_mask && m_mask)
 		      {
-			double fann_array[41];
+			char *font;
 
-			ho_recognize_array (m_font_mask, m_mask, fann_array);
+			/* if debug printout font data stream */
+			if (debug)
+			  {
+			    double array_in[45];
+			    double array_out[38];
 
-			for (i = 0; i < 41; i++)
-      {
-			  g_print ("%+02.2f\t", fann_array[i]);
-        if (!((i + 1)%10))
-          g_print ("\n");
-      }
-			g_print ("\n");
+			    ho_recognize_create_array_in (m_font_mask, m_mask,
+							  array_in);
+			    ho_recognize_create_array_out (array_in,
+							   array_out);
+
+			    g_print ("array_in:\n");
+			    for (i = 0; i < 45; i++)
+			      {
+				g_print ("%+02.2f\t", array_in[i]);
+				if (!((i + 1) % 10))
+				  g_print ("\n");
+			      }
+			    g_print ("\n");
+
+			    g_print ("array_out:\n");
+			    for (i = 0; i < 38; i++)
+			      {
+				g_print ("%+02.2f\t", array_out[i]);
+				if (!((i + 1) % 10))
+				  g_print ("\n");
+			      }
+			    g_print ("\n");
+			  }
 
 			/* insert font to text out */
-			ho_string_cat (s_text_out, "*");
+			if (m_font_mask && m_mask)
+			  {
+			    font = ho_recognize_font (m_font_mask, m_mask);
+			    ho_string_cat (s_text_out, font);
+			    if (debug)
+			      g_print ("font :%s\n", font);
+			  }
+			else
+			  ho_string_cat (s_text_out, "#");
 
 		      }
 

@@ -65,5 +65,7 @@ BEGIN_C_DECLS
 #include <ho_string.h>
 /* layout container for hocr layout */
 #include <ho_layout.h>
+/* font recognition */
+#include <ho_recognize.h>
   END_C_DECLS
 #endif /* HOCR_H */

@@ -21,6 +21,7 @@ libhocr_la_SOURCES = \
         ho_font.c \
         ho_font_pnm.c \
         ho_recognize.c \
+        ho_recognize_sign.c \
         ho_string.c \
         ho_layout.c
 
@@ -45,6 +46,7 @@ library_include_HEADERS = hocr.h \
          ho_font.h \
          ho_font_pnm.h \
          ho_recognize.h \
+         ho_recognize_sign.h \
          ho_layout.h \
          ho_string.h \
          ho_gtk.h 

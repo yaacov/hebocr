@@ -63,7 +63,7 @@ ho_font_main_sign (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  line_start = y;
+  line_start = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
   line_end = y;
   line_height = line_end - line_start;
@@ -144,7 +144,7 @@ ho_font_holes (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  line_height = y;
+  line_height = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
   line_height = y - line_height;
 
@@ -179,12 +179,12 @@ ho_font_hbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_out = NULL;
   int i, x, y, line_height, y_start;
   int number_of_parts = 8;
-  int threshold = 80;
+  int threshold = 75;
 
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
+  y_start = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
   line_height = y - y_start;
 
@@ -192,12 +192,10 @@ ho_font_hbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* maybe this font is realy broken, dialate  */
-  m_temp = ho_bitmap_dilation (m_text);
+  m_temp = ho_bitmap_closing (m_text);
   if (!m_temp)
     return NULL;
   m_main_font = m_temp;
-
-  ho_bitmap_and (m_main_font, m_mask);
 
   /* in thin fonts do not chop the font too fine */
   if (line_height / number_of_parts < 3)
@@ -252,12 +250,12 @@ ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_out = NULL;
   int i, x, y, line_height, y_start;
   int number_of_parts = 8;
-  int threshold = 90;
+  int threshold = 80;
 
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
+  y_start = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
   line_height = y - y_start;
 
@@ -270,13 +268,12 @@ ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
   m_main_font = m_temp;
 
-  m_temp = ho_bitmap_dilation (m_main_font);
+  m_temp = ho_bitmap_closing (m_main_font);
   ho_bitmap_free (m_main_font);
   if (!m_temp)
     return NULL;
   m_main_font = m_temp;
-  ho_bitmap_and (m_main_font, m_mask);
-
+  
   /* in thin fonts do not chop the font too fine */
   if (m_text->width / number_of_parts < 3)
     number_of_parts = m_text->width / 3;
@@ -331,7 +328,7 @@ ho_font_diagonal (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
+  y_start = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
   line_height = y - y_start;
 
@@ -396,7 +393,7 @@ ho_font_diagonal_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
+  y_start = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
   line_height = y - y_start;
 
@@ -469,7 +466,7 @@ ho_font_thin_naive (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
+  y_start = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
   line_height = y - y_start;
 
@@ -625,9 +622,9 @@ ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* get line_height */
   x = m_mask->width / 2;
   for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
+  y_start = y - 1;
   for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
-  line_height = y - y_start;
+  line_height = y - y_start + 1;
 
   if (!line_height || !m_mask->width)
     return NULL;
@@ -669,13 +666,19 @@ ho_font_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 2;
+  int sum;
 
-  /* get line_height */
-  x = m_mask->width / 2;
-  for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
-  for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
-  line_height = y - y_start;
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  y_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > y_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_height = y - y_start + 1;
 
   if (!line_height || m_mask->width < 2)
     return NULL;
@@ -687,21 +690,19 @@ ho_font_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 
   /* set y start and y end */
   dy = threshold * line_height / 100 + 1;
-  y1 = y_start - line_height / 6;
-  y2 = y_start + line_height / 3;
+  y1 = y_start - line_height / 6 - 3;
+  y2 = y_start + line_height / 2 + 3;
   if (y1 < 0)
     y1 = 0;
-  dx = line_height / 12 + 1;
+  dx = m_text->width / 30 + 3;
   x1 = dx + 1;
   x2 = m_text->width - x1;
 
-  m_clean = ho_bitmap_closing (m_text);
   for (x = 0; x < m_text->width; x++)
     {
-      for (y = y1; y < y2 && !ho_bitmap_get (m_clean, x, y); y++);
+      for (y = y1; y < y2 && !ho_bitmap_get (m_text, x, y); y++);
       a_height[x] = (y - y1);
     }
-  ho_bitmap_free (m_clean);
 
   /* allocate bitmap output */
   m_out = ho_bitmap_new (m_text->width, m_text->height);
@@ -749,7 +750,7 @@ ho_font_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 	  }
 	/* draw line on minimal interfont space */
 	for (i = min_x_start; i <= min_x; i++)
-	  ho_bitmap_draw_vline (m_out, i, 0, y_start);
+	  ho_bitmap_draw_vline (m_out, i, 0, m_out->height);
 
 	for (; x < m_temp->width && !ho_bitmap_get (m_temp, x, 2); x++);
       }
@@ -776,13 +777,19 @@ ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 2;
+  int sum;
 
-  /* get line_height */
-  x = m_mask->width / 2;
-  for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
-  for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
-  line_height = y - y_start;
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  y_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > y_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_height = y - y_start + 1;
 
   if (!line_height || m_mask->width < 2)
     return NULL;
@@ -794,21 +801,20 @@ ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 
   /* set y start and y end */
   dy = threshold * line_height / 100 + 1;
-  y1 = y_start + line_height - line_height / 3;
-  y2 = y_start + line_height + line_height / 6;
-  if (y2 > m_text->height)
-    y1 = m_text->height;
-  dx = line_height / 12 + 1;
+  y1 = y_start + line_height - line_height / 2 - 3;
+  y2 = y_start + line_height + line_height / 6 + 3;
+  if (y2 > m_text->height - 1)
+    y2 = m_text->height - 1;
+
+  dx = m_text->width / 30 + 3;
   x1 = dx + 1;
   x2 = m_text->width - x1;
 
-  m_clean = ho_bitmap_closing (m_text);
   for (x = 0; x < m_text->width; x++)
     {
-      for (y = y2; y > y1 && !ho_bitmap_get (m_clean, x, y); y--);
+      for (y = y2; y > y1 && !ho_bitmap_get (m_text, x, y); y--);
       a_height[x] = (y2 - y);
     }
-  ho_bitmap_free (m_clean);
 
   /* allocate bitmap output */
   m_out = ho_bitmap_new (m_text->width, m_text->height);
@@ -819,16 +825,16 @@ ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   for (x = 0; x < m_out->width; x++)
     {
       if (((x < dx || a_height[x - dx] > a_height[x] + dy)
-	   && (x > m_out->width - dx || a_height[x + dx] > a_height[x] + dy))
+		   && (x > m_out->width - dx
+		       || a_height[x + dx] > a_height[x] + dy))
 	  || ((x < 2 * dx || a_height[x - dx * 2] > a_height[x] + dy)
 	      && (x > m_out->width - 2 * dx
 		  || a_height[x + dx * 2] > a_height[x] + dy)))
 	{
-	  ho_bitmap_draw_vline (m_out, x, y_start + line_height,
-				m_out->height - y_start - line_height);
+	  ho_bitmap_draw_vline (m_out, x, 0, m_out->height);
 	}
     }
-
+    
   m_temp = ho_bitmap_hlink (m_out, dx * 2);
   ho_bitmap_free (m_out);
 
@@ -861,8 +867,7 @@ ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 	  }
 	/* draw line on minimal interfont space */
 	for (i = min_x_start; i <= min_x; i++)
-	  ho_bitmap_draw_vline (m_out, i, y_start + line_height,
-				m_out->height - y_start - line_height);
+	  ho_bitmap_draw_vline (m_out, i, 0, m_out->height);
 
 	for (;
 	     x < m_temp->width
@@ -891,13 +896,19 @@ ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 2;
+  int sum;
 
-  /* get line_height */
-  x = m_mask->width / 2;
-  for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
-  for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
-  line_height = y - y_start;
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  y_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > y_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_height = y - y_start + 1;
 
   if (!line_height || m_mask->width < 2)
     return NULL;
@@ -905,24 +916,24 @@ ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* set y start and y end */
   dx = threshold * line_height / 100 + 1;
   x1 = 0;
-  x2 = m_text->width / 4;
+  x2 = 3 * m_text->width / 4 + 1;
 
-  dy = line_height / 12 + 1;
+  dy = line_height / 10 + 2;
   y1 = y_start;
-  y2 = y_start + line_height;
+  y2 = y_start + line_height + 1;
+  if (y2 > m_text->height)
+    y2 = m_text->height;
 
   /* get the fill of the font */
-  a_height = (int *) calloc (line_height, sizeof (int));
+  a_height = (int *) calloc (line_height + 1, sizeof (int));
   if (!a_height)
     return NULL;
 
-  m_clean = ho_bitmap_closing (m_text);
   for (y = y1; y < y2; y++)
     {
-      for (x = x1; x < x2 && !ho_bitmap_get (m_clean, x, y); x++);
+      for (x = x1; x < x2 && !ho_bitmap_get (m_text, x, y); x++);
       a_height[y - y1] = (x - x1);
     }
-  ho_bitmap_free (m_clean);
 
   /* allocate bitmap output */
   m_out = ho_bitmap_new (m_text->width, m_text->height);
@@ -930,10 +941,11 @@ ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* set lines where it looks like a notch */
-  for (y = y1; y < y2; y++)
+  for (y = y1; y < y2 && y < m_out->height; y++)
     {
       if (((y < y1 + dy || a_height[y - dy - y1] > a_height[y - y1] + dx)
-	   && (y > y2 - dy || a_height[y + dy - y1] > a_height[y - y1] + dx))
+	   && (y > y2 - dy
+	       || a_height[y + dy - y1] > a_height[y - y1] + dx))
 	  ||
 	  ((y < y1 + 2 * dy
 	    || a_height[y - dy * 2 - y1] > a_height[y - y1] + dx)
@@ -972,7 +984,7 @@ ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 	  }
 	/* draw line on minimal interfont space */
 	for (i = min_y_start; i <= min_y; i++)
-	  ho_bitmap_draw_hline (m_out, 0, i, m_out->width / 3 + 2);
+	  ho_bitmap_draw_hline (m_out, 0, i, m_out->width);
 
 	for (; y < y2 && !ho_bitmap_get (m_temp, 1, y); y++);
       }
@@ -999,38 +1011,44 @@ ho_font_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 0;
+  int sum;
 
-  /* get line_height */
-  x = m_mask->width / 2;
-  for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
-  y_start = y;
-  for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
-  line_height = y - y_start;
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  y_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > y_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_height = y - y_start + 1;
 
   if (!line_height || m_mask->width < 2)
     return NULL;
 
   /* set y start and y end */
-  dx = threshold * m_text->width / 100;
-  x1 = m_text->width - m_text->width / 4;
+  dx = threshold * m_text->width / 100 + 1;
+  x1 = m_text->width - 3 * m_text->width / 4 - 1;
   x2 = m_text->width;
 
-  dy = line_height / 10 + 1;
+  dy = line_height / 10 + 2;
   y1 = y_start;
   y2 = y_start + line_height + 1;
+  if (y2 > m_text->height)
+    y2 = m_text->height;
 
   /* get the fill of the font */
   a_height = (int *) calloc (line_height + 1, sizeof (int));
   if (!a_height)
     return NULL;
 
-  m_clean = ho_bitmap_clone (m_text);
   for (y = y1; y < y2; y++)
     {
-      for (x = x2 - 1; x >= x1 && !ho_bitmap_get (m_clean, x, y); x--);
+      for (x = x2 - 1; x >= x1 && !ho_bitmap_get (m_text, x, y); x--);
       a_height[y - y1] = (x2 - x);
     }
-  ho_bitmap_free (m_clean);
 
   /* allocate bitmap output */
   m_out = ho_bitmap_new (m_text->width, m_text->height);
@@ -1080,8 +1098,7 @@ ho_font_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 	  }
 	/* draw line on minimal interfont space */
 	for (i = min_y_start; i <= min_y; i++)
-	  ho_bitmap_draw_hline (m_out, 2 * m_out->width / 3, i,
-				m_out->width / 3 + 2);
+	  ho_bitmap_draw_hline (m_out, 0, i, m_out->width);
 
 	for (; y < y2 && !ho_bitmap_get (m_temp, 2, y); y++);
       }
