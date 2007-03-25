@@ -46,6 +46,12 @@
 
 #include "ho_recognize_sign.h"
 
+/* TODO: font parts, e.g top-bar, little nose to the left ... */
+
+
+
+/* reading signs */
+
 double
 ho_recognize_sign_dot (const double *array_in)
 {
@@ -80,6 +86,8 @@ ho_recognize_sign_minus (const double *array_in)
 
   return return_value;
 }
+
+/* hebrew fonts */
 
 double
 ho_recognize_sign_alef (const double *array_in)
@@ -254,6 +262,14 @@ ho_recognize_sign_nun_sofit (const double *array_in)
   if (array_in[38] > -0.0 && array_in[39] < -0.4 && array_in[40] > -0.9
       && array_in[41] < -0.1 && array_in[31] > 0.0)
     return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_sign_samech (const double *array_in)
+{
+  double return_value = -1.0;
 
   return return_value;
 }

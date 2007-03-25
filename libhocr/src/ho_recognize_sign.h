@@ -68,6 +68,8 @@ double ho_recognize_sign_nun (const double *array_in);
 
 double ho_recognize_sign_nun_sofit (const double *array_in);
 
+double ho_recognize_sign_samech (const double *array_in);
+
 double ho_recognize_sign_ayin (const double *array_in);
 
 double ho_recognize_sign_pey (const double *array_in);

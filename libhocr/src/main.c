@@ -854,8 +854,8 @@ main (int argc, char *argv[])
 			/* if debug printout font data stream */
 			if (debug)
 			  {
-			    double array_in[45];
-			    double array_out[38];
+			    double array_in[HO_ARRAY_IN_SIZE];
+			    double array_out[HO_ARRAY_OUT_SIZE];
 
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
@@ -863,7 +863,7 @@ main (int argc, char *argv[])
 							   array_out);
 
 			    g_print ("array_in:\n");
-			    for (i = 0; i < 45; i++)
+			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
 				g_print ("%+02.2f\t", array_in[i]);
 				if (!((i + 1) % 10))
@@ -872,7 +872,7 @@ main (int argc, char *argv[])
 			    g_print ("\n");
 
 			    g_print ("array_out:\n");
-			    for (i = 0; i < 38; i++)
+			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
 			      {
 				g_print ("%+02.2f\t", array_out[i]);
 				if (!((i + 1) % 10))
@@ -886,12 +886,17 @@ main (int argc, char *argv[])
 			  {
 			    font = ho_recognize_font (m_font_mask, m_mask);
 			    ho_string_cat (s_text_out, font);
+			    /* if debug print out the font */
 			    if (debug)
 			      g_print ("font :%s\n", font);
 			  }
 			else
-			  ho_string_cat (s_text_out, "#");
-
+			  {
+			    ho_string_cat (s_text_out, "#");
+			    /* if debug print out the font */
+			    if (debug)
+			      g_print ("font : \n");
+			  }
 		      }
 
 		    /* free bitmaps and others */

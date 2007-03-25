@@ -844,10 +844,10 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
   int i;
 
   /* clean array out */
-  for (i = 0; i < 38; i++)
+  for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
     array_out[i] = -1.0;
 
-  /* check for fonts */
+  /* fill array out */
 
   /* dot */
   array_out[28] = ho_recognize_sign_dot (array_in);
@@ -861,19 +861,31 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
   /* hebrew fonts */
   array_out[1] = ho_recognize_sign_alef (array_in);
   array_out[2] = ho_recognize_sign_bet (array_in);
-
+  array_out[3] = ho_recognize_sign_gimal (array_in);
+  array_out[4] = ho_recognize_sign_dalet (array_in);
   array_out[5] = ho_recognize_sign_hey (array_in);
   array_out[6] = ho_recognize_sign_vav (array_in);
   array_out[7] = ho_recognize_sign_zayin (array_in);
-
+  array_out[8] = ho_recognize_sign_het (array_in);
+  array_out[9] = ho_recognize_sign_tet (array_in);
   array_out[10] = ho_recognize_sign_yod (array_in);
-
+  array_out[11] = ho_recognize_sign_caf (array_in);
+  array_out[12] = ho_recognize_sign_caf_sofit (array_in);
   array_out[13] = ho_recognize_sign_lamed (array_in);
-
-  array_out[15] = ho_recognize_sign_nun (array_in);
+  array_out[14] = ho_recognize_sign_mem (array_in);
+  array_out[15] = ho_recognize_sign_mem_sofit (array_in);
+  array_out[16] = ho_recognize_sign_nun (array_in);
   array_out[17] = ho_recognize_sign_nun_sofit (array_in);
-
+  array_out[18] = ho_recognize_sign_samech (array_in);
+  array_out[19] = ho_recognize_sign_ayin (array_in);
+  array_out[20] = ho_recognize_sign_pey (array_in);
+  array_out[21] = ho_recognize_sign_pey_sofit (array_in);
+  array_out[22] = ho_recognize_sign_tzadi (array_in);
+  array_out[23] = ho_recognize_sign_tzadi_sofit (array_in);
+  array_out[24] = ho_recognize_sign_kof (array_in);
+  array_out[25] = ho_recognize_sign_resh (array_in);
   array_out[26] = ho_recognize_sign_shin (array_in);
+  array_out[27] = ho_recognize_sign_tav (array_in);
 
   return FALSE;
 }
@@ -881,7 +893,7 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
 char *
 ho_recognize_array_out_to_font (const double *array_out)
 {
-  static char *sign_array[38] =
+  static char *sign_array[HO_ARRAY_OUT_SIZE] =
     { "*", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ",
     "ך", "ל", "מ", "ם", "נ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",
     "ק", "ר", "ש", "ת", ".", ",",
@@ -891,7 +903,7 @@ ho_recognize_array_out_to_font (const double *array_out)
   int i = 0;
   int max_i = 0;
 
-  for (i = 0; i < 38; i++)
+  for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
     if (array_out[i] > array_out[max_i])
       max_i = i;
 
@@ -901,8 +913,8 @@ ho_recognize_array_out_to_font (const double *array_out)
 char *
 ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
-  double array_in[45];
-  double array_out[38];
+  double array_in[HO_ARRAY_IN_SIZE];
+  double array_out[HO_ARRAY_OUT_SIZE];
   char *font;
   int i;
 

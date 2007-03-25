@@ -28,6 +28,9 @@
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
+#define HO_ARRAY_IN_SIZE 45
+#define HO_ARRAY_OUT_SIZE 38
+
 int
 ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 		      double *height, double *start, double *end,
