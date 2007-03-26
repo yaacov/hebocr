@@ -138,8 +138,7 @@ ho_objlist_get_index (ho_objlist * object_list, int index)
 }
 
 int
-ho_objlist_add_pixel (ho_objlist * object_list, int index,
-		      int x, int y)
+ho_objlist_add_pixel (ho_objlist * object_list, int index, int x, int y)
 {
   int x1 = (object_list->objects)[index].x;
   int x2 =
@@ -227,7 +226,7 @@ ho_objlist_link (ho_objlist * object_list, int index1, int index2)
 }
 
 int
-ho_objlist_clean (ho_objlist * object_list, int ** map)
+ho_objlist_clean (ho_objlist * object_list, int **map)
 {
   ho_objlist *temp_object_list;
   int new_index, i;
@@ -284,7 +283,7 @@ ho_objlist_clean (ho_objlist * object_list, int ** map)
 }
 
 int
-ho_objlist_clean_by_reading_index (ho_objlist * object_list, int ** map)
+ho_objlist_clean_by_reading_index (ho_objlist * object_list, int **map)
 {
   ho_objlist *temp_object_list;
   int new_index, i, j;
@@ -308,8 +307,8 @@ ho_objlist_clean_by_reading_index (ho_objlist * object_list, int ** map)
       for (j = 0; j < (object_list->size); j++)
 	if ((object_list->objects)[j].reading_index == i)
 	  {
-      /* this index is this reading order */
-      (*map)[j] = i;
+	    /* this index is this reading order */
+	    (*map)[j] = i;
 
 	    ho_objlist_add (temp_object_list,
 			    ((object_list->objects)[j]).weight,
@@ -338,7 +337,8 @@ ho_objlist_clean_by_reading_index (ho_objlist * object_list, int ** map)
   return FALSE;
 }
 
-int ho_objlist_print (ho_objlist * object_list)
+int
+ho_objlist_print (ho_objlist * object_list)
 {
   int i;
 
@@ -355,16 +355,16 @@ int ho_objlist_print (ho_objlist * object_list)
 }
 
 int
-  ho_objlist_statistics (ho_objlist * object_list,
-			 int min_height, int max_height,
-			 int min_width, int max_width,
-			 int * counter,
-			 double *weight_avg, double *weight_com,
-			 double *weight_min, double *weight_max,
-			 int * height_avg, int * height_com,
-			 int * height_min, int * height_max,
-			 int * width_avg, int * width_com,
-			 int * width_min, int * width_max)
+ho_objlist_statistics (ho_objlist * object_list,
+		       int min_height, int max_height,
+		       int min_width, int max_width,
+		       int *counter,
+		       double *weight_avg, double *weight_com,
+		       double *weight_min, double *weight_max,
+		       int *height_avg, int *height_com,
+		       int *height_min, int *height_max,
+		       int *width_avg, int *width_com,
+		       int *width_min, int *width_max)
 {
   /* historam boxes are 0 .. 300 -> 0 .. 60 (5 values into 1 histogram box) 
      for 1D attributes and 0 .. 1500 -> 0 .. 60 (25 into 1) for 2D attributes */
@@ -468,6 +468,55 @@ int
   *weight_com = (double) histogram_index_weight *25.0 + 12;
   *height_com = histogram_index_height * 5 + 2;
   *width_com = histogram_index_width * 5 + 2;
+
+  /* if fond some common height & width values fine-tune the height & width */
+  if (height_histogram[histogram_index_height] > 0)
+    {
+      /* empty the height & width histogram */
+      for (i = 0; i < 60; i++)
+	{
+	  height_histogram[i] = 0;
+	  width_histogram[i] = 0;
+	}
+
+      for (i = 1; i < (object_list->size); i++)
+	{
+	  /* get values */
+	  height = ((object_list->objects)[i]).height;
+	  width = ((object_list->objects)[i]).width;
+
+	  if (width < min_width || width > max_width || height < min_height
+	      || height > max_height)
+	    continue;
+
+	  /* check for common only height */
+	  if (height >= (*height_com) - 2 && height <= (*height_com) + 2)
+	    {
+	      (height_histogram[height - (*height_com) + 2])++;
+	    }
+
+	  /* check for common only width */
+	  if (width >= (*width_com) - 2 && width <= (*width_com) + 2)
+	    {
+	      (width_histogram[width - (*width_com) + 2])++;
+	    }
+	}
+
+      /* re-set common values */
+      histogram_index_height = 0;
+      histogram_index_width = 0;
+      for (i = 0; i < 5; i++)
+	{
+	  if (height_histogram[histogram_index_height] < height_histogram[i])
+	    histogram_index_height = i;
+	  if (width_histogram[histogram_index_width] < width_histogram[i])
+	    histogram_index_width = i;
+	}
+
+      /* re-set height common values */
+      *height_com = histogram_index_height + (*height_com) - 2;
+      *width_com = histogram_index_width + (*width_com) - 2;
+    }
 
   return FALSE;
 }

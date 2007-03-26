@@ -28,7 +28,7 @@
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
-#define HO_ARRAY_IN_SIZE 45
+#define HO_ARRAY_IN_SIZE 70
 #define HO_ARRAY_OUT_SIZE 38
 
 int
@@ -58,7 +58,15 @@ ho_recognize_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 			int *num, int *left, int *middle, int *right);
 
 int
+ho_recognize_notch_top (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			int *num, int *left, int *middle, int *right);
+
+int
 ho_recognize_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			   int *num, int *left, int *middle, int *right);
+
+int
+ho_recognize_notch_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 			   int *num, int *left, int *middle, int *right);
 
 int
@@ -66,13 +74,29 @@ ho_recognize_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 			 int *num, int *top, int *middle, int *bottom);
 
 int
+ho_recognize_notch_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			 int *num, int *top, int *middle, int *bottom);
+
+int
 ho_recognize_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 			  int *num, int *top, int *middle, int *bottom);
 
 int
+ho_recognize_notch_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			  int *num, int *top, int *middle, int *bottom);
+
+int
+ho_recognize_second_object (const ho_bitmap * m_text,
+			    const ho_bitmap * m_mask,
+			    double *has_second_objects,
+			    double *height, double *width,
+			    double *width_by_height, double *y_start,
+			    double *y_end, double *x_start, double *x_end);
+
+int
 ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			 double *height, double *width, double *start,
-			 double *end);
+			 double *height, double *width,
+			 double *width_by_height, double *start, double *end);
 
 int
 ho_recognize_create_array_in (const ho_bitmap * m_text,

@@ -531,6 +531,43 @@ ho_recognize_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 }
 
 int
+ho_recognize_notch_top (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			int *num, int *left, int *middle, int *right)
+{
+  ho_bitmap *m_edges = NULL;
+  int x, y, x_start, x_end, line_start, line_height;
+  int sum;
+
+  /* get the top edges */
+  m_edges = ho_font_notch_top (m_text, m_mask);
+  if (!m_edges)
+    return TRUE;
+
+  /* get lines */
+  y = 1;
+  x = 1;
+  (*num) = (*left) = (*middle) = (*right) = 0;
+
+  while (x < m_mask->width)
+    {
+      for (; x < m_mask->width && !ho_bitmap_get (m_edges, x, y); x++);
+      if (x < m_mask->width)
+	{
+	  (*num)++;
+	  if (x < m_mask->width / 3)
+	    (*left)++;
+	  else if (x < 2 * m_mask->width / 3)
+	    (*middle)++;
+	  else
+	    (*right)++;
+	}
+      for (; x < m_mask->width && ho_bitmap_get (m_edges, x, y); x++);
+    }
+
+  return FALSE;
+}
+
+int
 ho_recognize_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 			   int *num, int *left, int *middle, int *right)
 {
@@ -540,6 +577,44 @@ ho_recognize_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 
   /* get the top edges */
   m_edges = ho_font_edges_bottom (m_text, m_mask);
+  if (!m_edges)
+    return TRUE;
+
+  /* get lines */
+  y = m_edges->height - 2;
+  x = 1;
+  (*num) = (*left) = (*middle) = (*right) = 0;
+
+  while (x < m_mask->width)
+    {
+      for (; x < m_mask->width && !ho_bitmap_get (m_edges, x, y); x++);
+      if (x < m_mask->width)
+	{
+	  (*num)++;
+	  if (x < m_mask->width / 3)
+	    (*left)++;
+	  else if (x < 2 * m_mask->width / 3)
+	    (*middle)++;
+	  else
+	    (*right)++;
+	}
+
+      for (; x < m_mask->width && ho_bitmap_get (m_edges, x, y); x++);
+    }
+
+  return FALSE;
+}
+
+int
+ho_recognize_notch_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			   int *num, int *left, int *middle, int *right)
+{
+  ho_bitmap *m_edges = NULL;
+  int x, y, x_start, x_end, line_start, line_height;
+  int sum;
+
+  /* get the top edges */
+  m_edges = ho_font_notch_bottom (m_text, m_mask);
   if (!m_edges)
     return TRUE;
 
@@ -593,6 +668,61 @@ ho_recognize_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 
   /* get the top edges */
   m_edges = ho_font_edges_left (m_text, m_mask);
+  if (!m_edges)
+    return TRUE;
+
+  /* get lines */
+  y = line_start;
+  x = 1;
+  (*num) = (*top) = (*middle) = (*bottom) = 0;
+
+  while (y < line_start + line_height)
+    {
+      for (; y < line_start + line_height && !ho_bitmap_get (m_edges, x, y);
+	   y++);
+      if (y < line_start + line_height)
+	{
+	  (*num)++;
+	  if (y < line_start + line_height / 3)
+	    (*top)++;
+	  else if (y < line_start + 2 * line_height / 3)
+	    (*middle)++;
+	  else
+	    (*bottom)++;
+	}
+
+      for (; y < line_start + line_height && ho_bitmap_get (m_edges, x, y);
+	   y++);
+    }
+
+  return FALSE;
+}
+
+int
+ho_recognize_notch_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			 int *num, int *top, int *middle, int *bottom)
+{
+  ho_bitmap *m_edges = NULL;
+  int x, y, x_start, x_end, line_start, line_height;
+  int sum;
+
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > line_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_height = y - line_start + 1;
+
+  if (!line_height || m_mask->width < 2)
+    return TRUE;
+
+  /* get the top edges */
+  m_edges = ho_font_notch_left (m_text, m_mask);
   if (!m_edges)
     return TRUE;
 
@@ -679,9 +809,145 @@ ho_recognize_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 }
 
 int
+ho_recognize_notch_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+			  int *num, int *top, int *middle, int *bottom)
+{
+  ho_bitmap *m_edges = NULL;
+  int x, y, x_start, x_end, line_start, line_height;
+  int sum;
+
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > line_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  line_height = y - line_start + 1;
+
+  if (!line_height || m_mask->width < 2)
+    return TRUE;
+
+  /* get the top edges */
+  m_edges = ho_font_notch_right (m_text, m_mask);
+  if (!m_edges)
+    return TRUE;
+
+  /* get lines */
+  y = line_start;
+  x = m_mask->width - 2;
+  (*num) = (*top) = (*middle) = (*bottom) = 0;
+
+  while (y < line_start + line_height)
+    {
+      for (; y < line_start + line_height && !ho_bitmap_get (m_edges, x, y);
+	   y++);
+      if (y < line_start + line_height)
+	{
+	  (*num)++;
+	  if (y < line_start + line_height / 3)
+	    (*top)++;
+	  else if (y < line_start + 2 * line_height / 3)
+	    (*middle)++;
+	  else
+	    (*bottom)++;
+	}
+
+      for (; y < line_start + line_height && ho_bitmap_get (m_edges, x, y);
+	   y++);
+    }
+
+  return FALSE;
+}
+
+int
+ho_recognize_second_object (const ho_bitmap * m_text,
+			    const ho_bitmap * m_mask,
+			    double *has_second_objects,
+			    double *height, double *width,
+			    double *width_by_height, double *y_start,
+			    double *y_end, double *x_start, double *x_end)
+{
+  ho_bitmap *m_second_obj = NULL;
+  int x, y, line_start, line_height;
+  int y_font_start, font_height;
+  int x_font_start, font_width;
+  int sum;
+
+  /* init output */
+  *has_second_objects = 0.0;
+  *height = 0.0;
+  *width = 0.0;
+  *width_by_height = 0.0;
+
+  *y_start = 0.0;
+  *y_end = 0.0;
+
+  *x_start = 0.0;
+  *x_end = 0.0;
+
+  /* get line start and end */
+  x = m_mask->width / 2;
+  for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
+  line_start = y - 1;
+  for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
+  line_height = y - line_start;
+
+  if (!line_height || m_mask->width < 2)
+    return TRUE;
+
+  m_second_obj = ho_font_second_object (m_text, m_mask);
+  if (!m_second_obj)
+    {
+      return FALSE;
+    }
+
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  y_font_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > y_font_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_mask->width; x++)
+      sum += ho_bitmap_get (m_text, x, y);
+  font_height = y - y_font_start + 1;
+
+  sum = 0;
+  for (x = 0; x < m_mask->width && sum == 0; x++)
+    for (sum = 0, y = 0; y < m_mask->height; y++)
+      sum += ho_bitmap_get (m_text, x, y);
+  x_font_start = x - 1;
+  sum = 0;
+  for (x = m_mask->width; x > x_font_start && sum == 0; x--)
+    for (sum = 0, y = 0; y < m_mask->height; y++)
+      sum += ho_bitmap_get (m_text, x, y);
+  font_width = x - x_font_start + 1;
+
+  *has_second_objects = 1.0;
+  *height = (double) font_height / (double) line_height;
+  *width = (double) font_width / (double) (m_mask->width);
+  *width_by_height = (double) font_width / (double) font_height;
+
+  *y_start = (double) (line_start - y_font_start) / (double) line_height;
+  *y_end =
+    (double) ((line_start + line_height) -
+	      (y_font_start + font_height)) / (double) line_height;
+
+  *x_start = (double) (x_font_start) / (double) (m_mask->width);
+  *x_end = (double) (x_font_start + font_width) / (double) (m_mask->width);
+
+  return FALSE;
+}
+
+int
 ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			 double *height, double *width, double *start,
-			 double *end)
+			 double *height, double *width,
+			 double *width_by_height, double *start, double *end)
 {
   int x, y, x_start, x_end, line_start, line_height;
   int font_start, font_height;
@@ -711,6 +977,7 @@ ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 
   *height = (double) font_height / (double) line_height;
   *width = (double) (m_mask->width) / (double) line_height;
+  *width_by_height = (double) (m_mask->width) / (double) font_height;
   *start = (double) (line_start - font_start) / (double) line_height;
   *end =
     (double) ((line_start + line_height) -
@@ -726,6 +993,8 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   ho_bitmap *m_holes = NULL;
 
   double height, width, start, end, dist;
+  double width_by_height;
+  double has_second_objects, y_start, y_end, x_start, x_end;
   int num, top, middle, bottom, left, right;
   int nobjects, nholes;
 
@@ -790,50 +1059,138 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   array_in[36] = (middle < 1) ? -1.0 : 1.0;
   array_in[37] = (bottom < 1) ? -1.0 : 1.0;
 
+  /* fill the notchs part of array */
+  ho_recognize_notch_top (m_text, m_mask, &num, &left, &middle, &right);
+  array_in[38] = (num < 2) ? -1.0 : 1.0;
+  array_in[39] = (left < 1) ? -1.0 : 1.0;
+  array_in[40] = (middle < 1) ? -1.0 : 1.0;
+  array_in[41] = (right < 1) ? -1.0 : 1.0;
+
+  ho_recognize_notch_bottom (m_text, m_mask, &num, &left, &middle, &right);
+  array_in[42] = (num < 2) ? -1.0 : 1.0;
+  array_in[43] = (left < 1) ? -1.0 : 1.0;
+  array_in[44] = (middle < 1) ? -1.0 : 1.0;
+  array_in[45] = (right < 1) ? -1.0 : 1.0;
+
+  ho_recognize_notch_left (m_text, m_mask, &num, &top, &middle, &bottom);
+  array_in[46] = (num < 2) ? -1.0 : 1.0;
+  array_in[47] = (top < 1) ? -1.0 : 1.0;
+  array_in[48] = (middle < 1) ? -1.0 : 1.0;
+  array_in[49] = (bottom < 1) ? -1.0 : 1.0;
+
+  ho_recognize_notch_right (m_text, m_mask, &num, &top, &middle, &bottom);
+  array_in[50] = (num < 2) ? -1.0 : 1.0;
+  array_in[51] = (top < 1) ? -1.0 : 1.0;
+  array_in[52] = (middle < 1) ? -1.0 : 1.0;
+  array_in[53] = (bottom < 1) ? -1.0 : 1.0;
+
   /* fill the dimentions part */
-  ho_recognize_dimentions (m_text, m_mask, &height, &width, &start, &end);
-  array_in[38] = height - 1.0;
-  if (array_in[38] < -1.0)
-    array_in[38] = -1.0;
-  else if (array_in[38] > 1.0)
-    array_in[38] = 1.0;
+  ho_recognize_dimentions (m_text, m_mask, &height, &width, &width_by_height,
+			   &start, &end);
+  array_in[54] = height - 1.0;
+  if (array_in[54] < -1.0)
+    array_in[54] = -1.0;
+  else if (array_in[54] > 1.0)
+    array_in[54] = 1.0;
 
-  array_in[39] = width - 1.0;
-  if (array_in[39] < -1.0)
-    array_in[39] = -1.0;
-  else if (array_in[39] > 1.0)
-    array_in[39] = 1.0;
+  array_in[55] = width - 1.0;
+  if (array_in[55] < -1.0)
+    array_in[55] = -1.0;
+  else if (array_in[55] > 1.0)
+    array_in[55] = 1.0;
 
-  array_in[40] = start;
-  if (array_in[40] < -1.0)
-    array_in[40] = -1.0;
-  else if (array_in[40] > 1.0)
-    array_in[40] = 1.0;
+  array_in[56] = width_by_height - 1.0;
+  if (array_in[56] < -1.0)
+    array_in[56] = -1.0;
+  else if (array_in[56] > 1.0)
+    array_in[56] = 1.0;
 
-  array_in[41] = end;
-  if (array_in[41] < -1.0)
-    array_in[41] = -1.0;
-  else if (array_in[41] > 1.0)
-    array_in[41] = 1.0;
+  array_in[57] = start;
+  if (array_in[57] < -1.0)
+    array_in[57] = -1.0;
+  else if (array_in[57] > 1.0)
+    array_in[57] = 1.0;
+
+  array_in[58] = end;
+  if (array_in[58] < -1.0)
+    array_in[58] = -1.0;
+  else if (array_in[58] > 1.0)
+    array_in[58] = 1.0;
 
   /* fill the objects and holes part */
   nobjects = ho_bitmap_filter_count_objects (m_text);
-  array_in[42] = (nobjects > 1) ? 1.0 : -1.0;
+  array_in[59] = (nobjects > 1) ? 1.0 : -1.0;
 
   m_holes = ho_font_holes (m_text, m_mask);
   if (m_holes)
     {
       nholes = ho_bitmap_filter_count_objects (m_holes);
-      array_in[43] = (nholes > 0) ? 1.0 : -1.0;
-      array_in[44] = (nholes > 1) ? 1.0 : -1.0;
+      array_in[60] = (nholes > 0) ? 1.0 : -1.0;
+      array_in[61] = (nholes > 1) ? 1.0 : -1.0;
 
       ho_bitmap_free (m_holes);
     }
   else
     {
-      array_in[43] = -1.0;
-      array_in[44] = -1.0;
+      array_in[60] = -1.0;
+      array_in[61] = -1.0;
     }
+
+  /* fill the second object part */
+  ho_recognize_second_object (m_text,
+			      m_mask,
+			      &has_second_objects,
+			      &height, &width,
+			      &width_by_height, &y_start,
+			      &y_end, &x_start, &x_end);
+
+  array_in[62] = 2.0 * has_second_objects - 1.0;
+  if (array_in[62] < -1.0)
+    array_in[62] = -1.0;
+  else if (array_in[62] > 1.0)
+    array_in[62] = 1.0;
+
+  array_in[63] = 2.0 * height - 1.0;
+  if (array_in[63] < -1.0)
+    array_in[63] = -1.0;
+  else if (array_in[63] > 1.0)
+    array_in[63] = 1.0;
+
+  array_in[64] = 2.0 * width - 1.0;
+  if (array_in[64] < -1.0)
+    array_in[64] = -1.0;
+  else if (array_in[64] > 1.0)
+    array_in[64] = 1.0;
+
+  array_in[65] = 2.0 * width_by_height - 1.0;
+  if (array_in[65] < -1.0)
+    array_in[65] = -1.0;
+  else if (array_in[65] > 1.0)
+    array_in[65] = 1.0;
+
+  array_in[66] = 2.0 * y_start - 1.0;
+  if (array_in[66] < -1.0)
+    array_in[66] = -1.0;
+  else if (array_in[66] > 1.0)
+    array_in[66] = 1.0;
+
+  array_in[67] = 2.0 * y_end - 1.0;
+  if (array_in[67] < -1.0)
+    array_in[67] = -1.0;
+  else if (array_in[67] > 1.0)
+    array_in[67] = 1.0;
+
+  array_in[68] = 2.0 * x_start - 1.0;
+  if (array_in[68] < -1.0)
+    array_in[68] = -1.0;
+  else if (array_in[68] > 1.0)
+    array_in[68] = 1.0;
+
+  array_in[69] = 2.0 * x_end - 1.0;
+  if (array_in[69] < -1.0)
+    array_in[69] = -1.0;
+  else if (array_in[69] > 1.0)
+    array_in[69] = 1.0;
 
   return FALSE;
 }

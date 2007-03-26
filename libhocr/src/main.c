@@ -829,8 +829,10 @@ main (int argc, char *argv[])
 		    if (m_mask && m_font_mask)
 		      {
 			/* get nikud */
-			m_font_filter = ho_bitmap_clone (m_text);
-			ho_bitmap_andnot (m_font_filter, m_font_mask);
+			//m_font_filter = ho_bitmap_clone (m_text);
+			//ho_bitmap_andnot (m_font_filter, m_font_mask);
+
+			m_font_filter = ho_font_second_object (m_font_mask, m_mask);
 		      }
 
 		    /* recognize the font and send it out */

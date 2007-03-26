@@ -394,7 +394,7 @@ ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
     }
 
   /* extend */
-  m_out = ho_bitmap_hlink (m_temp, 3 * ext_width / 2);
+  m_out = ho_bitmap_hlink (m_temp, 7 * ext_width / 4);
   ho_bitmap_free (m_temp);
   if (!m_out)
     return NULL;

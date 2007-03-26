@@ -57,7 +57,7 @@ ho_recognize_sign_dot (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] < -0.25 && array_in[39] < -0.4 && array_in[40] < -0.2
+  if (array_in[54] < -0.25 && array_in[55] < -0.4 && array_in[57] < -0.2
       && (array_in[29] == -1.0 && array_in[33] == -1.0))
     return_value = 1.0;
 
@@ -69,7 +69,7 @@ ho_recognize_sign_comma (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] < -0.25 && array_in[39] < -0.4 && array_in[40] < -0.2
+  if (array_in[54] < -0.25 && array_in[55] < -0.4 && array_in[57] < -0.2
       && (array_in[29] == -1.0 || array_in[33] == 1.0))
     return_value = 1.0;
 
@@ -81,7 +81,7 @@ ho_recognize_sign_minus (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] < -0.5 && array_in[39] > -0.6)
+  if (array_in[54] < -0.5 && array_in[55] > -0.6)
     return_value = 1.0;
 
   return return_value;
@@ -98,7 +98,7 @@ ho_recognize_sign_alef (const double *array_in)
       && array_in[29] == 1.0 && (array_in[25] == 1.0
 				 || (array_in[23] == 1.0
 				     && array_in[24] == 1.0))
-      && array_in[39] > -0.5)
+      && array_in[55] > -0.5)
     return_value = 1.0;
 
   return return_value;
@@ -109,7 +109,7 @@ ho_recognize_sign_bet (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[39] > -0.3 && array_in[0] > -1.0 && array_in[4] > -1.0
+  if (array_in[55] > -0.3 && array_in[0] > -1.0 && array_in[4] > -1.0
       && array_in[12] > -1.0 && array_in[37] > -1.0 && array_in[35] == -1.0
       && array_in[31] == 1.0)
     return_value = 1.0;
@@ -138,7 +138,7 @@ ho_recognize_sign_hey (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] > -0.2 && array_in[38] < 0.1 && array_in[42] == 1.0
+  if (array_in[54] > -0.2 && array_in[54] < 0.1 && array_in[59] == 1.0
       && array_in[31] == 1.0 && array_in[0] > -1.0 && array_in[27] == 1.0
       && array_in[29] == 1.0 && array_in[4] == -1.0)
     return_value = 1.0;
@@ -151,8 +151,8 @@ ho_recognize_sign_vav (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] > -0.2 && array_in[39] < -0.4 && array_in[40] > -0.9
-      && array_in[41] > -0.1 && array_in[4] == -1.0 &&
+  if (array_in[54] > -0.2 && array_in[55] < -0.4 && array_in[57] > -0.9
+      && array_in[58] > -0.1 && array_in[4] == -1.0 &&
       array_in[12] > -1.0 && (array_in[35] == -1.0 || array_in[15] < -0.8))
     return_value = 1.0;
 
@@ -164,8 +164,8 @@ ho_recognize_sign_zayin (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] > -0.2 && array_in[39] < -0.4 && array_in[40] > -0.9
-      && array_in[41] > -0.1 && array_in[31] > -1.0 && array_in[4] == -1.0
+  if (array_in[54] > -0.2 && array_in[55] < -0.4 && array_in[57] > -0.9
+      && array_in[58] > -0.1 && array_in[31] > -1.0 && array_in[4] == -1.0
       && !(array_in[35] == -1.0 || array_in[15] < -0.8))
     return_value = 1.0;
 
@@ -193,7 +193,7 @@ ho_recognize_sign_yod (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] < -0.25 && array_in[39] < -0.35 && array_in[40] > -0.2)
+  if (array_in[54] < -0.25 && array_in[55] < -0.35 && array_in[57] > -0.2)
     return_value = 1.0;
 
   return return_value;
@@ -220,7 +220,7 @@ ho_recognize_sign_lamed (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] > 0.1 && array_in[39] > -0.7 && array_in[40] > 0.1)
+  if (array_in[54] > 0.1 && array_in[55] > -0.7 && array_in[57] > 0.1)
     return_value = 1.0;
 
   return return_value;
@@ -247,8 +247,8 @@ ho_recognize_sign_nun (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] > -0.2 && array_in[39] < -0.2 && array_in[40] > -0.9
-      && array_in[41] > -0.1 && array_in[4] == 1.0)
+  if (array_in[54] > -0.2 && array_in[55] < -0.2 && array_in[57] > -0.9
+      && array_in[58] > -0.1 && array_in[4] == 1.0)
     return_value = 1.0;
 
   return return_value;
@@ -259,8 +259,8 @@ ho_recognize_sign_nun_sofit (const double *array_in)
 {
   double return_value = -1.0;
 
-  if (array_in[38] > -0.0 && array_in[39] < -0.4 && array_in[40] > -0.9
-      && array_in[41] < -0.1 && array_in[31] > 0.0)
+  if (array_in[54] > -0.0 && array_in[55] < -0.4 && array_in[57] > -0.9
+      && array_in[58] < -0.1 && array_in[31] > 0.0)
     return_value = 1.0;
 
   return return_value;
