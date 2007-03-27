@@ -233,8 +233,12 @@ function print_nav ($index)
 		{print '<li><a href="read.php">קריאה</a></li>'."\n";}
 	if ($index == 4)
 		{print '<li><a href="write.php" class="active">הגהה</a></li>'."\n";}
-	else
+  else
 		{print '<li><a href="write.php">הגהה</a></li>'."\n";}
+  if ($index == 5)
+		{print '<li><a href="about.php" class="active">אודות</a></li>'."\n";}
+	else
+		{print '<li><a href="about.php">אודות</a></li>'."\n";}
 	print '</ul>'."\n";
 }
 

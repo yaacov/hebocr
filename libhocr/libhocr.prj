@@ -109,7 +109,9 @@ module.source.files=\
 	src/ho_font.c\
 	src/ho_string.c\
 	src/ho_font_pnm.c\
-	src/ho_recognize_sign.c
+	src/ho_recognize_sign.c\
+	src/ho_fann.c\
+	src/ho_fann.h
 
 module.pixmap.name=.
 module.pixmap.type=

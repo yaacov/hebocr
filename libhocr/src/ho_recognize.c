@@ -1281,5 +1281,3 @@ ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 
   return font;
 }
-
-#include "ho_recognize.h"

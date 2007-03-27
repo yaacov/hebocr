@@ -33,6 +33,8 @@
 
 gchar *image_in_filename = NULL;
 gchar *text_out_filename = NULL;
+gchar *data_out_filename = NULL;
+gchar *net_filename = NULL;
 gchar *image_out_path = NULL;
 gboolean version = FALSE;
 gboolean debug = FALSE;
@@ -104,6 +106,10 @@ static GOptionEntry entries[] = {
    "use FILE as output text file name", "FILE"},
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
    "use PATH for output images", "PATH"},
+  {"data-out", 'u', 0, G_OPTION_ARG_FILENAME, &data_out_filename,
+   "use FILE as output data file name", "FILE"},
+  {"mem-net", 'm', 0, G_OPTION_ARG_FILENAME, &net_filename,
+   "use FILE as memory net file name", "FILE"},
   {"thresholding-type", 'T', 0, G_OPTION_ARG_INT,
    &adaptive_threshold_type,
    "thresholding type, 0 normal, 1 none, 2 fine",
@@ -126,19 +132,19 @@ static GOptionEntry entries[] = {
   {"remove-images", 'R', 0, G_OPTION_ARG_NONE, &remove_images,
    "remove images from input image",
    NULL},
-  {"fix-broken-fonts", 0, 0, G_OPTION_ARG_NONE, &fix_broken_fonts,
+  {"fix-broken-fonts", 'e', 0, G_OPTION_ARG_NONE, &fix_broken_fonts,
    "try to link broken fonts",
    NULL},
-  {"fix-ligated-fonts", 0, 0, G_OPTION_ARG_NONE, &fix_ligated_fonts,
+  {"fix-ligated-fonts", 'E', 0, G_OPTION_ARG_NONE, &fix_ligated_fonts,
    "try to break ligated fonts",
    NULL},
   {"colums setup", 'c', 0, G_OPTION_ARG_INT, &paragraph_setup,
    "colums setup: 1 free, 2.. #colums, 0 auto",
    "NUM"},
-  {"slicing-threshold", 0, 0, G_OPTION_ARG_INT, &slicing_threshold,
+  {"slicing-threshold", 'x', 0, G_OPTION_ARG_INT, &slicing_threshold,
    "use NUM as font slicing threshold, 1..250",
    "NUM"},
-  {"slicing-width", 0, 0, G_OPTION_ARG_INT, &slicing_width,
+  {"slicing-width", 'X', 0, G_OPTION_ARG_INT, &slicing_width,
    "use NUM as font slicing width, 50..250",
    "NUM"},
   {"draw-grid", 'g', 0, G_OPTION_ARG_NONE, &show_grid,
@@ -155,7 +161,7 @@ static GOptionEntry entries[] = {
    "save fonts", NULL},
   {"save-fonts-exit", 'F', 0, G_OPTION_ARG_NONE, &only_save_fonts,
    "save fonts images and exit", NULL},
-  {"ltr", 0, 0, G_OPTION_ARG_NONE, &dir_ltr,
+  {"ltr", 'z', 0, G_OPTION_ARG_NONE, &dir_ltr,
    "left to right text", NULL},
   {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
    "do not use gtk for file input and output", NULL},
@@ -474,10 +480,6 @@ hocr_exit ()
   /* free page layout  masks */
   ho_layout_free (l_page);
 
-  /* free text */
-  if (text_out)
-    g_free (text_out);
-
   /* free file names */
   if (image_in_filename)
     g_free (image_in_filename);
@@ -485,6 +487,10 @@ hocr_exit ()
     g_free (image_out_path);
   if (text_out_filename)
     g_free (text_out_filename);
+  if (data_out_filename)
+    g_free (data_out_filename);
+  if (net_filename)
+    g_free (net_filename);
 
   /* exit program */
   exit (0);
@@ -496,7 +502,8 @@ int
 main (int argc, char *argv[])
 {
   int number_of_fonts;
-  ho_string *s_text_out;
+  ho_string *s_text_out = NULL;
+  ho_string *s_data_out = NULL;
 
   /* start of argument analyzing section 
    */
@@ -780,12 +787,48 @@ main (int argc, char *argv[])
     gsize terminator_pos;
     GError *error = NULL;
 
+    ho_fann *f_ann = NULL;
+
     /* start the text out */
     s_text_out = ho_string_new ();
     if (!s_text_out)
       {
 	hocr_printerr ("can't allocate text memory");
 	hocr_exit ();
+      }
+
+    /* start the data out */
+    if (data_out_filename)
+      {
+	s_data_out = ho_string_new ();
+	if (!s_data_out)
+	  {
+	    hocr_printerr ("can't allocate data memory");
+	    hocr_exit ();
+	  }
+
+	/* init the first line of data file */
+	text_out =
+	  g_strdup_printf ("%d %d %d\n", number_of_fonts, HO_ARRAY_IN_SIZE,
+			   HO_ARRAY_OUT_SIZE);
+	ho_string_cat (s_data_out, text_out);
+	g_free (text_out);
+
+      }
+
+    /* init fann */
+    if (net_filename)
+      {
+	f_ann = ho_fann_new (net_filename);
+
+	if (!f_ann || !(f_ann->ann))
+	  {
+	    hocr_printerr ("can't load memory net file");
+	    hocr_exit ();
+	  }
+
+	if (verbose || debug)
+	  g_print ("    Loading memory net from %s\n", net_filename);
       }
 
     for (block_index = 0; block_index < l_page->n_blocks; block_index++)
@@ -829,10 +872,11 @@ main (int argc, char *argv[])
 		    if (m_mask && m_font_mask)
 		      {
 			/* get nikud */
-			//m_font_filter = ho_bitmap_clone (m_text);
-			//ho_bitmap_andnot (m_font_filter, m_font_mask);
+			m_font_filter = ho_bitmap_clone (m_text);
+			ho_bitmap_andnot (m_font_filter, m_font_mask);
 
-			m_font_filter = ho_font_second_object (m_font_mask, m_mask);
+			/* debug the font functions: */
+			/* m_font_filter = ho_font_second_object (m_font_mask, m_mask); */
 		      }
 
 		    /* recognize the font and send it out */
@@ -853,6 +897,56 @@ main (int argc, char *argv[])
 		      {
 			char *font;
 
+			/* if user want to dump data to file */
+			if (data_out_filename && m_mask && m_font_filter
+			    && m_font_mask)
+			  {
+			    double array_in[HO_ARRAY_IN_SIZE];
+			    double array_out[HO_ARRAY_OUT_SIZE];
+
+			    ho_recognize_create_array_in (m_font_mask, m_mask,
+							  array_in);
+
+			    /* show font to teacher */
+			    filename =
+			      g_strdup_printf ("%s-font.pnm", image_out_path,
+					       font_number);
+			    ho_font_pnm_save (m_font_mask, m_font_filter,
+					      m_mask, filename);
+			    g_free (filename);
+
+			    /* clean array_out */
+			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+			      array_out[i] = -1.0;
+
+			    /* ask user for this font number */
+			    g_print ("Enter the number of the font:\n");
+			    scanf ("%d", &i);
+			    if (i < 0 || i > HO_ARRAY_OUT_SIZE)
+			      i = 0;
+			    array_out[i] = 1.0;
+
+			    /* add this font line */
+			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+			      {
+				text_out =
+				  g_strdup_printf ("%+02.2f ", array_in[i]);
+				ho_string_cat (s_data_out, text_out);
+				g_free (text_out);
+			      }
+
+			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+			      {
+				text_out =
+				  g_strdup_printf ("%+01.1f ", array_out[i]);
+				ho_string_cat (s_data_out, text_out);
+				g_free (text_out);
+			      }
+
+			    ho_string_cat (s_data_out, "\n");
+
+			  }
+
 			/* if debug printout font data stream */
 			if (debug)
 			  {
@@ -861,8 +955,12 @@ main (int argc, char *argv[])
 
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
-			    ho_recognize_create_array_out (array_in,
-							   array_out);
+			    if (f_ann)
+			      ho_fann_create_array_out (f_ann, array_in,
+							array_out);
+			    else
+			      ho_recognize_create_array_out (array_in,
+							     array_out);
 
 			    g_print ("array_in:\n");
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
@@ -886,7 +984,13 @@ main (int argc, char *argv[])
 			/* insert font to text out */
 			if (m_font_mask && m_mask)
 			  {
-			    font = ho_recognize_font (m_font_mask, m_mask);
+			    if (f_ann)
+			      font =
+				ho_fann_recognize_font (f_ann, m_font_mask,
+							m_mask);
+			    else
+			      font = ho_recognize_font (m_font_mask, m_mask);
+
 			    ho_string_cat (s_text_out, font);
 			    /* if debug print out the font */
 			    if (debug)
@@ -923,6 +1027,10 @@ main (int argc, char *argv[])
 	ho_string_cat (s_text_out, "\n");
 
       }				/* end of blocks loop */
+
+    /* if use a memory net, free it */
+    if (f_ann)
+      ho_fann_free (f_ann);
   }
 
   if (debug || verbose)
@@ -931,6 +1039,9 @@ main (int argc, char *argv[])
 
   /* start user output section 
    */
+
+  if (debug || verbose)
+    g_print ("start output section.\n");
 
   /* convert text from ho_string to (gchar *) */
   text_out = g_strdup_printf ("%s", s_text_out->string);
@@ -950,6 +1061,33 @@ main (int argc, char *argv[])
 	  hocr_printerr ("can't write text to file");
 	}
     }
+
+  g_free (text_out);
+  text_out = NULL;
+
+  /* convert data from ho_string to (gchar *) */
+  if (s_data_out)
+    {
+      text_out = g_strdup_printf ("%s", s_data_out->string);
+      ho_string_free (s_data_out);
+    }
+
+  /* save data */
+  if (data_out_filename && text_out)
+    {
+      g_file_set_contents (data_out_filename, text_out, -1, &error);
+
+      if (error)
+	{
+	  hocr_printerr ("can't write data to file");
+	}
+    }
+
+  if (text_out)
+    g_free (text_out);
+
+  if (debug || verbose)
+    g_print ("end output section.\n");
 
   /* end of user putput section */
 

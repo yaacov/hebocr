@@ -35,10 +35,10 @@ dnl requires="$requires $hspell_pkg_modules"
 
 dnl fann: learning
 
-dnl fann_pkg_modules="fann >= 2.0.0"
-dnl PKG_CHECK_MODULES(fann, [$fann_pkg_modules], fann_PKG="found", exit)
-dnl AC_SUBST(fann_CFLAGS)
-dnl AC_SUBST(fann_LIBS)
+fann_pkg_modules="fann >= 2.0.0"
+PKG_CHECK_MODULES(fann, [$fann_pkg_modules], fann_PKG="found", exit)
+AC_SUBST(fann_CFLAGS)
+AC_SUBST(fann_LIBS)
 
 dnl requires="$requires $fann_pkg_modules"
 

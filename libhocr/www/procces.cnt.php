@@ -35,6 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
     {$command2 = $command2.' -R';}
   if ($_POST['halftone'])
     {$command2 = $command2.' -r';}
+  if ($_POST['fix_ligated'])
+    {$command2 = $command2.' -E';}
+  if ($_POST['fix_broken'])
+    {$command2 = $command2.' -e';}
   if ($_POST['bw'])
     {$command2 = $command2.' -b';
     $command4 = 'convert '.$path.$name.'-I.pgm '.$path.$name.'-I.jpeg';

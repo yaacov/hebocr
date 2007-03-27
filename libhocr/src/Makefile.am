@@ -2,7 +2,8 @@
 
 # The libhocr library
 INCLUDES = \
-        $(hspell_CFLAGS) 
+        $(hspell_CFLAGS) \
+        $(fann_CFLAGS)
 
 pkglib_LTLIBRARIES = libhocr.la libhocrgtk.la
 
@@ -21,12 +22,14 @@ libhocr_la_SOURCES = \
         ho_font.c \
         ho_font_pnm.c \
         ho_recognize.c \
+        ho_fann.c \
         ho_recognize_sign.c \
         ho_string.c \
         ho_layout.c
 
 libhocr_la_LIBADD = \
-        $(hspell_LIBS)
+        $(hspell_LIBS) \
+        $(fann_LIBS)
         
 libhocr_la_LDFLAGS = -version-info 0:0:0
 
@@ -46,6 +49,7 @@ library_include_HEADERS = hocr.h \
          ho_font.h \
          ho_font_pnm.h \
          ho_recognize.h \
+         ho_fann.h \
          ho_recognize_sign.h \
          ho_layout.h \
          ho_string.h \

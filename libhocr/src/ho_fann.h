@@ -1,5 +1,5 @@
 /***************************************************************************
- *            hocr.h
+ *            ho_fann.h
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -22,52 +22,31 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-/** @mainpage libhocr
- * LIBrary for Hebrew Optical Character Recognition 
- *
- * @section README
- * @include README
- * 
- * @section ChangeLog
- * @include ChangeLog
- *
- */
+#ifndef HO_FANN_H
+#define HO_FANN_H 1
 
-#ifndef HOCR_H
-#define HOCR_H 1
+#include <floatfann.h>
 
-#ifdef __cplusplus
-#  define BEGIN_C_DECLS extern "C" {
-#  define END_C_DECLS   }
-#else /* !__cplusplus */
-#  define BEGIN_C_DECLS
-#  define END_C_DECLS
-#endif /* __cplusplus */
-
-BEGIN_C_DECLS
-/* binary image map */
 #include <ho_bitmap.h>
-#include <ho_bitmap_draw.h>
-#include <ho_bitmap_pnm.h>
-#include <ho_bitmap_filter.h>
-/* color image map */
-#include <ho_pixbuf.h>
-#include <ho_pixbuf_pnm.h>
-#include <ho_pixbuf_draw.h>
-/* object image map */
-#include <ho_obj.h>
 #include <ho_objmap.h>
-#include <ho_dimentions.h>
-#include <ho_segment.h>
-#include <ho_font.h>
-#include <ho_font_pnm.h>
-/* string utilities */
-#include <ho_string.h>
-/* layout container for hocr layout */
-#include <ho_layout.h>
-/* font recognition */
+
 #include <ho_recognize.h>
-#include <ho_fann.h>
-#include <ho_recognize_sign.h>
-  END_C_DECLS
-#endif /* HOCR_H */
+
+typedef struct
+{
+  struct fann *ann;
+} ho_fann;
+
+ho_fann *ho_fann_new (const char *path);
+
+int ho_fann_free (ho_fann * ann);
+
+
+int
+ho_fann_create_array_out (const ho_fann * ann, const double *array_in,
+			  double *array_out);
+
+char *ho_fann_recognize_font (const ho_fann * ann, const ho_bitmap * m_text,
+			      const ho_bitmap * m_mask);
+
+#endif /* HO_FANN_H */

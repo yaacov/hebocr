@@ -5,7 +5,7 @@ body {
 	color:#000;
 	margin:0;
 	padding:0;
-  background: #bbf;
+  background: #558;
 }
 
 * {
@@ -121,7 +121,7 @@ p.top {
 	width:700px;
 	margin: 0 auto;
 	padding: 0px 0px 0px 0px;
-  background: #fff;
+   background: #fff;
 }
 
 #footer {
@@ -132,21 +132,22 @@ p.top {
 }
 
 #header {
-  margin:0;
+   margin:0;
 	padding:0px 30px 0px 30px;
+	background: #fff;
 }
 
 #header .description {
 	float:left;
 	padding:0px 0 0 0;
-  margin:40px 0 0 0;
-	color:#222;
+   margin:40px 0 0 0;
+	color:#000;
 }
 
 #header h1 {
 	font-family: sans-serif;
 	margin:0px 0px 0px 0px;
-	padding: 25px 10px 20px 0px;
+	padding: 25px 0px 25px 0px;
 	border-bottom:1px solid #55f;
 	color: #000;
 }
@@ -175,7 +176,7 @@ p.top {
 }
 
 #nav li a.active {
-	color:#00f;
+	color:#66f;
 	text-decoration:none;
 }
 

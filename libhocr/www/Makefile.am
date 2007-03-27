@@ -14,4 +14,6 @@ EXTRA_DIST = \
         read.cnt.php \
         write.php \
         write.cnt.php \
+        about.php \
+        about.cnt.php \
         README COPYING
