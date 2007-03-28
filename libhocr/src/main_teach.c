@@ -113,7 +113,7 @@ hocr_cmd_parser (int *argc, char **argv[])
     }
 
   if (!max_epochs)
-    max_epochs = 10000;
+    max_epochs = 4000;
 
   return FALSE;
 }
@@ -122,17 +122,15 @@ int
 main (int argc, char *argv[])
 {
   const float desired_error = (const float) 0.00001;
-  const unsigned int epochs_between_reports = 50;
-  unsigned int layers[4] =
-    { HO_ARRAY_IN_SIZE, HO_ARRAY_IN_SIZE + HO_ARRAY_OUT_SIZE / 2,
-    HO_ARRAY_IN_SIZE + HO_ARRAY_OUT_SIZE / 2,
-    HO_ARRAY_OUT_SIZE
+  const unsigned int epochs_between_reports = 10;
+  unsigned int layers[3] = { HO_ARRAY_IN_SIZE, HO_ARRAY_IN_SIZE / 2 + 3,
+    1
   };
   struct fann *ann = NULL;
 
   /* do argument analyzing */
   hocr_cmd_parser (&argc, &argv);
-  
+
   g_print ("%s - Hebrew OCR teaching utility\n", PACKAGE_STRING);
 
   /* if user has a seed network, use that one */
@@ -144,15 +142,18 @@ main (int argc, char *argv[])
   else
     {
       g_print ("Creating a new memory net\n");
-      ann = fann_create_standard_array (4, layers);
+      ann = fann_create_standard_array (3, layers);
     }
 
   if (!ann)
     return -1;
 
   /* set net function to work in hocr's -1 .. 1 range */
-  fann_set_activation_function_hidden (ann, FANN_SIGMOID_SYMMETRIC);
-  fann_set_activation_function_output (ann, FANN_SIGMOID_SYMMETRIC);
+  /* activation_functions with -1..1 range: 
+     FANN_SIGMOID_SYMMETRIC,  FANN_LINEAR_PIECE_SYMMETRIC,
+     FANN_ELLIOT_SYMMETRIC */
+  fann_set_activation_function_hidden (ann, FANN_ELLIOT_SYMMETRIC);
+  fann_set_activation_function_output (ann, FANN_ELLIOT_SYMMETRIC);
 
   /* train net */
   fann_train_on_file (ann, data_filename, (unsigned int) max_epochs,

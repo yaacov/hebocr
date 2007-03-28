@@ -810,7 +810,7 @@ main (int argc, char *argv[])
 	/* init the first line of data file */
 	text_out =
 	  g_strdup_printf ("%d %d %d\n", number_of_fonts, HO_ARRAY_IN_SIZE,
-			   HO_ARRAY_OUT_SIZE);
+			   1);
 	ho_string_cat (s_data_out, text_out);
 	g_free (text_out);
 
@@ -897,6 +897,40 @@ main (int argc, char *argv[])
 		      {
 			char *font;
 
+			/* if debug printout font data stream */
+			if (debug)
+			  {
+			    double array_in[HO_ARRAY_IN_SIZE];
+			    double array_out[HO_ARRAY_OUT_SIZE];
+
+			    ho_recognize_create_array_in (m_font_mask, m_mask,
+							  array_in);
+			    if (f_ann)
+			      ho_fann_create_array_out (f_ann, array_in,
+							array_out);
+			    else
+			      ho_recognize_create_array_out (array_in,
+							     array_out);
+
+			    g_print ("array_in:\n");
+			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+			      {
+				g_print ("%+02.2f\t", array_in[i]);
+				if (!((i + 1) % 10))
+				  g_print ("\n");
+			      }
+			    g_print ("\n");
+
+			    g_print ("array_out:\n");
+			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+			      {
+				g_print ("%+02.2f\t", array_out[i]);
+				if (!((i + 1) % 10))
+				  g_print ("\n");
+			      }
+			    g_print ("\n");
+			  }
+
 			/* if user want to dump data to file */
 			if (data_out_filename && m_mask && m_font_filter
 			    && m_font_mask)
@@ -945,40 +979,6 @@ main (int argc, char *argv[])
 
 			    ho_string_cat (s_data_out, "\n");
 
-			  }
-
-			/* if debug printout font data stream */
-			if (debug)
-			  {
-			    double array_in[HO_ARRAY_IN_SIZE];
-			    double array_out[HO_ARRAY_OUT_SIZE];
-
-			    ho_recognize_create_array_in (m_font_mask, m_mask,
-							  array_in);
-			    if (f_ann)
-			      ho_fann_create_array_out (f_ann, array_in,
-							array_out);
-			    else
-			      ho_recognize_create_array_out (array_in,
-							     array_out);
-
-			    g_print ("array_in:\n");
-			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
-			      {
-				g_print ("%+02.2f\t", array_in[i]);
-				if (!((i + 1) % 10))
-				  g_print ("\n");
-			      }
-			    g_print ("\n");
-
-			    g_print ("array_out:\n");
-			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
-			      {
-				g_print ("%+02.2f\t", array_out[i]);
-				if (!((i + 1) % 10))
-				  g_print ("\n");
-			      }
-			    g_print ("\n");
 			  }
 
 			/* insert font to text out */

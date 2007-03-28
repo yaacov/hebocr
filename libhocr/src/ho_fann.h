@@ -34,7 +34,7 @@
 
 typedef struct
 {
-  struct fann *ann;
+  struct fann **ann;
 } ho_fann;
 
 ho_fann *ho_fann_new (const char *path);

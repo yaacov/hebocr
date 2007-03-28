@@ -37,6 +37,9 @@
 #define NULL ((void*)0)
 #endif
 
+#include <string.h>
+#include <stdio.h>
+
 #include "ho_bitmap.h"
 #include "ho_objmap.h"
 #include "ho_bitmap_filter.h"
@@ -50,13 +53,34 @@
 ho_fann *
 ho_fann_new (const char *path)
 {
-  ho_fann *ann;
+  char *filename = NULL;
+  ho_fann *ann = NULL;
+  int i;
+
+  filename = (char *) malloc (strlen (path) + 10);
+  if (!filename)
+    return NULL;
 
   ann = (ho_fann *) malloc (sizeof (ho_fann));
   if (!ann)
     return NULL;
 
-  ann->ann = fann_create_from_file (path);
+  ann->ann =
+    (struct fann **) malloc (HO_ARRAY_OUT_SIZE * sizeof (struct fann *));
+  if (!ann->ann)
+    {
+      free (ann);
+      return NULL;
+    }
+
+  for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+    {
+      sprintf (filename, "%s_%03d.net", path, i);
+      /* TODO: stat the file to see that it exist */
+      (ann->ann)[i] = fann_create_from_file (filename);
+    }
+
+  free (filename);
 
   return ann;
 }
@@ -64,11 +88,19 @@ ho_fann_new (const char *path)
 int
 ho_fann_free (ho_fann * ann)
 {
+  int i;
+
   if (ann && ann->ann)
     {
-      fann_destroy (ann->ann);
+      for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+	if ((ann->ann)[i])
+	  fann_destroy ((ann->ann)[i]);
+
+      free (ann->ann);
       free (ann);
     }
+  else if (ann)
+    free (ann);
 
   return FALSE;
 }
@@ -80,13 +112,20 @@ ho_fann_create_array_out (const ho_fann * ann, const double *array_in,
   int i;
   fann_type *f_out;
 
-  /* run the net */
-  f_out = fann_run (ann->ann, (fann_type *) array_in);
+  /* clean array out */
+  for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+    array_out[i] = -1.0;
 
-  /* copy array out */
+  /* create array out */
   for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
     {
-      array_out[i] = f_out[i];
+      if ((ann->ann)[i])
+	{
+	  /* run the net */
+	  f_out = fann_run ((ann->ann)[i], (fann_type *) array_in);
+	  /* evry net has one output neuron */
+	  array_out[i] = f_out[0];
+	}
     }
 
   return FALSE;
