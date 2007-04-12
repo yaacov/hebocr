@@ -1261,8 +1261,7 @@ ho_recognize_array_out_to_font (const double *array_out)
   int max_i = 0;
 
   for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
-    /* x^2 to make it a symetric check */
-    if (array_out[i] * array_out[i] > array_out[max_i] * array_out[max_i])
+    if (array_out[i] > array_out[max_i])
       max_i = i;
 
   return sign_array[max_i];
