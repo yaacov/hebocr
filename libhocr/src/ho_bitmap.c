@@ -105,7 +105,9 @@ ho_bitmap_clone (const ho_bitmap * m)
 {
   ho_bitmap *m_out;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;
@@ -121,7 +123,9 @@ ho_bitmap_clone (const ho_bitmap * m)
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   memcpy (m_out->data, m->data, m_out->height * m_out->rowstride);
 
   return m_out;
@@ -134,12 +138,16 @@ ho_bitmap_clone_window (const ho_bitmap * m, const int x, const int y,
   ho_bitmap *m_out;
   int x1, y1;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (width, height);
   if (!m_out)
     return NULL;
 
-  /* set origin of sub window */
+  /*
+   * set origin of sub window 
+   */
   m_out->x = m->x + x;
   m_out->y = m->y + y;
 
@@ -152,7 +160,9 @@ ho_bitmap_clone_window (const ho_bitmap * m, const int x, const int y,
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   for (x1 = 0; x1 < width; x1++)
     for (y1 = 0; y1 < height; y1++)
       {
@@ -203,11 +213,15 @@ ho_bitmap_and (ho_bitmap * m_left, const ho_bitmap * m_right)
 {
   int i;
 
-  /* check sizes */
+  /*
+   * check sizes 
+   */
   if (m_left->width != m_right->width || m_left->height != m_right->height)
     return TRUE;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   for (i = 0; i < m_right->height * m_right->rowstride; i++)
     m_left->data[i] &= m_right->data[i];
 
@@ -219,11 +233,15 @@ ho_bitmap_or (ho_bitmap * m_left, const ho_bitmap * m_right)
 {
   int i;
 
-  /* check sizes */
+  /*
+   * check sizes 
+   */
   if (m_left->width != m_right->width || m_left->height != m_right->height)
     return TRUE;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   for (i = 0; i < m_right->height * m_right->rowstride; i++)
     m_left->data[i] |= m_right->data[i];
 
@@ -235,11 +253,15 @@ ho_bitmap_xor (ho_bitmap * m_left, const ho_bitmap * m_right)
 {
   int i;
 
-  /* check sizes */
+  /*
+   * check sizes 
+   */
   if (m_left->width != m_right->width || m_left->height != m_right->height)
     return TRUE;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   for (i = 0; i < m_right->height * m_right->rowstride; i++)
     m_left->data[i] ^= m_right->data[i];
 
@@ -251,11 +273,15 @@ ho_bitmap_andnot (ho_bitmap * m_left, const ho_bitmap * m_right)
 {
   int i;
 
-  /* check sizes */
+  /*
+   * check sizes 
+   */
   if (m_left->width != m_right->width || m_left->height != m_right->height)
     return TRUE;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   for (i = 0; i < m_right->height * m_right->rowstride; i++)
     m_left->data[i] &= ~m_right->data[i];
 
@@ -267,11 +293,15 @@ ho_bitmap_copy (ho_bitmap * m_left, const ho_bitmap * m_right)
 {
   int i;
 
-  /* check sizes */
+  /*
+   * check sizes 
+   */
   if (m_left->width != m_right->width || m_left->height != m_right->height)
     return TRUE;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   for (i = 0; i < m_right->height * m_right->rowstride; i++)
     m_left->data[i] = m_right->data[i];
 
@@ -285,10 +315,14 @@ ho_bitmap_not (const ho_bitmap * m)
 
   ho_bitmap *m_out;
 
-  /* allocate m_out */
+  /*
+   * allocate m_out 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
 
-  /* copy header data */
+  /*
+   * copy header data 
+   */
   m_out->x = m->x;
   m_out->y = m->y;
 
@@ -301,11 +335,15 @@ ho_bitmap_not (const ho_bitmap * m)
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  /* check valid memory */
+  /*
+   * check valid memory 
+   */
   if (!m_out)
     return NULL;
 
-  /* copy data */
+  /*
+   * copy data 
+   */
   for (i = 0; i < m->height * m->rowstride; i++)
     m_out->data[i] = ~m->data[i];
 
@@ -319,7 +357,9 @@ ho_bitmap_dilation_n (const ho_bitmap * m, const unsigned char n)
   int x, y;
   unsigned char sum;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;
@@ -335,11 +375,15 @@ ho_bitmap_dilation_n (const ho_bitmap * m, const unsigned char n)
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  /*  do dilation */
+  /*
+   * do dilation 
+   */
   for (x = 1; x < m->width - 1; x++)
     for (y = 1; y < m->height - 1; y++)
       {
-	/* if white pixel */
+	/*
+	 * if white pixel 
+	 */
 	if (!ho_bitmap_get (m, x, y))
 	  {
 	    sum = ho_bitmap_get (m, x - 1, y - 1) +
@@ -366,7 +410,9 @@ ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n)
   int x, y;
   unsigned char sum;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;
@@ -382,11 +428,15 @@ ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n)
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  /*  do erosion */
+  /*
+   * do erosion 
+   */
   for (x = 1; x < m->width - 1; x++)
     for (y = 1; y < m->height - 1; y++)
       {
-	/* if black pixel */
+	/*
+	 * if black pixel 
+	 */
 	if (ho_bitmap_get (m, x, y))
 	  {
 	    sum = ho_bitmap_get (m, x - 1, y - 1) +
@@ -412,7 +462,9 @@ ho_bitmap_set_height (const ho_bitmap * m, const int height, const int top,
   int x, y, locale_top, locale_bottom, locale_height;
   unsigned char sum;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;
@@ -428,11 +480,15 @@ ho_bitmap_set_height (const ho_bitmap * m, const int height, const int top,
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  /*  do max_height */
+  /*
+   * do max_height 
+   */
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
       {
-	/* if black pixel */
+	/*
+	 * if black pixel 
+	 */
 	if (ho_bitmap_get (m, x, y))
 	  {
 	    locale_height = height;
@@ -502,7 +558,9 @@ ho_bitmap_hlink (const ho_bitmap * m, const int size)
   int k;
   int l, last;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;
@@ -550,7 +608,9 @@ ho_bitmap_herode (const ho_bitmap * m, const int size)
   int k;
   int l, last;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;
@@ -566,7 +626,9 @@ ho_bitmap_herode (const ho_bitmap * m, const int size)
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  /* set all bitmap black */
+  /*
+   * set all bitmap black 
+   */
   memset ((void *) (m_out->data), 0xff, m_out->height * m_out->rowstride);
 
   for (y = 0; y < m->height; y++)
@@ -601,7 +663,9 @@ ho_bitmap_vlink (const ho_bitmap * m, const int size)
   int k;
   int l, last;
 
-  /* allocate memory */
+  /*
+   * allocate memory 
+   */
   m_out = ho_bitmap_new (m->width, m->height);
   if (!m_out)
     return NULL;

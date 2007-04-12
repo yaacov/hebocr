@@ -34,7 +34,6 @@
 gchar *image_in_filename = NULL;
 gchar *text_out_filename = NULL;
 gchar *data_out_filename = NULL;
-gchar *net_filename = NULL;
 gchar *image_out_path = NULL;
 gboolean version = FALSE;
 gboolean debug = FALSE;
@@ -108,8 +107,6 @@ static GOptionEntry entries[] = {
    "use PATH for output images", "PATH"},
   {"data-out", 'u', 0, G_OPTION_ARG_FILENAME, &data_out_filename,
    "use FILE as output data file name", "FILE"},
-  {"mem-net", 'm', 0, G_OPTION_ARG_FILENAME, &net_filename,
-   "use FILE as memory net file name", "FILE"},
   {"thresholding-type", 'T', 0, G_OPTION_ARG_INT,
    &adaptive_threshold_type,
    "thresholding type, 0 normal, 1 none, 2 fine",
@@ -489,8 +486,6 @@ hocr_exit ()
     g_free (text_out_filename);
   if (data_out_filename)
     g_free (data_out_filename);
-  if (net_filename)
-    g_free (net_filename);
 
   /* exit program */
   exit (0);
@@ -787,8 +782,6 @@ main (int argc, char *argv[])
     gsize terminator_pos;
     GError *error = NULL;
 
-    ho_fann *f_ann = NULL;
-
     /* start the text out */
     s_text_out = ho_string_new ();
     if (!s_text_out)
@@ -810,25 +803,10 @@ main (int argc, char *argv[])
 	/* init the first line of data file */
 	text_out =
 	  g_strdup_printf ("%d %d %d\n", number_of_fonts, HO_ARRAY_IN_SIZE,
-			   1);
+			   HO_ARRAY_OUT_SIZE);
 	ho_string_cat (s_data_out, text_out);
 	g_free (text_out);
 
-      }
-
-    /* init fann */
-    if (net_filename)
-      {
-	f_ann = ho_fann_new (net_filename);
-
-	if (!f_ann || !(f_ann->ann))
-	  {
-	    hocr_printerr ("can't load memory net file");
-	    hocr_exit ();
-	  }
-
-	if (verbose || debug)
-	  g_print ("    Loading memory net from %s\n", net_filename);
       }
 
     for (block_index = 0; block_index < l_page->n_blocks; block_index++)
@@ -905,17 +883,13 @@ main (int argc, char *argv[])
 
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
-			    if (f_ann)
-			      ho_fann_create_array_out (f_ann, array_in,
-							array_out);
-			    else
-			      ho_recognize_create_array_out (array_in,
-							     array_out);
+			    ho_recognize_create_array_out (array_in,
+							   array_out);
 
 			    g_print ("array_in:\n");
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
-				g_print ("%+02.2f\t", array_in[i]);
+				g_print ("%02.2f\t", array_in[i]);
 				if (!((i + 1) % 10))
 				  g_print ("\n");
 			      }
@@ -924,7 +898,7 @@ main (int argc, char *argv[])
 			    g_print ("array_out:\n");
 			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
 			      {
-				g_print ("%+02.2f\t", array_out[i]);
+				g_print ("%02.2f\t", array_out[i]);
 				if (!((i + 1) % 10))
 				  g_print ("\n");
 			      }
@@ -951,7 +925,7 @@ main (int argc, char *argv[])
 
 			    /* clean array_out */
 			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
-			      array_out[i] = -1.0;
+			      array_out[i] = 0.0;
 
 			    /* ask user for this font number */
 			    g_print ("Enter the number of the font:\n");
@@ -964,7 +938,7 @@ main (int argc, char *argv[])
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
 				text_out =
-				  g_strdup_printf ("%+02.2f ", array_in[i]);
+				  g_strdup_printf ("%02.2f ", array_in[i]);
 				ho_string_cat (s_data_out, text_out);
 				g_free (text_out);
 			      }
@@ -972,7 +946,7 @@ main (int argc, char *argv[])
 			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
 			      {
 				text_out =
-				  g_strdup_printf ("%+01.1f ", array_out[i]);
+				  g_strdup_printf ("%01.1f ", array_out[i]);
 				ho_string_cat (s_data_out, text_out);
 				g_free (text_out);
 			      }
@@ -984,12 +958,8 @@ main (int argc, char *argv[])
 			/* insert font to text out */
 			if (m_font_mask && m_mask)
 			  {
-			    if (f_ann)
-			      font =
-				ho_fann_recognize_font (f_ann, m_font_mask,
-							m_mask);
-			    else
-			      font = ho_recognize_font (m_font_mask, m_mask);
+
+			    font = ho_recognize_font (m_font_mask, m_mask);
 
 			    ho_string_cat (s_text_out, font);
 			    /* if debug print out the font */
@@ -1028,9 +998,6 @@ main (int argc, char *argv[])
 
       }				/* end of blocks loop */
 
-    /* if use a memory net, free it */
-    if (f_ann)
-      ho_fann_free (f_ann);
   }
 
   if (debug || verbose)

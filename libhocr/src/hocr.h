@@ -67,7 +67,6 @@ BEGIN_C_DECLS
 #include <ho_layout.h>
 /* font recognition */
 #include <ho_recognize.h>
-#include <ho_fann.h>
 #include <ho_recognize_sign.h>
   END_C_DECLS
 #endif /* HOCR_H */

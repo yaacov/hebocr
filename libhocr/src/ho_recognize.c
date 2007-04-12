@@ -1000,140 +1000,140 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 
   /* fill the bars part of array */
   ho_recognize_hbar_up (m_text, m_mask, &height, &start, &end, &dist);
-  array_in[0] = 2.0 * height - 1.0;
-  array_in[1] = 2.0 * start - 1.0;
-  array_in[2] = 2.0 * end - 1.0;
-  array_in[3] = 2.0 * dist - 1.0;
+  array_in[0] = height;
+  array_in[1] = start;
+  array_in[2] = end;
+  array_in[3] = dist / 2.0 + 0.5;
 
   ho_recognize_hbar_down (m_text, m_mask, &height, &start, &end, &dist);
-  array_in[4] = 2.0 * height - 1.0;
-  array_in[5] = 2.0 * start - 1.0;
-  array_in[6] = 2.0 * end - 1.0;
-  array_in[7] = 2.0 * dist - 1.0;
+  array_in[4] = height;
+  array_in[5] = start;
+  array_in[6] = end;
+  array_in[7] = dist / 2.0 + 0.5;
 
   ho_recognize_vbar_left (m_text, m_mask, &width, &start, &end, &dist);
-  array_in[8] = 2.0 * width - 1.0;
-  array_in[9] = 2.0 * start - 1.0;
-  array_in[10] = 2.0 * end - 1.0;
-  array_in[11] = 2.0 * dist - 1.0;
+  array_in[8] = width;
+  array_in[9] = start;
+  array_in[10] = end;
+  array_in[11] = dist / 2.0 + 0.5;
 
   ho_recognize_vbar_right (m_text, m_mask, &width, &start, &end, &dist);
-  array_in[12] = 2.0 * width - 1.0;
-  array_in[13] = 2.0 * start - 1.0;
-  array_in[14] = 2.0 * end - 1.0;
-  array_in[15] = 2.0 * dist - 1.0;
+  array_in[12] = width;
+  array_in[13] = start;
+  array_in[14] = end;
+  array_in[15] = dist / 2.0 + 0.5;
 
   /* fill the diagonals part of array */
   ho_recognize_dbar (m_text, m_mask, &width, &start, &end);
-  array_in[16] = 2.0 * width - 1.0;
-  array_in[17] = 2.0 * start - 1.0;
-  array_in[18] = 2.0 * end - 1.0;
+  array_in[16] = width;
+  array_in[17] = start;
+  array_in[18] = end;
 
   ho_recognize_dbar_left (m_text, m_mask, &width, &start, &end);
-  array_in[19] = 2.0 * width - 1.0;
-  array_in[20] = 2.0 * start - 1.0;
-  array_in[21] = 2.0 * end - 1.0;
+  array_in[19] = width;
+  array_in[20] = start;
+  array_in[21] = end;
 
   /* fill the egdes part of array */
   ho_recognize_edges_top (m_text, m_mask, &num, &left, &middle, &right);
-  array_in[22] = (num < 3) ? -1.0 : 1.0;
-  array_in[23] = (left < 1) ? -1.0 : 1.0;
-  array_in[24] = (middle < 1) ? -1.0 : 1.0;
-  array_in[25] = (right < 1) ? -1.0 : 1.0;
+  array_in[22] = (num < 3) ? 0.0 : 1.0;
+  array_in[23] = (left < 1) ? 0.0 : 1.0;
+  array_in[24] = (middle < 1) ? 0.0 : 1.0;
+  array_in[25] = (right < 1) ? 0.0 : 1.0;
 
   ho_recognize_edges_bottom (m_text, m_mask, &num, &left, &middle, &right);
-  array_in[26] = (num < 3) ? -1.0 : 1.0;
-  array_in[27] = (left < 1) ? -1.0 : 1.0;
-  array_in[28] = (middle < 1) ? -1.0 : 1.0;
-  array_in[29] = (right < 1) ? -1.0 : 1.0;
+  array_in[26] = (num < 3) ? 0.0 : 1.0;
+  array_in[27] = (left < 1) ? 0.0 : 1.0;
+  array_in[28] = (middle < 1) ? 0.0 : 1.0;
+  array_in[29] = (right < 1) ? 0.0 : 1.0;
 
   ho_recognize_edges_left (m_text, m_mask, &num, &top, &middle, &bottom);
-  array_in[30] = (num < 3) ? -1.0 : 1.0;
-  array_in[31] = (top < 1) ? -1.0 : 1.0;
-  array_in[32] = (middle < 1) ? -1.0 : 1.0;
-  array_in[33] = (bottom < 1) ? -1.0 : 1.0;
+  array_in[30] = (num < 3) ? 0.0 : 1.0;
+  array_in[31] = (top < 1) ? 0.0 : 1.0;
+  array_in[32] = (middle < 1) ? 0.0 : 1.0;
+  array_in[33] = (bottom < 1) ? 0.0 : 1.0;
 
   ho_recognize_edges_right (m_text, m_mask, &num, &top, &middle, &bottom);
-  array_in[34] = (num < 3) ? -1.0 : 1.0;
-  array_in[35] = (top < 1) ? -1.0 : 1.0;
-  array_in[36] = (middle < 1) ? -1.0 : 1.0;
-  array_in[37] = (bottom < 1) ? -1.0 : 1.0;
+  array_in[34] = (num < 3) ? 0.0 : 1.0;
+  array_in[35] = (top < 1) ? 0.0 : 1.0;
+  array_in[36] = (middle < 1) ? 0.0 : 1.0;
+  array_in[37] = (bottom < 1) ? 0.0 : 1.0;
 
   /* fill the notchs part of array */
   ho_recognize_notch_top (m_text, m_mask, &num, &left, &middle, &right);
-  array_in[38] = (num < 2) ? -1.0 : 1.0;
-  array_in[39] = (left < 1) ? -1.0 : 1.0;
-  array_in[40] = (middle < 1) ? -1.0 : 1.0;
-  array_in[41] = (right < 1) ? -1.0 : 1.0;
+  array_in[38] = (num < 2) ? 0.0 : 1.0;
+  array_in[39] = (left < 1) ? 0.0 : 1.0;
+  array_in[40] = (middle < 1) ? 0.0 : 1.0;
+  array_in[41] = (right < 1) ? 0.0 : 1.0;
 
   ho_recognize_notch_bottom (m_text, m_mask, &num, &left, &middle, &right);
-  array_in[42] = (num < 2) ? -1.0 : 1.0;
-  array_in[43] = (left < 1) ? -1.0 : 1.0;
-  array_in[44] = (middle < 1) ? -1.0 : 1.0;
-  array_in[45] = (right < 1) ? -1.0 : 1.0;
+  array_in[42] = (num < 2) ? 0.0 : 1.0;
+  array_in[43] = (left < 1) ? 0.0 : 1.0;
+  array_in[44] = (middle < 1) ? 0.0 : 1.0;
+  array_in[45] = (right < 1) ? 0.0 : 1.0;
 
   ho_recognize_notch_left (m_text, m_mask, &num, &top, &middle, &bottom);
-  array_in[46] = (num < 2) ? -1.0 : 1.0;
-  array_in[47] = (top < 1) ? -1.0 : 1.0;
-  array_in[48] = (middle < 1) ? -1.0 : 1.0;
-  array_in[49] = (bottom < 1) ? -1.0 : 1.0;
+  array_in[46] = (num < 2) ? 0.0 : 1.0;
+  array_in[47] = (top < 1) ? 0.0 : 1.0;
+  array_in[48] = (middle < 1) ? 0.0 : 1.0;
+  array_in[49] = (bottom < 1) ? 0.0 : 1.0;
 
   ho_recognize_notch_right (m_text, m_mask, &num, &top, &middle, &bottom);
-  array_in[50] = (num < 2) ? -1.0 : 1.0;
-  array_in[51] = (top < 1) ? -1.0 : 1.0;
-  array_in[52] = (middle < 1) ? -1.0 : 1.0;
-  array_in[53] = (bottom < 1) ? -1.0 : 1.0;
+  array_in[50] = (num < 2) ? 0.0 : 1.0;
+  array_in[51] = (top < 1) ? 0.0 : 1.0;
+  array_in[52] = (middle < 1) ? 0.0 : 1.0;
+  array_in[53] = (bottom < 1) ? 0.0 : 1.0;
 
   /* fill the dimentions part */
   ho_recognize_dimentions (m_text, m_mask, &height, &width, &width_by_height,
 			   &start, &end);
-  array_in[54] = height - 1.0;
-  if (array_in[54] < -1.0)
-    array_in[54] = -1.0;
+  array_in[54] = height / 2.0;
+  if (array_in[54] < 0.0)
+    array_in[54] = 0.0;
   else if (array_in[54] > 1.0)
     array_in[54] = 1.0;
 
-  array_in[55] = width - 1.0;
-  if (array_in[55] < -1.0)
-    array_in[55] = -1.0;
+  array_in[55] = width / 2.0;
+  if (array_in[55] < 0.0)
+    array_in[55] = 0.0;
   else if (array_in[55] > 1.0)
     array_in[55] = 1.0;
 
-  array_in[56] = width_by_height - 1.0;
-  if (array_in[56] < -1.0)
-    array_in[56] = -1.0;
+  array_in[56] = width_by_height / 2.0;
+  if (array_in[56] < 0.0)
+    array_in[56] = 0.0;
   else if (array_in[56] > 1.0)
     array_in[56] = 1.0;
 
   array_in[57] = start;
-  if (array_in[57] < -1.0)
-    array_in[57] = -1.0;
+  if (array_in[57] < 0.0)
+    array_in[57] = 0.0;
   else if (array_in[57] > 1.0)
     array_in[57] = 1.0;
 
   array_in[58] = end;
-  if (array_in[58] < -1.0)
-    array_in[58] = -1.0;
+  if (array_in[58] < 0.0)
+    array_in[58] = 0.0;
   else if (array_in[58] > 1.0)
     array_in[58] = 1.0;
 
   /* fill the objects and holes part */
   nobjects = ho_bitmap_filter_count_objects (m_text);
-  array_in[59] = (nobjects > 1) ? 1.0 : -1.0;
+  array_in[59] = (nobjects > 1) ? 1.0 : 0.0;
 
   m_holes = ho_font_holes (m_text, m_mask);
   if (m_holes)
     {
       nholes = ho_bitmap_filter_count_objects (m_holes);
-      array_in[60] = (nholes > 0) ? 1.0 : -1.0;
-      array_in[61] = (nholes > 1) ? 1.0 : -1.0;
+      array_in[60] = (nholes > 0) ? 1.0 : 0.0;
+      array_in[61] = (nholes > 1) ? 1.0 : 0.0;
 
       ho_bitmap_free (m_holes);
     }
   else
     {
-      array_in[60] = -1.0;
-      array_in[61] = -1.0;
+      array_in[60] = 0.0;
+      array_in[61] = 0.0;
     }
 
   /* fill the second object part */
@@ -1144,51 +1144,51 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 			      &width_by_height, &y_start,
 			      &y_end, &x_start, &x_end);
 
-  array_in[62] = 2.0 * has_second_objects - 1.0;
-  if (array_in[62] < -1.0)
-    array_in[62] = -1.0;
+  array_in[62] = has_second_objects;
+  if (array_in[62] < 0.0)
+    array_in[62] = 0.0;
   else if (array_in[62] > 1.0)
     array_in[62] = 1.0;
 
-  array_in[63] = 2.0 * height - 1.0;
-  if (array_in[63] < -1.0)
-    array_in[63] = -1.0;
+  array_in[63] = height;
+  if (array_in[63] < 0.0)
+    array_in[63] = 0.0;
   else if (array_in[63] > 1.0)
     array_in[63] = 1.0;
 
-  array_in[64] = 2.0 * width - 1.0;
-  if (array_in[64] < -1.0)
-    array_in[64] = -1.0;
+  array_in[64] = width;
+  if (array_in[64] < 0.0)
+    array_in[64] = 0.0;
   else if (array_in[64] > 1.0)
     array_in[64] = 1.0;
 
-  array_in[65] = 2.0 * width_by_height - 1.0;
-  if (array_in[65] < -1.0)
-    array_in[65] = -1.0;
+  array_in[65] = width_by_height;
+  if (array_in[65] < 0.0)
+    array_in[65] = 0.0;
   else if (array_in[65] > 1.0)
     array_in[65] = 1.0;
 
-  array_in[66] = 2.0 * y_start - 1.0;
-  if (array_in[66] < -1.0)
-    array_in[66] = -1.0;
+  array_in[66] = y_start;
+  if (array_in[66] < 0.0)
+    array_in[66] = 0.0;
   else if (array_in[66] > 1.0)
     array_in[66] = 1.0;
 
-  array_in[67] = 2.0 * y_end - 1.0;
-  if (array_in[67] < -1.0)
-    array_in[67] = -1.0;
+  array_in[67] = y_end;
+  if (array_in[67] < 0.0)
+    array_in[67] = 0.0;
   else if (array_in[67] > 1.0)
     array_in[67] = 1.0;
 
-  array_in[68] = 2.0 * x_start - 1.0;
-  if (array_in[68] < -1.0)
-    array_in[68] = -1.0;
+  array_in[68] = x_start;
+  if (array_in[68] < 0.0)
+    array_in[68] = 0.0;
   else if (array_in[68] > 1.0)
     array_in[68] = 1.0;
 
-  array_in[69] = 2.0 * x_end - 1.0;
-  if (array_in[69] < -1.0)
-    array_in[69] = -1.0;
+  array_in[69] = x_end;
+  if (array_in[69] < 0.0)
+    array_in[69] = 0.0;
   else if (array_in[69] > 1.0)
     array_in[69] = 1.0;
 
@@ -1202,7 +1202,7 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
 
   /* clean array out */
   for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
-    array_out[i] = -1.0;
+    array_out[i] = 0.0;
 
   /* fill array out */
 
@@ -1261,7 +1261,8 @@ ho_recognize_array_out_to_font (const double *array_out)
   int max_i = 0;
 
   for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
-    if (array_out[i] > array_out[max_i])
+    /* x^2 to make it a symetric check */
+    if (array_out[i] * array_out[i] > array_out[max_i] * array_out[max_i])
       max_i = i;
 
   return sign_array[max_i];
