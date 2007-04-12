@@ -863,7 +863,7 @@ main (int argc, char *argv[])
 		    if (save_fonts && m_mask && m_font_filter && m_font_mask)
 		      {
 			filename =
-			  g_strdup_printf ("%s-font-%d.pnm", image_out_path,
+			  g_strdup_printf ("%s-%d.pnm", image_out_path,
 					   font_number);
 			ho_font_pnm_save (m_font_mask, m_font_filter, m_mask,
 					  filename);
