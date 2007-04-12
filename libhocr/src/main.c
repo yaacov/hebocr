@@ -915,38 +915,22 @@ main (int argc, char *argv[])
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
 
-			    /* show font to teacher */
-			    filename =
-			      g_strdup_printf ("%s-font.pnm", image_out_path,
-					       font_number);
-			    ho_font_pnm_save (m_font_mask, m_font_filter,
-					      m_mask, filename);
-			    g_free (filename);
-
-			    /* clean array_out */
-			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
-			      array_out[i] = 0.0;
-
-			    /* ask user for this font number */
-			    g_print ("Enter the number of the font:\n");
-			    scanf ("%d", &i);
-			    if (i < 0 || i > HO_ARRAY_OUT_SIZE)
-			      i = 0;
-			    array_out[i] = 1.0;
+			    /* print out the number of the font */
+			    text_out =
+			      g_strdup_printf ("\nfont %d:\n ", font_number);
+			    ho_string_cat (s_data_out, text_out);
+			    g_free (text_out);
 
 			    /* add this font line */
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
-				text_out =
-				  g_strdup_printf ("%02.2f ", array_in[i]);
-				ho_string_cat (s_data_out, text_out);
-				g_free (text_out);
-			      }
-
-			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
-			      {
-				text_out =
-				  g_strdup_printf ("%01.1f ", array_out[i]);
+				if (!((i + 1) % 10))
+				  text_out =
+				    g_strdup_printf ("%02.2f\n ",
+						     array_in[i]);
+				else
+				  text_out =
+				    g_strdup_printf ("%02.2f ", array_in[i]);
 				ho_string_cat (s_data_out, text_out);
 				g_free (text_out);
 			      }

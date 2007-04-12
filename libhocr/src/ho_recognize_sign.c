@@ -55,25 +55,22 @@
 double
 ho_recognize_sign_dot (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_comma (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_minus (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 /* hebrew fonts */
@@ -110,41 +107,36 @@ ho_recognize_sign_alef (const double *array_in)
 double
 ho_recognize_sign_bet (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_gimal (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_dalet (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_hey (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_vav (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
@@ -158,159 +150,139 @@ ho_recognize_sign_zayin (const double *array_in)
 double
 ho_recognize_sign_het (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_tet (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_yod (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_caf (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_caf_sofit (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_lamed (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_mem (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_mem_sofit (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_nun (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_nun_sofit (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_samech (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_ayin (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_pey (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_pey_sofit (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_tzadi (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_tzadi_sofit (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_kof (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_resh (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_shin (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
 
 double
 ho_recognize_sign_tav (const double *array_in)
 {
-  double return_value = 0.0;
 
-  return return_value;
+  return 0.0;
 }
