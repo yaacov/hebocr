@@ -238,4 +238,160 @@ double
 ho_bitmap_get_fill (const ho_bitmap * m, const int x, const int y,
 		    const int width, const int height);
 
+/**
+ writes ho_bitmap to pnm file
+ @param m ho_bitmap 1 bpp
+ @param filenme save as file name 
+ @return FALSE
+ */
+int ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename);
+
+/**
+ horizontaly link short objects in a bitmap
+ @param m the bitmap to horizontaly link
+ @patam size maximum distance
+ @patam max_height maximum hight of objects to link
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_filter_hlink (ho_bitmap * m, int size, int max_height);
+
+/**
+ copy objects from bitmap to bitmap by size
+ @param m pointer to an ho_bitmap
+ @param min_height only objects with this minimal height are copied
+ @param max_height only objects with this maximal height are copied
+ @param min_width only objects with this minimal width are copied
+ @param max_width only objects with this maximal width are copied
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_filter_by_size (const ho_bitmap * m,
+				     int min_height, int max_height,
+				     int min_width, int max_width);
+
+/**
+ copy boxed objects from bitmap
+ @param m pointer to an ho_bitmap
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
+				   const int leeway_up);
+
+/**
+ copy filled objects from bitmap
+ @param m pointer to an ho_bitmap
+ @param leeway add this leeway downwords to the box
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
+
+/**
+ take height top pixels from objects in bitmap
+ @param m pointer to an ho_bitmap
+ @param hight of new objects
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
+					const int top, const int bottom);
+
+/**
+ take extend objects lateraly
+ @param m pointer to an ho_bitmap
+ @param ext_width width of lateral extention
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
+						 const int ext_width);
+
+/**
+ remove halftone dots from bitmap
+ @param m pointer to an ho_bitmap
+ @param erosion_n the erosion operator factor
+ @param dilation_n the dilation operator factor
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_filter_remove_dots (const ho_bitmap * m,
+					 const unsigned char erosion_n,
+					 const unsigned char dilation_n);
+
+/**
+ count the number of objects in a bitmap
+ @param m pointer to an ho_bitmap
+ @return the number of objects in a bitmap
+ */
+int ho_bitmap_filter_count_objects (const ho_bitmap * m);
+
+/**
+ draw a black box on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of box
+ @param y y-start of box
+ @param width width of box
+ @param height height of box
+ @return FALSE
+ */
+int
+ho_bitmap_draw_box (ho_bitmap * m, const int x, const int y,
+		    const int width, const int height);
+
+/**
+ draw a black empty box on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of box
+ @param y y-start of box
+ @param width width of box
+ @param height height of box
+ @return FALSE
+ */
+int
+ho_bitmap_draw_box_empty (ho_bitmap * m, const int x, const int y,
+			  const int width, const int height);
+
+/**
+ draw vertical line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param height height of line
+ @return FALSE
+ */
+int
+ho_bitmap_draw_vline (ho_bitmap * m, const int x, const int y,
+		      const int height);
+
+/**
+ delete vertical line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param height height of line
+ @return FALSE
+ */
+int
+ho_bitmap_delete_vline (ho_bitmap * m, const int x, const int y,
+			const int height);
+
+/**
+ draw horizontal line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param width height of line
+ @return FALSE
+ */
+int
+ho_bitmap_draw_hline (ho_bitmap * m, const int x, const int y,
+		      const int width);
+
+/**
+ delete horizontal line on bitmap
+ @param m the bitmap to draw on
+ @param x x-start of line
+ @param y y-start of line
+ @param width height of line
+ @return FALSE
+ */
+int
+ho_bitmap_delete_hline (ho_bitmap * m, const int x, const int y,
+			const int width);
+
 #endif /* HO_BITMAP_H */

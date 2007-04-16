@@ -834,3 +834,508 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
 
   return m_bw;
 }
+
+int
+ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
+		       const unsigned char red, const unsigned char green,
+		       const unsigned char blue, const unsigned char alpha)
+{
+  int x, y;
+  unsigned char new_red;
+  unsigned char new_green;
+  unsigned char new_blue;
+
+  /* check for bitmap origin, if this is a sub window draw at its origin */
+  if (bit_in->x != 0 || bit_in->y != 0)
+    ho_pixbuf_draw_bitmap_at (m, bit_in, bit_in->x, bit_in->y,
+			      red, green, blue, alpha);
+
+  /* sanity check */
+  if (m->width != bit_in->width || m->height != bit_in->height)
+    return TRUE;
+
+  /* is pixbuf color ? */
+  if (m->n_channels < 3)
+    {				/* gray scale */
+      for (x = 0; x < bit_in->width; x++)
+	for (y = 0; y < bit_in->height; y++)
+	  if (ho_bitmap_get (bit_in, x, y))
+	    {
+	      new_red =
+		alpha * red / 255 + (255 - alpha) * ho_pixbuf_get (m, x, y,
+								   0) / 255;
+	      ho_pixbuf_set (m, x, y, 0, new_red);
+	    }
+    }
+  else
+    {				/* color */
+      for (x = 0; x < bit_in->width; x++)
+	for (y = 0; y < bit_in->height; y++)
+	  if (ho_bitmap_get (bit_in, x, y))
+	    {
+	      new_red =
+		alpha * red / 255 + (255 - alpha) * ho_pixbuf_get (m, x, y,
+								   0) / 255;
+	      new_green =
+		alpha * green / 255 + (255 - alpha) * ho_pixbuf_get (m, x, y,
+								     1) / 255;
+	      new_blue =
+		alpha * blue / 255 + (255 - alpha) * ho_pixbuf_get (m, x, y,
+								    2) / 255;
+
+	      ho_pixbuf_set (m, x, y, 0, new_red);
+	      ho_pixbuf_set (m, x, y, 1, new_green);
+	      ho_pixbuf_set (m, x, y, 2, new_blue);
+	    }
+    }
+
+  return FALSE;
+}
+
+int
+ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
+			  const int x1, const int y1,
+			  const unsigned char red, const unsigned char green,
+			  const unsigned char blue, const unsigned char alpha)
+{
+  int x, y;
+  unsigned char new_red;
+  unsigned char new_green;
+  unsigned char new_blue;
+
+  /* is pixbuf color ? */
+  if (m->n_channels < 3)
+    {				/* gray scale */
+      for (x = 0; x < bit_in->width; x++)
+	for (y = 0; y < bit_in->height; y++)
+	  if ((x + x1) >= 0 && (x + x1) < m->width && (y + y1) >= 0
+	      && (y + y1) < m->height)
+	    if (ho_bitmap_get (bit_in, x, y))
+	      {
+		new_red =
+		  alpha * red / 255 + (255 - alpha) * ho_pixbuf_get (m,
+								     (x + x1),
+								     (y + y1),
+								     0) / 255;
+		ho_pixbuf_set (m, (x + x1), (y + y1), 0, new_red);
+	      }
+    }
+  else
+    {				/* color */
+      for (x = 0; x < bit_in->width; x++)
+	for (y = 0; y < bit_in->height; y++)
+	  if ((x + x1) >= 0 && (x + x1) < m->width && (y + y1) >= 0
+	      && (y + y1) < m->height)
+	    if (ho_bitmap_get (bit_in, x, y))
+	      {
+		new_red =
+		  alpha * red / 255 + (255 - alpha) * ho_pixbuf_get (m,
+								     (x + x1),
+								     (y + y1),
+								     0) / 255;
+		new_green =
+		  alpha * green / 255 + (255 - alpha) * ho_pixbuf_get (m,
+								       (x +
+									x1),
+								       (y +
+									y1),
+								       1) /
+		  255;
+		new_blue =
+		  alpha * blue / 255 + (255 - alpha) * ho_pixbuf_get (m,
+								      (x +
+								       x1),
+								      (y +
+								       y1),
+								      2) /
+		  255;
+
+		ho_pixbuf_set (m, (x + x1), (y + y1), 0, new_red);
+		ho_pixbuf_set (m, (x + x1), (y + y1), 1, new_green);
+		ho_pixbuf_set (m, (x + x1), (y + y1), 2, new_blue);
+	      }
+    }
+
+  return FALSE;
+}
+
+int
+ho_pixbuf_draw_line (ho_pixbuf * m, const int x1, const int y1,
+		     const int x2, const int y2, const unsigned char red,
+		     const unsigned char green, const unsigned char blue)
+{
+  double x, step_x;
+  double y, step_y;
+  int x_start = x1;
+  int x_end = x2;
+  int y_start = y1;
+  int y_end = y2;
+
+  step_x = ((double) x2 - (double) x1) * ((double) x2 - (double) x1);
+  step_y = ((double) y2 - (double) y1) * ((double) y2 - (double) y1);
+
+  if (step_y > step_x)
+    {
+      /* vertical line */
+      if (y1 > y2)
+	{
+	  x_start = x2;
+	  x_end = x1;
+	  y_start = y2;
+	  y_end = y1;
+	}
+
+      x = (double) x_start;
+      step_x =
+	((double) x_end - (double) x_start) / ((double) y_end -
+					       (double) y_start);
+      for (y = y_start; y <= y_end; y++)
+	{
+	  (m->data)[(int) x * m->n_channels + (int) y * m->rowstride] = red;
+	  if (m->n_channels >= 3)
+	    {
+	      (m->data)[(int) x * m->n_channels + (int) y * m->rowstride +
+			1] = green;
+	      (m->data)[(int) x * m->n_channels + (int) y * m->rowstride +
+			2] = blue;
+	    }
+	  x += step_x;
+	}
+    }
+  else
+    {
+      /* horizontal line */
+      if (x1 > x2)
+	{
+	  x_start = x2;
+	  x_end = x1;
+	  y_start = y2;
+	  y_end = y1;
+	}
+
+      y = (double) y_start;
+      step_y =
+	((double) y_end - (double) y_start) / ((double) x_end -
+					       (double) x_start);
+      for (x = x_start; x <= x_end; x++)
+	{
+	  (m->data)[(int) x * m->n_channels + (int) y * m->rowstride] = red;
+	  if (m->n_channels >= 3)
+	    {
+	      (m->data)[(int) x * m->n_channels + (int) y * m->rowstride +
+			1] = green;
+	      (m->data)[(int) x * m->n_channels + (int) y * m->rowstride +
+			2] = blue;
+	    }
+	  y += step_y;
+	}
+    }
+
+  return FALSE;
+}
+
+int
+ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const int x1,
+				 const int y1, const int length,
+				 const int step, const unsigned char red,
+				 const unsigned char green,
+				 const unsigned char blue)
+{
+  int x;
+
+  for (x = 0; x <= length; x++)
+    {
+      ho_pixbuf_set (m, x1 + x, y1, 0, red);
+      if (m->n_channels >= 3)
+	{
+	  ho_pixbuf_set (m, x1 + x, y1, 1, green);
+	  ho_pixbuf_set (m, x1 + x, y1, 2, blue);
+	}
+      /* draw a vertical line evry step */
+      if (!(x % step))
+	{
+	  ho_pixbuf_set (m, x1 + x, y1 - 4, 0, red);
+	  ho_pixbuf_set (m, x1 + x, y1 - 3, 0, red);
+	  ho_pixbuf_set (m, x1 + x, y1 - 2, 0, red);
+	  ho_pixbuf_set (m, x1 + x, y1 + 2, 0, red);
+	  ho_pixbuf_set (m, x1 + x, y1 + 3, 0, red);
+	  ho_pixbuf_set (m, x1 + x, y1 + 4, 0, red);
+
+	  if (m->n_channels >= 3)
+	    {
+	      ho_pixbuf_set (m, x1 + x, y1 - 4, 1, green);
+	      ho_pixbuf_set (m, x1 + x, y1 - 3, 1, green);
+	      ho_pixbuf_set (m, x1 + x, y1 - 2, 1, green);
+	      ho_pixbuf_set (m, x1 + x, y1 + 2, 1, green);
+	      ho_pixbuf_set (m, x1 + x, y1 + 3, 1, green);
+	      ho_pixbuf_set (m, x1 + x, y1 + 4, 1, green);
+
+	      ho_pixbuf_set (m, x1 + x, y1 - 4, 2, blue);
+	      ho_pixbuf_set (m, x1 + x, y1 - 3, 2, blue);
+	      ho_pixbuf_set (m, x1 + x, y1 - 2, 2, blue);
+	      ho_pixbuf_set (m, x1 + x, y1 + 2, 2, blue);
+	      ho_pixbuf_set (m, x1 + x, y1 + 3, 2, blue);
+	      ho_pixbuf_set (m, x1 + x, y1 + 4, 2, blue);
+	    }
+	}
+    }
+
+  return FALSE;
+}
+
+int
+ho_pixbuf_draw_vertical_scale (ho_pixbuf * m, const int x1,
+			       const int y1, const int length,
+			       const int step, const unsigned char red,
+			       const unsigned char green,
+			       const unsigned char blue)
+{
+  int y;
+
+  for (y = 0; y <= length; y++)
+    {
+      ho_pixbuf_set (m, x1, y1 + y, 0, red);
+      if (m->n_channels >= 3)
+	{
+	  ho_pixbuf_set (m, x1, y1 + y, 1, green);
+	  ho_pixbuf_set (m, x1, y1 + y, 2, blue);
+	}
+      /* draw a vertical line evry step */
+      if (!(y % step))
+	{
+	  ho_pixbuf_set (m, x1 - 4, y1 + y, 0, red);
+	  ho_pixbuf_set (m, x1 - 3, y1 + y, 0, red);
+	  ho_pixbuf_set (m, x1 - 2, y1 + y, 0, red);
+	  ho_pixbuf_set (m, x1 + 2, y1 + y, 0, red);
+	  ho_pixbuf_set (m, x1 + 3, y1 + y, 0, red);
+	  ho_pixbuf_set (m, x1 + 4, y1 + y, 0, red);
+
+	  if (m->n_channels >= 3)
+	    {
+	      ho_pixbuf_set (m, x1 - 4, y1 + y, 1, green);
+	      ho_pixbuf_set (m, x1 - 3, y1 + y, 1, green);
+	      ho_pixbuf_set (m, x1 - 2, y1 + y, 1, green);
+	      ho_pixbuf_set (m, x1 + 2, y1 + y, 1, green);
+	      ho_pixbuf_set (m, x1 + 3, y1 + y, 1, green);
+	      ho_pixbuf_set (m, x1 + 4, y1 + y, 1, green);
+
+	      ho_pixbuf_set (m, x1 - 4, y1 + y, 2, blue);
+	      ho_pixbuf_set (m, x1 - 3, y1 + y, 2, blue);
+	      ho_pixbuf_set (m, x1 - 2, y1 + y, 2, blue);
+	      ho_pixbuf_set (m, x1 + 2, y1 + y, 2, blue);
+	      ho_pixbuf_set (m, x1 + 3, y1 + y, 2, blue);
+	      ho_pixbuf_set (m, x1 + 4, y1 + y, 2, blue);
+	    }
+	}
+    }
+
+  return FALSE;
+}
+
+int
+ho_pixbuf_draw_grid (ho_pixbuf * m, const int size, const int step,
+		     const unsigned char red, const unsigned char green,
+		     const unsigned char blue)
+{
+  int i;
+
+  /* check fot matrix size */
+  if (m->width < 120 || m->height < 120)
+    return TRUE;
+
+  /* adding  grid */
+  for (i = 60; i < (m->width - 60); i += size)
+    {
+      ho_pixbuf_draw_vertical_scale (m, i, 30, m->height - 60, step, red,
+				     green, blue);
+    }
+
+  for (i = 60; i < (m->height - 60); i += size)
+    {
+      ho_pixbuf_draw_horizontal_scale (m, 30, i, m->width - 60, step, red,
+				       green, blue);
+    }
+
+  return FALSE;
+}
+
+unsigned char
+ho_pbm_getc (FILE * file)
+{
+  unsigned char ch;
+  int comment = FALSE;
+
+  do
+    {
+      ch = getc (file);
+      if (ch == '\n')
+	comment = FALSE;
+      else if (ch == '#')
+	comment = TRUE;
+    }
+  while (comment);
+
+  return ch;
+}
+
+int
+ho_pbm_getint (FILE * file)
+{
+  unsigned char ch;
+  int i = 0;
+
+  do
+    {
+      ch = ho_pbm_getc (file);
+    }
+  while (ch == ' ' || ch == '\n' || ch == '\t');
+
+  do
+    {
+      i = (i * 10) + (ch - '0');
+      ch = ho_pbm_getc (file);
+    }
+  while (ch >= '0' && ch <= '9');
+
+  return i;
+}
+
+int
+ho_pbm_getbit (FILE * file)
+{
+
+  static unsigned char byte = 0;
+  static unsigned char mask = 0;
+  int return_bit;
+
+  if (mask == 0)
+    {
+      mask = 0x80;
+      byte = getc (file);
+    }
+
+  return_bit = (byte & mask) ? 0 : 255;
+
+  mask >>= 1;
+
+  return return_bit;
+}
+
+ho_pixbuf *
+ho_pixbuf_pnm_load (const char *filename)
+{
+  char ch1, ch2;
+  ho_pixbuf *pix = NULL;
+  FILE *file = NULL;
+  unsigned char use_stdin = 0;
+  unsigned char n_channels = 0;
+  unsigned char val = 0;
+  int width = 0;
+  int height = 0;
+  int x, y, rowstride;
+  int i;
+
+  /* if no input file name use stdin for input */
+  if (!filename || filename[0] == '\0'
+      || (filename[0] == '-' && filename[1] == '\0'))
+    {
+      /* use stdin */
+      file = stdin;
+      use_stdin = 1;
+    }
+  else
+    {
+      /* open file */
+      file = fopen (filename, "r");
+      if (!file)
+	return NULL;
+    }
+
+  /* read magic number "P?" for pbm file */
+  ch1 = ho_pbm_getc (file);
+  ch2 = ho_pbm_getc (file);
+  if (ch1 != 'P' || (ch2 != '6' && ch2 != '5' && ch2 != '4'))
+    {
+      /* bad magic */
+      if (!use_stdin)
+	fclose (file);
+      return NULL;
+    }
+
+  /* read header */
+  n_channels = ((ch2 == '6') ? 3 : 1);
+  width = ho_pbm_getint (file);
+  height = ho_pbm_getint (file);
+
+  if (ch2 == '4')
+    {
+      /* read bites per pixel */
+
+      /* create a new pixbuf */
+      pix = ho_pixbuf_new (n_channels, width, height, 0);
+
+      rowstride = 8 * (width / 8 + 1);
+      if (pix)
+	for (y = 0; y < height; y++)
+	  for (x = 0; x < rowstride; x++)
+	    {
+	      val = ho_pbm_getbit (file);
+	      if (x < width)
+		ho_pixbuf_set (pix, x, y, 0, val);
+	    }
+
+    }
+  else
+    {
+      /* read bytes per pixel */
+
+      /* check for color depth */
+      if (ho_pbm_getint (file) > 255)
+	{
+	  /* bad bits per pixel */
+	  if (!use_stdin)
+	    fclose (file);
+
+	  return NULL;
+	}
+
+      /* create a new pixbuf */
+      pix = ho_pixbuf_new (n_channels, width, height, 0);
+
+      if (pix)
+	fread (pix->data, 1, pix->height * pix->rowstride, file);
+    }
+
+  if (!use_stdin)
+    fclose (file);
+
+  /* return the new pixbuf to user */
+  return pix;
+}
+
+int
+ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename)
+{
+  FILE *file = NULL;
+
+  if (pix->n_channels != 3 && pix->n_channels != 1)
+    {
+      /* bad magic */
+      return TRUE;
+    }
+
+  file = fopen (filename, "wb");
+
+  if (!file)
+    return TRUE;
+
+  /* print header */
+  fprintf (file, "P%c %d %d 255\n", ((pix->n_channels == 3) ? '6' : '5'),
+	   pix->width, pix->height);
+
+  /* this might be a huge write... */
+  fwrite (pix->data, 1, pix->height * pix->rowstride, file);
+  fclose (file);
+
+  return FALSE;
+}

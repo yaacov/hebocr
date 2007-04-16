@@ -39,7 +39,6 @@
 
 #include "ho_bitmap.h"
 #include "ho_objmap.h"
-#include "ho_bitmap_filter.h"
 #include "ho_segment.h"
 #include "ho_font.h"
 #include "ho_recognize_sign.h"

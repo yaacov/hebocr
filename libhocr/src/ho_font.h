@@ -177,4 +177,13 @@ ho_bitmap *ho_font_notch_left (const ho_bitmap * m_text,
 ho_bitmap *ho_font_notch_right (const ho_bitmap * m_text,
 				const ho_bitmap * m_mask);
 
+
+int
+ho_font_pnm_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
+		  const ho_bitmap * m_mask, const char *filename);
+
+int
+ho_font_pnm_load (ho_bitmap ** m_text, ho_bitmap ** m_nikud,
+		  ho_bitmap ** m_mask, const char *filename);
+
 #endif /* HO_FONT_H */

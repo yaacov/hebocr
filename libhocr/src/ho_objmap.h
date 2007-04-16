@@ -26,7 +26,6 @@
 #define HO_OBJMAP_H 1
 
 #include <ho_bitmap.h>
-#include <ho_obj.h>
 
 /* hocr objmap set/get macros */
 #define ho_objmap_set(m,x,y,val) (((m)->map)[(x) + (y) * (m)->width] = (val))
@@ -38,6 +37,27 @@
 #define ho_objmap_get_width(m) ((m)->width)
 #define ho_objmap_get_height(m) ((m)->height)
 
+/* hocr_object */
+typedef struct
+{
+  int index;
+  int reading_index;
+  double weight;
+  int x;
+  int y;
+  int width;
+  int height;
+} ho_obj;
+
+/* hocr_object_list */
+typedef struct
+{
+  int size;
+  int allocated_size;
+  ho_obj *objects;
+} ho_objlist;
+
+/* hocr_object_map */
 typedef struct
 {
   int x;
@@ -47,6 +67,39 @@ typedef struct
   int *map;
   ho_objlist *obj_list;
 } ho_objmap;
+
+
+ho_objlist *ho_objlist_new ();
+
+int ho_objlist_free (ho_objlist * object_list);
+
+int
+ho_objlist_add (ho_objlist * object_list, double weight,
+		int x, int y, int width, int height);
+
+int ho_objlist_get_index (ho_objlist * object_list, int index);
+
+int ho_objlist_add_pixel (ho_objlist * object_list, int index, int x, int y);
+
+int ho_objlist_link (ho_objlist * object_list, int index1, int index2);
+
+int ho_objlist_clean (ho_objlist * object_list, int **map);
+
+int ho_objlist_clean_by_reading_index (ho_objlist * object_list, int **map);
+
+int ho_objlist_print (ho_objlist * object_list);
+
+int
+ho_objlist_statistics (ho_objlist * object_list,
+		       int min_height, int max_height,
+		       int min_width, int max_width,
+		       int *counter,
+		       double *weight_avg, double *weight_com,
+		       double *weight_min, double *weight_max,
+		       int *height_avg, int *height_com,
+		       int *height_min, int *height_max,
+		       int *width_avg, int *width_com,
+		       int *width_min, int *width_max);
 
 /**
  new ho_pixbuf 

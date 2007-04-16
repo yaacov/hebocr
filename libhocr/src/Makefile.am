@@ -9,18 +9,11 @@ pkglib_LTLIBRARIES = libhocr.la libhocrgtk.la
 
 libhocr_la_SOURCES = \
         ho_pixbuf.c \
-        ho_pixbuf_pnm.c \
-        ho_pixbuf_draw.c \
         ho_bitmap.c \
-        ho_bitmap_pnm.c \
-        ho_bitmap_draw.c \
-        ho_bitmap_filter.c \
-        ho_obj.c \
         ho_objmap.c \
         ho_dimentions.c \
         ho_segment.c \
         ho_font.c \
-        ho_font_pnm.c \
         ho_recognize.c \
         ho_recognize_sign.c \
         ho_string.c \
@@ -35,18 +28,11 @@ libhocr_la_LDFLAGS = -version-info 0:0:0
 library_includedir = $(includedir)/libhocr
 library_include_HEADERS = hocr.h \
          ho_pixbuf.h \
-         ho_pixbuf_pnm.h \
-         ho_pixbuf_draw.h \
          ho_bitmap.h \
-         ho_bitmap_pnm.h \
-         ho_bitmap_draw.h \
-         ho_bitmap_filter.h \
-         ho_obj.h \
          ho_objmap.h \
          ho_dimentions.h \
          ho_segment.h \
          ho_font.h \
-         ho_font_pnm.h \
          ho_recognize.h \
          ho_recognize_sign.h \
          ho_layout.h \
