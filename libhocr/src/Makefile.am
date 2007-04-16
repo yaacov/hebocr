@@ -56,7 +56,7 @@ libhocrgtk_la_LDFLAGS = $(libhocr_la_LDFLAGS)
 # A demo hocr program
 bin_PROGRAMS = hocr
          
-hocr_SOURCES = main.c
+hocr_SOURCES = hocr.c
 hocr_CFLAGS = \
         $(gtk_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
