@@ -98,15 +98,15 @@ You should have received a copy of the GNU General Public License\n\
 along with this program; if not, write to the Free Software\n\
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.\n";
 
-static GOptionEntry entries[] = {
-  {"image-in", 'i', 0, G_OPTION_ARG_FILENAME, &image_in_filename,
-   "use FILE as input image file name", "FILE"},
-  {"text-out", 'o', 0, G_OPTION_ARG_FILENAME, &text_out_filename,
-   "use FILE as output text file name", "FILE"},
+static GOptionEntry file_entries[] = {
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
    "use PATH for output images", "PATH"},
   {"data-out", 'u', 0, G_OPTION_ARG_FILENAME, &data_out_filename,
    "use FILE as output data file name", "FILE"},
+  {NULL}
+};
+
+static GOptionEntry image_entries[] = {
   {"thresholding-type", 'T', 0, G_OPTION_ARG_INT,
    &adaptive_threshold_type,
    "thresholding type, 0 normal, 1 none, 2 fine",
@@ -135,15 +135,23 @@ static GOptionEntry entries[] = {
   {"fix-ligated-fonts", 'E', 0, G_OPTION_ARG_NONE, &fix_ligated_fonts,
    "try to break ligated fonts",
    NULL},
+  {NULL}
+};
+
+static GOptionEntry segmentation_entries[] = {
   {"colums setup", 'c', 0, G_OPTION_ARG_INT, &paragraph_setup,
    "colums setup: 1 free, 2.. #colums, 0 auto",
    "NUM"},
-  {"slicing-threshold", 'x', 0, G_OPTION_ARG_INT, &slicing_threshold,
+  {"slicing", 'x', 0, G_OPTION_ARG_INT, &slicing_threshold,
    "use NUM as font slicing threshold, 1..250",
    "NUM"},
   {"slicing-width", 'X', 0, G_OPTION_ARG_INT, &slicing_width,
    "use NUM as font slicing width, 50..250",
    "NUM"},
+  {NULL}
+};
+
+static GOptionEntry debug_entries[] = {
   {"draw-grid", 'g', 0, G_OPTION_ARG_NONE, &show_grid,
    "draw grid on output images", NULL},
   {"save-bw", 'b', 0, G_OPTION_ARG_NONE, &save_bw,
@@ -158,14 +166,23 @@ static GOptionEntry entries[] = {
    "save fonts", NULL},
   {"save-fonts-exit", 'F', 0, G_OPTION_ARG_NONE, &only_save_fonts,
    "save fonts images and exit", NULL},
-  {"ltr", 'z', 0, G_OPTION_ARG_NONE, &dir_ltr,
-   "left to right text", NULL},
+  {"debug", 'd', 0, G_OPTION_ARG_NONE, &verbose,
+   "print debuging information while running", NULL},
+  {"debug-extra", 'D', 0, G_OPTION_ARG_NONE, &debug,
+   "print extra debuging information", NULL},
+  {NULL}
+};
+
+static GOptionEntry entries[] = {
+  {"image-in", 'i', 0, G_OPTION_ARG_FILENAME, &image_in_filename,
+   "use FILE as input image file name", "FILE"},
+  {"text-out", 'o', 0, G_OPTION_ARG_FILENAME, &text_out_filename,
+   "use FILE as output text file name", "FILE"},
+  /* this option is not useful fot the moment
+     {"ltr", 'z', 0, G_OPTION_ARG_NONE, &dir_ltr,
+     "left to right text", NULL}, */
   {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
    "do not use gtk for file input and output", NULL},
-  {"debug", 'D', 0, G_OPTION_ARG_NONE, &debug,
-   "print debuging information while running", NULL},
-  {"verbose", 'd', 0, G_OPTION_ARG_NONE, &verbose,
-   "print more information while running", NULL},
   {"version", 'v', 0, G_OPTION_ARG_NONE, &version,
    "print version information and exit", NULL},
   {NULL}
@@ -183,9 +200,34 @@ int
 hocr_cmd_parser (int *argc, char **argv[])
 {
   GOptionContext *context;
+  GOptionGroup *group;
 
   /* get user args */
-  context = g_option_context_new ("- Hebrew OCR utility.");
+  context = g_option_context_new ("- Hebrew OCR utility");
+
+  group =
+    g_option_group_new ("file", "File options", "Show file options", NULL,
+			NULL);
+  g_option_group_add_entries (group, file_entries);
+  g_option_context_add_group (context, group);
+
+  group =
+    g_option_group_new ("image-proccesing", "Image proccesing options",
+			"Show image proccesing options", NULL, NULL);
+  g_option_group_add_entries (group, image_entries);
+  g_option_context_add_group (context, group);
+
+  group =
+    g_option_group_new ("segmentation", "Segmentation options",
+			"Show segmentation options", NULL, NULL);
+  g_option_group_add_entries (group, segmentation_entries);
+  g_option_context_add_group (context, group);
+
+  group =
+    g_option_group_new ("debug", "Debug options", "Show debug options", NULL,
+			NULL);
+  g_option_group_add_entries (group, debug_entries);
+  g_option_context_add_group (context, group);
 
   g_option_context_add_main_entries (context, entries, PACKAGE_NAME);
   g_option_context_parse (context, argc, argv, &error);
@@ -541,9 +583,9 @@ main (int argc, char *argv[])
 
       /* create file name */
       if (no_gtk)
-	filename = g_strdup_printf ("%s-I.pgm", image_out_path);
+	filename = g_strdup_printf ("%s-image-bw.pgm", image_out_path);
       else
-	filename = g_strdup_printf ("%s-I.jpeg", image_out_path);
+	filename = g_strdup_printf ("%s-image-bw.jpeg", image_out_path);
 
       /* save to file system */
       if (filename)
@@ -731,9 +773,9 @@ main (int argc, char *argv[])
 
       /* create file name */
       if (no_gtk)
-	filename = g_strdup_printf ("%s-L.pgm", image_out_path);
+	filename = g_strdup_printf ("%s-image-segments.pgm", image_out_path);
       else
-	filename = g_strdup_printf ("%s-L.jpeg", image_out_path);
+	filename = g_strdup_printf ("%s-image-segments.jpeg", image_out_path);
 
       /* save to file system */
       if (filename)
@@ -827,7 +869,8 @@ main (int argc, char *argv[])
 		    font_number++;
 
 		    if (verbose || debug)
-		      g_print ("    recognizing font %d.\n", font_number);
+		      g_print ("    recognizing font %d (%d).\n", font_number,
+			       number_of_fonts);
 
 		    if (debug)
 		      g_print ("    in - block:%d line:%d word:%d font:%d.\n",
@@ -863,7 +906,7 @@ main (int argc, char *argv[])
 		    if (save_fonts && m_mask && m_font_filter && m_font_mask)
 		      {
 			filename =
-			  g_strdup_printf ("%s-%d.pnm", image_out_path,
+			  g_strdup_printf ("%s-font-%d.pnm", image_out_path,
 					   font_number);
 			ho_font_pnm_save (m_font_mask, m_font_filter, m_mask,
 					  filename);
@@ -911,6 +954,7 @@ main (int argc, char *argv[])
 			  {
 			    double array_in[HO_ARRAY_IN_SIZE];
 			    double array_out[HO_ARRAY_OUT_SIZE];
+			    double min, max;
 
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
@@ -924,13 +968,21 @@ main (int argc, char *argv[])
 			    /* add this font line */
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
-				if (!((i + 1) % 10))
+				min = array_in[i] - 0.13;
+				max = array_in[i] + 0.13;
+				if (min < 0.0)
+				  min = 0.0;
+				if (max > 1.0)
+				  max = 1.0;
+
+				if (!((i + 1) % 5))
 				  text_out =
-				    g_strdup_printf ("%02.2f\n ",
-						     array_in[i]);
+				    g_strdup_printf ("{%02.1f, %02.1f},\n ",
+						     min, max);
 				else
 				  text_out =
-				    g_strdup_printf ("%02.2f ", array_in[i]);
+				    g_strdup_printf ("{%02.1f, %02.1f}, ",
+						     min, max);
 				ho_string_cat (s_data_out, text_out);
 				g_free (text_out);
 			      }

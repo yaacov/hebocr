@@ -70,45 +70,32 @@ module.include.files=\
 	src/ho_pixbuf.h\
 	src/ho_objmap.h\
 	src/ho_bitmap.h\
-	src/hocr.h\
 	src/ho_obj.h\
-	src/ho_bitmap_filter.h\
 	src/ho_gtk.h\
-	src/ho_dimentions.h\
 	src/ho_segment.h\
-	src/ho_pixbuf_pnm.h\
-	src/ho_pixbuf_draw.h\
-	src/ho_bitmap_draw.h\
-	src/ho_bitmap_pnm.h\
 	src/ho_layout.h\
 	src/ho_recognize.h\
-	src/ho_font.h\
 	src/ho_string.h\
-	src/ho_font_pnm.h\
-	src/ho_recognize_sign.h
+	src/ho_recognize_sign.h\
+	src/ho_font.h\
+	src/hocr.h\
+	src/ho_dimentions.h
 
 module.source.name=.
 module.source.type=
 module.source.files=\
 	src/ho_pixbuf.c\
-	src/ho_objmap.c\
 	src/ho_bitmap.c\
-	src/main.c\
-	src/ho_obj.c\
-	src/ho_bitmap_filter.c\
 	src/ho_gtk.c\
 	src/ho_dimentions.c\
 	src/ho_segment.c\
-	src/ho_pixbuf_pnm.c\
-	src/ho_pixbuf_draw.c\
-	src/ho_bitmap_draw.c\
-	src/ho_bitmap_pnm.c\
 	src/ho_layout.c\
 	src/ho_recognize.c\
 	src/ho_font.c\
 	src/ho_string.c\
-	src/ho_font_pnm.c\
-	src/ho_recognize_sign.c
+	src/ho_recognize_sign.c\
+	src/ho_objmap.c\
+	src/hocr.c
 
 module.pixmap.name=.
 module.pixmap.type=

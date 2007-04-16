@@ -973,6 +973,11 @@ ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
     for (sum = 0, x = 0; x < m_mask->width; x++)
       sum += ho_bitmap_get (m_text, x, y);
   font_height = y - font_start + 1;
+  if (!font_height)
+    {
+      printf ("NO HEIGHT");
+      exit (0);
+    }
 
   *height = (double) font_height / (double) line_height;
   *width = (double) (m_mask->width) / (double) line_height;
@@ -1104,13 +1109,13 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   else if (array_in[56] > 1.0)
     array_in[56] = 1.0;
 
-  array_in[57] = start;
+  array_in[57] = 0.5 + start / 2.0;
   if (array_in[57] < 0.0)
     array_in[57] = 0.0;
   else if (array_in[57] > 1.0)
     array_in[57] = 1.0;
 
-  array_in[58] = end;
+  array_in[58] = 0.5 + end / 2.0;
   if (array_in[58] < 0.0)
     array_in[58] = 0.0;
   else if (array_in[58] > 1.0)
@@ -1242,6 +1247,8 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
   array_out[25] = ho_recognize_sign_resh (array_in);
   array_out[26] = ho_recognize_sign_shin (array_in);
   array_out[27] = ho_recognize_sign_tav (array_in);
+
+  //array_out[30] = ho_recognize_sign_tag (array_in);
 
   return FALSE;
 }

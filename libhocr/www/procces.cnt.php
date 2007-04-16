@@ -41,11 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
     {$command2 = $command2.' -e';}
   if ($_POST['bw'])
     {$command2 = $command2.' -b';
-    $command4 = 'convert '.$path.$name.'-I.pgm '.$path.$name.'-I.jpeg';
+    $command4 = 'convert '.$path.$name.'-image-bw.pgm '.$path.$name.'-I.jpeg';
     $meta_data7 = 'bw = "'.$name.'-I.jpeg'.'"';}
   if ($_POST['layout'])
     {$command2 = $command2.' -l';
-    $command5 = 'convert '.$path.$name.'-L.pgm '.$path.$name.'-L.jpeg';
+    $command5 = 'convert '.$path.$name.'-image-segments.pgm '.$path.$name.'-L.jpeg';
     $meta_data6 = 'layout = "'.$name.'-L.jpeg'.'"';}
   if ($_POST['text'])
     {$command2 = $command2.' -o '.$path.$name.'.txt';
