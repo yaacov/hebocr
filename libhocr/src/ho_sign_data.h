@@ -1,5 +1,5 @@
 /***************************************************************************
- *            ho_recognize_sign.c
+ *            ho_sign_data.h
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2007  Yaacov Zamir
@@ -22,32 +22,26 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
-#include "ho_bitmap.h"
-#include "ho_objmap.h"
-#include "ho_segment.h"
-#include "ho_font.h"
 #include "ho_recognize.h"
+/* to change the sizes of arrays use "ho_recognize.h" 
+#define HO_ARRAY_IN_SIZE 70
+#define HO_ARRAY_OUT_SIZE 38
+*/
 
-#include "ho_recognize_sign.h"
+#ifndef HO_SIGN_DATA_H
+#define HO_SIGN_DATA_H 1
 
-/* font shape data */
+/* font shapes codes*/
+static char *ho_sign_array[HO_ARRAY_OUT_SIZE] =
+  { "*", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ",
+  "ך", "ל", "מ", "ם", "נ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",
+  "ק", "ר", "ש", "ת", ".", ",",
+  "'", "?", "!", ":", ";", ")", "(", "-"
+};
 
-static const double array_data[HO_ARRAY_OUT_SIZE][HO_ARRAY_IN_SIZE][2] = {
+/* font shapes data */
+/* min/max values for font shapes data */
+static const double ho_sign_data[HO_ARRAY_OUT_SIZE][HO_ARRAY_IN_SIZE][2] = {
   {				/* NONE */
    {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0},
    {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0},
@@ -660,15 +654,4 @@ static const double array_data[HO_ARRAY_OUT_SIZE][HO_ARRAY_IN_SIZE][2] = {
    },
 };
 
-double
-ho_recognize_sign (const double *array_in, const int sign_index)
-{
-  int i;
-
-  for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
-    if (array_in[i] < array_data[sign_index][i][0]
-	|| array_in[i] > array_data[sign_index][i][1])
-      return 0.0;
-
-  return 1.0;
-}
+#endif /* HO_SIGN_DATA_H */

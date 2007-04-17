@@ -98,6 +98,8 @@ ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
 			 double *height, double *width,
 			 double *width_by_height, double *start, double *end);
 
+double ho_recognize_sign (const double *array_in, const int sign_index);
+
 int
 ho_recognize_create_array_in (const ho_bitmap * m_text,
 			      const ho_bitmap * m_mask, double *array_in);

@@ -45,20 +45,24 @@
 #endif /* __cplusplus */
 
 BEGIN_C_DECLS
-/* binary image map */
-#include <ho_bitmap.h>
 /* color image map */
 #include <ho_pixbuf.h>
+
+/* binary image map */
+#include <ho_bitmap.h>
+
 /* object image map */
 #include <ho_objmap.h>
-/* layout container for hocr layout */
+
+/* layout container for hocr segmentations */
 #include <ho_layout.h>
 #include <ho_dimentions.h>
 #include <ho_segment.h>
+
 /* font recognition */
 #include <ho_font.h>
 #include <ho_recognize.h>
-#include <ho_recognize_sign.h>
+
 /* string utilities */
 #include <ho_string.h>
   END_C_DECLS

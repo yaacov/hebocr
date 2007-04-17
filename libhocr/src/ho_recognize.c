@@ -41,9 +41,9 @@
 #include "ho_objmap.h"
 #include "ho_segment.h"
 #include "ho_font.h"
-#include "ho_recognize_sign.h"
 
 #include "ho_recognize.h"
+#include "ho_sign_data.h"
 
 int
 ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
@@ -1216,13 +1216,6 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
 char *
 ho_recognize_array_out_to_font (const double *array_out)
 {
-  static char *sign_array[HO_ARRAY_OUT_SIZE] =
-    { "*", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ",
-    "ך", "ל", "מ", "ם", "נ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",
-    "ק", "ר", "ש", "ת", ".", ",",
-    "'", "?", "!", ":", ";", ")", "(", "-"
-  };
-
   int i = 0;
   int max_i = 0;
 
@@ -1230,7 +1223,7 @@ ho_recognize_array_out_to_font (const double *array_out)
     if (array_out[i] > array_out[max_i])
       max_i = i;
 
-  return sign_array[max_i];
+  return ho_sign_array[max_i];
 }
 
 char *
@@ -1246,4 +1239,17 @@ ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   font = ho_recognize_array_out_to_font (array_out);
 
   return font;
+}
+
+double
+ho_recognize_sign (const double *array_in, const int sign_index)
+{
+  int i;
+
+  for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+    if (array_in[i] < ho_sign_data[sign_index][i][0]
+	|| array_in[i] > ho_sign_data[sign_index][i][1])
+      return 0.0;
+
+  return 1.0;
 }
