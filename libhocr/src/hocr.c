@@ -59,6 +59,8 @@ gboolean show_grid = FALSE;
 gboolean save_bw = FALSE;
 gboolean save_layout = FALSE;
 gboolean save_fonts = FALSE;
+gboolean debug_font_filter_list = FALSE;
+gint debug_font_filter = 0;
 
 gboolean only_image_proccesing = FALSE;
 gboolean only_layout_analysis = FALSE;
@@ -97,6 +99,27 @@ GNU General Public License for more details.\n\
 You should have received a copy of the GNU General Public License\n\
 along with this program; if not, write to the Free Software\n\
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.\n";
+
+static gchar *font_filters_list = "hocr - Hebrew OCR utility\n\
+%s\n\
+Font filters list\n\
+ 1. main font.\n\
+ 2. second part.\n\
+ 3. holes in font.\n\
+ 4. horizontal bars in font.\n\
+ 5. vertical bars in font.\n\
+ 6. 45 deg. diagonals in font.\n\
+ 7. 135 deg. diagonals in font.\n\
+ 8. thined font.\n\
+ 9. top font edges.\n\
+ 10. bottom font edges.\n\
+ 11. left font edges.\n\
+ 12. right font edges.\n\
+ 13. top font notches.\n\
+ 14. bottom font notches.\n\
+ 15. left font notches.\n\
+ 16. right font notches.\n\
+";
 
 static GOptionEntry file_entries[] = {
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
@@ -170,6 +193,10 @@ static GOptionEntry debug_entries[] = {
    "print debuging information while running", NULL},
   {"debug-extra", 'D', 0, G_OPTION_ARG_NONE, &debug,
    "print extra debuging information", NULL},
+  {"font-filter", 'y', 0, G_OPTION_ARG_INT, &debug_font_filter,
+   "debug a font filter, use filter NUM, 1..16", "NUM"},
+  {"font-filter-list", 'Y', 0, G_OPTION_ARG_NONE, &debug_font_filter_list,
+   "print a list of debug a font filters", NULL},
   {NULL}
 };
 
@@ -241,16 +268,22 @@ hocr_cmd_parser (int *argc, char **argv[])
       exit (1);
     }
 
-  if (!no_gtk && !image_in_filename)
-    {
-      hocr_printerr ("no input image file name (use -n for pipeing)");
-      exit (1);
-    }
-
   if (version)
     {
       g_printf (copyright_message, BUILD);
       exit (0);
+    }
+
+  if (debug_font_filter_list)
+    {
+      g_printf (font_filters_list, BUILD);
+      exit (0);
+    }
+
+  if (!no_gtk && !image_in_filename)
+    {
+      hocr_printerr ("no input image file name (use -n for pipeing)");
+      exit (1);
     }
 
   if (debug || verbose)
@@ -815,6 +848,7 @@ main (int argc, char *argv[])
     ho_bitmap *m_mask = NULL;
     ho_bitmap *m_font_mask = NULL;
     ho_bitmap *m_font_filter = NULL;
+    ho_bitmap *m_font_test = NULL;
     ho_bitmap *m_edge = NULL;
 
     ho_objmap *o_fonts = NULL;
@@ -896,8 +930,80 @@ main (int argc, char *argv[])
 			m_font_filter = ho_bitmap_clone (m_text);
 			ho_bitmap_andnot (m_font_filter, m_font_mask);
 
-			/* debug the font functions: */
-			/* m_font_filter = ho_font_second_object (m_font_mask, m_mask); */
+			/* debug the font filter functions: */
+			if (save_fonts && debug_font_filter)
+			  {
+			    switch (debug_font_filter)
+			      {
+			      case 1:
+				m_font_test =
+				  ho_font_main_sign (m_font_mask, m_mask);
+				break;
+			      case 2:
+				m_font_test =
+				  ho_font_second_object (m_font_mask, m_mask);
+				break;
+			      case 3:
+				m_font_test =
+				  ho_font_holes (m_font_mask, m_mask);
+				break;
+			      case 4:
+				m_font_test =
+				  ho_font_hbars (m_font_mask, m_mask);
+				break;
+			      case 5:
+				m_font_test =
+				  ho_font_vbars (m_font_mask, m_mask);
+				break;
+			      case 6:
+				m_font_test =
+				  ho_font_diagonal (m_font_mask, m_mask);
+				break;
+			      case 7:
+				m_font_test =
+				  ho_font_diagonal_left (m_font_mask, m_mask);
+				break;
+			      case 8:
+				m_font_test =
+				  ho_font_thin (m_font_mask, m_mask);
+				break;
+			      case 9:
+				m_font_test =
+				  ho_font_edges_top (m_font_mask, m_mask);
+				break;
+			      case 10:
+				m_font_test =
+				  ho_font_edges_bottom (m_font_mask, m_mask);
+				break;
+			      case 11:
+				m_font_test =
+				  ho_font_edges_left (m_font_mask, m_mask);
+				break;
+			      case 12:
+				m_font_test =
+				  ho_font_edges_right (m_font_mask, m_mask);
+				break;
+			      case 13:
+				m_font_test =
+				  ho_font_notch_top (m_font_mask, m_mask);
+				break;
+			      case 14:
+				m_font_test =
+				  ho_font_notch_bottom (m_font_mask, m_mask);
+				break;
+			      case 15:
+				m_font_test =
+				  ho_font_notch_left (m_font_mask, m_mask);
+				break;
+			      case 16:
+				m_font_test =
+				  ho_font_notch_right (m_font_mask, m_mask);
+				break;
+			      default:
+				m_font_test = NULL;
+				break;
+			      }
+			  }
 		      }
 
 		    /* recognize the font and send it out */
@@ -908,8 +1014,15 @@ main (int argc, char *argv[])
 			filename =
 			  g_strdup_printf ("%s-font-%d.pnm", image_out_path,
 					   font_number);
-			ho_font_pnm_save (m_font_mask, m_font_filter, m_mask,
-					  filename);
+
+			/* if user want to debug font filters, printout the filtered font */
+			if (m_font_test && debug_font_filter)
+			  ho_font_pnm_save (m_font_mask, m_font_test, m_mask,
+					    filename);
+			else
+			  ho_font_pnm_save (m_font_mask, m_font_filter,
+					    m_mask, filename);
+
 			g_free (filename);
 		      }
 
@@ -958,6 +1071,8 @@ main (int argc, char *argv[])
 
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
+			    ho_recognize_create_array_out (array_in,
+							   array_out);
 
 			    /* print out the number of the font */
 			    text_out =
@@ -983,6 +1098,43 @@ main (int argc, char *argv[])
 				  text_out =
 				    g_strdup_printf ("{%02.1f, %02.1f}, ",
 						     min, max);
+
+				ho_string_cat (s_data_out, text_out);
+				g_free (text_out);
+			      }
+
+			    ho_string_cat (s_data_out, "\n");
+
+			    /* add this font array in line */
+			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+			      {
+				if (!((i + 1) % 10))
+				  text_out =
+				    g_strdup_printf ("[%02d] %02.1f,\n", i,
+						     array_in[i]);
+				else
+				  text_out =
+				    g_strdup_printf ("[%02d] %02.1f, ", i,
+						     array_in[i]);
+
+				ho_string_cat (s_data_out, text_out);
+				g_free (text_out);
+			      }
+
+			    ho_string_cat (s_data_out, "\n");
+
+			    /* add this font array out line */
+			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+			      {
+				if (!((i + 1) % 10))
+				  text_out =
+				    g_strdup_printf ("[%02d] %02.1f,\n", i,
+						     array_out[i]);
+				else
+				  text_out =
+				    g_strdup_printf ("[%02d] %02.1f, ", i,
+						     array_out[i]);
+
 				ho_string_cat (s_data_out, text_out);
 				g_free (text_out);
 			      }
@@ -994,8 +1146,16 @@ main (int argc, char *argv[])
 			/* insert font to text out */
 			if (m_font_mask && m_mask)
 			  {
+			    double array_in[HO_ARRAY_IN_SIZE];
+			    double array_out[HO_ARRAY_OUT_SIZE];
+			    double min, max;
 
-			    font = ho_recognize_font (m_font_mask, m_mask);
+			    ho_recognize_create_array_in (m_font_mask, m_mask,
+							  array_in);
+			    ho_recognize_create_array_out (array_in,
+							   array_out);
+			    font = ho_recognize_array_out_to_font (array_out);
+			    //font = ho_recognize_font (m_font_mask, m_mask);
 
 			    ho_string_cat (s_text_out, font);
 			    /* if debug print out the font */
@@ -1013,6 +1173,7 @@ main (int argc, char *argv[])
 
 		    /* free bitmaps and others */
 		    ho_bitmap_free (m_font_filter);
+		    ho_bitmap_free (m_font_test);
 		    ho_bitmap_free (m_font_mask);
 		    ho_bitmap_free (m_text);
 		    ho_bitmap_free (m_mask);
