@@ -22,14 +22,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
-#include "ho_recognize.h"
-/* to change the sizes of arrays use "ho_recognize.h" 
-#define HO_ARRAY_IN_SIZE 70
-#define HO_ARRAY_OUT_SIZE 38
-*/
-
 #ifndef HO_SIGN_DATA_H
 #define HO_SIGN_DATA_H 1
+
+#define HO_ARRAY_IN_SIZE 70
+#define HO_ARRAY_OUT_SIZE 38
 
 /* font shapes codes*/
 static char *ho_sign_array[HO_ARRAY_OUT_SIZE] =

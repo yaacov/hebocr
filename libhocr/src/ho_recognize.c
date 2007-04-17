@@ -41,9 +41,21 @@
 #include "ho_objmap.h"
 #include "ho_segment.h"
 #include "ho_font.h"
+#include "ho_sign_data.h"
 
 #include "ho_recognize.h"
-#include "ho_sign_data.h"
+
+int
+ho_recognize_array_in_size ()
+{
+  return HO_ARRAY_IN_SIZE;
+}
+
+int
+ho_recognize_array_out_size ()
+{
+  return HO_ARRAY_OUT_SIZE;
+}
 
 int
 ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
@@ -1206,7 +1218,7 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
 
   /* set array out */
   array_out[0] = 0.5;
-  
+
   for (i = 1; i < HO_ARRAY_OUT_SIZE; i++)
     array_out[i] = ho_recognize_sign (array_in, i);
 

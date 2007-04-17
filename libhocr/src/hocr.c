@@ -878,8 +878,9 @@ main (int argc, char *argv[])
 
 	/* init the first line of data file */
 	text_out =
-	  g_strdup_printf ("%d %d %d\n", number_of_fonts, HO_ARRAY_IN_SIZE,
-			   HO_ARRAY_OUT_SIZE);
+	  g_strdup_printf ("%d %d %d\n", number_of_fonts,
+			   ho_recognize_array_in_size (),
+			   ho_recognize_array_out_size ());
 	ho_string_cat (s_data_out, text_out);
 	g_free (text_out);
 
@@ -1034,8 +1035,9 @@ main (int argc, char *argv[])
 			/* if debug printout font data stream */
 			if (debug)
 			  {
-			    double array_in[HO_ARRAY_IN_SIZE];
-			    double array_out[HO_ARRAY_OUT_SIZE];
+			    /* FIXME: waht if ho_recognize_array_in/out_size() > 100 ? */
+			    double array_in[100];
+			    double array_out[100];
 
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
@@ -1043,7 +1045,8 @@ main (int argc, char *argv[])
 							   array_out);
 
 			    g_print ("array_in:\n");
-			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+			    for (i = 0; i < ho_recognize_array_in_size ();
+				 i++)
 			      {
 				g_print ("%02.2f\t", array_in[i]);
 				if (!((i + 1) % 10))
@@ -1052,7 +1055,8 @@ main (int argc, char *argv[])
 			    g_print ("\n");
 
 			    g_print ("array_out:\n");
-			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+			    for (i = 0; i < ho_recognize_array_out_size ();
+				 i++)
 			      {
 				g_print ("%02.2f\t", array_out[i]);
 				if (!((i + 1) % 10))
@@ -1065,8 +1069,9 @@ main (int argc, char *argv[])
 			if (data_out_filename && m_mask && m_font_filter
 			    && m_font_mask)
 			  {
-			    double array_in[HO_ARRAY_IN_SIZE];
-			    double array_out[HO_ARRAY_OUT_SIZE];
+			    /* FIXME: waht if ho_recognize_array_out/out_size() > 100 ? */
+			    double array_in[100];
+			    double array_out[100];
 			    double min, max;
 
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
@@ -1081,7 +1086,8 @@ main (int argc, char *argv[])
 			    g_free (text_out);
 
 			    /* add this font line */
-			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+			    for (i = 0; i < ho_recognize_array_in_size ();
+				 i++)
 			      {
 				min = array_in[i] - 0.13;
 				max = array_in[i] + 0.13;
@@ -1106,7 +1112,8 @@ main (int argc, char *argv[])
 			    ho_string_cat (s_data_out, "\n");
 
 			    /* add this font array in line */
-			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+			    for (i = 0; i < ho_recognize_array_in_size ();
+				 i++)
 			      {
 				if (!((i + 1) % 10))
 				  text_out =
@@ -1124,7 +1131,8 @@ main (int argc, char *argv[])
 			    ho_string_cat (s_data_out, "\n");
 
 			    /* add this font array out line */
-			    for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+			    for (i = 0; i < ho_recognize_array_out_size ();
+				 i++)
 			      {
 				if (!((i + 1) % 10))
 				  text_out =
@@ -1146,16 +1154,7 @@ main (int argc, char *argv[])
 			/* insert font to text out */
 			if (m_font_mask && m_mask)
 			  {
-			    double array_in[HO_ARRAY_IN_SIZE];
-			    double array_out[HO_ARRAY_OUT_SIZE];
-			    double min, max;
-
-			    ho_recognize_create_array_in (m_font_mask, m_mask,
-							  array_in);
-			    ho_recognize_create_array_out (array_in,
-							   array_out);
-			    font = ho_recognize_array_out_to_font (array_out);
-			    //font = ho_recognize_font (m_font_mask, m_mask);
+			    font = ho_recognize_font (m_font_mask, m_mask);
 
 			    ho_string_cat (s_text_out, font);
 			    /* if debug print out the font */
