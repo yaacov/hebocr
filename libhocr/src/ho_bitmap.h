@@ -166,6 +166,16 @@ ho_bitmap *ho_bitmap_set_height (const ho_bitmap * m, const int height,
 				 const int top, const int bottom);
 
 /**
+ take only bottom height black pixels of bitmap
+ @param m the bitmap to erode 
+ @param height the height to take
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_bitmap_set_height_from_bottom (const ho_bitmap * m,
+					     const int height, const int top,
+					     const int bottom);
+
+/**
  dilation of a a bitmap with 3x3 box
  @param m the bitmap to dilate 
  @return newly allocated ho_bitmap
@@ -292,6 +302,17 @@ ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
  */
 ho_bitmap *ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
 					const int top, const int bottom);
+
+/**
+ take height bottom pixels from objects in bitmap
+ @param m pointer to an ho_bitmap
+ @param hight of new objects
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_bitmap_filter_set_height_from_bottom (const ho_bitmap * m,
+						    const int height,
+						    const int top,
+						    const int bottom);
 
 /**
  take extend objects lateraly

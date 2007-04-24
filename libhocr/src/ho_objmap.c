@@ -795,7 +795,7 @@ ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
     }
 
   /* is width logical ? */
-  if (height_com > 2 * width_com)
+  if (height_com > 3 * width_com / 2)
     width_com = 2 * height_com / 3;
 
   *height = height_com;

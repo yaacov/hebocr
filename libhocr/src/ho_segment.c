@@ -81,7 +81,7 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
   ho_bitmap_free (m_out);
   ho_bitmap_free (m_clean);
 
-  /* try and link one/two line broken paragraphs */
+  /* try and link one/two line broken paragraphs (free paragraphs need more care) */
   m_out = ho_bitmap_filter_hlink (m_temp1, m->font_width * 6,
 				  m->font_height * 2 + m->line_spacing * 2);
 
@@ -100,41 +100,26 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
 ho_bitmap *
 ho_segment_lines (const ho_bitmap * m)
 {
+  ho_bitmap *m_clean;
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
   /* filter only "regular" sized fonts */
-  m_temp = ho_bitmap_filter_by_size (m,
-				     8 * m->font_height / 10,
-				     12 * m->font_height / 10,
-				     m->font_width / 3, m->font_width * 5);
-  if (!m_temp)
+  m_clean = ho_bitmap_filter_by_size (m,
+				      6 * m->font_height / 10,
+				      15 * m->font_height / 10,
+				      m->font_width / 3, m->font_width * 5);
+  if (!m_clean)
     return NULL;
-  m_out = m_temp;
 
   /* link lines */
-  m_temp = ho_bitmap_hlink (m_out, m->font_width * 6);
-  ho_bitmap_free (m_out);
+  m_temp = ho_bitmap_hlink (m_clean, m->font_width * 4);
   if (!m_temp)
     return NULL;
   m_out = m_temp;
 
   /* add sideways leeway */
-  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 4);
-  ho_bitmap_free (m_out);
-  if (!m_temp)
-    return NULL;
-  m_out = m_temp;
-
-  /* remove little things up and down the line */
-  m_temp = ho_bitmap_herode (m_out, m->font_width * 6);
-  ho_bitmap_free (m_out);
-  if (!m_temp)
-    return NULL;
-  m_out = m_temp;
-
-  /* add more sideways leeway */
-  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 4);
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 2);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
@@ -147,26 +132,88 @@ ho_segment_lines (const ho_bitmap * m)
     return NULL;
   m_out = m_temp;
 
-  /* try to link broken lines */
-  m_temp = ho_bitmap_hlink (m_out, m->font_width * 3);
+  /* remove little things up and down the line */
+  m_temp = ho_bitmap_herode (m_out, m->font_width * 6);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* add sideways leeway */
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* add sideways leeway */
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* add sideways leeway */
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* add sideways leeway */
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* add sideways leeway */
+  m_temp = ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * 2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* link lines */
+  m_temp = ho_bitmap_hlink (m_out, m->font_width * 4);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* set out matrix height, we want clean lines of known height */
+  m_temp = ho_bitmap_filter_set_height (m_out, m->font_height, 0, 0);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* re-insert little things from the bottom of the line */
+  ho_bitmap_or (m_out, m_clean);
+
+  /* link lines */
+  m_temp = ho_bitmap_hlink (m_out, m->font_width * 4);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
   m_out = m_temp;
 
   /* remove little things up and down the line */
-  m_temp = ho_bitmap_herode (m_out, m->font_width * 3);
+  m_temp = ho_bitmap_herode (m_out, m->font_width * 6);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
   m_out = m_temp;
 
-  /* re-set matrix height, we want clean lines of known height */
-  m_temp = ho_bitmap_filter_set_height (m_out, m->font_height, 0, 0);
+  /* set out matrix height, we want clean lines of known height  */
+  m_temp =
+    ho_bitmap_filter_set_height_from_bottom (m_out, m->font_height, 0, 0);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
   m_out = m_temp;
+
+  ho_bitmap_free (m_clean);
 
   return m_out;
 }
@@ -451,15 +498,16 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   {
     int min_x;
     int min_x_start;
+    int width = m->width;
 
-    x = 1;
-    while (x < m->width)
+    x = 0;
+    while (x < width)
       {
 	/* get start&end of interfont line */
-	for (; x < m->width && !ho_bitmap_get (m_out, x, 2); x++);
+	for (; x < width && !ho_bitmap_get (m_out, x, 2); x++);
 	min_x = x - 1;
 	min_x_start = min_x;
-	for (; x < m->width && ho_bitmap_get (m_out, x, 2); x++)
+	for (; x < width && ho_bitmap_get (m_out, x, 2); x++)
 	  {
 	    if (line_fill[min_x] >= line_fill[x])
 	      min_x = x;
@@ -467,7 +515,7 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 	      min_x_start = x;
 	  }
 	/* draw line on minimal interfont space */
-	for (i = min_x_start; i <= min_x; i++)
+	for (i = min_x_start; i <= min_x && i < width - 1; i++)
 	  ho_bitmap_draw_vline (m_temp, i, 0, m_out->height);
       }
   }

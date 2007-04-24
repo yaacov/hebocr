@@ -76,10 +76,10 @@ module.include.files=\
 	src/ho_layout.h\
 	src/ho_recognize.h\
 	src/ho_string.h\
-	src/ho_recognize_sign.h\
 	src/ho_font.h\
 	src/hocr.h\
-	src/ho_dimentions.h
+	src/ho_dimentions.h\
+	src/ho_sign_data.h
 
 module.source.name=.
 module.source.type=
@@ -93,7 +93,6 @@ module.source.files=\
 	src/ho_recognize.c\
 	src/ho_font.c\
 	src/ho_string.c\
-	src/ho_recognize_sign.c\
 	src/ho_objmap.c\
 	src/hocr.c
 

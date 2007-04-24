@@ -93,7 +93,7 @@ ho_layout_free (ho_layout * l_page)
 
   if (!l_page)
     return TRUE;
-  
+
   for (block_index = 0; block_index < l_page->n_blocks; block_index++)
     {
       for (line_index = 0; line_index < l_page->n_lines[block_index];
@@ -410,17 +410,24 @@ ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
   int i;
 
   m_line_text = ho_layout_get_line_text (l_page, block_index, line_index);
+  if (!m_line_text)
+    return TRUE;
+
   ho_dimentions_font_width_height_nikud (m_line_text, 6, 200, 6, 200);
   l_page->m_lines_text[block_index][line_index] = m_line_text;
 
   /* create the words mask */
   m_line_line_mask =
     ho_layout_get_line_line_mask (l_page, block_index, line_index);
+  if (!m_line_line_mask)
+    return TRUE;
+
   l_page->m_lines_line_mask[block_index][line_index] = m_line_line_mask;
 
   m_line_text->line_spacing =
     l_page->m_blocks_text[block_index]->line_spacing;
   ho_dimentions_font_spacing (m_line_text, m_line_line_mask);
+
   ho_dimentions_line_fill (m_line_text, m_line_line_mask);
 
   l_page->m_lines_words_mask[block_index][line_index] =
@@ -800,7 +807,7 @@ ho_layout_get_font_text (ho_layout * l_page, int block_index, int line_index,
     {
       /* get start&end of font */
       for (; x >= 0 && ho_bitmap_get (m_word_font_mask, x, 2); x--);
-      x_end = x;
+      x_end = x + 1;
       i++;
       for (; x >= 0 && !ho_bitmap_get (m_word_font_mask, x, 2); x--);
       x_start = x;
@@ -862,7 +869,7 @@ ho_layout_get_font_line_mask (ho_layout * l_page, int block_index,
     {
       /* get start&end of font */
       for (; x >= 0 && ho_bitmap_get (m_word_font_mask, x, 2); x--);
-      x_end = x;
+      x_end = x + 1;
       i++;
       for (; x >= 0 && !ho_bitmap_get (m_word_font_mask, x, 2); x--);
       x_start = x;

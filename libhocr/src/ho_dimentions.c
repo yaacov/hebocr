@@ -338,8 +338,16 @@ ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map)
   free (line_fill_hist);
 
   /* set to precent of line height */
-  m->avg_line_fill = 100 * avg_line_fill / line_height;
-  m->com_line_fill = 100 * com_line_fill / line_height;
+  if (!line_height)
+    {
+      m->avg_line_fill = 0;
+      m->com_line_fill = 0;
+    }
+  else
+    {
+      m->avg_line_fill = 100 * avg_line_fill / line_height;
+      m->com_line_fill = 100 * com_line_fill / line_height;
+    }
 
   return FALSE;
 }
