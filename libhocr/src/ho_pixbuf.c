@@ -844,11 +844,12 @@ ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
   unsigned char new_red;
   unsigned char new_green;
   unsigned char new_blue;
-
+  
   /* check for bitmap origin, if this is a sub window draw at its origin */
-  if (bit_in->x != 0 || bit_in->y != 0)
-    ho_pixbuf_draw_bitmap_at (m, bit_in, bit_in->x, bit_in->y,
-			      red, green, blue, alpha);
+  if (bit_in->x != 0 || bit_in->y != 0 || m->width > bit_in->width
+      || m->height > bit_in->height)
+    ho_pixbuf_draw_bitmap_at (m, bit_in, bit_in->x, bit_in->y, red, green,
+			      blue, alpha);
 
   /* sanity check */
   if (m->width != bit_in->width || m->height != bit_in->height)

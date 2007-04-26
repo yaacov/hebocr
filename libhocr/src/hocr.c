@@ -780,7 +780,9 @@ main (int argc, char *argv[])
 		ho_bitmap_edge (l_page->
 				m_lines_line_mask[block_index][line_index],
 				5);
+
 	      ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 255, 0, 0, 255);
+
 	      ho_bitmap_free (m_block_frame);
 
 	      for (word_index = 0;

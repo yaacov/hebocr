@@ -513,7 +513,7 @@ ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
     m_word_font_mask;
 
   /* count fonts */
-  i = -1;
+  i = 0;
   x = 0;
   while (x < m_word_font_mask->width)
     {
