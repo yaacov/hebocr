@@ -248,8 +248,8 @@ ho_font_hbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_bars = NULL;
   ho_bitmap *m_out = NULL;
   int i, x, y, line_height, y_start;
-  int number_of_parts = 8;
-  int threshold = 75;
+  int number_of_parts = 5;
+  int threshold = 65;
 
   /* get line_height */
   x = m_mask->width / 2;
@@ -280,7 +280,7 @@ ho_font_hbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* look for wide objects */
   m_bars =
     ho_bitmap_filter_by_size (m_main_font, 1,
-			      line_height + 5,
+			      line_height * 2,
 			      threshold * m_text->width / 100,
 			      m_text->width + 5);
   ho_bitmap_free (m_main_font);
@@ -319,8 +319,8 @@ ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_bars = NULL;
   ho_bitmap *m_out = NULL;
   int i, x, y, line_height, y_start;
-  int number_of_parts = 8;
-  int threshold = 80;
+  int number_of_parts = 4;
+  int threshold = 70;
 
   /* get line_height */
   x = m_mask->width / 2;
@@ -332,14 +332,7 @@ ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   if (!line_height)
     return NULL;
 
-  /* maybe this font is realy broken, dialate twice  */
-  m_temp = ho_bitmap_dilation (m_text);
-  if (!m_temp)
-    return NULL;
-  m_main_font = m_temp;
-
-  m_temp = ho_bitmap_closing (m_main_font);
-  ho_bitmap_free (m_main_font);
+  m_temp = ho_bitmap_closing (m_text);
   if (!m_temp)
     return NULL;
   m_main_font = m_temp;
@@ -356,7 +349,7 @@ ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* look for high objects */
   m_bars =
     ho_bitmap_filter_by_size (m_main_font, threshold * line_height / 100,
-			      line_height + 5, 1, m_text->width);
+			      line_height * 2, 1, m_text->width);
   ho_bitmap_free (m_main_font);
   if (!m_bars)
     return NULL;
@@ -406,7 +399,7 @@ ho_font_diagonal (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* maybe this font is realy broken, dialate twice  */
-  m_temp = ho_bitmap_dilation (m_text);
+  m_temp = ho_bitmap_closing (m_text);
   if (!m_temp)
     return NULL;
   m_main_font = m_temp;
@@ -434,7 +427,7 @@ ho_font_diagonal (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* look for high objects */
   m_bars =
     ho_bitmap_filter_by_size (m_main_font, threshold * line_height / 100,
-			      line_height + 5, 1, m_text->width);
+			      line_height * 2, 1, m_text->width);
   ho_bitmap_free (m_main_font);
   if (!m_bars)
     return NULL;
@@ -499,7 +492,7 @@ ho_font_diagonal_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* look for high objects */
   m_bars =
     ho_bitmap_filter_by_size (m_main_font, threshold * line_height / 100,
-			      line_height + 5, 1, m_text->width);
+			      line_height * 2, 1, m_text->width);
   ho_bitmap_free (m_main_font);
   if (!m_bars)
     return NULL;
