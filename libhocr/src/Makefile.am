@@ -35,8 +35,7 @@ library_include_HEADERS = hocr.h \
          ho_recognize.h \
          ho_layout.h \
          ho_string.h \
-         ho_gtk.h \
-         ho_sign_data.h
+         ho_gtk.h 
 
 # libhocrgtk, helper functions to use hocr in gtk programs
 libhocrgtk_la_SOURCES = \

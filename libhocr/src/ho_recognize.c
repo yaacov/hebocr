@@ -41,7 +41,6 @@
 #include "ho_objmap.h"
 #include "ho_segment.h"
 #include "ho_font.h"
-#include "ho_sign_data.h"
 
 #include "ho_recognize.h"
 
@@ -1220,7 +1219,7 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
   array_out[0] = 0.5;
 
   for (i = 1; i < HO_ARRAY_OUT_SIZE; i++)
-    array_out[i] = ho_recognize_sign (array_in, i);
+    array_out[i] = ho_recognize_array (array_in, i);
 
   return FALSE;
 }
@@ -1254,14 +1253,20 @@ ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 }
 
 double
-ho_recognize_sign (const double *array_in, const int sign_index)
+ho_recognize_array (const double *array_in, const int sign_index)
 {
   int i;
+  double return_value = 0.0;
 
-  for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
-    if (array_in[i] < ho_sign_data[sign_index][i][0]
-	|| array_in[i] > ho_sign_data[sign_index][i][1])
-      return 0.0;
+  switch (sign_index)
+    {
+    case 1:			/* alef */
+      return_value = 0.0;
+      break;
+    case 2:			/* bet */
+      return_value = 0.0;;
+      break;
+    }
 
-  return 1.0;
+  return return_value;
 }
