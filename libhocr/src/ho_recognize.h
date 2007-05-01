@@ -43,81 +43,8 @@ int ho_recognize_array_in_size ();
 int ho_recognize_array_out_size ();
 
 int
-ho_recognize_hbar_up (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-		      double *height, double *start, double *end,
-		      double *dist);
-
-int
-ho_recognize_hbar_down (const ho_bitmap * m_text,
-			const ho_bitmap * m_mask, double *height,
-			double *start, double *end, double *dist);
-
-int ho_recognize_vbar_right (const ho_bitmap * m_text,
-			     const ho_bitmap * m_mask, double *width,
-			     double *start, double *end, double *dist);
-
-int ho_recognize_vbar_left (const ho_bitmap * m_text,
-			    const ho_bitmap * m_mask, double *width,
-			    double *start, double *end, double *dist);
-
-int
-ho_recognize_dbar_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			double *width, double *start, double *end);
-
-int
-ho_recognize_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			int *num, int *left, int *middle, int *right);
-
-int
-ho_recognize_notch_top (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			int *num, int *left, int *middle, int *right);
-
-int
-ho_recognize_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			   int *num, int *left, int *middle, int *right);
-
-int
-ho_recognize_notch_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			   int *num, int *left, int *middle, int *right);
-
-int
-ho_recognize_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			 int *num, int *top, int *middle, int *bottom);
-
-int
-ho_recognize_notch_left (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			 int *num, int *top, int *middle, int *bottom);
-
-int
-ho_recognize_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			  int *num, int *top, int *middle, int *bottom);
-
-int
-ho_recognize_notch_right (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			  int *num, int *top, int *middle, int *bottom);
-
-int
-ho_recognize_second_object (const ho_bitmap * m_text,
-			    const ho_bitmap * m_mask,
-			    double *has_second_objects,
-			    double *height, double *width,
-			    double *width_by_height, double *y_start,
-			    double *y_end, double *x_start, double *x_end);
-
-int
-ho_recognize_dimentions (const ho_bitmap * m_text, const ho_bitmap * m_mask,
-			 double *height, double *width,
-			 double *width_by_height, double *start, double *end);
-
-double ho_recognize_array (const double *array_in, const int sign_index);
-
-int
 ho_recognize_create_array_in (const ho_bitmap * m_text,
 			      const ho_bitmap * m_mask, double *array_in);
-
-int ho_recognize_create_array_out (const double *array_in, double *array_out);
-
-char *ho_recognize_array_out_to_font (const double *array_out);
 
 char *ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 

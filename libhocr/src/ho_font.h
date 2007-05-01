@@ -106,6 +106,22 @@ ho_bitmap *ho_font_thin_naive (const ho_bitmap * m_text,
 ho_bitmap *ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 /**
+ return a bitmap of cross points in input image
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_font_cross (const ho_bitmap * m_text, const ho_bitmap * m_mask);
+
+/**
+ return a bitmap of end points in input image
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_font_ends (const ho_bitmap * m_text, const ho_bitmap * m_mask);
+
+/**
  return a bitmap of top side picks in the font
  @param m_text pointer to the text bitmap
  @param m_mask pointer to the line map
@@ -177,7 +193,16 @@ ho_bitmap *ho_font_notch_left (const ho_bitmap * m_text,
 ho_bitmap *ho_font_notch_right (const ho_bitmap * m_text,
 				const ho_bitmap * m_mask);
 
-
+/**
+ return a bitmap of a filter 
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @param filter_index the index of the filter to use
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_font_filter (const ho_bitmap * m_text,
+			   const ho_bitmap * m_mask, int filter_index);
+         
 int
 ho_font_pnm_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
 		  const ho_bitmap * m_mask, const char *filename);

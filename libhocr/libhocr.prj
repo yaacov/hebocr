@@ -78,8 +78,7 @@ module.include.files=\
 	src/ho_string.h\
 	src/ho_font.h\
 	src/hocr.h\
-	src/ho_dimentions.h\
-	src/ho_sign_data.h
+	src/ho_dimentions.h
 
 module.source.name=.
 module.source.type=

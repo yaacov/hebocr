@@ -429,7 +429,7 @@ ho_font_vbars (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   }
 
   ho_bitmap_free (m_temp);
- 
+
   /* fix the x and y of the output bitmap */
   m_out->x = m_text->x;
   m_out->y = m_text->y;
@@ -751,6 +751,116 @@ ho_font_thin_naive (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 }
 
 ho_bitmap *
+ho_font_ends (const ho_bitmap * m_text, const ho_bitmap * m_mask)
+{
+  ho_bitmap *m_out = NULL;
+  ho_bitmap *m_temp = NULL;
+
+  int x, y;
+  unsigned char neighbors;
+
+  m_out = ho_bitmap_new (m_text->width, m_text->height);
+  if (!m_out)
+    return NULL;
+
+  m_temp = ho_font_thin (m_text, m_mask);
+  if (!m_temp)
+    return NULL;
+
+  /* look at evry pixel */
+  for (x = 1; x < m_text->width - 1; x++)
+    for (y = 1; y < m_text->height - 1; y++)
+      {
+	/* is this pixel on */
+	if (ho_bitmap_get (m_temp, x, y))
+	  {
+	    /* look at the border pixels */
+	    neighbors = ho_bitmap_get (m_temp, x + 1, y + 1) +
+	      ho_bitmap_get (m_temp, x + 1, y) +
+	      ho_bitmap_get (m_temp, x + 1, y - 1) +
+	      ho_bitmap_get (m_temp, x - 1, y + 1) +
+	      ho_bitmap_get (m_temp, x - 1, y) +
+	      ho_bitmap_get (m_temp, x - 1, y - 1) +
+	      ho_bitmap_get (m_temp, x, y - 1) +
+	      ho_bitmap_get (m_temp, x, y + 1);
+
+	    /*one neigbor it's an end */
+	    if (neighbors < 2)
+	      {
+		ho_bitmap_set (m_out, x, y - 1);
+		ho_bitmap_set (m_out, x + 1, y - 1);
+		ho_bitmap_set (m_out, x - 1, y - 1);
+		ho_bitmap_set (m_out, x, y);
+		ho_bitmap_set (m_out, x + 1, y);
+		ho_bitmap_set (m_out, x - 1, y);
+		ho_bitmap_set (m_out, x, y + 1);
+		ho_bitmap_set (m_out, x + 1, y + 1);
+		ho_bitmap_set (m_out, x - 1, y + 1);
+	      }
+	  }
+      }
+
+  ho_bitmap_free (m_temp);
+
+  return m_out;
+}
+
+ho_bitmap *
+ho_font_cross (const ho_bitmap * m_text, const ho_bitmap * m_mask)
+{
+  ho_bitmap *m_out = NULL;
+  ho_bitmap *m_temp = NULL;
+
+  int x, y;
+  unsigned char neighbors;
+
+  m_out = ho_bitmap_new (m_text->width, m_text->height);
+  if (!m_out)
+    return NULL;
+
+  m_temp = ho_font_thin (m_text, m_mask);
+  if (!m_temp)
+    return NULL;
+
+  /* look at evry pixel */
+  for (x = 1; x < m_text->width - 1; x++)
+    for (y = 1; y < m_text->height - 1; y++)
+      {
+	/* is this pixel on */
+	if (ho_bitmap_get (m_temp, x, y))
+	  {
+	    /* look at the border pixels */
+	    neighbors = ho_bitmap_get (m_temp, x + 1, y + 1) +
+	      ho_bitmap_get (m_temp, x + 1, y) +
+	      ho_bitmap_get (m_temp, x + 1, y - 1) +
+	      ho_bitmap_get (m_temp, x - 1, y + 1) +
+	      ho_bitmap_get (m_temp, x - 1, y) +
+	      ho_bitmap_get (m_temp, x - 1, y - 1) +
+	      ho_bitmap_get (m_temp, x, y - 1) +
+	      ho_bitmap_get (m_temp, x, y + 1);
+
+	    /* more then two neigbors it's a cross */
+	    if (neighbors > 2)
+	      {
+		ho_bitmap_set (m_out, x, y - 1);
+		ho_bitmap_set (m_out, x + 1, y - 1);
+		ho_bitmap_set (m_out, x - 1, y - 1);
+		ho_bitmap_set (m_out, x, y);
+		ho_bitmap_set (m_out, x + 1, y);
+		ho_bitmap_set (m_out, x - 1, y);
+		ho_bitmap_set (m_out, x, y + 1);
+		ho_bitmap_set (m_out, x + 1, y + 1);
+		ho_bitmap_set (m_out, x - 1, y + 1);
+	      }
+	  }
+      }
+
+  ho_bitmap_free (m_temp);
+
+  return m_out;
+}
+
+ho_bitmap *
 ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
@@ -776,12 +886,12 @@ ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   m_out = ho_font_thin_naive (m_text, m_mask);
 
   /* fix holes */
-  m_temp = ho_bitmap_hlink (m_out, line_height / 5);
+  m_temp = ho_bitmap_hlink (m_out, line_height / 8);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
 
-  m_out = ho_bitmap_vlink (m_temp, line_height / 5);
+  m_out = ho_bitmap_vlink (m_temp, line_height / 8);
   ho_bitmap_free (m_temp);
   if (!m_out)
     return NULL;
@@ -794,8 +904,9 @@ ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 
   /* rethin the font */
   m_out = ho_font_thin_naive (m_temp, m_mask);
+  ho_bitmap_free (m_temp);
 
-  return m_temp;
+  return m_out;
 }
 
 ho_bitmap *
@@ -1806,4 +1917,74 @@ ho_font_pnm_load (ho_bitmap ** m_text, ho_bitmap ** m_nikud,
 
   ho_pixbuf_free (pix);
   return FALSE;
+}
+
+ho_bitmap *
+ho_font_filter (const ho_bitmap * m_text,
+		const ho_bitmap * m_mask, int filter_index)
+{
+  ho_bitmap *m_out = NULL;
+
+  switch (filter_index)
+    {
+    case 1:
+      m_out = ho_font_main_sign (m_text, m_mask);
+      break;
+    case 2:
+      m_out = ho_font_second_object (m_text, m_mask);
+      break;
+    case 3:
+      m_out = ho_font_holes (m_text, m_mask);
+      break;
+    case 4:
+      m_out = ho_font_hbars (m_text, m_mask);
+      break;
+    case 5:
+      m_out = ho_font_vbars (m_text, m_mask);
+      break;
+    case 6:
+      m_out = ho_font_diagonal (m_text, m_mask);
+      break;
+    case 7:
+      m_out = ho_font_diagonal_left (m_text, m_mask);
+      break;
+    case 8:
+      m_out = ho_font_thin (m_text, m_mask);
+      break;
+    case 9:
+      m_out = ho_font_cross (m_text, m_mask);
+      break;
+    case 10:
+      m_out = ho_font_ends (m_text, m_mask);
+      break;
+    case 11:
+      m_out = ho_font_edges_top (m_text, m_mask);
+      break;
+    case 12:
+      m_out = ho_font_edges_bottom (m_text, m_mask);
+      break;
+    case 13:
+      m_out = ho_font_edges_left (m_text, m_mask);
+      break;
+    case 14:
+      m_out = ho_font_edges_right (m_text, m_mask);
+      break;
+    case 15:
+      m_out = ho_font_notch_top (m_text, m_mask);
+      break;
+    case 16:
+      m_out = ho_font_notch_bottom (m_text, m_mask);
+      break;
+    case 17:
+      m_out = ho_font_notch_left (m_text, m_mask);
+      break;
+    case 18:
+      m_out = ho_font_notch_right (m_text, m_mask);
+      break;
+    default:
+      m_out = NULL;
+      break;
+    }
+
+  return m_out;
 }
