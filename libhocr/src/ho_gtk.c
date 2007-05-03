@@ -77,7 +77,7 @@ ho_gtk_pixbuf_from_gdk_share_data (const GdkPixbuf * gdk_pix)
 
   /* free ho_pixbuf data */
   if (pix->data)
-  free (pix->data);
+    free (pix->data);
 
   /* share the pixels */
   pix->data = gdk_pixbuf_get_pixels (gdk_pix);
@@ -168,11 +168,11 @@ ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename)
     gdk_pixbuf_save (gdk_pix, filename, "jpeg", &error, NULL);
   else
     gdk_pixbuf_save (gdk_pix, filename, ext_type[1], &error, NULL);
-  
+
   /* free memory */
   g_strfreev (ext_type);
   g_object_unref (gdk_pix);
-  
+
   if (error)
     {
       g_error_free (error);
@@ -180,4 +180,22 @@ ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename)
     }
 
   return FALSE;
+}
+
+int
+ho_gtk_font_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
+		  const ho_bitmap * m_mask, const char *filename)
+{
+  int return_value;
+  ho_pixbuf *p_out;
+
+  p_out = ho_pixbuf_new (3, m_text->width, m_text->height, 0);
+
+  ho_pixbuf_draw_rgb_bitmap (p_out, m_text, m_nikud, m_mask);
+
+  return_value = ho_gtk_pixbuf_save (p_out, filename);
+
+  ho_pixbuf_free (p_out);
+
+  return return_value;
 }

@@ -882,9 +882,15 @@ main (int argc, char *argv[])
 
 	/* init the first line of data file */
 	text_out =
-	  g_strdup_printf ("%d %d %d\n", number_of_fonts,
-			   ho_recognize_array_in_size (),
-			   ho_recognize_array_out_size ());
+	  g_strdup_printf
+	  ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\
+\"http://www.w3.org/TR/html4/strict.dtd\">\n\
+<html>\n\
+<head>\n\
+<title></title>\n\
+</head>\n\
+<body>\n\
+<pre>\n");
 	ho_string_cat (s_data_out, text_out);
 	g_free (text_out);
 
@@ -947,17 +953,48 @@ main (int argc, char *argv[])
 		    /* if user ask, dump font images to disk */
 		    if (save_fonts && m_mask && m_font_filter && m_font_mask)
 		      {
-			filename =
-			  g_strdup_printf ("%s-font-%d.pnm", image_out_path,
-					   font_number);
+			if (no_gtk)
+			  filename =
+			    g_strdup_printf ("%s-font-%d.pgm", image_out_path,
+					     font_number);
+			else
+			  filename =
+			    g_strdup_printf ("%s-font-%d.jpeg",
+					     image_out_path, font_number);
 
 			/* if user want to debug font filters, printout the filtered font */
 			if (m_font_test && debug_font_filter)
-			  ho_font_pnm_save (m_font_mask, m_font_test, m_mask,
-					    filename);
+			  {
+			    m_font_mask->x = 0;
+			    m_font_mask->y = 0;
+			    m_font_test->x = 0;
+			    m_font_test->y = 0;
+			    m_mask->x = 0;
+			    m_mask->y = 0;
+
+			    if (no_gtk)
+			      ho_font_pnm_save (m_font_mask, m_font_test,
+						m_mask, filename);
+			    else
+			      ho_gtk_font_save (m_font_mask, m_font_test,
+						m_mask, filename);
+			  }
 			else
-			  ho_font_pnm_save (m_font_mask, m_font_filter,
-					    m_mask, filename);
+			  {
+			    m_font_mask->x = 0;
+			    m_font_mask->y = 0;
+			    m_font_filter->x = 0;
+			    m_font_filter->y = 0;
+			    m_mask->x = 0;
+			    m_mask->y = 0;
+
+			    if (no_gtk)
+			      ho_font_pnm_save (m_font_mask, m_font_filter,
+						m_mask, filename);
+			    else
+			      ho_gtk_font_save (m_font_mask, m_font_filter,
+						m_mask, filename);
+			  }
 
 			g_free (filename);
 		      }
@@ -978,9 +1015,13 @@ main (int argc, char *argv[])
 
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
-				g_print ("%+2.2f, ", array_in[i]);
 				if (!(i % 10))
 				  g_print ("\n");
+				else if (!(i % 5))
+				  g_print (" ");
+
+				g_print ("%03.2f, ", array_in[i]);
+
 			      }
 
 			    g_print ("\n");
@@ -999,6 +1040,14 @@ main (int argc, char *argv[])
 			    ho_string_cat (s_data_out, text_out);
 			    g_free (text_out);
 
+			    /* print font image in html code */
+			    text_out =
+			      g_strdup_printf
+			      ("\n<img src=\"%s-font-%d.jpeg\" alt=\"font image\">\n",
+			       image_out_path, font_number);
+			    ho_string_cat (s_data_out, text_out);
+			    g_free (text_out);
+
 			    ho_recognize_create_array_in (m_font_mask, m_mask,
 							  array_in);
 
@@ -1006,16 +1055,21 @@ main (int argc, char *argv[])
 			      {
 				if (!(i % 10))
 				  ho_string_cat (s_data_out, "\n");
-        
+				else if (!(i % 5))
+				  ho_string_cat (s_data_out, "  ");
+
 				text_out =
-				  g_strdup_printf ("%+02.1f, ", array_in[i]);
+				  g_strdup_printf ("%03.2f, ", array_in[i]);
 				ho_string_cat (s_data_out, text_out);
-        
+
 				g_free (text_out);
 
 			      }
 
-			    ho_string_cat (s_data_out, "\n");
+			    font = ho_recognize_font (m_font_mask, m_mask);
+			    text_out =
+			      g_strdup_printf ("\nfont guess is %s\n ", font);
+			    ho_string_cat (s_data_out, text_out);
 			  }
 
 			/* insert font to text out */
@@ -1026,7 +1080,7 @@ main (int argc, char *argv[])
 			    ho_string_cat (s_text_out, font);
 			    /* if debug print out the font */
 			    if (debug)
-			      g_print ("font :%s\n", font);
+			      g_print ("font guess is %s\n", font);
 			  }
 			else
 			  {
@@ -1063,6 +1117,14 @@ main (int argc, char *argv[])
       }				/* end of blocks loop */
 
   }
+
+  /* close data file html fromat */
+  if (s_data_out)
+    {
+      text_out = g_strdup_printf ("</pre>\n</body>\n</html>\n");
+      ho_string_cat (s_data_out, text_out);
+      g_free (text_out);
+    }
 
   if (debug || verbose)
     g_print ("end word recognition section.\n");

@@ -323,6 +323,18 @@ int
 ho_pixbuf_draw_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in,
 		       const unsigned char red, const unsigned char green,
 		       const unsigned char blue, const unsigned char alpha);
+/**
+  draw RGB bitmap
+ @param m a ho_pixbuf 
+ @param bit_in_red the bitmap to draw on the pixbuf red channel
+ @param bit_in_green the bitmap to draw on the pixbuf green channel
+ @param bit_in_blue the bitmap to draw on the pixbuf blue channel
+ @return FALSE
+ */
+int
+ho_pixbuf_draw_rgb_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in_red,
+			   const ho_bitmap * bit_in_green,
+			   const ho_bitmap * bit_in_blue);
 
 /**
   draw a bitmap

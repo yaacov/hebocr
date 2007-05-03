@@ -1340,3 +1340,36 @@ ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename)
 
   return FALSE;
 }
+
+int
+ho_pixbuf_draw_rgb_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in_red,
+			   const ho_bitmap * bit_in_green,
+			   const ho_bitmap * bit_in_blue)
+{
+  int x, y;
+  unsigned char new_red;
+  unsigned char new_green;
+  unsigned char new_blue;
+
+  /* sanity check */
+  if (m->width != bit_in_red->width || m->height != bit_in_red->height)
+    return TRUE;
+
+  /* is pixbuf color ? */
+  if (m->n_channels < 3)
+    return TRUE;
+
+  for (x = 0; x < bit_in_red->width; x++)
+    for (y = 0; y < bit_in_red->height; y++)
+      {
+	new_red = 255 * ho_bitmap_get (bit_in_red, x, y);
+	new_green = 255 * ho_bitmap_get (bit_in_green, x, y);
+	new_blue = 255 * ho_bitmap_get (bit_in_blue, x, y);
+
+	ho_pixbuf_set (m, x, y, 0, new_red);
+	ho_pixbuf_set (m, x, y, 1, new_green);
+	ho_pixbuf_set (m, x, y, 2, new_blue);
+      }
+
+  return FALSE;
+}
