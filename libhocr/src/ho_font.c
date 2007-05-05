@@ -1148,7 +1148,7 @@ ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 2;
+  int threshold = 0;
   int sum;
 
   /* get font start and end */
@@ -1167,11 +1167,11 @@ ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* set y start and y end */
-  dx = threshold * line_height / 100 + 1;
+  dx = threshold * line_height / 100;
   x1 = 0;
   x2 = 3 * m_text->width / 4 + 1;
 
-  dy = line_height / 10 + 2;
+  dy = line_height / 20 + 1;
   y1 = y_start;
   y2 = y_start + line_height + 1;
   if (y2 > m_text->height)
@@ -1282,11 +1282,11 @@ ho_font_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* set y start and y end */
-  dx = threshold * m_text->width / 100 + 1;
+  dx = threshold * m_text->width / 100;
   x1 = m_text->width - 3 * m_text->width / 4 - 1;
   x2 = m_text->width;
 
-  dy = line_height / 10 + 2;
+  dy = line_height / 20 + 1;
   y1 = y_start;
   y2 = y_start + line_height + 1;
   if (y2 > m_text->height)

@@ -101,6 +101,27 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
   *top = (double) (line_start - font_start) / (double) line_height;
   *bottom = (double) (line_end - font_end) / (double) line_height;
 
+  /* check if  font is not just a little off line */
+  if (*top < 0.1 && *top > -0.1)
+    {
+      /* regular size  */
+      if (*height < 1.1 && *height > 0.9)
+	{
+	  *top = *bottom = 0.0;
+	}
+      /* short and high font */
+      else
+	{
+	  *bottom -= *top;
+	  *top = 0.0;
+	}
+    }
+  else if (*bottom < 0.1 && *bottom > -0.1)
+    {
+      *top -= *bottom;
+      *bottom = 0.0;
+    }
+
   /* all values are 0..1 */
   *height = *height / 2.0;
   if (*height > 1.0)
@@ -935,8 +956,10 @@ ho_recognize_font_dot (const double *array_in)
   double return_value = 0.0;
 
   /* small font near the bottom */
-  if (array_in[0] < 0.2 && array_in[2] > 0.1 && array_in[2] < 0.3
-      && array_in[3] < -0.25)
+  if (array_in[0] < 0.20 && array_in[0] > 0.05 &&
+      array_in[1] < 0.20 && array_in[1] > 0.05 &&
+      array_in[3] < 0.22 && array_in[3] > 0.10
+      && array_in[4] < 0.55 && array_in[4] > 0.35 && array_in[35] < 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -948,7 +971,10 @@ ho_recognize_font_comma (const double *array_in)
   double return_value = 0.0;
 
   /* small font near the bottom */
-  if (array_in[0] < 0.25 && array_in[2] > 0.3 && array_in[3] < -0.25)
+  if (array_in[0] < 0.30 && array_in[0] > 0.15 &&
+      array_in[1] < 0.20 && array_in[1] > 0.10 &&
+      array_in[3] < 0.22 && array_in[3] > 0.10
+      && array_in[4] < 0.55 && array_in[4] > 0.35 && array_in[35] > 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -971,9 +997,11 @@ ho_recognize_font_tag (const double *array_in)
 {
   double return_value = 0.0;
 
-  /* small font near the bottom */
-  if (array_in[0] < 0.3 && array_in[2] > 0.25 && array_in[4] > 0.2
-      && array_in[10] < 0.5)
+  /* small font near the top */
+  if (array_in[0] < 0.31 && array_in[0] > 0.18 &&
+      array_in[1] < 0.26 && array_in[1] > 0.12 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42
+      && array_in[4] < 0.85 && array_in[4] > 0.45 && array_in[35] > 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -993,13 +1021,81 @@ ho_recognize_font_alef (const double *array_in)
 }
 
 double
+ho_recognize_font_bet (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.50 && array_in[1] > 0.30 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[6] > 0.5 && array_in[13] > 0.5 && array_in[12] < 0.5
+      && array_in[37] < 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_dalet (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the bottom */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.55 && array_in[1] > 0.33 &&
+      array_in[3] < 0.55 && array_in[3] > 0.45 &&
+      array_in[4] < 0.55 && array_in[4] > 0.45 &&
+      array_in[12] > 0.5 && array_in[5] > 0.5 && array_in[32] < 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_hey (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.50 && array_in[1] > 0.30 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[5] > 0.5 && array_in[32] > 0.5 && array_in[36] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
 ho_recognize_font_vav (const double *array_in)
 {
   double return_value = 0.0;
 
   /* small font near the bottom */
-  if (array_in[0] < 0.5 && array_in[0] > 0.42 && array_in[2] > 0.46
-      && array_in[3] < 0.02 && array_in[3] > -0.02)
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.35 && array_in[1] > 0.12 &&
+      array_in[3] < 0.55 && array_in[3] > 0.45 &&
+      array_in[4] < 0.55 && array_in[4] > 0.45 &&
+      array_in[12] < 0.5 && array_in[36] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_zayin (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the bottom */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.33 && array_in[1] > 0.12 &&
+      array_in[3] < 0.55 && array_in[3] > 0.45 &&
+      array_in[4] < 0.55 && array_in[4] > 0.45 &&
+      array_in[12] > 0.5 && array_in[36] > 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -1010,9 +1106,28 @@ ho_recognize_font_yud (const double *array_in)
 {
   double return_value = 0.0;
 
-  /* small font near the bottom */
-  if (array_in[0] < 0.35 && array_in[2] < 0.3 && array_in[4] > 0.15
-      && array_in[10] > 0.5)
+  /* small font near the top */
+  if (array_in[0] < 0.31 && array_in[0] > 0.18 &&
+      array_in[1] < 0.26 && array_in[1] > 0.12 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42
+      && array_in[4] < 0.85 && array_in[4] > 0.45 && array_in[35] < 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_caf (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.50 && array_in[1] > 0.30 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[6] > 0.5 && array_in[13] < 0.5 && array_in[30] < 0.5 &&
+      array_in[15] < 0.5 && array_in[25] < 0.5 && array_in[38] < 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -1024,7 +1139,94 @@ ho_recognize_font_lamed (const double *array_in)
   double return_value = 0.0;
 
   /* small font near the bottom */
-  if (array_in[0] > 0.55 && array_in[2] > 0.26 && array_in[3] > 0.05)
+  if (array_in[0] < 0.75 && array_in[0] > 0.60 &&
+      array_in[1] < 0.50 && array_in[1] > 0.25 &&
+      array_in[3] < 0.85 && array_in[3] > 0.55 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_mem_sofit (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.50 && array_in[1] > 0.30 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[6] > 0.5 && array_in[30] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_ayin (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.50 && array_in[1] > 0.30 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[13] < 0.5 && array_in[30] < 0.5 &&
+      array_in[15] > 0.5 && array_in[25] > 0.5 && array_in[38] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_tzadi (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.50 && array_in[1] > 0.30 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[6] > 0.5 && array_in[13] > 0.5 && array_in[12] > 0.5
+      && array_in[37] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_shin (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.60 && array_in[0] > 0.40 &&
+      array_in[1] < 0.60 && array_in[1] > 0.40 &&
+      array_in[3] < 0.60 && array_in[3] > 0.40 &&
+      array_in[4] < 0.60 && array_in[4] > 0.40 &&
+      array_in[10] > 0.5 && array_in[35] < 0.5 && array_in[38] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_tav (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.55 && array_in[1] > 0.40 &&
+      array_in[3] < 0.60 && array_in[3] > 0.40 &&
+      array_in[4] < 0.60 && array_in[4] > 0.40 &&
+      array_in[11] > 0.5 && array_in[5] > 0.5 &&
+      array_in[8] > 0.5 && array_in[28] > 0.5 &&
+      array_in[35] > 0.5 && array_in[36] > 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -1041,14 +1243,44 @@ ho_recognize_array (const double *array_in, const int sign_index)
     case 1:			/* alef */
       return_value = ho_recognize_font_alef (array_in);
       break;
+    case 2:			/* bet */
+      return_value = ho_recognize_font_bet (array_in);
+      break;
+    case 4:			/* dalet */
+      return_value = ho_recognize_font_dalet (array_in);
+      break;
+    case 5:			/* hey */
+      return_value = ho_recognize_font_hey (array_in);
+      break;
     case 6:			/* vav */
       return_value = ho_recognize_font_vav (array_in);
+      break;
+    case 7:			/* zayin */
+      return_value = ho_recognize_font_zayin (array_in);
       break;
     case 10:			/* yud */
       return_value = ho_recognize_font_yud (array_in);
       break;
+    case 11:			/* caf */
+      return_value = ho_recognize_font_caf (array_in);
+      break;
     case 13:			/* lamed */
       return_value = ho_recognize_font_lamed (array_in);
+      break;
+    case 15:			/* mem sofit */
+      return_value = ho_recognize_font_mem_sofit (array_in);
+      break;
+    case 19:			/* ayin */
+      return_value = ho_recognize_font_ayin (array_in);
+      break;
+    case 22:			/* tzadi */
+      return_value = ho_recognize_font_tzadi (array_in);
+      break;
+    case 26:			/* shin */
+      return_value = ho_recognize_font_shin (array_in);
+      break;
+    case 27:			/* tav */
+      return_value = ho_recognize_font_tav (array_in);
       break;
     case 28:			/* dot */
       return_value = ho_recognize_font_dot (array_in);

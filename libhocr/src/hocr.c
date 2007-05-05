@@ -1003,15 +1003,21 @@ main (int argc, char *argv[])
 		    if (m_font_mask && m_mask)
 		      {
 			char *font;
+			double array_in[HO_ARRAY_IN_SIZE];
+			double array_out[HO_ARRAY_OUT_SIZE];
+
+			/* insert font to text out */
+			ho_recognize_create_array_in (m_text, m_mask,
+						      array_in);
+			ho_recognize_create_array_out (array_in, array_out);
+			font = ho_recognize_array_out_to_font (array_out);
+			//font = ho_recognize_font (m_font_mask, m_mask);
+			ho_string_cat (s_text_out, font);
 
 			/* if debug printout font data stream */
 			if (debug)
 			  {
 			    int i;
-			    double array_in[HO_ARRAY_IN_SIZE];
-
-			    ho_recognize_create_array_in (m_font_mask, m_mask,
-							  array_in);
 
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
@@ -1032,7 +1038,6 @@ main (int argc, char *argv[])
 			    && m_font_mask)
 			  {
 			    int i;
-			    double array_in[HO_ARRAY_IN_SIZE];
 
 			    /* print out the number of the font */
 			    text_out =
@@ -1048,9 +1053,6 @@ main (int argc, char *argv[])
 			    ho_string_cat (s_data_out, text_out);
 			    g_free (text_out);
 
-			    ho_recognize_create_array_in (m_font_mask, m_mask,
-							  array_in);
-
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
 				if (!(i % 10))
@@ -1063,32 +1065,17 @@ main (int argc, char *argv[])
 				ho_string_cat (s_data_out, text_out);
 
 				g_free (text_out);
-
 			      }
 
-			    font = ho_recognize_font (m_font_mask, m_mask);
 			    text_out =
 			      g_strdup_printf ("\nfont guess is %s\n ", font);
 			    ho_string_cat (s_data_out, text_out);
 			  }
 
-			/* insert font to text out */
-			if (m_font_mask && m_mask)
-			  {
-			    font = ho_recognize_font (m_font_mask, m_mask);
+			/* if debug print out the font */
+			if (debug)
+			  g_print ("font guess is %s\n", font);
 
-			    ho_string_cat (s_text_out, font);
-			    /* if debug print out the font */
-			    if (debug)
-			      g_print ("font guess is %s\n", font);
-			  }
-			else
-			  {
-			    ho_string_cat (s_text_out, "#");
-			    /* if debug print out the font */
-			    if (debug)
-			      g_print ("font : \n");
-			  }
 		      }
 
 		    /* free bitmaps and others */
@@ -1110,6 +1097,13 @@ main (int argc, char *argv[])
 	      }			/* end of words loop */
 	    /* add a line-end after a line to text out */
 	    ho_string_cat (s_text_out, "\n");
+
+	    //// START DEBUG, add font number at the beginning of line 
+	    text_out = g_strdup_printf ("(%d) ", font_number + 1);
+	    ho_string_cat (s_text_out, text_out);
+	    g_free (text_out);
+	    //// END DEBUG, add font number at the beginning of line 
+
 	  }			/* end of lines loop */
 	/* add a line-end after a block end */
 	ho_string_cat (s_text_out, "\n");
