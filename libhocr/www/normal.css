@@ -5,7 +5,7 @@ body {
 	color:#000;
 	margin:0;
 	padding:0;
-  background: #558;
+  background: #f9f9fe;
 }
 
 * {
@@ -118,31 +118,33 @@ p.top {
 }
 
 #wrapper {
-	width:700px;
-	margin: 0 auto;
-	padding: 0px 0px 0px 0px;
-   background: #fff;
-   
+  width:700px;
+  margin: 0 auto;
+  padding: 0px 0px 0px 0px;
+  background: #fff;
+  border-right:1px solid #000; 
+  border-left:1px solid #000; 
+  border-bottom:1px solid #000;
 }
 
 #footer {
-	text-align:left;
-	margin:0;
-	padding:0px 30px 30px 30px;
-	color:#999;
+  text-align:left;
+  margin:0;
+  padding:0px 30px 30px 30px;
+  color:#999;
 }
 
 #header {
-   margin:0;
-	padding:0px 30px 0px 30px;
-	background: #fff;
+  margin:0;
+  padding:0px 30px 0px 30px;
+  background: #fff;
 }
 
 #header .description {
-	float:left;
-	padding:0px 0 0 0;
-   margin:40px 0 0 0;
-	color:#000;
+  float:left;
+  padding:0px 0 0 0;
+  margin:40px 0 0 0;
+  color:#338;
 }
 
 #header h1 {
@@ -150,7 +152,7 @@ p.top {
 	margin:0px 0px 0px 0px;
 	padding: 25px 0px 25px 0px;
 	border-bottom:1px solid #55f;
-	color: #000;
+	color: #55a;
 }
 
 #nav {
@@ -202,20 +204,20 @@ p.top {
 }
 
 #content h2 {
-  color:#000;
+  color:#338;
 	border-bottom:1px solid #55f;
 	padding:20px 0 10px 0;
 	margin:0 0 10px 0;
 }
 
 #content h2 a {
-   color:#000;
+   color:#338;
 	padding:20px 0 10px 0;
 	margin:0 0 10px 0;
 }
 
 #content h3 {
-   color:#000;
+   color:#338;
 	margin:10px 0;
 	font-size:160%;
 	color:#222;

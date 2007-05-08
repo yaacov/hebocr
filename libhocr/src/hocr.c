@@ -103,24 +103,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.\n";
 static gchar *font_filters_list = "hocr - Hebrew OCR utility\n\
 %s\n\
 Font filters list\n\
- 1. main font.\n\
- 2. second part.\n\
- 3. holes in font.\n\
- 4. horizontal bars in font.\n\
- 5. vertical bars in font.\n\
- 6. 45 deg. diagonals in font.\n\
- 7. 135 deg. diagonals in font.\n\
- 8. thined font.\n\
- 9. crosses in font.\n\
+(add 100 to use filter on font holes, e.g. 118 is egdes in the font holes)\n\
+ 1.  main font.\n\
+ 2.  second part.\n\
+ 3.  holes in font.\n\
+ 4.  horizontal bars in font.\n\
+ 5.  vertical bars in font.\n\
+ 6.  45 deg. diagonals in font.\n\
+ 7.  135 deg. diagonals in font.\n\
+ 8.  thined font.\n\
+ 9.  crosses in font.\n\
  10. ends in font.\n\
  11. top font edges.\n\
- 12. bottom font edges.\n\
- 13. left font edges.\n\
- 14. right font edges.\n\
- 15. top font notches.\n\
- 16. bottom font notches.\n\
- 17. left font notches.\n\
- 18. right font notches.\n\
+ 12. big top font edges.\n\
+ 13. bottom font edges.\n\
+ 14. big bottom font edges.\n\
+ 15. left font edges.\n\
+ 16. big left font edges.\n\
+ 17. right font edges.\n\
+ 18. big right font edges.\n\
+ 19. top font notches.\n\
+ 20. bottom font notches.\n\
+ 21. left font notches.\n\
+ 22. right font notches.\n\
 ";
 
 static GOptionEntry file_entries[] = {
@@ -943,9 +948,21 @@ main (int argc, char *argv[])
 
 			/* debug the font filter functions: */
 			if (save_fonts && debug_font_filter)
-			  m_font_test =
-			    ho_font_filter (m_font_mask, m_mask,
-					    debug_font_filter);
+			  {
+			    if (debug_font_filter < 100)
+			      {
+				m_font_test =
+				  ho_font_filter (m_font_mask, m_mask,
+						  debug_font_filter);
+			      }
+			    else
+			      {
+				m_font_test =
+				  ho_font_holes_filter (m_font_mask, m_mask,
+							debug_font_filter -
+							100);
+			      }
+			  }
 		      }
 
 		    /* recognize the font and send it out */

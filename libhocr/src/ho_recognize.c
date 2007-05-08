@@ -59,8 +59,9 @@ ho_recognize_array_out_size ()
 int
 ho_recognize_dimentions (const ho_bitmap * m_text,
 			 const ho_bitmap * m_mask, double *height,
-			 double *width, double *height_by_width, double *top,
-			 double *bottom)
+			 double *width, double *top, double *bottom,
+			 double *top_left, double *top_right,
+			 double *bottom_left, double *bottom_right)
 {
   int sum, x, y;
   int font_start;
@@ -96,7 +97,6 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
 
   *height = (double) font_height / (double) line_height;
   *width = (double) (m_text->width) / (double) line_height;
-  *height_by_width = (double) font_height / (double) (m_text->width);
 
   *top = (double) (line_start - font_start) / (double) line_height;
   *bottom = (double) (line_end - font_end) / (double) line_height;
@@ -131,10 +131,6 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
   if (*width > 1.0)
     *width = 1.0;
 
-  *height_by_width = *height_by_width / 4.0;
-  if (*height_by_width > 1.0)
-    *height_by_width = 1.0;
-
   *top = (*top + 1.0) / 2.0;
   if (*top > 1.0)
     *top = 1.0;
@@ -147,6 +143,39 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
   if (*bottom < 0.0)
     *bottom = 0.0;
 
+  /* get font egdes */
+  for (y = font_start, x = 0;
+       x < m_mask->width / 2 && y < (font_start + font_height / 2)
+       && !ho_bitmap_get (m_text, x, y); x++, y++);
+  *top_left = (double) x / (double) (m_mask->width / 2);
+
+  if (*top_left > 1.0)
+    *top_left = 1.0;
+
+  for (y = font_end, x = 0;
+       x < m_mask->width / 2 && y > (font_start + font_height / 2)
+       && !ho_bitmap_get (m_text, x, y); x++, y--);
+  *bottom_left = (double) x / (double) (m_mask->width / 2);
+
+  if (*bottom_left > 1.0)
+    *bottom_left = 1.0;
+
+  for (y = font_start, x = m_text->width;
+       x > m_mask->width / 2 && y < (font_start + font_height / 2)
+       && !ho_bitmap_get (m_text, x, y); x--, y++);
+  *top_right = (double) (m_mask->width - x) / (double) (m_mask->width / 2);
+
+  if (*top_right > 1.0)
+    *top_right = 1.0;
+
+  for (y = font_end, x = m_text->width;
+       x > m_mask->width / 2 && y > (font_start + font_height / 2)
+       && !ho_bitmap_get (m_text, x, y); x--, y--);
+  *bottom_right = (double) (m_mask->width - x) / (double) (m_mask->width / 2);
+
+  if (*bottom_right > 1.0)
+    *bottom_right = 1.0;
+
   return FALSE;
 }
 
@@ -154,7 +183,8 @@ int
 ho_recognize_bars (const ho_bitmap * m_text,
 		   const ho_bitmap * m_mask, double *has_top_bar,
 		   double *has_bottom_bar, double *has_left_bar,
-		   double *has_right_bar, double *has_diagonal_bar)
+		   double *has_right_bar, double *has_diagonal_bar,
+		   double *has_diagonal_left_bar)
 {
   int sum, x, y;
   int font_start;
@@ -256,6 +286,19 @@ ho_recognize_bars (const ho_bitmap * m_text,
   if (ho_bitmap_get (m_bars, x, y) && x < m_bars->width)
     *has_diagonal_bar = 1.0;
 
+  /* get diagonals */
+  ho_bitmap_free (m_bars);
+  m_bars = ho_font_diagonal_left (m_text, m_mask);
+  if (!m_bars)
+    return TRUE;
+
+  /* look for a bar in left 1/4 of font */
+  *has_diagonal_left_bar = 0.0;
+  y = m_bars->height / 2;
+  for (x = 0; x < m_bars->width && !ho_bitmap_get (m_bars, x, y); x++);
+  if (ho_bitmap_get (m_bars, x, y) && x < m_bars->width)
+    *has_diagonal_left_bar = 1.0;
+
   ho_bitmap_free (m_bars);
 
   return FALSE;
@@ -263,10 +306,18 @@ ho_recognize_bars (const ho_bitmap * m_text,
 
 int
 ho_recognize_edges (const ho_bitmap * m_text,
-		    const ho_bitmap * m_mask, double *has_top_left_edge,
-		    double *has_bottom_left_edge, double *has_top_right_edge,
-		    double *has_bottom_right_edge, double *has_left_top_edge,
-		    double *has_right_top_edge, double *has_left_bottom_edge,
+		    const ho_bitmap * m_mask,
+		    double *has_top_left_edge,
+		    double *has_mid_left_edge,
+		    double *has_bottom_left_edge,
+		    double *has_top_right_edge,
+		    double *has_mid_right_edge,
+		    double *has_bottom_right_edge,
+		    double *has_left_top_edge,
+		    double *has_mid_top_edge,
+		    double *has_right_top_edge,
+		    double *has_left_bottom_edge,
+		    double *has_mid_bottom_edge,
 		    double *has_right_bottom_edge)
 {
   int sum, x, y;
@@ -276,7 +327,7 @@ ho_recognize_edges (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts = 4;
+  int font_parts = 3;
 
   ho_bitmap *m_bars = NULL;
 
@@ -324,6 +375,15 @@ ho_recognize_edges (const ho_bitmap * m_text,
     *has_top_left_edge = 1.0;
 
   /* look for a bar in bottom 1/4 of font */
+  *has_mid_left_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_end - 2 * font_height / font_parts;
+       y < font_end - font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y++);
+  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
+    *has_mid_left_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
   *has_bottom_left_edge = 0.0;
   x = m_bars->width / 2;
   for (y = font_end;
@@ -347,6 +407,15 @@ ho_recognize_edges (const ho_bitmap * m_text,
   if (ho_bitmap_get (m_bars, x, y)
       && y < font_start + font_height / font_parts)
     *has_top_right_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_mid_right_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_end - 2 * font_height / font_parts;
+       y < font_end - font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y++);
+  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
+    *has_mid_right_edge = 1.0;
 
   /* look for a bar in bottom 1/4 of font */
   *has_bottom_right_edge = 0.0;
@@ -376,6 +445,16 @@ ho_recognize_edges (const ho_bitmap * m_text,
     *has_left_top_edge = 1.0;
 
   /* look for a bar in bottom 1/4 of font */
+  *has_mid_top_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = (font_parts - 2) * m_text->width / font_parts;
+       x < (font_parts - 1) * m_text->width / font_parts
+       && !ho_bitmap_get (m_bars, x, y); x++);
+  if (ho_bitmap_get (m_bars, x, y)
+      && x < (font_parts - 1) * m_text->width / font_parts)
+    *has_mid_top_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
   *has_right_top_edge = 0.0;
   y = m_bars->height / 2;
   for (x = m_text->width;
@@ -398,6 +477,16 @@ ho_recognize_edges (const ho_bitmap * m_text,
        x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++);
   if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
     *has_left_bottom_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_mid_bottom_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = (font_parts - 2) * m_text->width / font_parts;
+       x < (font_parts - 1) * m_text->width / font_parts
+       && !ho_bitmap_get (m_bars, x, y); x--);
+  if (ho_bitmap_get (m_bars, x, y)
+      && x < (font_parts - 1) * m_text->width / font_parts)
+    *has_mid_bottom_edge = 1.0;
 
   /* look for a bar in bottom 1/4 of font */
   *has_right_bottom_edge = 0.0;
@@ -643,20 +732,18 @@ ho_recognize_parts (const ho_bitmap * m_text,
   if (!font_height || !line_height)
     return TRUE;
 
+  *has_one_hole = 0.0;
+  *has_two_holes = 0.0;
+
   /* holes */
   m_parts = ho_font_holes (m_text, m_mask);
-  if (!m_parts)
-    {
-      *has_one_hole = 0.0;
-      *has_two_holes = 0.0;
-    }
-  else
+  if (m_parts)
     {
       sum = ho_bitmap_filter_count_objects (m_parts);
       if (sum == 1)
 	*has_one_hole = 1.0;
-      else
-	*has_two_holes = 0.0;
+      else if (sum == 2)
+	*has_two_holes = 1.0;
     }
 
   /* hey and kuf part */
@@ -690,10 +777,25 @@ ho_recognize_parts (const ho_bitmap * m_text,
 
 int
 ho_recognize_ends (const ho_bitmap * m_text,
-		   const ho_bitmap * m_mask, double *has_top_left_end,
-		   double *has_top_right_end, double *has_bottom_left_end,
-		   double *has_bottom_right_end, double *has_mid_mid_cross,
-		   double *has_mid_bottom_cross)
+		   const ho_bitmap * m_mask,
+		   double *has_top_left_end,
+		   double *has_top_mid_end,
+		   double *has_top_right_end,
+		   double *has_mid_left_end,
+		   double *has_mid_mid_end,
+		   double *has_mid_right_end,
+		   double *has_bottom_left_end,
+		   double *has_bottom_mid_end,
+		   double *has_bottom_right_end,
+		   double *has_top_left_cross,
+		   double *has_top_mid_cross,
+		   double *has_top_right_cross,
+		   double *has_mid_left_cross,
+		   double *has_mid_mid_cross,
+		   double *has_mid_right_cross,
+		   double *has_bottom_left_cross,
+		   double *has_bottom_mid_cross,
+		   double *has_bottom_right_cross)
 {
   int sum, x, y;
   int font_start;
@@ -707,12 +809,28 @@ ho_recognize_ends (const ho_bitmap * m_text,
 
   /* init values */
   *has_top_left_end = 0.0;
+  *has_top_mid_end = 0.0;
   *has_top_right_end = 0.0;
+
+  *has_mid_left_end = 0.0;
+  *has_mid_mid_end = 0.0;
+  *has_mid_right_end = 0.0;
+
   *has_bottom_left_end = 0.0;
+  *has_bottom_mid_end = 0.0;
   *has_bottom_right_end = 0.0;
 
+  *has_top_left_cross = 0.0;
+  *has_top_mid_cross = 0.0;
+  *has_top_right_cross = 0.0;
+
+  *has_mid_left_cross = 0.0;
   *has_mid_mid_cross = 0.0;
-  *has_mid_bottom_cross = 0.0;
+  *has_mid_right_cross = 0.0;
+
+  *has_bottom_left_cross = 0.0;
+  *has_bottom_mid_cross = 0.0;
+  *has_bottom_right_cross = 0.0;
 
   /* get line start and end */
   x = m_mask->width / 2;
@@ -751,7 +869,16 @@ ho_recognize_ends (const ho_bitmap * m_text,
   if (ho_bitmap_get (m_parts, x, y))
     *has_top_left_end = 1.0;
 
-  /* top left */
+  /* top mid */
+  for (x = m_parts->width / 3;
+       x < 2 * m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start;
+	 y < font_start + font_height / 3 && !ho_bitmap_get (m_parts, x, y);
+	 y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_top_mid_end = 1.0;
+
+  /* top right */
   for (x = 2 * m_parts->width / 3;
        x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++)
     for (y = font_start;
@@ -760,6 +887,32 @@ ho_recognize_ends (const ho_bitmap * m_text,
   if (ho_bitmap_get (m_parts, x, y))
     *has_top_right_end = 1.0;
 
+  /* mid left */
+  for (x = 0; x < m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + font_height / 3;
+	 y < font_start + 2 * font_height / 3
+	 && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_left_end = 1.0;
+
+  /* mid mid */
+  for (x = m_parts->width / 3;
+       x < 2 * m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + font_height / 3;
+	 y < font_start + 2 * font_height / 3
+	 && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_mid_end = 1.0;
+
+  /* mid right */
+  for (x = 2 * m_parts->width / 3;
+       x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + font_height / 3;
+	 y < font_start + 2 * font_height / 3
+	 && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_right_end = 1.0;
+
   /* bottom left */
   for (x = 0; x < m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
     for (y = font_start + 2 * font_height / 3;
@@ -767,7 +920,15 @@ ho_recognize_ends (const ho_bitmap * m_text,
   if (ho_bitmap_get (m_parts, x, y))
     *has_bottom_left_end = 1.0;
 
-  /* bottom left */
+  /* bottom mid */
+  for (x = m_parts->width / 3;
+       x < 2 * m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + 2 * font_height / 3;
+	 y < font_start + font_height && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_mid_end = 1.0;
+
+  /* bottom right */
   for (x = 2 * m_parts->width / 3;
        x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++)
     for (y = font_start + 2 * font_height / 3;
@@ -781,6 +942,40 @@ ho_recognize_ends (const ho_bitmap * m_text,
   if (!m_parts)
     return TRUE;
 
+  /* top left */
+  for (x = 0; x < m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start;
+	 y < font_start + font_height / 3 && !ho_bitmap_get (m_parts, x, y);
+	 y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_top_left_cross = 1.0;
+
+  /* top mid */
+  for (x = m_parts->width / 3;
+       x < 2 * m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start;
+	 y < font_start + font_height / 3 && !ho_bitmap_get (m_parts, x, y);
+	 y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_top_mid_cross = 1.0;
+
+  /* top right */
+  for (x = 2 * m_parts->width / 3;
+       x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start;
+	 y < font_start + font_height / 3 && !ho_bitmap_get (m_parts, x, y);
+	 y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_top_right_cross = 1.0;
+
+  /* mid left */
+  for (x = 0; x < m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + font_height / 3;
+	 y < font_start + 2 * font_height / 3
+	 && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_left_cross = 1.0;
+
   /* mid mid */
   for (x = m_parts->width / 3;
        x < 2 * m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
@@ -788,15 +983,39 @@ ho_recognize_ends (const ho_bitmap * m_text,
 	 y < font_start + 2 * font_height / 3
 	 && !ho_bitmap_get (m_parts, x, y); y++);
   if (ho_bitmap_get (m_parts, x, y))
-    *has_mid_mid_cross = 1.0;
+    *has_bottom_mid_cross = 1.0;
 
-  /* mid bottom */
+  /* mid right */
+  for (x = 2 * m_parts->width / 3;
+       x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + font_height / 3;
+	 y < font_start + 2 * font_height / 3
+	 && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_right_cross = 1.0;
+
+  /* bottom left */
+  for (x = 0; x < m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + 2 * font_height / 3;
+	 y < font_start + font_height && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_left_cross = 1.0;
+
+  /* bottom mid */
   for (x = m_parts->width / 3;
        x < 2 * m_parts->width / 3 && !ho_bitmap_get (m_parts, x, y); x++)
     for (y = font_start + 2 * font_height / 3;
 	 y < font_start + font_height && !ho_bitmap_get (m_parts, x, y); y++);
   if (ho_bitmap_get (m_parts, x, y))
-    *has_mid_bottom_cross = 1.0;
+    *has_bottom_mid_cross = 1.0;
+
+  /* bottom right */
+  for (x = 2 * m_parts->width / 3;
+       x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++)
+    for (y = font_start + 2 * font_height / 3;
+	 y < font_start + font_height && !ho_bitmap_get (m_parts, x, y); y++);
+  if (ho_bitmap_get (m_parts, x, y))
+    *has_bottom_right_cross = 1.0;
 
   ho_bitmap_free (m_parts);
 
@@ -808,26 +1027,34 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 			      const ho_bitmap * m_mask, double *array_in)
 {
   int i;
+
   double height;
   double width;
-  double height_by_width;
   double top;
   double bottom;
+  double top_left;
+  double top_right;
+  double bottom_left;
+  double bottom_right;
 
   double has_top_bar;
   double has_bottom_bar;
   double has_left_bar;
   double has_right_bar;
   double has_diagonal_bar;
+  double has_diagonal_left_bar;
 
   double has_top_left_edge;
+  double has_mid_left_edge;
   double has_bottom_left_edge;
   double has_top_right_edge;
+  double has_mid_right_edge;
   double has_bottom_right_edge;
-
   double has_left_top_edge;
+  double has_mid_top_edge;
   double has_right_top_edge;
   double has_left_bottom_edge;
+  double has_mid_bottom_edge;
   double has_right_bottom_edge;
 
   double has_top_left_notch;
@@ -848,53 +1075,86 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   double has_hey_part;
 
   double has_top_left_end;
+  double has_top_mid_end;
   double has_top_right_end;
+  double has_mid_left_end;
+  double has_mid_mid_end;
+  double has_mid_right_end;
   double has_bottom_left_end;
+  double has_bottom_mid_end;
   double has_bottom_right_end;
-
+  double has_top_left_cross;
+  double has_top_mid_cross;
+  double has_top_right_cross;
+  double has_mid_left_cross;
   double has_mid_mid_cross;
-  double has_mid_bottom_cross;
+  double has_mid_right_cross;
+  double has_bottom_left_cross;
+  double has_bottom_mid_cross;
+  double has_bottom_right_cross;
 
   for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
     array_in[i] = 0.0;
 
-  ho_recognize_dimentions (m_text,
-			   m_mask, &height,
-			   &width, &height_by_width, &top, &bottom);
+  ho_recognize_dimentions (m_text, m_mask,
+			   &height, &width, &top, &bottom,
+			   &top_left, &top_right,
+			   &bottom_left, &bottom_right);
 
   array_in[0] = height;
   array_in[1] = width;
-  array_in[2] = height_by_width;
+  array_in[2] = width / height;
+  if (array_in[2] > 1.0)
+    array_in[2] = 1.0;
   array_in[3] = top;
   array_in[4] = bottom;
+  array_in[5] = top_left;
+  array_in[6] = top_right;
+  array_in[7] = bottom_left;
+  array_in[8] = bottom_right;
 
-  ho_recognize_bars (m_text,
-		     m_mask, &has_top_bar,
-		     &has_bottom_bar, &has_left_bar,
-		     &has_right_bar, &has_diagonal_bar);
+  ho_recognize_bars (m_text, m_mask,
+		     &has_top_bar,
+		     &has_bottom_bar,
+		     &has_left_bar,
+		     &has_right_bar,
+		     &has_diagonal_bar, &has_diagonal_left_bar);
 
-  array_in[5] = has_top_bar;
-  array_in[6] = has_bottom_bar;
-  array_in[7] = has_left_bar;
-  array_in[8] = has_right_bar;
-  array_in[9] = has_diagonal_bar;
+  array_in[9] = has_top_bar;
+  array_in[10] = has_bottom_bar;
+  array_in[11] = has_left_bar;
+  array_in[12] = has_right_bar;
+  array_in[13] = has_diagonal_bar;
+  array_in[14] = has_diagonal_left_bar;
 
-  ho_recognize_edges (m_text,
-		      m_mask, &has_top_left_edge,
-		      &has_bottom_left_edge, &has_top_right_edge,
-		      &has_bottom_right_edge, &has_left_top_edge,
-		      &has_right_top_edge, &has_left_bottom_edge,
-		      &has_right_bottom_edge);
+  ho_recognize_edges (m_text, m_mask,
+		      &has_top_left_edge,
+		      &has_mid_left_edge,
+		      &has_bottom_left_edge,
+		      &has_top_right_edge,
+		      &has_mid_right_edge,
+		      &has_bottom_right_edge,
+		      &has_left_top_edge,
+		      &has_mid_top_edge,
+		      &has_right_top_edge,
+		      &has_left_bottom_edge,
+		      &has_mid_bottom_edge, &has_right_bottom_edge);
 
-  array_in[10] = has_top_left_edge;
-  array_in[11] = has_bottom_left_edge;
-  array_in[12] = has_top_right_edge;
-  array_in[13] = has_bottom_right_edge;
+  array_in[15] = has_top_left_edge;
+  array_in[16] = has_mid_left_edge;
+  array_in[17] = has_bottom_left_edge;
 
-  array_in[14] = has_left_top_edge;
-  array_in[15] = has_right_top_edge;
-  array_in[16] = has_left_bottom_edge;
-  array_in[17] = has_right_bottom_edge;
+  array_in[18] = has_top_right_edge;
+  array_in[19] = has_mid_right_edge;
+  array_in[20] = has_bottom_right_edge;
+
+  array_in[21] = has_left_top_edge;
+  array_in[22] = has_mid_top_edge;
+  array_in[23] = has_right_top_edge;
+
+  array_in[24] = has_left_bottom_edge;
+  array_in[25] = has_mid_bottom_edge;
+  array_in[26] = has_right_bottom_edge;
 
   ho_recognize_notches (m_text,
 			m_mask,
@@ -910,42 +1170,72 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 			&has_left_bottom_notch,
 			&has_mid_bottom_notch, &has_right_bottom_notch);
 
-  array_in[18] = has_top_left_notch;
-  array_in[19] = has_mid_left_notch;
-  array_in[20] = has_bottom_left_notch;
+  array_in[27] = has_top_left_notch;
+  array_in[28] = has_mid_left_notch;
+  array_in[29] = has_bottom_left_notch;
 
-  array_in[21] = has_top_right_notch;
-  array_in[22] = has_mid_right_notch;
-  array_in[23] = has_bottom_right_notch;
+  array_in[30] = has_top_right_notch;
+  array_in[31] = has_mid_right_notch;
+  array_in[32] = has_bottom_right_notch;
 
-  array_in[24] = has_left_top_notch;
-  array_in[25] = has_mid_top_notch;
-  array_in[26] = has_right_top_notch;
+  array_in[33] = has_left_top_notch;
+  array_in[34] = has_mid_top_notch;
+  array_in[35] = has_right_top_notch;
 
-  array_in[27] = has_left_bottom_notch;
-  array_in[28] = has_mid_bottom_notch;
-  array_in[29] = has_right_bottom_notch;
+  array_in[36] = has_left_bottom_notch;
+  array_in[37] = has_mid_bottom_notch;
+  array_in[38] = has_right_bottom_notch;
+
+  ho_recognize_ends (m_text,
+		     m_mask,
+		     &has_top_left_end,
+		     &has_top_mid_end,
+		     &has_top_right_end,
+		     &has_mid_left_end,
+		     &has_mid_mid_end,
+		     &has_mid_right_end,
+		     &has_bottom_left_end,
+		     &has_bottom_mid_end,
+		     &has_bottom_right_end,
+		     &has_top_left_cross,
+		     &has_top_mid_cross,
+		     &has_top_right_cross,
+		     &has_mid_left_cross,
+		     &has_mid_mid_cross,
+		     &has_mid_right_cross,
+		     &has_bottom_left_cross,
+		     &has_bottom_mid_cross, &has_bottom_right_cross);
+
+  array_in[39] = has_top_left_end;
+  array_in[40] = has_top_mid_end;
+  array_in[41] = has_top_right_end;
+
+  array_in[42] = has_mid_left_end;
+  array_in[43] = has_mid_mid_end;
+  array_in[44] = has_mid_right_end;
+
+  array_in[45] = has_bottom_left_end;
+  array_in[46] = has_bottom_mid_end;
+  array_in[47] = has_bottom_right_end;
+
+  array_in[48] = has_top_left_cross;
+  array_in[49] = has_top_mid_cross;
+  array_in[50] = has_top_right_cross;
+
+  array_in[51] = has_mid_left_cross;
+  array_in[52] = has_mid_mid_cross;
+  array_in[53] = has_mid_right_cross;
+
+  array_in[54] = has_bottom_left_cross;
+  array_in[55] = has_bottom_mid_cross;
+  array_in[56] = has_bottom_right_cross;
 
   ho_recognize_parts (m_text,
 		      m_mask, &has_one_hole, &has_two_holes, &has_hey_part);
 
-  array_in[30] = has_one_hole;
-  array_in[31] = has_two_holes;
-  array_in[32] = has_hey_part;
-
-  ho_recognize_ends (m_text,
-		     m_mask, &has_top_left_end,
-		     &has_top_right_end, &has_bottom_left_end,
-		     &has_bottom_right_end, &has_mid_mid_cross,
-		     &has_mid_bottom_cross);
-
-  array_in[33] = has_top_left_end;
-  array_in[34] = has_top_right_end;
-  array_in[35] = has_bottom_left_end;
-  array_in[36] = has_bottom_right_end;
-
-  array_in[37] = has_mid_mid_cross;
-  array_in[38] = has_mid_bottom_cross;
+  array_in[57] = has_one_hole;
+  array_in[58] = has_two_holes;
+  array_in[59] = has_hey_part;
 
   return 0;
 }
@@ -1076,10 +1366,12 @@ ho_recognize_font_vav (const double *array_in)
 
   /* small font near the bottom */
   if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
-      array_in[1] < 0.35 && array_in[1] > 0.12 &&
+      array_in[1] < 0.31 && array_in[1] > 0.12 &&
       array_in[3] < 0.55 && array_in[3] > 0.45 &&
       array_in[4] < 0.55 && array_in[4] > 0.45 &&
-      array_in[12] < 0.5 && array_in[36] > 0.5)
+      array_in[12] < 0.5 &&
+      array_in[5] > 0.5 && array_in[6] < 0.5 &&
+      array_in[7] < 0.5 && array_in[8] > 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -1149,6 +1441,23 @@ ho_recognize_font_lamed (const double *array_in)
 }
 
 double
+ho_recognize_font_mem (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the top */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.50 && array_in[1] > 0.30 &&
+      array_in[3] < 0.58 && array_in[3] > 0.42 &&
+      array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[27] > 0.5 && (array_in[24] > 0.5 || array_in[25] > 0.5)
+      && array_in[11] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
 ho_recognize_font_mem_sofit (const double *array_in)
 {
   double return_value = 0.0;
@@ -1174,6 +1483,7 @@ ho_recognize_font_ayin (const double *array_in)
       array_in[1] < 0.50 && array_in[1] > 0.30 &&
       array_in[3] < 0.58 && array_in[3] > 0.42 &&
       array_in[4] < 0.58 && array_in[4] > 0.42 &&
+      array_in[5] < 0.5 &&
       array_in[13] < 0.5 && array_in[30] < 0.5 &&
       array_in[15] > 0.5 && array_in[25] > 0.5 && array_in[38] > 0.5)
     return_value = 1.0;
@@ -1193,6 +1503,24 @@ ho_recognize_font_tzadi (const double *array_in)
       array_in[4] < 0.58 && array_in[4] > 0.42 &&
       array_in[6] > 0.5 && array_in[13] > 0.5 && array_in[12] > 0.5
       && array_in[37] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_resh (const double *array_in)
+{
+  double return_value = 0.0;
+
+  /* small font near the bottom */
+  if (array_in[0] < 0.55 && array_in[0] > 0.40 &&
+      array_in[1] < 0.60 && array_in[1] > 0.31 &&
+      array_in[3] < 0.55 && array_in[3] > 0.45 &&
+      array_in[4] < 0.55 && array_in[4] > 0.45 &&
+      array_in[12] < 0.5 &&
+      array_in[5] > 0.5 && array_in[6] < 0.5 &&
+      array_in[7] < 0.5 && array_in[8] > 0.5 && array_in[38] < 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -1267,6 +1595,9 @@ ho_recognize_array (const double *array_in, const int sign_index)
     case 13:			/* lamed */
       return_value = ho_recognize_font_lamed (array_in);
       break;
+    case 14:			/* mem */
+      return_value = ho_recognize_font_mem (array_in);
+      break;
     case 15:			/* mem sofit */
       return_value = ho_recognize_font_mem_sofit (array_in);
       break;
@@ -1275,6 +1606,9 @@ ho_recognize_array (const double *array_in, const int sign_index)
       break;
     case 22:			/* tzadi */
       return_value = ho_recognize_font_tzadi (array_in);
+      break;
+    case 25:			/* resh */
+      return_value = ho_recognize_font_resh (array_in);
       break;
     case 26:			/* shin */
       return_value = ho_recognize_font_shin (array_in);

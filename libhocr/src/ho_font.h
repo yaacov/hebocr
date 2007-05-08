@@ -131,6 +131,15 @@ ho_bitmap *ho_font_edges_top (const ho_bitmap * m_text,
 			      const ho_bitmap * m_mask);
 
 /**
+ return a bitmap of big top side picks in the font
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_font_edges_top_big (const ho_bitmap * m_text,
+				  const ho_bitmap * m_mask);
+
+/**
  return a bitmap of bottom side picks in the font
  @param m_text pointer to the text bitmap
  @param m_mask pointer to the line map
@@ -138,6 +147,16 @@ ho_bitmap *ho_font_edges_top (const ho_bitmap * m_text,
  */
 ho_bitmap *ho_font_edges_bottom (const ho_bitmap * m_text,
 				 const ho_bitmap * m_mask);
+
+/**
+ return a bitmap of big bottom side picks in the font
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @return a newly allocated bitmap
+ */
+
+ho_bitmap *ho_font_edges_bottom_big (const ho_bitmap * m_text,
+				     const ho_bitmap * m_mask);
 
 /**
  return a bitmap of left side picks in the font
@@ -149,6 +168,15 @@ ho_bitmap *ho_font_edges_left (const ho_bitmap * m_text,
 			       const ho_bitmap * m_mask);
 
 /**
+ return a bitmap of big left side picks in the font
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_font_edges_left_big (const ho_bitmap * m_text,
+				   const ho_bitmap * m_mask);
+
+/**
  return a bitmap of right side picks in the font
  @param m_text pointer to the text bitmap
  @param m_mask pointer to the line map
@@ -156,6 +184,15 @@ ho_bitmap *ho_font_edges_left (const ho_bitmap * m_text,
  */
 ho_bitmap *ho_font_edges_right (const ho_bitmap * m_text,
 				const ho_bitmap * m_mask);
+
+/**
+ return a bitmap of big right side picks in the font
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_font_edges_right_big (const ho_bitmap * m_text,
+				    const ho_bitmap * m_mask);
 
 /**
  return a bitmap of top side notches in the font
@@ -202,7 +239,17 @@ ho_bitmap *ho_font_notch_right (const ho_bitmap * m_text,
  */
 ho_bitmap *ho_font_filter (const ho_bitmap * m_text,
 			   const ho_bitmap * m_mask, int filter_index);
-         
+
+/**
+ return a bitmap of a filter used on font holes
+ @param m_text pointer to the text bitmap
+ @param m_mask pointer to the line map
+ @param filter_index the index of the filter to use
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_font_holes_filter (const ho_bitmap * m_text,
+				 const ho_bitmap * m_mask, int filter_index);
+
 int
 ho_font_pnm_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
 		  const ho_bitmap * m_mask, const char *filename);

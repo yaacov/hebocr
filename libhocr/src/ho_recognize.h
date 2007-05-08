@@ -28,7 +28,7 @@
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
-#define HO_ARRAY_IN_SIZE 39
+#define HO_ARRAY_IN_SIZE 60
 #define HO_ARRAY_OUT_SIZE 39
 
 /* font shapes codes*/
@@ -53,17 +53,33 @@ char *ho_recognize_array_out_to_font (const double *array_out);
 char *ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 int
+ho_recognize_dimentions (const ho_bitmap * m_text,
+			 const ho_bitmap * m_mask, double *height,
+			 double *width, double *top, double *bottom,
+			 double *top_left, double *top_right,
+			 double *bottom_left, double *bottom_right);
+
+int
 ho_recognize_bars (const ho_bitmap * m_text,
 		   const ho_bitmap * m_mask, double *has_top_bar,
 		   double *has_bottom_bar, double *has_left_bar,
-		   double *has_right_bar, double *has_diagonal_bar);
+		   double *has_right_bar, double *has_diagonal_bar,
+		   double *has_diagonal_left_bar);
 
 int
 ho_recognize_edges (const ho_bitmap * m_text,
-		    const ho_bitmap * m_mask, double *has_top_left_edge,
-		    double *has_bottom_left_edge, double *has_top_right_edge,
-		    double *has_bottom_right_edge, double *has_left_top_edge,
-		    double *has_right_top_edge, double *has_left_bottom_edge,
+		    const ho_bitmap * m_mask,
+		    double *has_top_left_edge,
+		    double *has_mid_left_edge,
+		    double *has_bottom_left_edge,
+		    double *has_top_right_edge,
+		    double *has_mid_right_edge,
+		    double *has_bottom_right_edge,
+		    double *has_left_top_edge,
+		    double *has_mid_top_edge,
+		    double *has_right_top_edge,
+		    double *has_left_bottom_edge,
+		    double *has_mid_bottom_edge,
 		    double *has_right_bottom_edge);
 
 int
@@ -89,9 +105,24 @@ ho_recognize_parts (const ho_bitmap * m_text,
 
 int
 ho_recognize_ends (const ho_bitmap * m_text,
-		   const ho_bitmap * m_mask, double *has_top_left_end,
-		   double *has_top_right_end, double *has_bottom_left_end,
-		   double *has_bottom_right_end, double *has_mid_mid_cross,
-		   double *has_mid_bottom_cross);
+		   const ho_bitmap * m_mask,
+		   double *has_top_left_end,
+		   double *has_top_mid_end,
+		   double *has_top_right_end,
+		   double *has_mid_left_end,
+		   double *has_mid_mid_end,
+		   double *has_mid_right_end,
+		   double *has_bottom_left_end,
+		   double *has_bottom_mid_end,
+		   double *has_bottom_right_end,
+		   double *has_top_left_cross,
+		   double *has_top_mid_cross,
+		   double *has_top_right_cross,
+		   double *has_mid_left_cross,
+		   double *has_mid_mid_cross,
+		   double *has_mid_right_cross,
+		   double *has_bottom_left_cross,
+		   double *has_bottom_mid_cross,
+		   double *has_bottom_right_cross);
 
 #endif /* HO_RECOGNIZE_H */
