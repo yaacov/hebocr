@@ -28,7 +28,7 @@
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
-#define HO_ARRAY_IN_SIZE 72
+#define HO_ARRAY_IN_SIZE 80
 #define HO_ARRAY_OUT_SIZE 39
 
 /* font shapes codes*/
@@ -124,6 +124,13 @@ ho_recognize_ends (const ho_bitmap * m_text,
 		   double *has_bottom_left_cross,
 		   double *has_bottom_mid_cross,
 		   double *has_bottom_right_cross);
+
+int
+ho_recognize_holes_dimentions (const ho_bitmap * m_text,
+			       const ho_bitmap * m_mask, double *height,
+			       double *width, double *top, double *bottom,
+			       double *top_left, double *top_right,
+			       double *bottom_left, double *bottom_right);
 
 int
 ho_recognize_holes_edges (const ho_bitmap * m_text,
