@@ -1023,6 +1023,228 @@ ho_recognize_ends (const ho_bitmap * m_text,
 }
 
 int
+ho_recognize_holes_edges (const ho_bitmap * m_text,
+			  const ho_bitmap * m_mask,
+			  double *has_top_left_edge,
+			  double *has_mid_left_edge,
+			  double *has_bottom_left_edge,
+			  double *has_top_right_edge,
+			  double *has_mid_right_edge,
+			  double *has_bottom_right_edge,
+			  double *has_left_top_edge,
+			  double *has_mid_top_edge,
+			  double *has_right_top_edge,
+			  double *has_left_bottom_edge,
+			  double *has_mid_bottom_edge,
+			  double *has_right_bottom_edge)
+{
+  int sum, x, y;
+  int font_start;
+  int font_end;
+  int font_height;
+  int font_start_x;
+  int font_end_x;
+  int font_width;
+  int line_start;
+  int line_end;
+  int line_height;
+  int font_parts = 3;
+
+  ho_bitmap *m_bars = NULL;
+  ho_bitmap *m_holes = NULL;
+
+  m_holes = ho_font_holes (m_text, m_mask);
+  if (!m_holes)
+    return TRUE;
+
+  /* get line start and end */
+  x = m_mask->width / 2;
+  for (y = 0; y < m_mask->height && !ho_bitmap_get (m_mask, x, y); y++);
+  line_start = y - 1;
+  for (; y < m_mask->height && ho_bitmap_get (m_mask, x, y); y++);
+  line_end = y;
+  line_height = line_end - line_start;
+
+  /* get font start and end */
+  sum = 0;
+  for (y = 0; y < m_mask->height && sum == 0; y++)
+    for (sum = 0, x = 0; x < m_text->width; x++)
+      sum += ho_bitmap_get (m_holes, x, y);
+  font_start = y - 1;
+  sum = 0;
+  for (y = m_mask->height - 1; y > font_start && sum == 0; y--)
+    for (sum = 0, x = 0; x < m_text->width; x++)
+      sum += ho_bitmap_get (m_holes, x, y);
+  font_end = y + 1;
+  font_height = font_end - font_start;
+
+  if (!font_height || !line_height)
+    return TRUE;
+
+  sum = 0;
+  for (x = 0; x < m_mask->width && sum == 0; x++)
+    for (sum = 0, y = font_start; y < font_end; y++)
+      sum += ho_bitmap_get (m_holes, x, y);
+  font_start_x = x - 1;
+  sum = 0;
+  for (x = m_mask->width - 1; x > font_start_x && sum == 0; x--)
+    for (sum = 0, y = font_start; y < font_end; y++)
+      sum += ho_bitmap_get (m_holes, x, y);
+  font_end_x = x + 1;
+  font_width = font_end_x - font_start_x;
+
+  if (!font_width)
+    return TRUE;
+
+  /* get horizontal left egdes */
+  m_bars = ho_font_edges_left (m_holes, m_mask);
+  if (!m_bars)
+    return TRUE;
+
+  /* if short font it has only two parts (high and low) */
+  if (font_height / line_height < 0.6)
+    font_parts = 2;
+
+  /* look for a bar in top 1/4 of font */
+  *has_top_left_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_start;
+       y < font_start + font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y++);
+  if (ho_bitmap_get (m_bars, x, y)
+      && y < font_start + font_height / font_parts)
+    *has_top_left_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_mid_left_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_end - 2 * font_height / font_parts;
+       y < font_end - font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y++);
+  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
+    *has_mid_left_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_bottom_left_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_end;
+       y > font_end - font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y--);
+  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
+    *has_bottom_left_edge = 1.0;
+
+  /* get horizontal right edges */
+  ho_bitmap_free (m_bars);
+  m_bars = ho_font_edges_right (m_holes, m_mask);
+  if (!m_bars)
+    return TRUE;
+
+  /* look for a bar in top 1/4 of font */
+  *has_top_right_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_start;
+       y < font_start + font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y++);
+  if (ho_bitmap_get (m_bars, x, y)
+      && y < font_start + font_height / font_parts)
+    *has_top_right_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_mid_right_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_end - 2 * font_height / font_parts;
+       y < font_end - font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y++);
+  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
+    *has_mid_right_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_bottom_right_edge = 0.0;
+  x = m_bars->width / 2;
+  for (y = font_end;
+       y > font_end - font_height / font_parts
+       && !ho_bitmap_get (m_bars, x, y); y--);
+  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
+    *has_bottom_right_edge = 1.0;
+
+  ho_bitmap_free (m_bars);
+  m_bars = ho_font_edges_top (m_holes, m_mask);
+  if (!m_bars)
+    return TRUE;
+
+  /* if thin font it has only two parts (high and low) */
+  font_parts = 4;
+  if (font_width / line_height < 0.5)
+    font_parts = 2;
+
+  /* look for a bar in left 1/4 of font */
+  *has_left_top_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = 0;
+       x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++);
+  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
+    *has_left_top_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_mid_top_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = (font_parts - 2) * m_text->width / font_parts;
+       x < (font_parts - 1) * m_text->width / font_parts
+       && !ho_bitmap_get (m_bars, x, y); x++);
+  if (ho_bitmap_get (m_bars, x, y)
+      && x < (font_parts - 1) * m_text->width / font_parts)
+    *has_mid_top_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_right_top_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = m_text->width;
+       x > (font_parts - 1) * m_text->width / font_parts
+       && !ho_bitmap_get (m_bars, x, y); x--);
+  if (ho_bitmap_get (m_bars, x, y)
+      && x > (font_parts - 1) * m_text->width / font_parts)
+    *has_right_top_edge = 1.0;
+
+  /* get horizontal right edges */
+  ho_bitmap_free (m_bars);
+  m_bars = ho_font_edges_bottom (m_holes, m_mask);
+  if (!m_bars)
+    return TRUE;
+
+  /* look for a bar in left 1/4 of font */
+  *has_left_bottom_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = 0;
+       x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++);
+  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
+    *has_left_bottom_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_mid_bottom_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = (font_parts - 2) * m_text->width / font_parts;
+       x < (font_parts - 1) * m_text->width / font_parts
+       && !ho_bitmap_get (m_bars, x, y); x--);
+  if (ho_bitmap_get (m_bars, x, y)
+      && x < (font_parts - 1) * m_text->width / font_parts)
+    *has_mid_bottom_edge = 1.0;
+
+  /* look for a bar in bottom 1/4 of font */
+  *has_right_bottom_edge = 0.0;
+  y = m_bars->height / 2;
+  for (x = m_text->width;
+       x > (font_parts - 1) * m_text->width / font_parts
+       && !ho_bitmap_get (m_bars, x, y); x--);
+  if (ho_bitmap_get (m_bars, x, y)
+      && x > (font_parts - 1) * m_text->width / font_parts)
+    *has_right_bottom_edge = 1.0;
+
+  ho_bitmap_free (m_bars);
+
+  return FALSE;
+}
+
+int
 ho_recognize_create_array_in (const ho_bitmap * m_text,
 			      const ho_bitmap * m_mask, double *array_in)
 {
@@ -1236,6 +1458,35 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   array_in[57] = has_one_hole;
   array_in[58] = has_two_holes;
   array_in[59] = has_hey_part;
+
+  ho_recognize_holes_edges (m_text, m_mask,
+			    &has_top_left_edge,
+			    &has_mid_left_edge,
+			    &has_bottom_left_edge,
+			    &has_top_right_edge,
+			    &has_mid_right_edge,
+			    &has_bottom_right_edge,
+			    &has_left_top_edge,
+			    &has_mid_top_edge,
+			    &has_right_top_edge,
+			    &has_left_bottom_edge,
+			    &has_mid_bottom_edge, &has_right_bottom_edge);
+
+  array_in[60] = has_top_left_edge;
+  array_in[61] = has_mid_left_edge;
+  array_in[62] = has_bottom_left_edge;
+
+  array_in[63] = has_top_right_edge;
+  array_in[64] = has_mid_right_edge;
+  array_in[65] = has_bottom_right_edge;
+
+  array_in[66] = has_left_top_edge;
+  array_in[67] = has_mid_top_edge;
+  array_in[68] = has_right_top_edge;
+
+  array_in[69] = has_left_bottom_edge;
+  array_in[70] = has_mid_bottom_edge;
+  array_in[71] = has_right_bottom_edge;
 
   return 0;
 }
