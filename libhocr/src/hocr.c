@@ -40,6 +40,8 @@ gboolean debug = FALSE;
 gboolean verbose = FALSE;
 gboolean no_gtk = FALSE;
 gboolean dir_ltr = FALSE;
+gboolean text_out_html = FALSE;
+gboolean text_out_font_numbers = FALSE;
 
 gint threshold = 0;
 gint adaptive_threshold = 0;
@@ -204,6 +206,8 @@ static GOptionEntry debug_entries[] = {
    "debug a font filter, use filter NUM, 1..16", "NUM"},
   {"font-filter-list", 'Y', 0, G_OPTION_ARG_NONE, &debug_font_filter_list,
    "print a list of debug a font filters", NULL},
+  {"font-num-out", 'j', 0, G_OPTION_ARG_NONE, &text_out_font_numbers,
+   "print font numbers in output text", NULL},
   {NULL}
 };
 
@@ -212,6 +216,8 @@ static GOptionEntry entries[] = {
    "use FILE as input image file name", "FILE"},
   {"text-out", 'o', 0, G_OPTION_ARG_FILENAME, &text_out_filename,
    "use FILE as output text file name", "FILE"},
+  {"html-out", 'h', 0, G_OPTION_ARG_NONE, &text_out_html,
+   "output text in html format", NULL},
   /* this option is not useful fot the moment
      {"ltr", 'z', 0, G_OPTION_ARG_NONE, &dir_ltr,
      "left to right text", NULL}, */
@@ -885,6 +891,25 @@ main (int argc, char *argv[])
 	    hocr_exit ();
 	  }
 
+	/* start of page */
+	if (text_out_html && s_text_out)
+	  {
+	    text_out =
+	      g_strdup_printf
+	      ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\
+\"http://www.w3.org/TR/html4/strict.dtd\">\n\
+<html>\n\
+<head>\n\
+<title></title>\n\
+</head>\n\
+<body dir=\"rtl\">\n\
+\n\
+<div class=\"ocr_page\" id=\"page_1\">\n\
+  <div class=\"ocr_column\" id=\"column_1\">\n");
+	    ho_string_cat (s_text_out, text_out);
+	    g_free (text_out);
+	  }
+
 	/* init the first line of data file */
 	text_out =
 	  g_strdup_printf
@@ -903,9 +928,35 @@ main (int argc, char *argv[])
 
     for (block_index = 0; block_index < l_page->n_blocks; block_index++)
       {
+	/* start of paragraph */
+
+	if (text_out_html && s_text_out)
+	  {
+	    text_out =
+	      g_strdup_printf
+	      ("    <div class=\"ocr_par\" id=\"par_%d\" title=\"bbox %d %d %d %d\">\n",
+	       block_index + 1, l_page->m_blocks_text[block_index]->x,
+	       l_page->m_blocks_text[block_index]->y,
+	       l_page->m_blocks_text[block_index]->x +
+	       l_page->m_blocks_text[block_index]->width,
+	       l_page->m_blocks_text[block_index]->y +
+	       l_page->m_blocks_text[block_index]->height);
+	    ho_string_cat (s_text_out, text_out);
+	    g_free (text_out);
+	  }
+
 	for (line_index = 0; line_index < l_page->n_lines[block_index];
 	     line_index++)
 	  {
+	    /* start of line */
+
+	    if (text_out_font_numbers)
+	      {
+		text_out = g_strdup_printf ("(%04d) ", font_number + 1);
+		ho_string_cat (s_text_out, text_out);
+		g_free (text_out);
+	      }
+
 	    for (word_index = 0;
 		 word_index < l_page->n_words[block_index][line_index];
 		 word_index++)
@@ -1112,22 +1163,41 @@ main (int argc, char *argv[])
 		ho_string_cat (s_text_out, " ");
 
 	      }			/* end of words loop */
+
+	    /* end of line */
+
+	    if (text_out_html && s_text_out)
+	      {
+		ho_string_cat (s_text_out, "<br/>");
+	      }
+
 	    /* add a line-end after a line to text out */
 	    ho_string_cat (s_text_out, "\n");
+	  }
 
-	    //// START DEBUG, add font number at the beginning of line 
-	    text_out = g_strdup_printf ("(%d) ", font_number + 1);
-	    ho_string_cat (s_text_out, text_out);
-	    g_free (text_out);
-	    //// END DEBUG, add font number at the beginning of line 
+	/* end of paragraph */
 
-	  }			/* end of lines loop */
 	/* add a line-end after a block end */
 	ho_string_cat (s_text_out, "\n");
 
-      }				/* end of blocks loop */
+	if (text_out_html && s_text_out)
+	  {
+	    text_out = g_strdup_printf ("    </div>\n");
+	    ho_string_cat (s_text_out, text_out);
+	    g_free (text_out);
+	  }
+
+      }
 
   }
+
+  /* end of page */
+  if (text_out_html && s_text_out)
+    {
+      text_out = g_strdup_printf ("  </div>\n</div>\n</body>\n</html>\n");
+      ho_string_cat (s_text_out, text_out);
+      g_free (text_out);
+    }
 
   /* close data file html fromat */
   if (s_data_out)
