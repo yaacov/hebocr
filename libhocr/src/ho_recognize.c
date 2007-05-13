@@ -193,7 +193,7 @@ ho_recognize_bars (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts = 4;
+  int font_parts;
 
   ho_bitmap *m_bars = NULL;
 
@@ -229,6 +229,7 @@ ho_recognize_bars (const ho_bitmap * m_text,
     return TRUE;
 
   /* if short font it has only two parts (high and low) */
+  font_parts = 3;
   if (font_height / line_height < 0.6)
     font_parts = 2;
 
@@ -328,7 +329,7 @@ ho_recognize_edges (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts = 3;
+  int font_parts;
 
   ho_bitmap *m_bars = NULL;
 
@@ -375,6 +376,7 @@ ho_recognize_edges (const ho_bitmap * m_text,
     return TRUE;
 
   /* if short font it has only two parts (high and low) */
+  font_parts = 3;
   if (font_height / line_height < 0.6)
     font_parts = 2;
 
@@ -2276,8 +2278,8 @@ ho_recognize_font_caf (const double *array_in)
        /* dimentions */
        array_in[0] < 0.60 && array_in[0] > 0.40 &&
        array_in[1] < 0.60 && array_in[1] > 0.30 &&
-       array_in[3] < 0.55 && array_in[3] > 0.45 &&
-       array_in[4] < 0.60 && array_in[4] > 0.45 && array_in[7] < 0.5 &&
+       array_in[3] < 0.55 && array_in[3] > 0.40 &&
+       array_in[4] < 0.60 && array_in[4] > 0.40 && array_in[7] < 0.5 &&
        /* bars */
        array_in[9] > 0.5 && array_in[10] > 0.5 &&
        /* edges */
@@ -2450,7 +2452,7 @@ ho_recognize_font_nun_sofit (const double *array_in)
        array_in[82] < 0.5 &&
        /* notches */
        /* ends */
-       array_in[47] > 0.5 &&
+       (array_in[46] > 0.5 || array_in[47] > 0.5) &&
        /* crosses */
        array_in[49] < 0.5 &&
        /* holes */
@@ -2670,7 +2672,7 @@ ho_recognize_font_resh (const double *array_in)
        /* dimentions */
        array_in[0] < 0.55 && array_in[0] > 0.40 &&
        array_in[1] < 0.55 && array_in[1] > 0.30 &&
-       array_in[3] < 0.55 && array_in[3] > 0.45 &&
+       array_in[3] < 0.60 && array_in[3] > 0.45 &&
        array_in[4] < 0.60 && array_in[4] > 0.45 && array_in[7] > 0.5 &&
        /* bars */
        array_in[9] > 0.5 && array_in[12] > 0.5 && array_in[10] < 0.5 &&
@@ -2734,7 +2736,7 @@ ho_recognize_font_tav (const double *array_in)
        /* bars */
        array_in[9] > 0.5 && array_in[10] < 0.5 &&
        /* edges */
-       array_in[24] > 0.5 && array_in[26] > 0.5 && array_in[82] > 0.5 &&
+       array_in[26] > 0.5 && array_in[82] > 0.5 &&
        /* notches */
        /* ends */
        array_in[45] > 0.5 && array_in[46] < 0.5 && array_in[47] > 0.5 &&
