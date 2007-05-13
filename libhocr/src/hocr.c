@@ -1060,7 +1060,7 @@ main (int argc, char *argv[])
 			      ho_font_pnm_save (m_font_mask, m_font_filter,
 						m_mask, filename);
 			    else
-			      ho_gtk_font_save (m_font_mask, m_font_filter,
+			      ho_gtk_font_save  (m_font_mask, m_font_filter,
 						m_mask, filename);
 			  }
 
@@ -1075,7 +1075,7 @@ main (int argc, char *argv[])
 			double array_out[HO_ARRAY_OUT_SIZE];
 
 			/* insert font to text out */
-			ho_recognize_create_array_in (m_text, m_mask,
+			ho_recognize_create_array_in (m_font_mask, m_mask,
 						      array_in);
 			ho_recognize_create_array_out (array_in, array_out);
 			font = ho_recognize_array_out_to_font (array_out);
@@ -1089,6 +1089,8 @@ main (int argc, char *argv[])
 
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
+				if (!(i % 50))
+				  g_print ("\n");
 				if (!(i % 10))
 				  g_print ("\n");
 				else if (!(i % 5))
@@ -1123,6 +1125,8 @@ main (int argc, char *argv[])
 
 			    for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
 			      {
+				if (!(i % 50))
+				  ho_string_cat (s_data_out, "\n");
 				if (!(i % 10))
 				  ho_string_cat (s_data_out, "\n");
 				else if (!(i % 5))

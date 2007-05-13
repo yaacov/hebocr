@@ -2002,8 +2002,9 @@ ho_recognize_font_alef (const double *array_in)
        /* bars */
        array_in[13] > 0.5 &&
        /* edges */
-       array_in[21] > 0.5 && array_in[23] > 0.5 &&
-       array_in[24] > 0.5 && array_in[26] > 0.5 &&
+       array_in[21] > 0.5 &&
+       /* array_in[23] > 0.5 && array_in[24] > 0.5 && */
+       array_in[26] > 0.5 &&
        /* notches */
        array_in[28] > 0.5 && array_in[31] > 0.5 &&
        array_in[34] > 0.5 && array_in[37] > 0.5 &&
@@ -2173,7 +2174,7 @@ ho_recognize_font_zayin (const double *array_in)
        (array_in[46] > 0.5 || array_in[47] > 0.5) &&
        (array_in[40] > 0.5 || array_in[39] > 0.5 || array_in[41] > 0.5) &&
        /* crosses */
-       array_in[49] < 0.5 &&
+       array_in[52] < 0.5 &&
        /* holes */
        array_in[57] < 0.5 && array_in[58] < 0.5 && array_in[59] < 0.5)
     return_value = 1.0;
@@ -2256,8 +2257,7 @@ ho_recognize_font_yud (const double *array_in)
        array_in[31] < 0.5 && array_in[32] < 0.5 &&
        /* ends */
        (array_in[39] > 0.5 || array_in[40] > 0.5) &&
-       (array_in[46] > 0.5 || array_in[47] > 0.5) &&
-       array_in[41] < 0.5 && array_in[45] < 0.5 &&
+       (array_in[46] > 0.5 || array_in[47] > 0.5) && array_in[45] < 0.5 &&
        /* crosses */
        array_in[54] < 0.5 && array_in[55] < 0.5 &&
        /* holes */
@@ -2307,7 +2307,7 @@ ho_recognize_font_caf_sofit (const double *array_in)
        /* bars */
        array_in[9] > 0.5 && array_in[10] < 0.5 &&
        /* edges */
-       array_in[83] > 0.5 &&
+       array_in[80] > 0.5 &&
        /* notches */
        /* ends */
        (array_in[46] > 0.5 || array_in[47] > 0.5) && array_in[39] > 0.5 &&
@@ -2324,11 +2324,22 @@ ho_recognize_font_lamed (const double *array_in)
 {
   double return_value = 0.0;
 
-  /* small font near the bottom */
-  if (array_in[0] < 0.75 && array_in[0] > 0.60 &&
-      array_in[1] < 0.50 && array_in[1] > 0.25 &&
-      array_in[3] < 0.85 && array_in[3] > 0.55 &&
-      array_in[4] < 0.58 && array_in[4] > 0.42)
+  if (
+       /* dimentions */
+       array_in[0] < 0.85 && array_in[0] > 0.50 &&
+       array_in[1] < 0.50 && array_in[1] > 0.30 &&
+       array_in[3] < 0.85 && array_in[3] > 0.50 &&
+       array_in[4] < 0.60 && array_in[4] > 0.45 &&
+       array_in[6] > 0.5 && array_in[7] > 0.5 &&
+       /* bars */
+       array_in[9] < 0.5 && array_in[10] < 0.5 &&
+       /* edges */
+       array_in[17] > 0.5 &&
+       /* notches */
+       /* ends */
+       /* crosses */
+       /* holes */
+       array_in[57] < 0.5 && array_in[58] < 0.5 && array_in[59] < 0.5)
     return_value = 1.0;
 
   return return_value;
@@ -2349,7 +2360,8 @@ ho_recognize_font_mem (const double *array_in)
        /* edges */
        array_in[15] > 0.5 && array_in[24] > 0.5 &&
        /* notches */
-       (array_in[33] > 0.5 || array_in[34] > 0.5) &&
+       (array_in[33] > 0.5 || array_in[34] > 0.5 ||
+	array_in[27] > 0.5 || array_in[28] > 0.5) &&
        (array_in[36] > 0.5 || array_in[37] > 0.5) && array_in[31] < 0.5 &&
        /* ends */
        array_in[39] > 0.5 && (array_in[42] > 0.5 || array_in[45] > 0.5) &&
@@ -2373,7 +2385,8 @@ ho_recognize_font_mem_sofit (const double *array_in)
        array_in[0] < 0.60 && array_in[0] > 0.40 &&
        array_in[1] < 0.60 && array_in[1] > 0.30 &&
        array_in[3] < 0.60 && array_in[3] > 0.40 &&
-       array_in[4] < 0.60 && array_in[4] > 0.40 && array_in[8] < 0.8 &&
+       array_in[4] < 0.60 && array_in[4] > 0.40 &&
+       array_in[8] <= 0.5 && array_in[7] <= 0.5 &&
        /* bars */
        array_in[9] > 0.5 && array_in[10] > 0.5 &&
        array_in[13] < 0.5 && array_in[14] < 0.5 &&
@@ -2448,6 +2461,34 @@ ho_recognize_font_nun_sofit (const double *array_in)
 }
 
 double
+ho_recognize_font_samech (const double *array_in)
+{
+  double return_value = 0.0;
+
+  if (
+       /* dimentions */
+       array_in[0] < 0.60 && array_in[0] > 0.40 &&
+       array_in[1] < 0.60 && array_in[1] > 0.30 &&
+       array_in[3] < 0.60 && array_in[3] > 0.40 &&
+       array_in[4] < 0.60 && array_in[4] > 0.40 &&
+       array_in[8] > 0.5 && array_in[7] > 0.5 &&
+       /* bars */
+       array_in[9] > 0.5 && array_in[10] > 0.5 &&
+       array_in[13] < 0.5 && array_in[14] < 0.5 &&
+       /* edges */
+       array_in[26] < 0.5 &&
+       /* notches */
+       /* ends */
+       /* crosses */
+       array_in[51] < 0.5 && array_in[52] < 0.5 &&
+       /* holes */
+       array_in[57] > 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
 ho_recognize_font_ayin (const double *array_in)
 {
   double return_value = 0.0;
@@ -2462,9 +2503,9 @@ ho_recognize_font_ayin (const double *array_in)
        /* edges */
        array_in[26] < 0.5 &&
        /* notches */
-       array_in[28] > 0.5 && array_in[31] < 0.5 &&
-       array_in[34] > 0.5 && array_in[37] < 0.5 &&
+       array_in[31] < 0.5 && array_in[34] > 0.5 && array_in[37] < 0.5 &&
        /* ends */
+       (array_in[39] > 0.5 || array_in[40] > 0.5) &&
        array_in[41] > 0.5 && array_in[45] > 0.5 &&
        /* crosses */
        (array_in[52] > 0.5 || array_in[53] > 0.5 || array_in[55] > 0.5
@@ -2521,7 +2562,7 @@ ho_recognize_font_pey_sofit (const double *array_in)
        /* edges */
        array_in[26] > 0.5 &&
        /* notches */
-       array_in[37] < 0.5 && array_in[38] < 0.5 &&
+       array_in[38] < 0.5 &&
        /* ends */
        (array_in[42] > 0.5 || array_in[43] > 0.5) && array_in[47] > 0.5 &&
        /* crosses */
@@ -2547,15 +2588,42 @@ ho_recognize_font_tzadi (const double *array_in)
        /* bars */
        array_in[13] > 0.5 && array_in[10] > 0.5 &&
        /* edges */
-       array_in[21] > 0.5 && array_in[23] > 0.5 &&
+       /* array_in[21] > 0.5 && array_in[23] > 0.5 && */
        array_in[24] < 0.5 && array_in[26] < 0.5 &&
        /* notches */
-       array_in[28] > 0.5 && array_in[31] > 0.5 &&
        array_in[34] > 0.5 && array_in[37] < 0.5 &&
        /* ends */
        array_in[41] > 0.5 && array_in[45] > 0.5 &&
        /* crosses */
        (array_in[52] > 0.5 || array_in[55] > 0.5 || array_in[56] > 0.5) &&
+       /* holes */
+       array_in[57] < 0.5 && array_in[59] < 0.5)
+    return_value = 1.0;
+
+  return return_value;
+}
+
+double
+ho_recognize_font_tzadi_sofit (const double *array_in)
+{
+  double return_value = 0.0;
+
+  if (
+       /* dimentions */
+       array_in[0] < 0.80 && array_in[0] > 0.50 &&
+       array_in[1] < 0.60 && array_in[1] > 0.25 &&
+       array_in[3] < 0.60 && array_in[3] > 0.40 &&
+       array_in[4] < 0.50 && array_in[4] > 0.10 && array_in[7] >= 1.0 &&
+       /* bars */
+       array_in[9] < 0.5 &&
+       /* edges */
+       array_in[26] > 0.5 &&
+       /* notches */
+       array_in[37] < 0.5 && array_in[38] < 0.5 &&
+       /* ends */
+       (array_in[42] > 0.5 || array_in[43] > 0.5) && array_in[47] > 0.5 &&
+       /* crosses */
+       array_in[51] < 0.5 && array_in[52] < 0.5 &&
        /* holes */
        array_in[57] < 0.5 && array_in[59] < 0.5)
     return_value = 1.0;
@@ -2739,6 +2807,9 @@ ho_recognize_array (const double *array_in, const int sign_index)
     case 17:			/* nun sofit */
       return_value = ho_recognize_font_nun_sofit (array_in);
       break;
+    case 18:			/* samech */
+      return_value = ho_recognize_font_samech (array_in);
+      break;
     case 19:			/* ayin */
       return_value = ho_recognize_font_ayin (array_in);
       break;
@@ -2750,6 +2821,9 @@ ho_recognize_array (const double *array_in, const int sign_index)
       break;
     case 22:			/* tzadi */
       return_value = ho_recognize_font_tzadi (array_in);
+      break;
+    case 23:			/* tzadi sofit */
+      return_value = ho_recognize_font_tzadi_sofit (array_in);
       break;
     case 24:			/* kuf */
       return_value = ho_recognize_font_kuf (array_in);
