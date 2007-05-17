@@ -150,7 +150,7 @@ ho_font_second_object (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_sign_mask = NULL;
   ho_bitmap *m_current_object = NULL;
   int x, y, y1, y2, x1, x2;
-  int i;
+  int i, dy;
   int line_start, line_end, line_height;
   unsigned char is_inside;
   unsigned char is_dot;
@@ -184,10 +184,17 @@ ho_font_second_object (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* copy the first object found from lower left of font  */
+  dy = line_height / 10;
+  if (dy == 0)
+    dy = 1;
   for (i = 0, y = line_end - 1, x = 1;
        x < o_obj->width && y > 0 && !i; x++, y--)
     {
       i = ho_objmap_get (o_obj, x, y);
+      if (!i && y > dy)
+	i = ho_objmap_get (o_obj, x, y - dy);
+      if (!i && y < (o_obj->height - dy))
+	i = ho_objmap_get (o_obj, x, y + dy);
     }
 
   if (i)
@@ -612,7 +619,7 @@ ho_font_thin_naive (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* copy the original font */
-  m_out = ho_bitmap_clone (m_text);
+  m_out = ho_bitmap_dilation_n (m_text, 6);
   if (!m_out)
     return NULL;
 
@@ -787,15 +794,15 @@ ho_font_ends (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 	    /*one neigbor it's an end */
 	    if (neighbors < 2)
 	      {
-		ho_bitmap_set (m_out, x, y - 1);
-		ho_bitmap_set (m_out, x + 1, y - 1);
-		ho_bitmap_set (m_out, x - 1, y - 1);
+		/*ho_bitmap_set (m_out, x, y - 1);
+		   ho_bitmap_set (m_out, x + 1, y - 1);
+		   ho_bitmap_set (m_out, x - 1, y - 1); */
 		ho_bitmap_set (m_out, x, y);
-		ho_bitmap_set (m_out, x + 1, y);
-		ho_bitmap_set (m_out, x - 1, y);
-		ho_bitmap_set (m_out, x, y + 1);
-		ho_bitmap_set (m_out, x + 1, y + 1);
-		ho_bitmap_set (m_out, x - 1, y + 1);
+		/*ho_bitmap_set (m_out, x + 1, y);
+		   ho_bitmap_set (m_out, x - 1, y);
+		   ho_bitmap_set (m_out, x, y + 1);
+		   ho_bitmap_set (m_out, x + 1, y + 1);
+		   ho_bitmap_set (m_out, x - 1, y + 1); */
 	      }
 	  }
       }
@@ -842,15 +849,15 @@ ho_font_cross (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 	    /* more then two neigbors it's a cross */
 	    if (neighbors > 2)
 	      {
-		ho_bitmap_set (m_out, x, y - 1);
-		ho_bitmap_set (m_out, x + 1, y - 1);
-		ho_bitmap_set (m_out, x - 1, y - 1);
+		/*ho_bitmap_set (m_out, x, y - 1);
+		   ho_bitmap_set (m_out, x + 1, y - 1);
+		   ho_bitmap_set (m_out, x - 1, y - 1); */
 		ho_bitmap_set (m_out, x, y);
-		ho_bitmap_set (m_out, x + 1, y);
-		ho_bitmap_set (m_out, x - 1, y);
-		ho_bitmap_set (m_out, x, y + 1);
-		ho_bitmap_set (m_out, x + 1, y + 1);
-		ho_bitmap_set (m_out, x - 1, y + 1);
+		/*ho_bitmap_set (m_out, x + 1, y);
+		   ho_bitmap_set (m_out, x - 1, y);
+		   ho_bitmap_set (m_out, x, y + 1);
+		   ho_bitmap_set (m_out, x + 1, y + 1);
+		   ho_bitmap_set (m_out, x - 1, y + 1); */
 	      }
 	  }
       }
@@ -882,19 +889,33 @@ ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   if (!line_height || !m_mask->width)
     return NULL;
 
-  /* do naive thinning */
-  m_out = ho_font_thin_naive (m_text, m_mask);
-
-  /* fix holes */
-  m_temp = ho_bitmap_hlink (m_out, line_height / 8);
-  ho_bitmap_free (m_out);
+  /* pre process image for thinning */
+  m_temp = ho_bitmap_erosion_n (m_text, 6);
   if (!m_temp)
     return NULL;
 
-  m_out = ho_bitmap_vlink (m_temp, line_height / 8);
+  m_out = ho_bitmap_dilation_n (m_temp, 6);
   ho_bitmap_free (m_temp);
   if (!m_out)
     return NULL;
+
+  /* do naive thinning */
+  m_temp = ho_font_thin_naive (m_out, m_mask);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* fix holes 
+     m_temp = ho_bitmap_hlink (m_out, line_height / 10);
+     ho_bitmap_free (m_out);
+     if (!m_temp)
+     return NULL;
+
+     m_out = ho_bitmap_vlink (m_temp, line_height / 10);
+     ho_bitmap_free (m_temp);
+     if (!m_out)
+     return NULL; */
 
   /* smoth font edges */
   m_temp = ho_bitmap_closing (m_out);
@@ -905,6 +926,9 @@ ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* rethin the font */
   m_out = ho_font_thin_naive (m_temp, m_mask);
   ho_bitmap_free (m_temp);
+
+  /* delete parts of lines not in original font */
+  ho_bitmap_and (m_out, m_text);
 
   return m_out;
 }
@@ -2497,7 +2521,7 @@ ho_font_holes_filter (const ho_bitmap * m_text,
     return NULL;
 
   /* TODO: set width of holes bitmap */
-  
+
   m_out = ho_font_filter (m_holes, m_mask, filter_index);
 
   ho_bitmap_free (m_holes);

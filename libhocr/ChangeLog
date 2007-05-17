@@ -1,3 +1,9 @@
+libhocr (0.10.4)
+
+ * release
+ 
+ -- Yaacov Zamir <kzamir_at_walla.co.il> Monday, 14 May 2007 18:12
+ 
 libhocr (0.10.3)
 
  * font segmentation functions

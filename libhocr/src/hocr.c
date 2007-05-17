@@ -1013,6 +1013,19 @@ main (int argc, char *argv[])
 							debug_font_filter -
 							100);
 			      }
+
+			    /* dilate points 9 (ends) 10 (crosses) */
+			    if (debug_font_filter == 9
+				|| debug_font_filter == 10
+				|| debug_font_filter == 109
+				|| debug_font_filter == 110)
+			      {
+				ho_bitmap *m_temp = NULL;
+
+				m_temp = ho_bitmap_dilation (m_font_test);
+				ho_bitmap_free (m_font_test);
+				m_font_test = m_temp;
+			      }
 			  }
 		      }
 

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([libhocr], [0.10.3], [Yaacov Zamir <kzamir@walla.co.il>])
+AC_INIT([libhocr], [0.10.4], [Yaacov Zamir <kzamir@walla.co.il>])
 AC_CONFIG_AUX_DIR([config])
 
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -20,18 +20,6 @@ AC_SUBST(gtk_CFLAGS)
 AC_SUBST(gtk_LIBS)
 
 requires="$gtk_pkg_modules"
-
-dnl hspell: hebrew speller
-
-hspell_pkg_modules="hspell"
-AC_CHECK_LIB(hspell, hspell_get_dictionary_path, hspell_PKG="found", exit, -lz)
-hspell_CFLAGS=
-hspell_LIBS=" -lhspell -lz"
-AC_SUBST(hspell_CFLAGS)
-AC_SUBST(hspell_LIBS)
-
-dnl we require hspell but it does not use pkg-config
-dnl requires="$requires $hspell_pkg_modules"
 
 dnl export required librarys to pkg-config pc file 
 AC_SUBST(requires)
