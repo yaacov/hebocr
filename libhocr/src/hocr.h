@@ -3,7 +3,7 @@
  *            hocr.h
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir
+ *  Copyright  2005-2008  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 

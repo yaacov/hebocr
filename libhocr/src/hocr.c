@@ -3,7 +3,7 @@
  *            hocr.c
  *
  *  Fri Aug 12 20:13:33 2005
- *  Copyright  2005-2007  Yaacov Zamir
+ *  Copyright  2005-2008  Yaacov Zamir
  *  <kzamir@walla.co.il>
  ****************************************************************************/
 
@@ -86,11 +86,11 @@ gchar *text_out = NULL;
 static gchar *copyright_message = "hocr - Hebrew OCR utility\n\
 %s\n\
 http://hocr.berlios.de\n\
-Copyright (C) 2005-2007 Yaacov Zamir <kzamir@walla.co.il>\n\
+Copyright (C) 2005-2008 Yaacov Zamir <kzamir@walla.co.il>\n\
 \n\
-This program is free software; you can redistribute it and/or modify\n\
+This program is free software: you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
-the Free Software Foundation; either version 2 of the License, or\n\
+the Free Software Foundation, either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
 This program is distributed in the hope that it will be useful,\n\
@@ -99,8 +99,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
-along with this program; if not, write to the Free Software\n\
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.\n";
+along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
 
 static gchar *font_filters_list = "hocr - Hebrew OCR utility\n\
 %s\n\
