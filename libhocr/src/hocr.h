@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            hocr.h
  *
@@ -65,5 +66,5 @@ BEGIN_C_DECLS
 
 /* string utilities */
 #include <ho_string.h>
-	END_C_DECLS
+  END_C_DECLS
 #endif /* HOCR_H */

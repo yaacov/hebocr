@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            ho_gtk.c
  *
@@ -35,22 +36,22 @@ ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix)
   ho_pixbuf *pix = NULL;
 
   if (!gdk_pix)
-    {
-      return NULL;
-    }
+  {
+    return NULL;
+  }
 
   /* create hocr pixbuf from gkd pixbuf */
   pix = ho_pixbuf_new (gdk_pixbuf_get_n_channels
-		       (gdk_pix), gdk_pixbuf_get_width
-		       (gdk_pix), gdk_pixbuf_get_height (gdk_pix),
-		       gdk_pixbuf_get_rowstride (gdk_pix));
+    (gdk_pix), gdk_pixbuf_get_width
+    (gdk_pix), gdk_pixbuf_get_height (gdk_pix),
+    gdk_pixbuf_get_rowstride (gdk_pix));
 
   if (!pix)
     return NULL;
 
   /* copy the pixels */
   memcpy (pix->data, gdk_pixbuf_get_pixels (gdk_pix),
-	  (pix->height * pix->rowstride));
+    (pix->height * pix->rowstride));
 
   return pix;
 }
@@ -61,15 +62,15 @@ ho_gtk_pixbuf_from_gdk_share_data (const GdkPixbuf * gdk_pix)
   ho_pixbuf *pix = NULL;
 
   if (!gdk_pix)
-    {
-      return NULL;
-    }
+  {
+    return NULL;
+  }
 
   /* create hocr pixbuf from gkd pixbuf */
   pix = ho_pixbuf_new (gdk_pixbuf_get_n_channels
-		       (gdk_pix), gdk_pixbuf_get_width
-		       (gdk_pix), gdk_pixbuf_get_height (gdk_pix),
-		       gdk_pixbuf_get_rowstride (gdk_pix));
+    (gdk_pix), gdk_pixbuf_get_width
+    (gdk_pix), gdk_pixbuf_get_height (gdk_pix),
+    gdk_pixbuf_get_rowstride (gdk_pix));
 
   if (!pix)
     return NULL;
@@ -105,21 +106,20 @@ ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix)
   /* create data */
   data = malloc (pix_color->height * pix_color->rowstride);
   if (!data)
-    {
-      ho_pixbuf_free (pix_color);
-      return NULL;
-    }
+  {
+    ho_pixbuf_free (pix_color);
+    return NULL;
+  }
   memcpy (data, pix_color->data, pix_color->height * pix_color->rowstride);
 
   /* load gdk pixbuf from ho_pixbuf */
   pix = gdk_pixbuf_new_from_data (data,
-				  GDK_COLORSPACE_RGB,
-				  FALSE,
-				  8,
-				  ho_pixbuf_get_width (pix_color),
-				  ho_pixbuf_get_height (pix_color),
-				  ho_pixbuf_get_rowstride (pix_color),
-				  ho_gdk_free_pixels, NULL);
+    GDK_COLORSPACE_RGB,
+    FALSE,
+    8,
+    ho_pixbuf_get_width (pix_color),
+    ho_pixbuf_get_height (pix_color),
+    ho_pixbuf_get_rowstride (pix_color), ho_gdk_free_pixels, NULL);
 
   ho_pixbuf_free (pix_color);
 
@@ -136,9 +136,9 @@ ho_gtk_pixbuf_load (const char *filename)
   gdk_pix = gdk_pixbuf_new_from_file (filename, NULL);
 
   if (!gdk_pix)
-    {
-      return NULL;
-    }
+  {
+    return NULL;
+  }
 
   /* create hocr pixbuf from gkd pixbuf */
   pix = ho_gtk_pixbuf_from_gdk (gdk_pix);
@@ -173,17 +173,17 @@ ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename)
   g_object_unref (gdk_pix);
 
   if (error)
-    {
-      g_error_free (error);
-      return TRUE;
-    }
+  {
+    g_error_free (error);
+    return TRUE;
+  }
 
   return FALSE;
 }
 
 int
 ho_gtk_font_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
-		  const ho_bitmap * m_mask, const char *filename)
+  const ho_bitmap * m_mask, const char *filename)
 {
   int return_value;
   ho_pixbuf *p_out;

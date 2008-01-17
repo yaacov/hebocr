@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            ho_objmap.h
  *
@@ -67,14 +68,13 @@ typedef struct
   ho_objlist *obj_list;
 } ho_objmap;
 
-
 ho_objlist *ho_objlist_new ();
 
 int ho_objlist_free (ho_objlist * object_list);
 
 int
 ho_objlist_add (ho_objlist * object_list, double weight,
-		int x, int y, int width, int height);
+  int x, int y, int width, int height);
 
 int ho_objlist_get_index (ho_objlist * object_list, int index);
 
@@ -90,15 +90,14 @@ int ho_objlist_print (ho_objlist * object_list);
 
 int
 ho_objlist_statistics (ho_objlist * object_list,
-		       int min_height, int max_height,
-		       int min_width, int max_width,
-		       int *counter,
-		       double *weight_avg, double *weight_com,
-		       double *weight_min, double *weight_max,
-		       int *height_avg, int *height_com,
-		       int *height_min, int *height_max,
-		       int *width_avg, int *width_com,
-		       int *width_min, int *width_max);
+  int min_height, int max_height,
+  int min_width, int max_width,
+  int *counter,
+  double *weight_avg, double *weight_com,
+  double *weight_min, double *weight_max,
+  int *height_avg, int *height_com,
+  int *height_min, int *height_max,
+  int *width_avg, int *width_com, int *width_min, int *width_max);
 
 /**
  new ho_pixbuf 
@@ -128,7 +127,7 @@ int ho_objmap_clean (ho_objmap * m);
  @return FALSE
  */
 int ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col,
-				     const unsigned char dir_ltr);
+  const unsigned char dir_ltr);
 
 /**
  new ho_objmap from ho_bitmap
@@ -149,10 +148,9 @@ ho_objmap *ho_objmap_new_from_bitmap (const ho_bitmap * bit_in);
  @return FALSE
  */
 int ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
-			   const int max_height,
-			   const int min_width,
-			   const int max_width, int *height,
-			   int *width, unsigned char *nikud);
+  const int max_height,
+  const int min_width,
+  const int max_width, int *height, int *width, unsigned char *nikud);
 
 /**
  copy objects from objmap to bitmap by size
@@ -164,9 +162,7 @@ int ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_objmap_to_bitmap_by_size (const ho_objmap * m,
-					int min_height,
-					int max_height, int min_width,
-					int max_width);
+  int min_height, int max_height, int min_width, int max_width);
 
 /**
  copy objects from objmap to bitmap by index
@@ -174,8 +170,7 @@ ho_bitmap *ho_objmap_to_bitmap_by_size (const ho_objmap * m,
  @param index the index of the object to copy
  @return a newly allocated bitmap size of objmap
  */
-ho_bitmap *ho_objmap_to_bitmap_by_index (const ho_objmap * m,
-					 const int index);
+ho_bitmap *ho_objmap_to_bitmap_by_index (const ho_objmap * m, const int index);
 
 /**
  copy objects from objmap to bitmap by index of the object
@@ -185,8 +180,7 @@ ho_bitmap *ho_objmap_to_bitmap_by_index (const ho_objmap * m,
  @return a newly allocated bitmap size of object + frame
  */
 ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
-						const int index,
-						const int frame);
+  const int index, const int frame);
 
 /**
  guess reading_index
@@ -194,7 +188,6 @@ ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
  @return FALSE
  */
 int ho_objmap_update_reading_index (ho_objmap * m,
-				    const unsigned char n_columns,
-				    const unsigned char dir_ltr);
+  const unsigned char n_columns, const unsigned char dir_ltr);
 
 #endif /* HO_OBJMAP_H */

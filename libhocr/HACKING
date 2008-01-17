@@ -18,7 +18,7 @@ The HOCR coding style.
 
    Use space for indentation, braces are 
    unindented and on a seperate line. Use indent utility.
-   (indent -bad -bap -bbb -bli0 -fca -l80 -psl -sc -sob -ss -ts8 -i8)
+   (indent -bad -bap -bbb -bli0 -fca -l80 -psl -sc -sob -ss -ts8 -i8 -nut)
    
    Use doxygen style documentation.
    

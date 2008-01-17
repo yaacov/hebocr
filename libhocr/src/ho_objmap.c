@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            ho_objmap.c
  *
@@ -56,15 +57,14 @@ ho_objlist_new ()
 
   /* allocate memory for objects */
   new_hocr_object_list->objects =
-    (ho_obj *) malloc (sizeof (ho_obj) *
-		       new_hocr_object_list->allocated_size);
+    (ho_obj *) malloc (sizeof (ho_obj) * new_hocr_object_list->allocated_size);
 
   /* if no memeory for objects free the struct */
   if (!new_hocr_object_list->objects)
-    {
-      free (new_hocr_object_list);
-      return NULL;
-    }
+  {
+    free (new_hocr_object_list);
+    return NULL;
+  }
 
   return new_hocr_object_list;
 }
@@ -87,7 +87,7 @@ ho_objlist_free (ho_objlist * object_list)
 
 int
 ho_objlist_add (ho_objlist * object_list, double weight,
-		int x, int y, int width, int height)
+  int x, int y, int width, int height)
 {
   ho_obj *new_object_list_objects;
 
@@ -96,23 +96,23 @@ ho_objlist_add (ho_objlist * object_list, double weight,
 
   /* check for allocated space and try to get more memory */
   if ((object_list->size + 1) >= object_list->allocated_size)
-    {
-      new_object_list_objects = (ho_obj *)
-	realloc (object_list->objects, sizeof (ho_obj) *
-		 (object_list->allocated_size + 1000));
+  {
+    new_object_list_objects = (ho_obj *)
+      realloc (object_list->objects, sizeof (ho_obj) *
+      (object_list->allocated_size + 1000));
 
-      /* got new memory */
-      if (new_object_list_objects)
-	{
-	  object_list->objects = new_object_list_objects;
-	  object_list->allocated_size += 1000;
-	}
-      /* did not get new memory */
-      else
-	{
-	  return TRUE;
-	}
+    /* got new memory */
+    if (new_object_list_objects)
+    {
+      object_list->objects = new_object_list_objects;
+      object_list->allocated_size += 1000;
     }
+    /* did not get new memory */
+    else
+    {
+      return TRUE;
+    }
+  }
 
   /* add the new object */
   (object_list->objects)[object_list->size].index = object_list->size;
@@ -177,24 +177,22 @@ ho_objlist_link (ho_objlist * object_list, int index1, int index2)
 
   /* always use the lower index */
   if (index2 < index1)
-    {
-      index = index1;
-      index1 = index2;
-      index2 = index;
-    }
+  {
+    index = index1;
+    index1 = index2;
+    index2 = index;
+  }
 
   /* set object1 extentions */
   x11 = (object_list->objects)[index1].x;
-  x12 =
-    (object_list->objects)[index1].x + (object_list->objects)[index1].width;
+  x12 = (object_list->objects)[index1].x + (object_list->objects)[index1].width;
   y11 = (object_list->objects)[index1].y;
   y12 =
     (object_list->objects)[index1].y + (object_list->objects)[index1].height;
 
   /* set object2 extentions */
   x21 = (object_list->objects)[index2].x;
-  x22 =
-    (object_list->objects)[index2].x + (object_list->objects)[index2].width;
+  x22 = (object_list->objects)[index2].x + (object_list->objects)[index2].width;
   y21 = (object_list->objects)[index2].y;
   y22 =
     (object_list->objects)[index2].y + (object_list->objects)[index2].height;
@@ -237,43 +235,42 @@ ho_objlist_clean (ho_objlist * object_list, int **map)
 
   *map = (int *) calloc (object_list->size, sizeof (int));
   if (!(*map))
-    {
-      ho_objlist_free (temp_object_list);
-      return TRUE;
-    }
+  {
+    ho_objlist_free (temp_object_list);
+    return TRUE;
+  }
 
   /* copy only valid objects to temporary list */
   new_index = 0;
   for (i = 0; i < (object_list->size); i++)
+  {
+    /* this index does not point to anything */
+    (*map)[i] = 0;
+    if ((object_list->objects)[i].index == i)
     {
-      /* this index does not point to anything */
-      (*map)[i] = 0;
-      if ((object_list->objects)[i].index == i)
-	{
-	  ho_objlist_add (temp_object_list,
-			  ((object_list->objects)[i]).weight,
-			  ((object_list->objects)[i]).x,
-			  ((object_list->objects)[i]).y,
-			  ((object_list->objects)[i]).width,
-			  ((object_list->objects)[i]).height);
-	  /* this index point to a new index */
-	  (*map)[i] = new_index;
-	  /* increas index */
-	  new_index++;
-	}
+      ho_objlist_add (temp_object_list,
+        ((object_list->objects)[i]).weight,
+        ((object_list->objects)[i]).x,
+        ((object_list->objects)[i]).y,
+        ((object_list->objects)[i]).width, ((object_list->objects)[i]).height);
+      /* this index point to a new index */
+      (*map)[i] = new_index;
+      /* increas index */
+      new_index++;
     }
+  }
 
   /* copy back objects from temporary list */
   object_list->size = 0;
   for (i = 0; i < (temp_object_list->size); i++)
-    {
-      ho_objlist_add (object_list,
-		      ((temp_object_list->objects)[i]).weight,
-		      ((temp_object_list->objects)[i]).x,
-		      ((temp_object_list->objects)[i]).y,
-		      ((temp_object_list->objects)[i]).width,
-		      ((temp_object_list->objects)[i]).height);
-    }
+  {
+    ho_objlist_add (object_list,
+      ((temp_object_list->objects)[i]).weight,
+      ((temp_object_list->objects)[i]).x,
+      ((temp_object_list->objects)[i]).y,
+      ((temp_object_list->objects)[i]).width,
+      ((temp_object_list->objects)[i]).height);
+  }
 
   /* unref the temporary list */
   ho_objlist_free (temp_object_list);
@@ -294,41 +291,41 @@ ho_objlist_clean_by_reading_index (ho_objlist * object_list, int **map)
 
   *map = (int *) calloc (object_list->size, sizeof (int));
   if (!(*map))
-    {
-      ho_objlist_free (temp_object_list);
-      return TRUE;
-    }
+  {
+    ho_objlist_free (temp_object_list);
+    return TRUE;
+  }
 
   /* map by reading index */
   new_index = 0;
   for (i = 0; i < (object_list->size); i++)
-    {
-      for (j = 0; j < (object_list->size); j++)
-	if ((object_list->objects)[j].reading_index == i)
-	  {
-	    /* this index is this reading order */
-	    (*map)[j] = i;
+  {
+    for (j = 0; j < (object_list->size); j++)
+      if ((object_list->objects)[j].reading_index == i)
+      {
+        /* this index is this reading order */
+        (*map)[j] = i;
 
-	    ho_objlist_add (temp_object_list,
-			    ((object_list->objects)[j]).weight,
-			    ((object_list->objects)[j]).x,
-			    ((object_list->objects)[j]).y,
-			    ((object_list->objects)[j]).width,
-			    ((object_list->objects)[j]).height);
-	  }
-    }
+        ho_objlist_add (temp_object_list,
+          ((object_list->objects)[j]).weight,
+          ((object_list->objects)[j]).x,
+          ((object_list->objects)[j]).y,
+          ((object_list->objects)[j]).width,
+          ((object_list->objects)[j]).height);
+      }
+  }
 
   /* copy back objects from temporary list */
   object_list->size = 0;
   for (i = 0; i < (temp_object_list->size); i++)
-    {
-      ho_objlist_add (object_list,
-		      ((temp_object_list->objects)[i]).weight,
-		      ((temp_object_list->objects)[i]).x,
-		      ((temp_object_list->objects)[i]).y,
-		      ((temp_object_list->objects)[i]).width,
-		      ((temp_object_list->objects)[i]).height);
-    }
+  {
+    ho_objlist_add (object_list,
+      ((temp_object_list->objects)[i]).weight,
+      ((temp_object_list->objects)[i]).x,
+      ((temp_object_list->objects)[i]).y,
+      ((temp_object_list->objects)[i]).width,
+      ((temp_object_list->objects)[i]).height);
+  }
 
   /* unref the temporary list */
   ho_objlist_free (temp_object_list);
@@ -344,29 +341,27 @@ ho_objlist_print (ho_objlist * object_list)
   printf ("list has %d objects\n---w\th\tw\n---\n", object_list->size);
 
   for (i = 1; i < (object_list->size); i++)
-    {
-      printf ("%0.0f\t%d\t%d\n", ((object_list->objects)[i]).weight,
-	      ((object_list->objects)[i]).height,
-	      ((object_list->objects)[i]).width);
-    }
+  {
+    printf ("%0.0f\t%d\t%d\n", ((object_list->objects)[i]).weight,
+      ((object_list->objects)[i]).height, ((object_list->objects)[i]).width);
+  }
 
   return FALSE;
 }
 
 int
 ho_objlist_statistics (ho_objlist * object_list,
-		       int min_height, int max_height,
-		       int min_width, int max_width,
-		       int *counter,
-		       double *weight_avg, double *weight_com,
-		       double *weight_min, double *weight_max,
-		       int *height_avg, int *height_com,
-		       int *height_min, int *height_max,
-		       int *width_avg, int *width_com,
-		       int *width_min, int *width_max)
+  int min_height, int max_height,
+  int min_width, int max_width,
+  int *counter,
+  double *weight_avg, double *weight_com,
+  double *weight_min, double *weight_max,
+  int *height_avg, int *height_com,
+  int *height_min, int *height_max,
+  int *width_avg, int *width_com, int *width_min, int *width_max)
 {
-  /* historam boxes are 0 .. 300 -> 0 .. 60 (5 values into 1 histogram box) 
-     for 1D attributes and 0 .. 1500 -> 0 .. 60 (25 into 1) for 2D attributes */
+  /* historam boxes are 0 .. 300 -> 0 .. 60 (5 values into 1 histogram box)
+   * for 1D attributes and 0 .. 1500 -> 0 .. 60 (25 into 1) for 2D attributes */
   double weight_histogram[60];
   int height_histogram[60];
   int width_histogram[60];
@@ -383,11 +378,11 @@ ho_objlist_statistics (ho_objlist * object_list,
 
   /* clean histograms */
   for (i = 0; i < 60; i++)
-    {
-      weight_histogram[i] = 0.0;
-      height_histogram[i] = 0;
-      width_histogram[i] = 0;
-    }
+  {
+    weight_histogram[i] = 0.0;
+    height_histogram[i] = 0;
+    width_histogram[i] = 0;
+  }
 
   /* clean initial sum, min and max values */
   weight = ((object_list->objects)[0]).weight;
@@ -401,121 +396,122 @@ ho_objlist_statistics (ho_objlist * object_list,
   (*counter) = 0;
 
   for (i = 1; i < (object_list->size); i++)
-    {
-      /* get values */
-      weight = ((object_list->objects)[i]).weight;
-      width = ((object_list->objects)[i]).width;
-      height = ((object_list->objects)[i]).height;
+  {
+    /* get values */
+    weight = ((object_list->objects)[i]).weight;
+    width = ((object_list->objects)[i]).width;
+    height = ((object_list->objects)[i]).height;
 
-      if (width < min_width || width > max_width || height < min_height
-	  || height > max_height)
-	continue;
+    if (width < min_width || width > max_width || height < min_height
+      || height > max_height)
+      continue;
 
-      (*counter)++;
+    (*counter)++;
 
-      /* set min max and sum */
-      weight_sum += weight;
-      if ((*weight_min) > weight)
-	*weight_min = weight;
-      if ((*weight_max) < weight)
-	*weight_max = weight;
+    /* set min max and sum */
+    weight_sum += weight;
+    if ((*weight_min) > weight)
+      *weight_min = weight;
+    if ((*weight_max) < weight)
+      *weight_max = weight;
 
-      width_sum += width;
-      if ((*width_min) > width)
-	*width_min = width;
-      if ((*width_max) < width)
-	*width_max = width;
+    width_sum += width;
+    if ((*width_min) > width)
+      *width_min = width;
+    if ((*width_max) < width)
+      *width_max = width;
 
-      height_sum += height;
-      if ((*height_min) > height)
-	*height_min = height;
-      if ((*height_max) < height)
-	*height_max = height;
+    height_sum += height;
+    if ((*height_min) > height)
+      *height_min = height;
+    if ((*height_max) < height)
+      *height_max = height;
 
-      /* set histograms */
-      histogram_index = weight / 25;
-      if (histogram_index < 60)
-	(weight_histogram[histogram_index])++;
-      histogram_index = height / 5;
-      if (histogram_index < 60)
-	(height_histogram[histogram_index])++;
-      histogram_index = width / 5;
-      if (histogram_index < 60)
-	(width_histogram[histogram_index])++;
-    }
+    /* set histograms */
+    histogram_index = weight / 25;
+    if (histogram_index < 60)
+      (weight_histogram[histogram_index])++;
+    histogram_index = height / 5;
+    if (histogram_index < 60)
+      (height_histogram[histogram_index])++;
+    histogram_index = width / 5;
+    if (histogram_index < 60)
+      (width_histogram[histogram_index])++;
+  }
 
   /* set average values */
   if (*counter)
-    {
-      *weight_avg = weight_sum / (*counter);
-      *height_avg = height_sum / (*counter);
-      *width_avg = width_sum / (*counter);
-    }
+  {
+    *weight_avg = weight_sum / (*counter);
+    *height_avg = height_sum / (*counter);
+    *width_avg = width_sum / (*counter);
+  }
 
   /* set common values */
   for (i = 0; i < 60; i++)
-    {
-      if (weight_histogram[histogram_index_weight] < weight_histogram[i])
-	histogram_index_weight = i;
-      if (height_histogram[histogram_index_height] < height_histogram[i])
-	histogram_index_height = i;
-      if (width_histogram[histogram_index_width] < width_histogram[i])
-	histogram_index_width = i;
-    }
+  {
+    if (weight_histogram[histogram_index_weight] < weight_histogram[i])
+      histogram_index_weight = i;
+    if (height_histogram[histogram_index_height] < height_histogram[i])
+      histogram_index_height = i;
+    if (width_histogram[histogram_index_width] < width_histogram[i])
+      histogram_index_width = i;
+  }
 
   /* set common values */
   *weight_com = (double) histogram_index_weight *25.0 + 12;
+
   *height_com = histogram_index_height * 5 + 2;
   *width_com = histogram_index_width * 5 + 2;
 
   /* if fond some common height & width values fine-tune the height & width */
   if (height_histogram[histogram_index_height] > 0)
+  {
+    /* empty the height & width histogram */
+    for (i = 0; i < 60; i++)
     {
-      /* empty the height & width histogram */
-      for (i = 0; i < 60; i++)
-	{
-	  height_histogram[i] = 0;
-	  width_histogram[i] = 0;
-	}
-
-      for (i = 1; i < (object_list->size); i++)
-	{
-	  /* get values */
-	  height = ((object_list->objects)[i]).height;
-	  width = ((object_list->objects)[i]).width;
-
-	  if (width < min_width || width > max_width || height < min_height
-	      || height > max_height)
-	    continue;
-
-	  /* check for common only height */
-	  if (height >= (*height_com) - 2 && height <= (*height_com) + 2)
-	    {
-	      (height_histogram[height - (*height_com) + 2])++;
-	    }
-
-	  /* check for common only width */
-	  if (width >= (*width_com) - 2 && width <= (*width_com) + 2)
-	    {
-	      (width_histogram[width - (*width_com) + 2])++;
-	    }
-	}
-
-      /* re-set common values */
-      histogram_index_height = 0;
-      histogram_index_width = 0;
-      for (i = 0; i < 5; i++)
-	{
-	  if (height_histogram[histogram_index_height] < height_histogram[i])
-	    histogram_index_height = i;
-	  if (width_histogram[histogram_index_width] < width_histogram[i])
-	    histogram_index_width = i;
-	}
-
-      /* re-set height common values */
-      *height_com = histogram_index_height + (*height_com) - 2;
-      *width_com = histogram_index_width + (*width_com) - 2;
+      height_histogram[i] = 0;
+      width_histogram[i] = 0;
     }
+
+    for (i = 1; i < (object_list->size); i++)
+    {
+      /* get values */
+      height = ((object_list->objects)[i]).height;
+      width = ((object_list->objects)[i]).width;
+
+      if (width < min_width || width > max_width || height < min_height
+        || height > max_height)
+        continue;
+
+      /* check for common only height */
+      if (height >= (*height_com) - 2 && height <= (*height_com) + 2)
+      {
+        (height_histogram[height - (*height_com) + 2])++;
+      }
+
+      /* check for common only width */
+      if (width >= (*width_com) - 2 && width <= (*width_com) + 2)
+      {
+        (width_histogram[width - (*width_com) + 2])++;
+      }
+    }
+
+    /* re-set common values */
+    histogram_index_height = 0;
+    histogram_index_width = 0;
+    for (i = 0; i < 5; i++)
+    {
+      if (height_histogram[histogram_index_height] < height_histogram[i])
+        histogram_index_height = i;
+      if (width_histogram[histogram_index_width] < width_histogram[i])
+        histogram_index_width = i;
+    }
+
+    /* re-set height common values */
+    *height_com = histogram_index_height + (*height_com) - 2;
+    *width_com = histogram_index_width + (*width_com) - 2;
+  }
 
   return FALSE;
 }
@@ -525,14 +521,14 @@ ho_objmap_new (const int width, const int height)
 {
   ho_objmap *m_new = NULL;
 
-  /*
+  /* 
    * allocate memory for pixbuf 
    */
   m_new = (ho_objmap *) malloc (sizeof (ho_objmap));
   if (!m_new)
-    {
-      return NULL;
-    }
+  {
+    return NULL;
+  }
 
   /* read header */
   m_new->x = 0;
@@ -543,19 +539,19 @@ ho_objmap_new (const int width, const int height)
   /* allocate memory for data (and set to zero) */
   m_new->map = (int *) calloc (m_new->height * m_new->width, sizeof (int));
   if (!(m_new->map))
-    {
-      free (m_new);
-      return NULL;
-    }
+  {
+    free (m_new);
+    return NULL;
+  }
 
   /* allocate initial object list */
   m_new->obj_list = ho_objlist_new ();
   if (!(m_new->obj_list))
-    {
-      free (m_new->map);
-      free (m_new);
-      return NULL;
-    }
+  {
+    free (m_new->map);
+    free (m_new);
+    return NULL;
+  }
 
   return m_new;
 }
@@ -584,15 +580,15 @@ ho_objmap_clean (ho_objmap * m)
   /* relax the object matrix */
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
-      {
+    {
 
-	k = ho_objmap_get (m, x, y);
-	if (k)
-	  {
-	    index = ho_objlist_get_index ((m->obj_list), k - 1);
-	    ho_objmap_set (m, x, y, index + 1);
-	  }
+      k = ho_objmap_get (m, x, y);
+      if (k)
+      {
+        index = ho_objlist_get_index ((m->obj_list), k - 1);
+        ho_objmap_set (m, x, y, index + 1);
       }
+    }
 
   /* clean the object list */
   ho_objlist_clean ((m->obj_list), &map);
@@ -600,14 +596,14 @@ ho_objmap_clean (ho_objmap * m)
   /* re relax the object matrix */
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
+    {
+      k = ho_objmap_get (m, x, y);
+      if (k)
       {
-	k = ho_objmap_get (m, x, y);
-	if (k)
-	  {
-	    index = map[k - 1];
-	    ho_objmap_set (m, x, y, index + 1);
-	  }
+        index = map[k - 1];
+        ho_objmap_set (m, x, y, index + 1);
       }
+    }
 
   /* free all temporary memory */
   if (map)
@@ -618,7 +614,7 @@ ho_objmap_clean (ho_objmap * m)
 
 int
 ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col,
-				 const unsigned char dir_ltr)
+  const unsigned char dir_ltr)
 {
   int x, y, k;
   int index;
@@ -633,14 +629,14 @@ ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col,
   /* re relax the object matrix */
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
+    {
+      k = ho_objmap_get (m, x, y);
+      if (k)
       {
-	k = ho_objmap_get (m, x, y);
-	if (k)
-	  {
-	    index = map[k - 1];
-	    ho_objmap_set (m, x, y, index + 1);
-	  }
+        index = map[k - 1];
+        ho_objmap_set (m, x, y, index + 1);
       }
+    }
 
   /* free all temporary memory */
   if (map)
@@ -671,66 +667,65 @@ ho_objmap_new_from_bitmap (const ho_bitmap * bit_in)
   /* link all concted black pixels */
   for (x = 1; x < bit_in->width; x++)
     for (y = 1; y < (bit_in->height - 1); y++)
+    {
+      /* is pixel black ? */
+      if (ho_bitmap_get (bit_in, x, y))
       {
-	/* is pixel black ? */
-	if (ho_bitmap_get (bit_in, x, y))
-	  {
-	    /* get neigbors */
-	    neigbors[0] = ho_objmap_get (m_new, x - 1, y - 1);
-	    neigbors[1] = ho_objmap_get (m_new, x - 1, y - 0);
-	    neigbors[2] = ho_objmap_get (m_new, x - 1, y + 1);
-	    neigbors[3] = ho_objmap_get (m_new, x - 0, y - 1);
+        /* get neigbors */
+        neigbors[0] = ho_objmap_get (m_new, x - 1, y - 1);
+        neigbors[1] = ho_objmap_get (m_new, x - 1, y - 0);
+        neigbors[2] = ho_objmap_get (m_new, x - 1, y + 1);
+        neigbors[3] = ho_objmap_get (m_new, x - 0, y - 1);
 
-	    sum = neigbors[0] + neigbors[1] + neigbors[2] + neigbors[3];
+        sum = neigbors[0] + neigbors[1] + neigbors[2] + neigbors[3];
 
-	    /* if no neigbor is black */
-	    if (sum == 0)
-	      {
-		if (ho_objlist_add ((m_new->obj_list), 1, x, y, 1, 1))
-		  {
-		    /* can't add to objects :-( */
-		    ho_objmap_free (m_new);
-		    return NULL;
-		  }
+        /* if no neigbor is black */
+        if (sum == 0)
+        {
+          if (ho_objlist_add ((m_new->obj_list), 1, x, y, 1, 1))
+          {
+            /* can't add to objects :-( */
+            ho_objmap_free (m_new);
+            return NULL;
+          }
 
-		/* in the matrix we insert index+1 */
-		ho_objmap_set (m_new, x, y, (m_new->obj_list)->size);
-	      }
-	    /* at least one neigbor is black */
-	    else
-	      {
-		/* find the index of the minimal frind */
-		min = 0;
-		for (k = 0; k < 4; k++)
-		  {
-		    if (neigbors[k])
-		      {
-			indexes[k] =
-			  ho_objlist_get_index ((m_new->obj_list),
-						neigbors[k] - 1);
-			if (!min || (indexes[k] < (min - 1)))
-			  /* indexes goes 0.. and min goes 1.. */
-			  min = (indexes[k] + 1);
-		      }
-		    else
-		      indexes[k] = 0;
-		  }
-		/* min 1.. -> 0.. */
-		min--;
+          /* in the matrix we insert index+1 */
+          ho_objmap_set (m_new, x, y, (m_new->obj_list)->size);
+        }
+        /* at least one neigbor is black */
+        else
+        {
+          /* find the index of the minimal frind */
+          min = 0;
+          for (k = 0; k < 4; k++)
+          {
+            if (neigbors[k])
+            {
+              indexes[k] =
+                ho_objlist_get_index ((m_new->obj_list), neigbors[k] - 1);
+              if (!min || (indexes[k] < (min - 1)))
+                /* indexes goes 0.. and min goes 1.. */
+                min = (indexes[k] + 1);
+            }
+            else
+              indexes[k] = 0;
+          }
+          /* min 1.. -> 0.. */
+          min--;
 
-		/* set the current pixel in the objects matrix to that index */
-		ho_objmap_set (m_new, x, y, min + 1);
-		ho_objlist_add_pixel ((m_new->obj_list), min, x, y);
+          /* set the current pixel in the objects matrix to that index */
+          ho_objmap_set (m_new, x, y, min + 1);
+          ho_objlist_add_pixel ((m_new->obj_list), min, x, y);
 
-		/* link all object to that index */
-		for (k = 0; k < 4; k++)
-		  {
-		    if (indexes[k])
-		      ho_objlist_link ((m_new->obj_list), min, indexes[k]);
-		  }
-	      }
-	  }
+          /* link all object to that index */
+          for (k = 0; k < 4; k++)
+          {
+            if (indexes[k])
+              ho_objlist_link ((m_new->obj_list), min, indexes[k]);
+          }
+        }
       }
+    }
 
   /* relax and clean the objmap */
   ho_objmap_clean (m_new);
@@ -740,10 +735,9 @@ ho_objmap_new_from_bitmap (const ho_bitmap * bit_in)
 
 int
 ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
-		       const int max_height,
-		       const int min_width,
-		       const int max_width, int *height,
-		       int *width, unsigned char *nikud)
+  const int max_height,
+  const int min_width,
+  const int max_width, int *height, int *width, unsigned char *nikud)
 {
   int i, j;
   int counter;
@@ -764,34 +758,32 @@ ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
 
   /* get stats */
   ho_objlist_statistics (m->obj_list,
-			 min_height, max_height,
-			 min_width, max_width,
-			 &counter,
-			 &weight_avg, &weight_com,
-			 &weight_min, &weight_max,
-			 &height_avg, &height_com,
-			 &height_min, &height_max,
-			 &width_avg, &width_com, &width_min, &width_max);
+    min_height, max_height,
+    min_width, max_width,
+    &counter,
+    &weight_avg, &weight_com,
+    &weight_min, &weight_max,
+    &height_avg, &height_com,
+    &height_min, &height_max, &width_avg, &width_com, &width_min, &width_max);
 
   /* does it look like nikud ? */
   if (height_avg < (2 * height_com / 3))
-    {
-      *nikud = TRUE;
-    }
+  {
+    *nikud = TRUE;
+  }
 
   /* did we find the nikud ? */
   if (height_com < (2 * height_avg / 3))
-    {
-      *nikud = TRUE;
+  {
+    *nikud = TRUE;
 
-      /* re-get stats, now limit minial size */
-      ho_objlist_statistics (m->obj_list, 3 * height_avg / 2, 300,
-			     3 * width_avg / 2, 300, &counter,
-			     &weight_avg, &weight_com, &weight_min,
-			     &weight_max, &height_avg, &height_com,
-			     &height_min, &height_max, &width_avg,
-			     &width_com, &width_min, &width_max);
-    }
+    /* re-get stats, now limit minial size */
+    ho_objlist_statistics (m->obj_list, 3 * height_avg / 2, 300,
+      3 * width_avg / 2, 300, &counter,
+      &weight_avg, &weight_com, &weight_min,
+      &weight_max, &height_avg, &height_com,
+      &height_min, &height_max, &width_avg, &width_com, &width_min, &width_max);
+  }
 
   /* is width logical ? */
   if (height_com > 3 * width_com / 2)
@@ -805,8 +797,7 @@ ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
 
 ho_bitmap *
 ho_objmap_to_bitmap_by_size (const ho_objmap * m,
-			     int min_height, int max_height,
-			     int min_width, int max_width)
+  int min_height, int max_height, int min_width, int max_width)
 {
   int x, y;
   int index;
@@ -824,24 +815,24 @@ ho_objmap_to_bitmap_by_size (const ho_objmap * m,
 
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
+    {
+      index = ho_objmap_get (m, x, y);
+
+      if (index)
       {
-	index = ho_objmap_get (m, x, y);
+        /* on objmap objects are 1.. and on objlist 0.. */
+        index--;
 
-	if (index)
-	  {
-	    /* on objmap objects are 1.. and on objlist 0.. */
-	    index--;
+        width = (((m->obj_list)->objects)[index]).width;
+        height = (((m->obj_list)->objects)[index]).height;
 
-	    width = (((m->obj_list)->objects)[index]).width;
-	    height = (((m->obj_list)->objects)[index]).height;
+        if (width < min_width || width > max_width || height < min_height
+          || height > max_height)
+          continue;
 
-	    if (width < min_width || width > max_width || height < min_height
-		|| height > max_height)
-	      continue;
-
-	    ho_bitmap_set (m_out, x, y);
-	  }
+        ho_bitmap_set (m_out, x, y);
       }
+    }
 
   return m_out;
 }
@@ -876,21 +867,21 @@ ho_objmap_to_bitmap_by_index (const ho_objmap * m, const int index)
 
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
-      {
-	current_index = ho_objmap_get (m, x, y);
+    {
+      current_index = ho_objmap_get (m, x, y);
 
-	if ((current_index - 1) == index)
-	  {
-	    ho_bitmap_set (m_out, x, y);
-	  }
+      if ((current_index - 1) == index)
+      {
+        ho_bitmap_set (m_out, x, y);
       }
+    }
 
   return m_out;
 }
 
 ho_bitmap *
 ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
-				     const int index, const int frame)
+  const int index, const int frame)
 {
   int x, y;
   int x1, y1;
@@ -923,22 +914,21 @@ ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
 
   for (x = 0; x < width; x++)
     for (y = 0; y < height; y++)
-      {
-	current_index = ho_objmap_get (m, x + x1, y + y1);
+    {
+      current_index = ho_objmap_get (m, x + x1, y + y1);
 
-	if ((current_index - 1) == index)
-	  {
-	    ho_bitmap_set (m_out, x + frame, y + frame);
-	  }
+      if ((current_index - 1) == index)
+      {
+        ho_bitmap_set (m_out, x + frame, y + frame);
       }
+    }
 
   return m_out;
 }
 
 int
 ho_objmap_update_reading_index (ho_objmap * m,
-				const unsigned char n_columns,
-				const unsigned char dir_ltr)
+  const unsigned char n_columns, const unsigned char dir_ltr)
 {
   int q;
   int index;
@@ -953,61 +943,58 @@ ho_objmap_update_reading_index (ho_objmap * m,
 
   /* if n_columns == 254 then this is a one column sorting */
   if (n_col == 254)
+  {
+    reading_index = 0;
+    for (y = 0; y < m->height; y++)
     {
-      reading_index = 0;
-      for (y = 0; y < m->height; y++)
-	{
-	  for (index = 0; index < ho_objmap_get_size (m); index++)
-	    {
-	      if ((ho_objmap_get_object (m, index).y) == y)
-		{
-		  ho_objmap_get_object (m, index).reading_index =
-		    reading_index;
-		  reading_index++;
-		}
-	    }
-	}
-      return FALSE;
+      for (index = 0; index < ho_objmap_get_size (m); index++)
+      {
+        if ((ho_objmap_get_object (m, index).y) == y)
+        {
+          ho_objmap_get_object (m, index).reading_index = reading_index;
+          reading_index++;
+        }
+      }
     }
+    return FALSE;
+  }
 
   /* if n_columns == 255 then this is a one line sorting */
   if (n_col == 255)
+  {
+    reading_index = 0;
+    if (dir_ltr)
     {
-      reading_index = 0;
-      if (dir_ltr)
-	{
-	  for (x = 0; x < m->width; x++)
-	    {
-	      for (index = 0; index < ho_objmap_get_size (m); index++)
-		{
-		  if ((ho_objmap_get_object (m, index).x +
-		       ho_objmap_get_object (m, index).width - 1) == x)
-		    {
-		      ho_objmap_get_object (m, index).reading_index =
-			reading_index;
-		      reading_index++;
-		    }
-		}
-	    }
-	}
-      else
-	{
-	  for (x = m->width; x >= 0; x--)
-	    {
-	      for (index = 0; index < ho_objmap_get_size (m); index++)
-		{
-		  if ((ho_objmap_get_object (m, index).x +
-		       ho_objmap_get_object (m, index).width - 1) == x)
-		    {
-		      ho_objmap_get_object (m, index).reading_index =
-			reading_index;
-		      reading_index++;
-		    }
-		}
-	    }
-	}
-      return FALSE;
+      for (x = 0; x < m->width; x++)
+      {
+        for (index = 0; index < ho_objmap_get_size (m); index++)
+        {
+          if ((ho_objmap_get_object (m, index).x +
+              ho_objmap_get_object (m, index).width - 1) == x)
+          {
+            ho_objmap_get_object (m, index).reading_index = reading_index;
+            reading_index++;
+          }
+        }
+      }
     }
+    else
+    {
+      for (x = m->width; x >= 0; x--)
+      {
+        for (index = 0; index < ho_objmap_get_size (m); index++)
+        {
+          if ((ho_objmap_get_object (m, index).x +
+              ho_objmap_get_object (m, index).width - 1) == x)
+          {
+            ho_objmap_get_object (m, index).reading_index = reading_index;
+            reading_index++;
+          }
+        }
+      }
+    }
+    return FALSE;
+  }
 
   /* sanity check */
   if (n_col < 2 || n_col > 6)
@@ -1030,49 +1017,46 @@ ho_objmap_update_reading_index (ho_objmap * m,
 
   /* sort by 1/4 of map */
   for (index = 0; index < (m->obj_list)->size; index++)
-    {
-      x = ho_objmap_get_object (m, index).x;
-      y = ho_objmap_get_object (m, index).y;
-      width = ho_objmap_get_object (m, index).width;
-      height = ho_objmap_get_object (m, index).height;
+  {
+    x = ho_objmap_get_object (m, index).x;
+    y = ho_objmap_get_object (m, index).y;
+    width = ho_objmap_get_object (m, index).width;
+    height = ho_objmap_get_object (m, index).height;
 
-      /* what column ? */
-      if (dir_ltr)
-	q = n_col * (x + width / 2) / m->width;
-      else
-	q = n_col - 1 - n_col * (x + width / 2) / m->width;
+    /* what column ? */
+    if (dir_ltr)
+      q = n_col * (x + width / 2) / m->width;
+    else
+      q = n_col - 1 - n_col * (x + width / 2) / m->width;
 
-      /* sanity check */
-      if (q < 0)
-	q = 0;
+    /* sanity check */
+    if (q < 0)
+      q = 0;
 
-      sorting_list_index =
-	q * ho_objmap_get_size (m) + sorting_lists_sizes[q];
-      sorting_lists[sorting_list_index] = index;
-      sorting_lists_sizes[q]++;
-    }
+    sorting_list_index = q * ho_objmap_get_size (m) + sorting_lists_sizes[q];
+    sorting_lists[sorting_list_index] = index;
+    sorting_lists_sizes[q]++;
+  }
 
   /* sort by height for each 1/4 */
   reading_index = 0;
 
   for (q = 0; q < n_col; q++)
     for (y = 0; y < m->height; y++)
+    {
+      for (sorting_list_index = 0;
+        sorting_list_index < sorting_lists_sizes[q]; sorting_list_index++)
       {
-	for (sorting_list_index = 0;
-	     sorting_list_index < sorting_lists_sizes[q];
-	     sorting_list_index++)
-	  {
-	    index =
-	      sorting_lists[sorting_list_index + q * ho_objmap_get_size (m)];
+        index = sorting_lists[sorting_list_index + q * ho_objmap_get_size (m)];
 
-	    if ((ho_objmap_get_object (m, index).y +
-		 ho_objmap_get_object (m, index).height / 2) == y)
-	      {
-		ho_objmap_get_object (m, index).reading_index = reading_index;
-		reading_index++;
-	      }
-	  }
+        if ((ho_objmap_get_object (m, index).y +
+            ho_objmap_get_object (m, index).height / 2) == y)
+        {
+          ho_objmap_get_object (m, index).reading_index = reading_index;
+          reading_index++;
+        }
       }
+    }
 
   free (sorting_lists);
   free (sorting_lists_sizes);

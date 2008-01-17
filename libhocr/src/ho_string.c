@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            ho_string.c
  *
@@ -67,13 +68,12 @@ ho_string_new ()
   new_string_buffer->string =
     (char *) malloc (sizeof (char) * new_string_buffer->allocated_size);
 
-  /* if no memeory for string free the struct (no need for it with no string) 
-   */
+  /* if no memeory for string free the struct (no need for it with no string) */
   if (!new_string_buffer->string)
-    {
-      free (new_string_buffer);
-      return NULL;
-    }
+  {
+    free (new_string_buffer);
+    return NULL;
+  }
 
   /* init the string to zero length null terminated string */
   (new_string_buffer->string)[0] = '\0';
@@ -109,17 +109,17 @@ ho_string_set (ho_string * string_buffer, const char *new_string)
 
   /* got new memory */
   if (new_allocated_string)
-    {
-      if (string_buffer->string)
-	free (string_buffer->string);
-      string_buffer->string = new_allocated_string;
-      string_buffer->allocated_size = len + MEMORY_CHANK_FOR_TEXT_BUFFER;
-    }
+  {
+    if (string_buffer->string)
+      free (string_buffer->string);
+    string_buffer->string = new_allocated_string;
+    string_buffer->allocated_size = len + MEMORY_CHANK_FOR_TEXT_BUFFER;
+  }
   /* did not get new memory */
   else
-    {
-      return TRUE;
-    }
+  {
+    return TRUE;
+  }
 
   /* add the new string */
   strcpy (string_buffer->string, new_string);
@@ -138,24 +138,23 @@ ho_string_cat (ho_string * string_buffer, const char *new_string)
 
   /* check for allocated space and try to get more memory */
   if ((string_buffer->size + len) >= string_buffer->allocated_size)
-    {
-      new_allocated_string =
-	realloc (string_buffer->string, sizeof (char) *
-		 (string_buffer->allocated_size + len +
-		  MEMORY_CHANK_FOR_TEXT_BUFFER));
+  {
+    new_allocated_string =
+      realloc (string_buffer->string, sizeof (char) *
+      (string_buffer->allocated_size + len + MEMORY_CHANK_FOR_TEXT_BUFFER));
 
-      /* got new memory */
-      if (new_allocated_string)
-	{
-	  string_buffer->string = new_allocated_string;
-	  string_buffer->allocated_size += len + MEMORY_CHANK_FOR_TEXT_BUFFER;
-	}
-      /* did not get new memory */
-      else
-	{
-	  return TRUE;
-	}
+    /* got new memory */
+    if (new_allocated_string)
+    {
+      string_buffer->string = new_allocated_string;
+      string_buffer->allocated_size += len + MEMORY_CHANK_FOR_TEXT_BUFFER;
     }
+    /* did not get new memory */
+    else
+    {
+      return TRUE;
+    }
+  }
 
   /* add the new string */
   strcat (string_buffer->string, new_string);

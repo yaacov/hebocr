@@ -39,23 +39,23 @@
 
 typedef struct
 {
-	unsigned char type;
-	int font_height;
-	int font_width;
+  unsigned char type;
+  int font_height;
+  int font_width;
 
-	int font_spacing;
-	int line_spacing;
-	int avg_line_fill;
-	int com_line_fill;
+  int font_spacing;
+  int line_spacing;
+  int avg_line_fill;
+  int com_line_fill;
 
-	unsigned char nikud;
+  unsigned char nikud;
 
-	int x;
-	int y;
-	int height;
-	int width;
-	int rowstride;
-	unsigned char *data;
+  int x;
+  int y;
+  int height;
+  int width;
+  int rowstride;
+  unsigned char *data;
 } ho_bitmap;
 
 /**
@@ -94,8 +94,7 @@ ho_bitmap *ho_bitmap_clone (const ho_bitmap * m);
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_clone_window (const ho_bitmap * m, const int x,
-								   const int y, const int width,
-								   const int height);
+  const int y, const int width, const int height);
 
 /**
  do bitwise and of two bitmaps
@@ -176,7 +175,7 @@ ho_bitmap *ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n);
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_set_height (const ho_bitmap * m, const int height,
-								 const int top, const int bottom);
+  const int top, const int bottom);
 
 /**
  take only bottom height black pixels of bitmap
@@ -186,8 +185,7 @@ ho_bitmap *ho_bitmap_set_height (const ho_bitmap * m, const int height,
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_set_height_from_bottom (const ho_bitmap * m,
-											 const int height, const int top,
-											 const int bottom);
+  const int height, const int top, const int bottom);
 
 /**
  dilation of a a bitmap with 3x3 box
@@ -269,7 +267,7 @@ ho_bitmap *ho_bitmap_edge (const ho_bitmap * m, const int n);
  */
 double
 ho_bitmap_get_fill (const ho_bitmap * m, const int x, const int y,
-					const int width, const int height);
+  const int width, const int height);
 
 /**
  writes ho_bitmap to pnm file
@@ -301,8 +299,7 @@ ho_bitmap *ho_bitmap_filter_hlink (ho_bitmap * m, int size, int max_height);
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_by_size (const ho_bitmap * m,
-									 int min_height, int max_height,
-									 int min_width, int max_width);
+  int min_height, int max_height, int min_width, int max_width);
 
 /**
  copy boxed objects from bitmap
@@ -311,7 +308,7 @@ ho_bitmap *ho_bitmap_filter_by_size (const ho_bitmap * m,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
-								   const int leeway_up);
+  const int leeway_up);
 
 /**
  copy filled objects from bitmap
@@ -330,7 +327,7 @@ ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
-										const int top, const int bottom);
+  const int top, const int bottom);
 
 /**
  take height bottom pixels from objects in bitmap
@@ -340,9 +337,7 @@ ho_bitmap *ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_set_height_from_bottom (const ho_bitmap * m,
-													const int height,
-													const int top,
-													const int bottom);
+  const int height, const int top, const int bottom);
 
 /**
  take extend objects lateraly
@@ -352,7 +347,7 @@ ho_bitmap *ho_bitmap_filter_set_height_from_bottom (const ho_bitmap * m,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
-												 const int ext_width);
+  const int ext_width);
 
 /**
  remove halftone dots from bitmap
@@ -363,8 +358,7 @@ ho_bitmap *ho_bitmap_filter_obj_extend_lateraly (const ho_bitmap * m,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_remove_dots (const ho_bitmap * m,
-										 const unsigned char erosion_n,
-										 const unsigned char dilation_n);
+  const unsigned char erosion_n, const unsigned char dilation_n);
 
 /**
  count the number of objects in a bitmap
@@ -386,7 +380,7 @@ int ho_bitmap_filter_count_objects (const ho_bitmap * m);
  */
 int
 ho_bitmap_draw_box (ho_bitmap * m, const int x, const int y,
-					const int width, const int height);
+  const int width, const int height);
 
 /**
  draw a black empty box on bitmap
@@ -400,7 +394,7 @@ ho_bitmap_draw_box (ho_bitmap * m, const int x, const int y,
  */
 int
 ho_bitmap_draw_box_empty (ho_bitmap * m, const int x, const int y,
-						  const int width, const int height);
+  const int width, const int height);
 
 /**
  draw vertical line on bitmap
@@ -413,7 +407,7 @@ ho_bitmap_draw_box_empty (ho_bitmap * m, const int x, const int y,
  */
 int
 ho_bitmap_draw_vline (ho_bitmap * m, const int x, const int y,
-					  const int height);
+  const int height);
 
 /**
  delete vertical line on bitmap
@@ -426,7 +420,7 @@ ho_bitmap_draw_vline (ho_bitmap * m, const int x, const int y,
  */
 int
 ho_bitmap_delete_vline (ho_bitmap * m, const int x, const int y,
-						const int height);
+  const int height);
 
 /**
  draw horizontal line on bitmap
@@ -451,6 +445,6 @@ ho_bitmap_draw_hline (ho_bitmap * m, const int x, const int y, const int width);
  */
 int
 ho_bitmap_delete_hline (ho_bitmap * m, const int x, const int y,
-						const int width);
+  const int width);
 
 #endif /* HO_BITMAP_H */

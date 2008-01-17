@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            ho_segment.h
  *
@@ -34,8 +35,7 @@
  @param box squre (boxes) or free formed text blocks 
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_segment_paragraphs (const ho_bitmap * m,
-				  const unsigned char box);
+ho_bitmap *ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box);
 
 /**
  return a bitmap of the lines
@@ -49,8 +49,7 @@ ho_bitmap *ho_segment_lines (const ho_bitmap * m);
  @param m pointer to an ho_bitmap
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_segment_words (const ho_bitmap * m,
-			     const ho_bitmap * m_line_map);
+ho_bitmap *ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map);
 
 /**
  return a bitmap of the interfont spaces
@@ -58,8 +57,7 @@ ho_bitmap *ho_segment_words (const ho_bitmap * m,
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_segment_fonts (const ho_bitmap * m,
-			     const ho_bitmap * m_line_map,
-			     const unsigned char slicing_threshold,
-			     const unsigned char slicing_width);
+  const ho_bitmap * m_line_map,
+  const unsigned char slicing_threshold, const unsigned char slicing_width);
 
 #endif /* HO_SEGMENT_H */

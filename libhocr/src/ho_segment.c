@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            ho_segment.c
  *
@@ -52,14 +53,12 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
   /* if nikud we need to be more careful */
   if (m->nikud)
     m_clean = ho_bitmap_filter_by_size (m,
-					m->font_height / 2,
-					m->font_height * 4, m->font_width / 3,
-					m->font_width * 5);
+      m->font_height / 2,
+      m->font_height * 4, m->font_width / 3, m->font_width * 5);
   else
     m_clean = ho_bitmap_filter_by_size (m,
-					m->font_height / 4,
-					m->font_height * 4, m->font_width / 4,
-					m->font_width * 5);
+      m->font_height / 4,
+      m->font_height * 4, m->font_width / 4, m->font_width * 5);
 
   /* link paragraphs */
   m_temp1 = ho_bitmap_vlink (m_clean, m->line_spacing * 1.2);
@@ -80,16 +79,17 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
   ho_bitmap_free (m_out);
   ho_bitmap_free (m_clean);
 
-  /* try and link one/two line broken paragraphs (free paragraphs need more care) */
+  /* try and link one/two line broken paragraphs (free paragraphs need more
+   * care) */
   m_out = ho_bitmap_filter_hlink (m_temp1, m->font_width * 6,
-				  m->font_height * 2 + m->line_spacing * 2);
+    m->font_height * 2 + m->line_spacing * 2);
 
   ho_bitmap_free (m_temp1);
 
   /* check all paragraphs for artefacts, too small or large */
   m_temp1 =
     ho_bitmap_filter_by_size (m_out, 2 * m->font_height / 3, m->height,
-			      m->font_width * 3, m->width);
+    m->font_width * 3, m->width);
 
   ho_bitmap_free (m_out);
 
@@ -111,9 +111,8 @@ ho_segment_lines (const ho_bitmap * m)
 
   /* filter only "regular" sized fonts */
   m_clean = ho_bitmap_filter_by_size (m,
-				      6 * m->font_height / 10,
-				      15 * m->font_height / 10,
-				      m->font_width / 3, m->font_width * 5);
+    6 * m->font_height / 10,
+    15 * m->font_height / 10, m->font_width / 3, m->font_width * 5);
   if (!m_clean)
     return NULL;
 
@@ -129,22 +128,21 @@ ho_segment_lines (const ho_bitmap * m)
 
   /* add sideways leeway */
   for (i = 0; i < 1; i++)
-    {
-      /* add sideways leeway */
-      m_temp =
-	ho_bitmap_filter_obj_extend_lateraly (m_out,
-					      m->font_width * extend_arg);
-      ho_bitmap_free (m_out);
-      if (!m_temp)
-	return NULL;
-      m_out = m_temp;
+  {
+    /* add sideways leeway */
+    m_temp =
+      ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * extend_arg);
+    ho_bitmap_free (m_out);
+    if (!m_temp)
+      return NULL;
+    m_out = m_temp;
 
-      m_temp = ho_bitmap_hlink (m_out, m->font_width * link_arg);
-      ho_bitmap_free (m_out);
-      if (!m_temp)
-	return NULL;
-      m_out = m_temp;
-    }
+    m_temp = ho_bitmap_hlink (m_out, m->font_width * link_arg);
+    ho_bitmap_free (m_out);
+    if (!m_temp)
+      return NULL;
+    m_out = m_temp;
+  }
 
   /* set out matrix height, we want clean lines of known height */
   m_temp = ho_bitmap_filter_set_height (m_out, m->font_height, 0, 0);
@@ -168,22 +166,22 @@ ho_segment_lines (const ho_bitmap * m)
   m_out = m_temp;
 
   for (i = 0; i < 6; i++)
-    {
-      m_temp = ho_bitmap_hlink (m_out, m->font_width * link_arg);
-      ho_bitmap_free (m_out);
-      if (!m_temp)
-	return NULL;
-      m_out = m_temp;
+  {
+    m_temp = ho_bitmap_hlink (m_out, m->font_width * link_arg);
+    ho_bitmap_free (m_out);
+    if (!m_temp)
+      return NULL;
+    m_out = m_temp;
 
-      /* add sideways leeway */
-      m_temp =
-	ho_bitmap_filter_obj_extend_lateraly (m_out,
-					      m->font_width * extend_arg_2);
-      ho_bitmap_free (m_out);
-      if (!m_temp)
-	return NULL;
-      m_out = m_temp;
-    }
+    /* add sideways leeway */
+    m_temp =
+      ho_bitmap_filter_obj_extend_lateraly (m_out,
+      m->font_width * extend_arg_2);
+    ho_bitmap_free (m_out);
+    if (!m_temp)
+      return NULL;
+    m_out = m_temp;
+  }
 
   /* set out matrix height, we want clean lines of known height */
   m_temp = ho_bitmap_filter_set_height (m_out, m->font_height, 0, 0);
@@ -224,9 +222,9 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
   /* get line_height */
   x = m_line_map->width / 2;
   for (y = 0; y < m_line_map->height && !ho_bitmap_get (m_line_map, x, y);
-       y++);
+    y++) ;
   line_height = y;
-  for (; y < m_line_map->height && ho_bitmap_get (m_line_map, x, y); y++);
+  for (; y < m_line_map->height && ho_bitmap_get (m_line_map, x, y); y++) ;
   line_height = y - line_height;
 
   /* chop of none line thigs */
@@ -263,7 +261,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
 
   m_temp =
     ho_bitmap_set_height (m_out, 5 * line_height / 3,
-			  line_height / 2, 2 * line_height / 3);
+    line_height / 2, 2 * line_height / 3);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
@@ -278,8 +276,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
 
 ho_bitmap *
 ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
-		  const unsigned char slicing_threshold,
-		  const unsigned char slicing_width)
+  const unsigned char slicing_threshold, const unsigned char slicing_width)
 {
   int return_val;
 
@@ -317,9 +314,9 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   /* get line_height */
   x = m_line_map->width / 2;
   for (y = 0; y < m_line_map->height && !ho_bitmap_get (m_line_map, x, y);
-       y++);
+    y++) ;
   line_height = y;
-  for (; y < m_line_map->height && ho_bitmap_get (m_line_map, x, y); y++);
+  for (; y < m_line_map->height && ho_bitmap_get (m_line_map, x, y); y++) ;
   line_height = y - line_height;
 
   /* create a fill arrays */
@@ -331,9 +328,8 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   m_temp = ho_bitmap_clone (m);
   if (!m_temp)
     return NULL;
-  /* FIXME: here and in ho_dimentions_line_fill() use a 
-     m_line_map + some leeyway, 
-     letters that are out of the line like 'lamed' are choped */
+  /* FIXME: here and in ho_dimentions_line_fill() use a m_line_map + some
+   * leeyway, letters that are out of the line like 'lamed' are choped */
   ho_bitmap_and (m_temp, m_line_map);
 
   for (x = 0; x < m->width; x++)
@@ -350,10 +346,10 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
   /* check for clean spaces */
   for (x = 0; x < m->width; x++)
-    {
-      if (line_fill[x] <= m->com_line_fill / 15)
-	ho_bitmap_draw_vline (m_out, x, 0, m_out->height);
-    }
+  {
+    if (line_fill[x] <= m->com_line_fill / 15)
+      ho_bitmap_draw_vline (m_out, x, 0, m_out->height);
+  }
 
   /* look for small overlaping */
   {
@@ -362,70 +358,66 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
     x = 0;
     while (x < m->width)
+    {
+      /* get start&end of font */
+      for (; x < m->width && ho_bitmap_get (m_out, x, 1); x++) ;
+      font_start = x;
+      for (; x < m->width && !ho_bitmap_get (m_out, x, 1); x++) ;
+      font_end = x;
+
       {
-	/* get start&end of font */
-	for (; x < m->width && ho_bitmap_get (m_out, x, 1); x++);
-	font_start = x;
-	for (; x < m->width && !ho_bitmap_get (m_out, x, 1); x++);
-	font_end = x;
+        /* get the font bitmap */
+        m_font =
+          ho_bitmap_clone_window (m_temp, font_start, 0,
+          font_end - font_start, m->height);
+        /* look only for large objects that can be complete fonts */
+        m_font_temp =
+          ho_bitmap_filter_by_size (m_font, m->font_height / 4,
+          2 * m->font_height, m->font_width / 5, 3 * m->font_width);
+        o_obj = ho_objmap_new_from_bitmap (m_font_temp);
+        ho_bitmap_free (m_font_temp);
 
-	{
-	  /* get the font bitmap */
-	  m_font =
-	    ho_bitmap_clone_window (m_temp, font_start, 0,
-				    font_end - font_start, m->height);
-	  /* look only for large objects that can be complete fonts */
-	  m_font_temp =
-	    ho_bitmap_filter_by_size (m_font, m->font_height / 4,
-				      2 * m->font_height, m->font_width / 5,
-				      3 * m->font_width);
-	  o_obj = ho_objmap_new_from_bitmap (m_font_temp);
-	  ho_bitmap_free (m_font_temp);
+        ho_objmap_sort_by_reading_index (o_obj, 255, FALSE);
 
-	  ho_objmap_sort_by_reading_index (o_obj, 255, FALSE);
+        /* check for two or more objects */
+        if (ho_objmap_get_size (o_obj) > 1)
+        {
+          /* search for little overlaping object */
+          for (i = 0; i < ho_objmap_get_size (o_obj) - 1; i++)
+          {
+            int i1, i2;
+            int this_object_end;
+            int next_object_start;
+            int thin_object_width;
+            int overlaping;
 
-	  /* check for two or more objects */
-	  if (ho_objmap_get_size (o_obj) > 1)
-	    {
-	      /* search for little overlaping object */
-	      for (i = 0; i < ho_objmap_get_size (o_obj) - 1; i++)
-		{
-		  int i1, i2;
-		  int this_object_end;
-		  int next_object_start;
-		  int thin_object_width;
-		  int overlaping;
+            i1 = i;
+            i2 = i + 1;
 
-		  i1 = i;
-		  i2 = i + 1;
+            thin_object_width = ho_objmap_get_object (o_obj, i1).width;
+            if (thin_object_width > ho_objmap_get_object (o_obj, i2).width)
+              thin_object_width = ho_objmap_get_object (o_obj, i2).width;
 
-		  thin_object_width = ho_objmap_get_object (o_obj, i1).width;
-		  if (thin_object_width > ho_objmap_get_object (o_obj,
-								i2).width)
-		    thin_object_width =
-		      ho_objmap_get_object (o_obj, i2).width;
+            this_object_end = ho_objmap_get_object (o_obj, i1).x;
+            next_object_start = ho_objmap_get_object (o_obj, i2).x +
+              ho_objmap_get_object (o_obj, i2).width;
 
-		  this_object_end = ho_objmap_get_object (o_obj, i1).x;
-		  next_object_start = ho_objmap_get_object (o_obj, i2).x +
-		    ho_objmap_get_object (o_obj, i2).width;
+            overlaping = next_object_start - this_object_end;
 
-		  overlaping = next_object_start - this_object_end;
-
-		  /* check overlaping */
-		  if (overlaping >= 0 && overlaping < thin_object_width / 2)
-		    {
-		      /* draw lines at the objects egjes */
-		      ho_bitmap_draw_vline (m_out,
-					    ho_objmap_get_object (o_obj,
-								  i1).x +
-					    font_start, 0, m_out->height);
-		    }
-		}
-	    }
-	  ho_objmap_free (o_obj);
-	  ho_bitmap_free (m_font);
-	}
+            /* check overlaping */
+            if (overlaping >= 0 && overlaping < thin_object_width / 2)
+            {
+              /* draw lines at the objects egjes */
+              ho_bitmap_draw_vline (m_out,
+                ho_objmap_get_object (o_obj,
+                  i1).x + font_start, 0, m_out->height);
+            }
+          }
+        }
+        ho_objmap_free (o_obj);
+        ho_bitmap_free (m_font);
       }
+    }
   }
 
   /* look for linked fonts, and try to break them using force */
@@ -435,36 +427,35 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
     x = 0;
     while (x < m->width)
+    {
+      /* get start&end of font */
+      for (; x < m->width && ho_bitmap_get (m_out, x, 2); x++) ;
+      font_start = x;
+      for (; x < m->width && !ho_bitmap_get (m_out, x, 2); x++) ;
+      font_end = x;
+
+      /* if this is a wide font, try to break it using force */
+      if ((font_end - font_start) > s_width * (m->font_width) / 100)
       {
-	/* get start&end of font */
-	for (; x < m->width && ho_bitmap_get (m_out, x, 2); x++);
-	font_start = x;
-	for (; x < m->width && !ho_bitmap_get (m_out, x, 2); x++);
-	font_end = x;
+        /* get the font bitmap */
+        m_font =
+          ho_bitmap_clone_window (m_temp, font_start, 0,
+          font_end - font_start, m->height);
+        o_obj = ho_objmap_new_from_bitmap (m_font);
+        ho_bitmap_free (m_font);
 
-	/* if this is a wide font, try to break it using force */
-	if ((font_end - font_start) > s_width * (m->font_width) / 100)
-	  {
-	    /* get the font bitmap */
-	    m_font =
-	      ho_bitmap_clone_window (m_temp, font_start, 0,
-				      font_end - font_start, m->height);
-	    o_obj = ho_objmap_new_from_bitmap (m_font);
-	    ho_bitmap_free (m_font);
+        /* check that it is not a long _ or - 's */
+        if (!(ho_objmap_get_size (o_obj) == 1
+            && ho_objmap_get_object (o_obj, 0).height < m->font_height / 3))
+          for (i = font_start; i < font_end; i++)
+          {
+            if (line_fill[i] <= s_threshold * m->com_line_fill / 100)
+              ho_bitmap_draw_vline (m_out, i, 0, m_out->height);
+          }
 
-	    /* check that it is not a long _ or - 's */
-	    if (!(ho_objmap_get_size (o_obj) == 1
-		  && ho_objmap_get_object (o_obj,
-					   0).height < m->font_height / 3))
-	      for (i = font_start; i < font_end; i++)
-		{
-		  if (line_fill[i] <= s_threshold * m->com_line_fill / 100)
-		    ho_bitmap_draw_vline (m_out, i, 0, m_out->height);
-		}
-
-	    ho_objmap_free (o_obj);
-	  }
+        ho_objmap_free (o_obj);
       }
+    }
   }
 
   ho_bitmap_free (m_temp);
@@ -481,22 +472,22 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
     x = 0;
     while (x < width)
+    {
+      /* get start&end of interfont line */
+      for (; x < width && !ho_bitmap_get (m_out, x, 2); x++) ;
+      min_x = x - 1;
+      min_x_start = min_x;
+      for (; x < width && ho_bitmap_get (m_out, x, 2); x++)
       {
-	/* get start&end of interfont line */
-	for (; x < width && !ho_bitmap_get (m_out, x, 2); x++);
-	min_x = x - 1;
-	min_x_start = min_x;
-	for (; x < width && ho_bitmap_get (m_out, x, 2); x++)
-	  {
-	    if (line_fill[min_x] >= line_fill[x])
-	      min_x = x;
-	    if (line_fill[min_x_start] > line_fill[x])
-	      min_x_start = x;
-	  }
-	/* draw line on minimal interfont space */
-	for (i = min_x_start; i <= min_x && i < width - 1; i++)
-	  ho_bitmap_draw_vline (m_temp, i, 0, m_out->height);
+        if (line_fill[min_x] >= line_fill[x])
+          min_x = x;
+        if (line_fill[min_x_start] > line_fill[x])
+          min_x_start = x;
       }
+      /* draw line on minimal interfont space */
+      for (i = min_x_start; i <= min_x && i < width - 1; i++)
+        ho_bitmap_draw_vline (m_temp, i, 0, m_out->height);
+    }
   }
 
   /* set position in m_text */

@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *            ho_gtk.h
  *
@@ -80,6 +81,6 @@ int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
  */
 int
 ho_gtk_font_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
-		  const ho_bitmap * m_mask, const char *filename);
+  const ho_bitmap * m_mask, const char *filename);
 
 #endif /* HO_GTK_H */
