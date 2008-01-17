@@ -37,7 +37,6 @@ Makefile
 libhocr.pc
 Doxyfile
 src/Makefile
-www/Makefile
 ])
 
 AC_OUTPUT

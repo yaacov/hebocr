@@ -8,7 +8,7 @@ Working in HOCR
 	3) Modular and well designed.
 	
     When you submit code to me for inclusion in HOCR, or when you modify
-    the sources directly on the CVS repository, please keep those things in mind.
+    the sources directly on the SVN repository, please keep those things in mind.
 
 	- Clarity of design and function are paramount
 	- Please follow the coding style used HOCR.
@@ -16,9 +16,12 @@ Working in HOCR
 The HOCR coding style.
 --------------------------
 
-   Use space for indentation, braces are
-   indented and on a seperate line. Use indent utility.
-
+   Use space for indentation, braces are 
+   unindented and on a seperate line. Use indent utility.
+   (indent -bad -bap -bbb -bli0 -fca -l80 -psl -sc -sob -ss -ts8 -i8)
+   
+   Use doxygen style documentation.
+   
    On top of that, you will have to:
 
 	- Follow the hocr namespace convention for function names. 
