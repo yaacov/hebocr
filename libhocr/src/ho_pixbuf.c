@@ -152,6 +152,88 @@ ho_pixbuf_new_from_objmap (const ho_objmap * obj_in, const unsigned char min,
 }
 
 ho_pixbuf *
+ho_pixbuf_new_from_layout (const ho_layout * lay_in,
+  const unsigned char show_grid, const ho_bitmap * m_text,
+  const unsigned char text_block_r, const unsigned char text_block_g,
+  const unsigned char text_block_b, const unsigned char text_block_a,
+  const unsigned char text_block_frame_width,
+  const unsigned char line_block_r, const unsigned char line_block_g,
+  const unsigned char line_block_b, const unsigned char line_block_a,
+  const unsigned char line_block_frame_width,
+  const unsigned char word_block_r, const unsigned char word_block_g,
+  const unsigned char word_block_b, const unsigned char word_block_a,
+  const unsigned char word_block_frame_width,
+  const unsigned char font_block_r, const unsigned char font_block_g,
+  const unsigned char font_block_b, const unsigned char font_block_a,
+  const unsigned char font_block_frame_width)
+{
+  ho_pixbuf *pix_out = NULL;
+  ho_bitmap *m_block_frame = NULL;
+  ho_bitmap *m_word_text = NULL;
+  ho_bitmap *m_word_mask = NULL;
+  ho_bitmap *m_word_font_mask = NULL;
+  int block_index;
+  int line_index;
+  int word_index;
+
+  /* allocate */
+  pix_out =
+    ho_pixbuf_new (3, lay_in->m_page_blocks_mask->width,
+    lay_in->m_page_blocks_mask->height, 0);
+
+  /* add text blocks */
+  m_block_frame =
+    ho_bitmap_edge (lay_in->m_page_blocks_mask, text_block_frame_width);
+  ho_pixbuf_draw_bitmap (pix_out, m_block_frame, text_block_r, text_block_g,
+    text_block_b, text_block_a);
+  ho_bitmap_free (m_block_frame);
+
+  /* loop on all text blocks */
+  for (block_index = 0; block_index < lay_in->n_blocks; block_index++)
+  {
+    for (line_index = 0; line_index < lay_in->n_lines[block_index];
+      line_index++)
+    {
+      /* draw words */
+      ho_pixbuf_draw_bitmap (pix_out,
+        lay_in->m_lines_words_mask[block_index][line_index], word_block_r,
+        word_block_g, word_block_b, word_block_a);
+
+      /* draw lines */
+      m_block_frame =
+        ho_bitmap_edge (lay_in->m_lines_line_mask[block_index][line_index],
+        line_block_frame_width);
+
+      ho_pixbuf_draw_bitmap (pix_out, m_block_frame, line_block_r,
+        line_block_g, line_block_b, line_block_a);
+
+      ho_bitmap_free (m_block_frame);
+
+      /* draw fonts */
+      for (word_index = 0;
+        word_index < lay_in->n_words[block_index][line_index]; word_index++)
+      {
+        m_word_font_mask =
+          lay_in->m_words_font_mask[block_index][line_index][word_index];
+
+        ho_pixbuf_draw_bitmap (pix_out, m_word_font_mask, font_block_r,
+          font_block_g, font_block_b, font_block_a);
+      }
+    }
+  }
+
+  /* add grid */
+  if (show_grid)
+    ho_pixbuf_draw_grid (pix_out, 120, 30, 255, 0, 0);
+
+  /* add text */
+  if (m_text)
+    ho_pixbuf_draw_bitmap (pix_out, m_text, 0, 0, 0, 255);
+
+  return pix_out;
+}
+
+ho_pixbuf *
 ho_pixbuf_to_rgb (const ho_pixbuf * pix_in)
 {
   int x, y;

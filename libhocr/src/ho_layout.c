@@ -41,8 +41,8 @@
 #include "ho_layout.h"
 
 ho_layout *
-ho_layout_new (const ho_bitmap * m_page_text, const unsigned char type,
-  const unsigned char dir)
+ho_layout_new (const ho_bitmap * m_page_text, const char font_spacing_code,
+  const unsigned char type, const unsigned char dir)
 {
   ho_layout *l_new;
 
@@ -60,6 +60,7 @@ ho_layout_new (const ho_bitmap * m_page_text, const unsigned char type,
     return NULL;
   }
 
+  l_new->font_spacing_code = font_spacing_code;
   l_new->type = type;
   l_new->dir = dir;
 
@@ -419,7 +420,7 @@ ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
   ho_dimentions_line_fill (m_line_text, m_line_line_mask);
 
   l_page->m_lines_words_mask[block_index][line_index] =
-    ho_segment_words (m_line_text, m_line_line_mask);
+    ho_segment_words (m_line_text, m_line_line_mask, l_page->font_spacing_code);
 
   /* count words */
   o_map_blocks =

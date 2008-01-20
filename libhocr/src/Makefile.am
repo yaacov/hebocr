@@ -3,7 +3,6 @@
 # The libhocr library
 INCLUDES = \
         $(hspell_CFLAGS)
-#       $(fann_CFLAGS)
 
 pkglib_LTLIBRARIES = libhocr.la libhocrgtk.la
 
@@ -20,7 +19,6 @@ libhocr_la_SOURCES = \
 
 libhocr_la_LIBADD = \
         $(hspell_LIBS)
-#      $(fann_LIBS)
         
 libhocr_la_LDFLAGS = -version-info 0:0:0
 

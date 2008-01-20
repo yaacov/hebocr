@@ -32,6 +32,7 @@
 typedef struct
 {
   /* paragraph settings type */
+  char font_spacing_code;
   unsigned char type;
   unsigned char dir;
 
@@ -68,7 +69,7 @@ typedef struct
  @param dir true-ltr false-rtl
  */
 ho_layout *ho_layout_new (const ho_bitmap * m_page_text,
-  const unsigned char type, const unsigned char dir);
+  const char font_spacing_code, const unsigned char type, const unsigned char dir);
 
 /**
  free a ho_layout
@@ -99,12 +100,13 @@ int ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
   const int line_index);
 
 /**
- create a text word mask and count words in n_words[block_index][line_index]
+ create a text font mask and count fonts in n_fontss[block_index][line_index][word_index]
  @param l_page a pointer to a ho_layout
  @param block_index the block_index to work on
  @param line_index the line_index to work on
  @param word_index the word_index to work on
- @param line_index the line_index to work on
+ @param slicing_threshold the slicing threshold
+ @param slicing_width the slicing width
  */
 int ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
   const int line_index, const int word_index,

@@ -43,29 +43,31 @@
 #include "ho_segment.h"
 
 ho_bitmap *
-ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
+ho_segment_paragraphs_fine (const ho_bitmap * m, const unsigned char box,
+  const double font_height_factor_min, const double font_height_factor_max,
+  const double font_width_factor_min, const double font_width_factor_max,
+  const double horizontal_link_factor, const double vertical_link_factor)
 {
   ho_bitmap *m_clean;
   ho_bitmap *m_temp1;
   ho_bitmap *m_out;
   int x, y;
 
-  /* if nikud we need to be more careful */
-  if (m->nikud)
-    m_clean = ho_bitmap_filter_by_size (m,
-      m->font_height / 2,
-      m->font_height * 4, m->font_width / 3, m->font_width * 5);
-  else
-    m_clean = ho_bitmap_filter_by_size (m,
-      m->font_height / 4,
-      m->font_height * 4, m->font_width / 4, m->font_width * 5);
+  /* take only "regular" fonts */
+  m_clean = ho_bitmap_filter_by_size (m,
+    (double) (m->font_height) * font_height_factor_min,
+    (double) (m->font_height) * font_height_factor_max,
+    (double) (m->font_width) * font_width_factor_min,
+    (double) (m->font_width) * font_width_factor_max);
+  if (!m_clean)
+    return NULL;
 
   /* link paragraphs */
-  m_temp1 = ho_bitmap_vlink (m_clean, m->line_spacing * 1.2);
+  m_temp1 = ho_bitmap_vlink (m_clean, m->line_spacing * vertical_link_factor);
   if (!m_temp1)
     return NULL;
 
-  m_out = ho_bitmap_hlink (m_temp1, m->font_width * 2);
+  m_out = ho_bitmap_hlink (m_temp1, m->font_width * horizontal_link_factor);
   if (!m_out)
     return NULL;
 
@@ -97,28 +99,60 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
 }
 
 ho_bitmap *
-ho_segment_lines (const ho_bitmap * m)
+ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
+{
+  ho_bitmap *m_out;
+  double font_height_factor_min = 0.25;
+  double font_height_factor_max = 4.0;
+  double font_width_factor_min = 0.25;
+  double font_width_factor_max = 5.0;
+  double horizontal_link_factor = 2.0;
+  double vertical_link_factor = 1.2;
+
+  /* if nikud we need to be more careful */
+  if (m->nikud)
+  {
+    font_height_factor_min = 0.5;
+    font_height_factor_max = 4.0;
+    font_width_factor_min = 1.0 / 3.0;
+    font_width_factor_max = 5.0;
+  }
+
+  /* if only one column we can be more agresive when linking horizontaly */
+  if (box == 1)
+  {
+    horizontal_link_factor = 6.0;
+    vertical_link_factor = 1.5;
+  }
+
+  m_out =
+    ho_segment_paragraphs_fine (m, box, font_height_factor_min,
+    font_height_factor_max, font_width_factor_min, font_width_factor_max,
+    horizontal_link_factor, vertical_link_factor);
+
+  return m_out;
+}
+
+ho_bitmap *
+ho_segment_lines_fine (const ho_bitmap * m,
+  const double font_height_factor_min, const double font_height_factor_max,
+  const double font_width_factor_min, const double font_width_factor_max,
+  const double link_arg, const double link_arg_2,
+  const double extend_arg, const double extend_arg_2, const double erode_arg)
 {
   int i;
   ho_bitmap *m_clean;
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
-  double link_arg = 3.0;
-  double extend_arg = 1.2;
-  double extend_arg_2 = 3.0;
-  double erode_arg = 5.0;
-
   /* filter only "regular" sized fonts */
   m_clean = ho_bitmap_filter_by_size (m,
-    6 * m->font_height / 10,
-    15 * m->font_height / 10, m->font_width / 3, m->font_width * 5);
+    (double) (m->font_height) * font_height_factor_min,
+    (double) (m->font_height) * font_height_factor_max,
+    (double) (m->font_width) * font_width_factor_min,
+    (double) (m->font_width) * font_width_factor_max);
   if (!m_clean)
     return NULL;
-
-  /* check for one word lines */
-  if (m->width < (m->font_width * erode_arg))
-    erode_arg = 1;
 
   /* link lines */
   m_temp = ho_bitmap_hlink (m_clean, m->font_width * link_arg);
@@ -190,16 +224,76 @@ ho_segment_lines (const ho_bitmap * m)
     return NULL;
   m_out = m_temp;
 
+  /* check for fonts that are outside the line */
+  ho_bitmap_or (m_out, m_clean);
+
+  /* link fonts that are autside line */
+  m_temp = ho_bitmap_hlink (m_out, m->font_width * link_arg);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* add sideways leeway */
+  m_temp =
+    ho_bitmap_filter_obj_extend_lateraly (m_out, m->font_width * extend_arg_2);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* remove little things up and down the line */
+  m_temp = ho_bitmap_herode (m_out, m->font_width * erode_arg);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
+  /* set out matrix height, we want clean lines of known height */
+  m_temp = ho_bitmap_filter_set_height (m_out, m->font_height, 0, 0);
+  ho_bitmap_free (m_out);
+  if (!m_temp)
+    return NULL;
+  m_out = m_temp;
+
   ho_bitmap_free (m_clean);
 
   return m_out;
 }
 
 ho_bitmap *
-ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
+ho_segment_lines (const ho_bitmap * m)
 {
-  int return_val;
+  ho_bitmap *m_out;
 
+  double font_height_factor_min = 8.0 / 10.0;
+  double font_height_factor_max = 12.0 / 10.0;
+  double font_width_factor_min = 1.0 / 3.0;
+  double font_width_factor_max = 5.0;
+
+  double link_arg = 3.0;
+  double link_arg_2 = 6.0;
+  double extend_arg = 1.2;
+  double extend_arg_2 = 3.0;
+  double erode_arg = 5.0;
+
+  /* check for one word lines */
+  if (m->width < (m->font_width * erode_arg))
+    erode_arg = 1;
+
+  m_out = ho_segment_lines_fine (m,
+    font_height_factor_min, font_height_factor_max,
+    font_width_factor_min, font_width_factor_max,
+    link_arg, link_arg_2, extend_arg, extend_arg_2, erode_arg);
+
+  return m_out;
+}
+
+ho_bitmap *
+ho_segment_words_fine (const ho_bitmap * m, const ho_bitmap * m_line_map,
+  const double horizontal_link_factor, const double top_frame_factor,
+  const double bottom_frame_factor)
+{
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
@@ -244,7 +338,8 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
   ho_bitmap_and (m_out, m_line_map);
 
   /* try to link words */
-  m_temp = ho_bitmap_hlink (m_out, 9 * font_spacing / 5);
+  m_temp =
+    ho_bitmap_hlink (m_out, (double) font_spacing * horizontal_link_factor);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
@@ -260,8 +355,9 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
   ho_bitmap_and (m_out, m_line_map);
 
   m_temp =
-    ho_bitmap_set_height (m_out, 5 * line_height / 3,
-    line_height / 2, 2 * line_height / 3);
+    ho_bitmap_set_height (m_out, line_height,
+    (double) line_height * top_frame_factor,
+    (double) line_height * bottom_frame_factor);
   ho_bitmap_free (m_out);
   if (!m_temp)
     return NULL;
@@ -270,6 +366,53 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map)
   /* set position in m_text */
   m_out->x = m->x;
   m_out->y = m->y;
+
+  return m_out;
+}
+
+ho_bitmap *
+ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
+  const char font_spacing_code)
+{
+  ho_bitmap *m_out = NULL;
+
+  double horizontal_link_factor = 9.0 / 5.0;
+  double top_frame_factor = 1.0 / 2.0;
+  double bottom_frame_factor = 3.0 / 2.0;
+
+  /* if no nikud we do not need lots of bottom frame */
+  if (!(m->nikud))
+  {
+    bottom_frame_factor = 1.0 / 2.0;
+  }
+
+  /* check font spacing */
+  switch (font_spacing_code)
+  {
+  case -1:
+    horizontal_link_factor = 6.0 / 5.0;
+    break;
+  case -2:
+    horizontal_link_factor = 4.0 / 5.0;
+    break;
+  case -3:
+    horizontal_link_factor = 2.0 / 5.0;
+    break;
+  case 1:
+    horizontal_link_factor = 11.0 / 5.0;
+    break;
+  case 2:
+    horizontal_link_factor = 16.0 / 5.0;
+    break;
+  case 3:
+    horizontal_link_factor = 22.0 / 5.0;
+    break;
+  default:
+    horizontal_link_factor = 9.0 / 5.0;
+  }
+
+  m_out = ho_segment_words_fine (m, m_line_map,
+    horizontal_link_factor, top_frame_factor, bottom_frame_factor);
 
   return m_out;
 }

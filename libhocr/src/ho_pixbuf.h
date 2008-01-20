@@ -27,6 +27,7 @@
 
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
+#include <ho_layout.h>
 
 /* utility defines */
 #define ho_pixbuf_min3(a,b,c) ((((a)<(b))&&((a)<(c))) ? (a) : (((b)<(c)) ? (b) : (c)))
@@ -86,6 +87,48 @@ ho_pixbuf *ho_pixbuf_new_from_bitmap (const ho_bitmap * bit_in);
  */
 ho_pixbuf *ho_pixbuf_new_from_objmap (const ho_objmap * obj_in,
   const unsigned char min, const unsigned char max);
+
+/**
+ new ho_pixbuf from ho_layout
+ @param lay_in pointer to an ho_layout image
+ @param show_grid show grid on output
+ @param m_text text to draw on output
+ @param text_block_r red channel of text block
+ @param text_block_g green channel of text block
+ @param text_block_b blue channel of text block
+ @param text_block_a alfa channel of text block
+ @param text_block_frame_width frame width of text block
+ @param line_block_r red channel of line block
+ @param line_block_g green channel of line block
+ @param line_block_b blue channel of line block
+ @param line_block_a alfa channel of line block
+ @param line_block_frame_width frame line of text block
+ @param word_block_r red channel of word block
+ @param word_block_g green channel of word block
+ @param word_block_b blue channel of word block
+ @param word_block_a alfa channel of word block
+ @param word_block_frame_width frame width of word block
+ @param font_block_r red channel of font block
+ @param font_block_g green channel of font block
+ @param font_block_b blue channel of font block
+ @param font_block_a alfa channel of font block
+ @param font_block_frame_width frame width of font block
+ @return newly allocated color ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_new_from_layout (const ho_layout * lay_in,
+  const unsigned char show_grid, const ho_bitmap * m_text,
+  const unsigned char text_block_r, const unsigned char text_block_g,
+  const unsigned char text_block_b, const unsigned char text_block_a,
+  const unsigned char text_block_frame_width,
+  const unsigned char line_block_r, const unsigned char line_block_g,
+  const unsigned char line_block_b, const unsigned char line_block_a,
+  const unsigned char line_block_frame_width,
+  const unsigned char word_block_r, const unsigned char word_block_g,
+  const unsigned char word_block_b, const unsigned char word_block_a,
+  const unsigned char word_block_frame_width,
+  const unsigned char font_block_r, const unsigned char font_block_g,
+  const unsigned char font_block_b, const unsigned char font_block_a,
+  const unsigned char font_block_frame_width);
 
 /**
  new rgb ho_pixbuf from non rgb pixbuf

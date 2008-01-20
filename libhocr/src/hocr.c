@@ -56,6 +56,7 @@ gboolean fix_ligated_fonts = FALSE;
 gint paragraph_setup = 0;
 gint slicing_threshold = 0;
 gint slicing_width = 0;
+gint font_spacing_code = 0;
 
 gboolean show_grid = FALSE;
 gboolean save_bw = FALSE;
@@ -171,13 +172,16 @@ static GOptionEntry image_entries[] = {
 
 static GOptionEntry segmentation_entries[] = {
   {"colums setup", 'c', 0, G_OPTION_ARG_INT, &paragraph_setup,
-      "colums setup: 1 free, 2.. #colums, 0 auto",
+      "colums setup: 1.. #colums, 0 auto, 255 free",
     "NUM"},
   {"slicing", 'x', 0, G_OPTION_ARG_INT, &slicing_threshold,
       "use NUM as font slicing threshold, 1..250",
     "NUM"},
   {"slicing-width", 'X', 0, G_OPTION_ARG_INT, &slicing_width,
       "use NUM as font slicing width, 50..250",
+    "NUM"},
+  {"font-spacing", 'w', 0, G_OPTION_ARG_INT, &font_spacing_code,
+      "font spacing: -1.. tight, 0 regular, 1.. spaced",
     "NUM"},
   {NULL}
 };
@@ -313,7 +317,7 @@ hocr_cmd_parser (int *argc, char **argv[])
     scale_by = 0;
   }
 
-  if (paragraph_setup > 4 || paragraph_setup < 0)
+  if (paragraph_setup > 255 || paragraph_setup < 0)
   {
     hocr_printerr ("unknown paragraph setup using auto settings");
     paragraph_setup = 0;
@@ -329,6 +333,12 @@ hocr_cmd_parser (int *argc, char **argv[])
   {
     hocr_printerr ("unknown thresholding value using auto settings");
     adaptive_threshold = 0;
+  }
+
+  if (font_spacing_code > 3 || font_spacing_code < -3)
+  {
+    hocr_printerr ("unknown font_spacing value using auto settings");
+    font_spacing_code = 0;
   }
 
   return FALSE;
@@ -653,7 +663,7 @@ main (int argc, char *argv[])
     int cols;
 
     cols = ho_dimentions_get_columns (m_page_text);
-    if (cols > 1)
+    if (cols > 0)
     {
       paragraph_setup = cols;
       if (debug)
@@ -663,7 +673,9 @@ main (int argc, char *argv[])
       g_print ("  guessing one column.\n");
   }
 
-  l_page = ho_layout_new (m_page_text, paragraph_setup != 1, dir_ltr);
+  l_page =
+    ho_layout_new (m_page_text, font_spacing_code, paragraph_setup != 255,
+    dir_ltr);
 
   ho_layout_create_block_mask (l_page);
 
@@ -743,57 +755,18 @@ main (int argc, char *argv[])
   {
     gchar *filename = NULL;
     ho_pixbuf *pix_out = NULL;
-    ho_bitmap *m_block_frame = NULL;
-    ho_bitmap *m_word_text = NULL;
-    ho_bitmap *m_word_mask = NULL;
-    ho_bitmap *m_word_font_mask = NULL;
-    int block_index;
-    int line_index;
-    int word_index;
 
     /* allocate */
-    pix_out = ho_pixbuf_new (3, m_page_text->width, m_page_text->height, 0);
-
-    /* add text blocks */
-    m_block_frame = ho_bitmap_edge (l_page->m_page_blocks_mask, 5);
-    ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 0, 0, 255, 150);
-    ho_bitmap_free (m_block_frame);
-
-    /* loop on all text blocks */
-    for (block_index = 0; block_index < l_page->n_blocks; block_index++)
-    {
-      for (line_index = 0; line_index < l_page->n_lines[block_index];
-        line_index++)
-      {
-        ho_pixbuf_draw_bitmap (pix_out,
-          l_page->
-          m_lines_words_mask[block_index][line_index], 255, 240, 0, 180);
-
-        m_block_frame =
-          ho_bitmap_edge (l_page->
-          m_lines_line_mask[block_index][line_index], 5);
-
-        ho_pixbuf_draw_bitmap (pix_out, m_block_frame, 255, 0, 0, 255);
-
-        ho_bitmap_free (m_block_frame);
-
-        for (word_index = 0;
-          word_index < l_page->n_words[block_index][line_index]; word_index++)
-        {
-          m_word_font_mask =
-            l_page->m_words_font_mask[block_index][line_index][word_index];
-
-          ho_pixbuf_draw_bitmap (pix_out, m_word_font_mask, 0, 250, 0, 235);
-        }
-      }
-    }
-
-    /* add grid */
-    if (show_grid)
-      ho_pixbuf_draw_grid (pix_out, 120, 30, 255, 0, 0);
-
-    /* add text in black */
-    ho_pixbuf_draw_bitmap (pix_out, m_page_text, 0, 0, 0, 255);
+    /* 
+     * pix_out = ho_pixbuf_new_from_layout (layout, show_grid, text_bitmap,
+     * block_frame_red, block_frame_green, block_frame_blue, block_frame_alfa,
+     * block_frame_width, line_frame_red, line_frame_green, line_frame_blue,
+     * line_frame_alfa, line_frame_width, word_frame_red, word_frame_green,
+     * word_frame_blue, word_frame_alfa, word_frame_width, font_frame_red,
+     * font_frame_green, font_frame_blue, font_frame_alfa, font_frame_width); */
+    pix_out =
+      ho_pixbuf_new_from_layout (l_page, show_grid, m_page_text, 0, 0, 255, 150,
+      5, 255, 0, 0, 255, 5, 255, 240, 0, 180, 255, 0, 250, 0, 235, 255);
 
     /* create file name */
     if (no_gtk)

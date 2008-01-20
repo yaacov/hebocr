@@ -33,9 +33,48 @@
  font and line dimentions _must_ be set
  @param m pointer to an ho_bitmap
  @param box squre (boxes) or free formed text blocks 
+ @param font_height_factor_min filter objects height min
+ @param font_height_factor_max filter objects height max
+ @param font_width_factor_min filter objects width min
+ @param font_width_factor_max filter objects width max
+ @param horizontal_link_factor link horizontaly factor
+ @param vertical_link_factor link verticaly factor
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_segment_paragraphs_fine (const ho_bitmap * m,
+  const unsigned char box, const double font_height_factor_min,
+  const double font_height_factor_max, const double font_width_factor_min,
+  const double font_width_factor_max, const double horizontal_link_factor,
+  const double vertical_link_factor);
+
+/**
+ return a bitmap of the paragraphs, 
+ font and line dimentions _must_ be set
+ @param m pointer to an ho_bitmap
+ @param box squre (boxes) or free formed text blocks 
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box);
+
+/**
+ return a bitmap of the lines
+ @param m pointer to an ho_bitmap
+ @param font_height_factor_min filter objects height min
+ @param font_height_factor_max filter objects height max
+ @param font_width_factor_min filter objects width min
+ @param font_width_factor_max filter objects width max
+ @param link_arg factor for linking letters in line
+ @param link_arg_2 factor for linking letters in line
+ @param extend_arg factor for extemding lines horizontaly
+ @param extend_arg_2 factor for extemding lines horizontaly
+ @param erode_arg factor for eroding line sourface
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_segment_lines_fine (const ho_bitmap * m,
+  const double font_height_factor_min, const double font_height_factor_max,
+  const double font_width_factor_min, const double font_width_factor_max,
+  const double link_arg, const double link_arg_2,
+  const double extend_arg, const double extend_arg_2, const double erode_arg);
 
 /**
  return a bitmap of the lines
@@ -46,10 +85,25 @@ ho_bitmap *ho_segment_lines (const ho_bitmap * m);
 
 /**
  return a bitmap of the words
- @param m pointer to an ho_bitmap
+ @param m pointer to an ho_bitmap of line
+ @param m_line_map pointer to an ho_bitmap of line box
+ @param horizontal_link_factor horizontal link factor
+ @param top_frame_factor top frame factor
+ @param bottom_frame_factor bottom frame factor
  @return a newly allocated bitmap
  */
-ho_bitmap *ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map);
+ho_bitmap *ho_segment_words_fine (const ho_bitmap * m,
+  const ho_bitmap * m_line_map, const double horizontal_link_factor,
+  const double top_frame_factor, const double bottom_frame_factor);
+
+/**
+ return a bitmap of the words
+ @param m pointer to an ho_bitmap
+ @param font_spacing_code -1:tight 0:normal 1:spaced fonts
+ @return a newly allocated bitmap
+ */
+ho_bitmap *ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
+  const char font_spacing_code);
 
 /**
  return a bitmap of the interfont spaces

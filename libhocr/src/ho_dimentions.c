@@ -349,13 +349,16 @@ int
 ho_dimentions_get_columns (const ho_bitmap * m)
 {
   int i, return_val;
+  int hlink_value;
   ho_bitmap *m_cols = NULL;
   ho_bitmap *m_temp = NULL;
   ho_objmap *m_obj = NULL;
 
   /* link columns */
   m_temp = ho_bitmap_set_height (m, m->height, m->height, m->height);
-  m_cols = ho_bitmap_hlink (m_temp, 40);
+  /* look for resnoble hlink value */
+  hlink_value = ((m->width / 100) < 30) ? 30 : m->width / 100;
+  m_cols = ho_bitmap_hlink (m_temp, hlink_value );
   ho_bitmap_free (m_temp);
 
   /* create an object map from b/w image */

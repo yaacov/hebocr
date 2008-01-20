@@ -3,7 +3,7 @@
 SUBDIRS = src
 
 EXTRA_DIST = \
-        bootstrap.sh HACKING libhocr.prj
+        bootstrap.sh HACKING
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libhocr.pc
