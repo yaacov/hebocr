@@ -59,6 +59,7 @@ gint slicing_width = 0;
 gint font_spacing_code = 0;
 
 gboolean show_grid = FALSE;
+gboolean save_copy = FALSE;
 gboolean save_bw = FALSE;
 gboolean save_layout = FALSE;
 gboolean save_fonts = FALSE;
@@ -189,6 +190,8 @@ static GOptionEntry segmentation_entries[] = {
 static GOptionEntry debug_entries[] = {
   {"draw-grid", 'g', 0, G_OPTION_ARG_NONE, &show_grid,
     "draw grid on output images", NULL},
+  {"save-copy", 'C', 0, G_OPTION_ARG_NONE, &save_copy,
+    "save a compy of original image", NULL},
   {"save-bw", 'b', 0, G_OPTION_ARG_NONE, &save_bw,
     "save proccesd bw image", NULL},
   {"save-bw-exit", 'B', 0, G_OPTION_ARG_NONE, &only_image_proccesing,
@@ -369,6 +372,29 @@ hocr_load_input_bitmap ()
   if (debug || verbose)
     g_print (" input image is %d by %d pixels, with %d color channels\n",
       pix->width, pix->height, pix->n_channels);
+
+  /* if copy image */
+  if (save_copy)
+  {
+    gchar *filename;
+
+    /* create file name */
+    if (no_gtk)
+      filename = g_strdup_printf ("%s-image-copy.pgm", image_out_path);
+    else
+      filename = g_strdup_printf ("%s-image-copy.png", image_out_path);
+
+    /* save to file system */
+    if (filename)
+    {
+      if (no_gtk)
+        ho_pixbuf_pnm_save (pix, filename);
+      else
+        ho_gtk_pixbuf_save (pix, filename);
+
+      g_free (filename);
+    }
+  }
 
   m_bw =
     ho_pixbuf_to_bitmap_wrapper (pix, scale_by, adaptive_threshold_type,
@@ -628,7 +654,7 @@ main (int argc, char *argv[])
     if (no_gtk)
       filename = g_strdup_printf ("%s-image-bw.pgm", image_out_path);
     else
-      filename = g_strdup_printf ("%s-image-bw.jpeg", image_out_path);
+      filename = g_strdup_printf ("%s-image-bw.png", image_out_path);
 
     /* save to file system */
     if (filename)
@@ -674,8 +700,7 @@ main (int argc, char *argv[])
   }
 
   l_page =
-    ho_layout_new (m_page_text, font_spacing_code, paragraph_setup != 255,
-    dir_ltr);
+    ho_layout_new (m_page_text, font_spacing_code, paragraph_setup, dir_ltr);
 
   ho_layout_create_block_mask (l_page);
 
@@ -770,9 +795,9 @@ main (int argc, char *argv[])
 
     /* create file name */
     if (no_gtk)
-      filename = g_strdup_printf ("%s-image-segments.pgm", image_out_path);
+      filename = g_strdup_printf ("%s-image-layout.pgm", image_out_path);
     else
-      filename = g_strdup_printf ("%s-image-segments.jpeg", image_out_path);
+      filename = g_strdup_printf ("%s-image-layout.png", image_out_path);
 
     /* save to file system */
     if (filename)
@@ -980,7 +1005,7 @@ main (int argc, char *argv[])
                   image_out_path, font_number);
               else
                 filename =
-                  g_strdup_printf ("%s-font-%d.jpeg",
+                  g_strdup_printf ("%s-font-%d.png",
                   image_out_path, font_number);
 
               /* if user want to debug font filters, printout the filtered font 
@@ -1067,7 +1092,7 @@ main (int argc, char *argv[])
                 /* print font image in html code */
                 text_out =
                   g_strdup_printf
-                  ("\n<img src=\"%s-font-%d.jpeg\" alt=\"font image\">\n",
+                  ("\n<img src=\"%s-font-%d.png\" alt=\"font image\">\n",
                   image_out_path, font_number);
                 ho_string_cat (s_data_out, text_out);
                 g_free (text_out);

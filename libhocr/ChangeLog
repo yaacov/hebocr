@@ -1,6 +1,7 @@
 libhocr (0.10.4)
 
- * release
+ * fine tune options for segmentation functions
+ * licence gpl3
  
  -- Yaacov Zamir <kzamir_at_walla.co.il> Monday, 14 May 2007 18:12
  

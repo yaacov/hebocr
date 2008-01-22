@@ -163,8 +163,8 @@ ho_bitmap_clone_window (const ho_bitmap * m, const int x, const int y,
   /* 
    * copy data 
    */
-  for (x1 = 0; x1 < width; x1++)
-    for (y1 = 0; y1 < height; y1++)
+  for (x1 = 0; x1 < width && x1 < m->width; x1++)
+    for (y1 = 0; y1 < height && y1 < m->height; y1++)
     {
       if ((x + x1) > 0 && (y + y1) > 0 && ho_bitmap_get (m, x + x1, y + y1))
         ho_bitmap_set (m_out, x1, y1);

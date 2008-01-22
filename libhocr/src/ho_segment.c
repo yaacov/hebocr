@@ -281,6 +281,15 @@ ho_segment_lines (const ho_bitmap * m)
   if (m->width < (m->font_width * erode_arg))
     erode_arg = 1;
 
+  /* if not nikud we can include smaller fonts as "regular" */
+  if (!(m->nikud))
+  {
+    font_height_factor_min = 7.0 / 10.0;
+    font_height_factor_max = 12.0 / 10.0;
+    font_width_factor_min = 1.0 / 5.0;
+    font_width_factor_max = 5.0;
+  }
+
   m_out = ho_segment_lines_fine (m,
     font_height_factor_min, font_height_factor_max,
     font_width_factor_min, font_width_factor_max,
@@ -383,7 +392,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
   /* if no nikud we do not need lots of bottom frame */
   if (!(m->nikud))
   {
-    bottom_frame_factor = 1.0 / 2.0;
+    bottom_frame_factor = 1.0;
   }
 
   /* check font spacing */

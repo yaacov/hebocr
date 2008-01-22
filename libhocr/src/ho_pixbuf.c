@@ -496,11 +496,24 @@ ho_pixbuf_scale3 (const ho_pixbuf * pix)
 }
 
 ho_pixbuf *
+ho_pixbuf_scale4 (const ho_pixbuf * pix)
+{
+  ho_pixbuf *pix_scaled2 = NULL;
+  ho_pixbuf *pix_scaled4 = NULL;
+
+  pix_scaled2 = ho_pixbuf_scale2 (pix);
+  if (!pix_scaled2)
+    return NULL;
+
+  pix_scaled4 = ho_pixbuf_scale2 (pix_scaled2);
+  ho_pixbuf_free (pix_scaled2);
+
+  return pix_scaled4;
+}
+
+ho_pixbuf *
 ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale)
 {
-  ho_pixbuf *pix_temp1 = NULL;
-  ho_pixbuf *pix_temp2 = NULL;
-
   /* is input sane ? */
   if (scale < 2 || pix->n_channels != 1 || pix->width < 3 || pix->height < 3)
     return NULL;
@@ -511,43 +524,9 @@ ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale)
   if (scale == 3)
     return ho_pixbuf_scale3 (pix);
 
-  if (scale < 6)                /* 4 and 5 */
-  {
-    pix_temp1 = ho_pixbuf_scale2 (pix);
-    pix_temp2 = ho_pixbuf_scale2 (pix_temp1);
-    ho_pixbuf_free (pix_temp1);
-
-    return pix_temp2;
-  }
-
-  if (scale == 6)
-  {
-    pix_temp1 = ho_pixbuf_scale3 (pix);
-    pix_temp2 = ho_pixbuf_scale2 (pix_temp1);
-    ho_pixbuf_free (pix_temp1);
-
-    return pix_temp2;
-  }
-
-  if (scale < 9)                /* 7 and 8 */
-  {
-    pix_temp1 = ho_pixbuf_scale2 (pix);
-    pix_temp2 = ho_pixbuf_scale2 (pix_temp1);
-    ho_pixbuf_free (pix_temp1);
-    pix_temp1 = ho_pixbuf_scale2 (pix_temp2);
-    ho_pixbuf_free (pix_temp2);
-
-    return pix_temp1;
-  }
-
-  if (scale == 9)
-  {
-    pix_temp1 = ho_pixbuf_scale3 (pix);
-    pix_temp2 = ho_pixbuf_scale3 (pix_temp1);
-    ho_pixbuf_free (pix_temp1);
-
-    return pix_temp2;
-  }
+  /* FIXME: scale more them 4 ? */
+  if (scale >= 4)
+    return ho_pixbuf_scale4 (pix);
 
   return NULL;
 }
@@ -1255,6 +1234,12 @@ ho_pbm_getbit (FILE * file)
   static unsigned char byte = 0;
   static unsigned char mask = 0;
   int return_bit;
+
+  if (!file)
+  {
+    mask = 0;
+    return 0;
+  }
 
   if (mask == 0)
   {

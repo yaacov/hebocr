@@ -353,18 +353,34 @@ ho_dimentions_get_columns (const ho_bitmap * m)
   ho_bitmap *m_cols = NULL;
   ho_bitmap *m_temp = NULL;
   ho_objmap *m_obj = NULL;
+  ho_bitmap *m_clean;
+
+  /* clean tresholding artefacts from image */
+  if (m->width > 120 && m->height > 120)
+  {
+    m_clean = ho_bitmap_clone_window (m, 30, 30, m->width - 60, m->height - 60);
+    if (!m_clean)
+      return 1;
+  }
+  else
+  {
+    /* samll image, must be one col */
+    return 1;
+  }
 
   /* link columns */
-  m_temp = ho_bitmap_set_height (m, m->height, m->height, m->height);
+  m_temp = ho_bitmap_vlink (m_clean, m->height / 2);
+  ho_bitmap_free (m_clean);
+
   /* look for resnoble hlink value */
   hlink_value = ((m->width / 100) < 30) ? 30 : m->width / 100;
-  m_cols = ho_bitmap_hlink (m_temp, hlink_value );
+  m_cols = ho_bitmap_hlink (m_temp, hlink_value);
   ho_bitmap_free (m_temp);
 
   /* create an object map from b/w image */
   m_obj = ho_objmap_new_from_bitmap (m_cols);
   if (!m_obj)
-    return TRUE;
+    return 1;
 
   ho_bitmap_free (m_cols);
 
