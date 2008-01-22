@@ -122,7 +122,7 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
   if (box == 1)
   {
     horizontal_link_factor = 6.0;
-    vertical_link_factor = 1.5;
+    vertical_link_factor = 1.2;
   }
 
   m_out =

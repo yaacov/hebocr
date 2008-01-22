@@ -1211,12 +1211,14 @@ ho_pbm_getint (FILE * file)
   unsigned char ch;
   int i = 0;
 
+  /* pass on white spaces */
   do
   {
     ch = ho_pbm_getc (file);
   }
   while (ch == ' ' || ch == '\n' || ch == '\t');
 
+  /* read a number */
   do
   {
     i = (i * 10) + (ch - '0');
@@ -1235,20 +1237,24 @@ ho_pbm_getbit (FILE * file)
   static unsigned char mask = 0;
   int return_bit;
 
+  /* if file = 0, reset mask */
   if (!file)
   {
     mask = 0;
     return 0;
   }
 
+  /* if we need a new byte read it from file */
   if (mask == 0)
   {
     mask = 0x80;
     byte = getc (file);
   }
 
+  /* get the bit */
   return_bit = (byte & mask) ? 0 : 255;
 
+  /* update mask */
   mask >>= 1;
 
   return return_bit;
@@ -1310,13 +1316,18 @@ ho_pixbuf_pnm_load (const char *filename)
     rowstride = 8 * (width / 8 + 1);
     if (pix)
       for (y = 0; y < height; y++)
+      {
+        /* reset mask to 0 on a new line */
+        ho_pbm_getbit (0);
+        
+        /* get line data */
         for (x = 0; x < rowstride; x++)
         {
           val = ho_pbm_getbit (file);
           if (x < width)
             ho_pixbuf_set (pix, x, y, 0, val);
         }
-
+      }
   }
   else
   {
