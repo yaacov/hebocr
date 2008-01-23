@@ -360,8 +360,8 @@ ho_objlist_statistics (ho_objlist * object_list,
   int *height_min, int *height_max,
   int *width_avg, int *width_com, int *width_min, int *width_max)
 {
-  /* historam boxes are 0 .. 300 -> 0 .. 60 (5 values into 1 histogram box)
-   * for 1D attributes and 0 .. 1500 -> 0 .. 60 (25 into 1) for 2D attributes */
+  /* historam boxes are 0 .. 300 -> 0 .. 60 (5 values into 1 histogram box) for 
+   * 1D attributes and 0 .. 1500 -> 0 .. 60 (25 into 1) for 2D attributes */
   double weight_histogram[60];
   int height_histogram[60];
   int width_histogram[60];
@@ -795,6 +795,35 @@ ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
   return FALSE;
 }
 
+
+ho_bitmap *
+ho_objmap_to_bitmap (const ho_objmap * obj_in)
+{
+  int x, y;
+  ho_bitmap *pix = NULL;
+  int index = 0;
+
+  /* allocate memory */
+  pix = ho_bitmap_new(obj_in->width, obj_in->height);
+  if (!pix)
+    return NULL;
+
+  /* copy pixels from gsl mtirxes */
+  for (x = 0; x < obj_in->width; x++)
+    for (y = 0; y < obj_in->height; y++)
+    {
+      index = ho_objmap_get (obj_in, x, y);
+
+      if (index)
+      {
+        /* set autput colors */
+        ho_bitmap_set (pix, x, y); 
+      }
+    }
+
+  return pix;
+}
+
 ho_bitmap *
 ho_objmap_to_bitmap_by_size (const ho_objmap * m,
   int min_height, int max_height, int min_width, int max_width)
@@ -927,139 +956,161 @@ ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
 }
 
 int
-ho_objmap_update_reading_index (ho_objmap * m,
+ho_objmap_update_reading_index_line (ho_objmap * m,
   const unsigned char n_columns, const unsigned char dir_ltr)
 {
-  int q;
   int index;
-  int sorting_list_index;
-  int *sorting_lists_sizes;
-  int *sorting_lists;
   int reading_index;
-  int x, y;
-  int height;
-  int width;
-  unsigned char n_col = n_columns;
+  int x;
 
-  /* if n_columns == 254 then this is a one column sorting */
-  if (n_col == 254)
+  /* if n_columns != 253 then this is not one line sorting */
+  if (n_columns != 253)
+    return TRUE;
+
+  reading_index = 0;
+
+  if (dir_ltr)
   {
-    reading_index = 0;
-    for (y = 0; y < m->height; y++)
+    for (x = 0; x < m->width; x++)
     {
       for (index = 0; index < ho_objmap_get_size (m); index++)
       {
-        if ((ho_objmap_get_object (m, index).y) == y)
+        if ((ho_objmap_get_object (m, index).x +
+            ho_objmap_get_object (m, index).width - 1) == x)
         {
           ho_objmap_get_object (m, index).reading_index = reading_index;
           reading_index++;
         }
       }
     }
-    return FALSE;
   }
-
-  /* if n_columns == 255 then this is a one line sorting */
-  if (n_col == 255)
+  else
   {
-    reading_index = 0;
-    if (dir_ltr)
+    for (x = m->width; x >= 0; x--)
     {
-      for (x = 0; x < m->width; x++)
+      for (index = 0; index < ho_objmap_get_size (m); index++)
       {
-        for (index = 0; index < ho_objmap_get_size (m); index++)
+        if ((ho_objmap_get_object (m, index).x +
+            ho_objmap_get_object (m, index).width - 1) == x)
         {
-          if ((ho_objmap_get_object (m, index).x +
-              ho_objmap_get_object (m, index).width - 1) == x)
-          {
-            ho_objmap_get_object (m, index).reading_index = reading_index;
-            reading_index++;
-          }
+          ho_objmap_get_object (m, index).reading_index = reading_index;
+          reading_index++;
         }
       }
     }
-    else
-    {
-      for (x = m->width; x >= 0; x--)
-      {
-        for (index = 0; index < ho_objmap_get_size (m); index++)
-        {
-          if ((ho_objmap_get_object (m, index).x +
-              ho_objmap_get_object (m, index).width - 1) == x)
-          {
-            ho_objmap_get_object (m, index).reading_index = reading_index;
-            reading_index++;
-          }
-        }
-      }
-    }
-    return FALSE;
   }
 
-  /* sanity check */
-  if (n_col < 2 || n_col > 6)
-    n_col = 2;
+  return FALSE;
+}
 
-  /* allways use an extra column */
-  n_col++;
+int
+ho_objmap_update_reading_index_column (ho_objmap * m,
+  const unsigned char n_columns, const unsigned char dir_ltr)
+{
+  int index;
+  int reading_index;
+  int y;
 
-  /* is this an object map */
-  if ((m->obj_list)->size < 1)
+  /* if n_columns != 1 then this is not one column sorting */
+  if (n_columns != 1)
     return TRUE;
 
-  /* allocate sorting lists memory */
-  sorting_lists_sizes = calloc (n_col, sizeof (int));
-  if (!sorting_lists_sizes)
-    return TRUE;
-  sorting_lists = calloc (n_col * ho_objmap_get_size (m), sizeof (int));
-  if (!sorting_lists)
-    return TRUE;
-
-  /* sort by 1/4 of map */
-  for (index = 0; index < (m->obj_list)->size; index++)
-  {
-    x = ho_objmap_get_object (m, index).x;
-    y = ho_objmap_get_object (m, index).y;
-    width = ho_objmap_get_object (m, index).width;
-    height = ho_objmap_get_object (m, index).height;
-
-    /* what column ? */
-    if (dir_ltr)
-      q = n_col * (x + width / 2) / m->width;
-    else
-      q = n_col - 1 - n_col * (x + width / 2) / m->width;
-
-    /* sanity check */
-    if (q < 0)
-      q = 0;
-
-    sorting_list_index = q * ho_objmap_get_size (m) + sorting_lists_sizes[q];
-    sorting_lists[sorting_list_index] = index;
-    sorting_lists_sizes[q]++;
-  }
-
-  /* sort by height for each 1/4 */
   reading_index = 0;
 
-  for (q = 0; q < n_col; q++)
+  for (y = 0; y < m->height; y++)
+  {
+    for (index = 0; index < ho_objmap_get_size (m); index++)
+    {
+      if ((ho_objmap_get_object (m, index).y) == y)
+      {
+        ho_objmap_get_object (m, index).reading_index = reading_index;
+        reading_index++;
+      }
+    }
+  }
+
+  return FALSE;
+}
+
+int
+ho_objmap_update_reading_index_multi_columns (ho_objmap * m,
+  const unsigned char n_columns, const unsigned char dir_ltr)
+{
+  int index;
+  int column;
+  int reading_index;
+  int y;
+  int x_start, x_end;
+  int column_start_list_size;
+  int *column_start_list;
+  ho_bitmap *m_bitmap = NULL;
+
+  /* FIXME: if n_columns > 6 ? */
+  if (n_columns < 2 || n_columns > 6)
+    return TRUE;
+
+  reading_index = 0;
+
+  /* get columns start list */
+  m_bitmap = ho_objmap_to_bitmap (m);
+  if (!m_bitmap)
+    return TRUE;
+
+  column_start_list_size =
+    ho_dimentions_get_columns_with_x_start (m_bitmap, &column_start_list);
+
+  /* free bitmap */
+  ho_bitmap_free (m_bitmap);
+
+  /* look at all the columns */
+  x_start = m->width;
+  for (column = 0; column < column_start_list_size; column++)
+  {
+    /* get column start and end x's */
+    x_end = x_start;
+    x_start = column_start_list[column];
+
+    /* look on all the blocks in this clomun */
     for (y = 0; y < m->height; y++)
     {
-      for (sorting_list_index = 0;
-        sorting_list_index < sorting_lists_sizes[q]; sorting_list_index++)
+      /* check all objects */
+      for (index = 0; index < ho_objmap_get_size (m); index++)
       {
-        index = sorting_lists[sorting_list_index + q * ho_objmap_get_size (m)];
-
-        if ((ho_objmap_get_object (m, index).y +
-            ho_objmap_get_object (m, index).height / 2) == y)
+        if ((ho_objmap_get_object (m, index).y) == y
+          && (ho_objmap_get_object (m, index).x) >= x_start
+          && (ho_objmap_get_object (m, index).x) < x_end)
         {
           ho_objmap_get_object (m, index).reading_index = reading_index;
           reading_index++;
         }
       }
     }
+  }
 
-  free (sorting_lists);
-  free (sorting_lists_sizes);
+  /* free clomun start list */
+  free (column_start_list);
+
+  return FALSE;
+}
+
+int
+ho_objmap_update_reading_index (ho_objmap * m,
+  const unsigned char n_columns, const unsigned char dir_ltr)
+{
+  /* if n_columns == 1 then this is a one column sorting */
+  if (n_columns == 1)
+  {
+    return ho_objmap_update_reading_index_column (m, n_columns, dir_ltr);
+  }
+
+  /* if n_columns == 253 then this is a one line sorting */
+  if (n_columns == 253)
+  {
+    return ho_objmap_update_reading_index_line (m, n_columns, dir_ltr);
+  }
+
+  /* must be a multi column page */
+  return ho_objmap_update_reading_index_multi_columns (m, n_columns, dir_ltr);
 
   return FALSE;
 }

@@ -153,6 +153,15 @@ int ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
   const int max_width, int *height, int *width, unsigned char *nikud);
 
 /**
+ new ho_bitamp from objmap
+ 
+ @param obj_in the object map to use
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *
+ho_objmap_to_bitmap (const ho_objmap * obj_in);
+
+/**
  copy objects from objmap to bitmap by size
  @param m pointer to an ho_objmap
  @param min_height only objects with this minimal height are copied

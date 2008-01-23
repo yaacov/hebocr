@@ -697,7 +697,7 @@ ho_layout_get_word_text (ho_layout * l_page, int block_index, int line_index,
   y_start = l_page->m_lines_words_mask[block_index][line_index]->y;
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_words, 255, l_page->dir);
+  ho_objmap_sort_by_reading_index (o_map_words, 253, l_page->dir);
 
   x = ho_objmap_get_object (o_map_words, word_index).x + x_start;
   y = ho_objmap_get_object (o_map_words, word_index).y + y_start;
@@ -740,7 +740,7 @@ ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
   y_start = l_page->m_lines_words_mask[block_index][line_index]->y;
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_words, 255, l_page->dir);
+  ho_objmap_sort_by_reading_index (o_map_words, 253, l_page->dir);
 
   x = ho_objmap_get_object (o_map_words, word_index).x;
   y = ho_objmap_get_object (o_map_words, word_index).y;

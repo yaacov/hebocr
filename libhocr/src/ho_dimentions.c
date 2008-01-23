@@ -369,6 +369,61 @@ ho_dimentions_get_columns (const ho_bitmap * m)
   }
 
   /* link columns */
+  m_temp = ho_bitmap_vlink (m_clean, m->height / 3);
+  ho_bitmap_free (m_clean);
+  if (!m_temp)
+    return 1;
+  
+  /* look for resnoble hlink value */
+  hlink_value = ((m->width / 100) < 30) ? 30 : m->width / 100;
+  m_cols = ho_bitmap_hlink (m_temp, hlink_value);
+  ho_bitmap_free (m_temp);
+  if (!m_cols)
+    return 1;
+  
+  /* create an object map from b/w image */
+  m_obj = ho_objmap_new_from_bitmap (m_cols);
+  ho_bitmap_free (m_cols);
+  if (!m_obj)
+    return 1;
+
+  /* get number ot columns */
+  return_val = 0;
+  for (i = 0; i < ho_objmap_get_size (m_obj); i++)
+    if (ho_objmap_get_object (m_obj, i).width > m->width / 8)
+      return_val++;
+
+  ho_objmap_free (m_obj);
+
+  return return_val;
+}
+
+int
+ho_dimentions_get_columns_with_x_start (const ho_bitmap * m,
+  int **column_start_list)
+{
+  int i, index, return_val;
+  int x;
+  int hlink_value;
+  ho_bitmap *m_cols = NULL;
+  ho_bitmap *m_temp = NULL;
+  ho_objmap *m_obj = NULL;
+  ho_bitmap *m_clean;
+
+  /* clean tresholding artefacts from image */
+  if (m->width > 120 && m->height > 120)
+  {
+    m_clean = ho_bitmap_clone_window (m, 30, 30, m->width - 60, m->height - 60);
+    if (!m_clean)
+      return 1;
+  }
+  else
+  {
+    /* samll image, must be one col */
+    return 1;
+  }
+
+  /* link columns */
   m_temp = ho_bitmap_vlink (m_clean, m->height / 2);
   ho_bitmap_free (m_clean);
 
@@ -376,19 +431,53 @@ ho_dimentions_get_columns (const ho_bitmap * m)
   hlink_value = ((m->width / 100) < 30) ? 30 : m->width / 100;
   m_cols = ho_bitmap_hlink (m_temp, hlink_value);
   ho_bitmap_free (m_temp);
+  if (!m_cols)
+    return 1;
+    
+  /* clean small artefacts */
+  m_temp = ho_bitmap_filter_by_size (m_cols,
+    m->height / 8, m->height, m->width / 8, m->width);
+  ho_bitmap_free (m_cols);
+  if (!m_temp)
+    return 1;
+  m_cols = m_temp;
 
   /* create an object map from b/w image */
   m_obj = ho_objmap_new_from_bitmap (m_cols);
+  ho_bitmap_free (m_cols);
   if (!m_obj)
     return 1;
 
-  ho_bitmap_free (m_cols);
-
   /* get number ot columns */
-  return_val = 0;
-  for (i = 0; i < ho_objmap_get_size (m_obj); i++)
-    if (ho_objmap_get_object (m_obj, i).width > m->width / 4)
-      return_val++;
+  return_val = ho_objmap_get_size (m_obj);
+
+  /* allocate column start list */
+  if (return_val > 1)
+  {
+    *column_start_list = calloc (return_val, sizeof (int));
+
+    /* did we get the memory ? */
+    if (*column_start_list)
+    {
+      /* init all column start to start of page */
+      for (i = 0; i < return_val; i++)
+        (*column_start_list)[i] = 0;
+
+      /* fill the list */
+      index = 0;
+      for (x = m->width; x >= 0 && index < return_val; x--)
+      {
+        for (i = 0; i < return_val; i++)
+        {
+          if (ho_objmap_get_object (m_obj, i).x == x)
+          {
+            (*column_start_list)[index] = x;
+            index++;
+          }
+        }
+      }
+    }
+  }
 
   ho_objmap_free (m_obj);
 

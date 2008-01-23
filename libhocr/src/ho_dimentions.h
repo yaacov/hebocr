@@ -69,4 +69,14 @@ int ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map);
  */
 int ho_dimentions_get_columns (const ho_bitmap * m);
 
+/**
+ guess number of columns in bitmap
+ @param m pointer to an ho_bitmap
+ @param column_start a newly allocated int list of start of columns x value
+ @return guessed number of columns
+ */
+int
+ho_dimentions_get_columns_with_x_start (const ho_bitmap * m,
+  int **column_start_list);
+
 #endif /* HO_DIMENTIONS_H */

@@ -107,7 +107,7 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
   double font_width_factor_min = 0.25;
   double font_width_factor_max = 5.0;
   double horizontal_link_factor = 2.0;
-  double vertical_link_factor = 1.2;
+  double vertical_link_factor = 1.0;
 
   /* if nikud we need to be more careful */
   if (m->nikud)
@@ -122,7 +122,7 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
   if (box == 1)
   {
     horizontal_link_factor = 6.0;
-    vertical_link_factor = 1.2;
+    vertical_link_factor = 1.0;
   }
 
   m_out =
