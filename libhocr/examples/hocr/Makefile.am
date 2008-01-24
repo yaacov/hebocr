@@ -12,4 +12,4 @@ hocr_CFLAGS = \
 hocr_LDADD= \
         $(gtk_LIBS) \
         $(libhocr_la_LIBADD) \
-        -L$(top_builddir)/src -lhocr -lhocrgtk -lm
+        $(top_builddir)/src/*.o -lm

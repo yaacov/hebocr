@@ -12,7 +12,7 @@ all-am: _hocr.so
 
 _hocr.so: hocr_wrap.c
 	gcc -fpic -c hocr_wrap.c $(PY_CFLAGS) $(gtk_CFLAGS) -I$(top_srcdir)/src
-	gcc -shared $(gtk_LIBS) ../../src/.libs/libhocr.so hocr_wrap.o -o _hocr.so
+	gcc -shared $(gtk_LIBS) $(top_builddir)/src/*.o  hocr_wrap.o -o _hocr.so
 
 hocr_wrap.c: hocr.i
 	swig -python hocr.i
