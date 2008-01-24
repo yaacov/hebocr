@@ -1,18 +1,22 @@
 libhocr (0.10.4)
 
- * fine tune options for segmentation functions
- * licence gpl3
+ * change licence to GPL3
+ * fne tune options for segmentation functions
+ * fine tune reading order functions
  * remove web interface
  * fix pbm load bug (patch: Mikael Ylikoski <ordbrand@gmail.com>)
+ * add rotation functions
+ * re-add examples
+ * re-add python bindings
 
- -- Yaacov Zamir <kzamir_at_walla.co.il> Monday, 14 May 2007 18:12
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 14 May 2007 18:12
  
 libhocr (0.10.3)
 
  * font segmentation functions
  * font recognition functions
  
- -- Yaacov Zamir <kzamir_at_walla.co.il> Monday, 4 March 2007 12:02
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 4 March 2007 12:02
 
 libhocr (0.10.2)
 

@@ -37,6 +37,11 @@ Makefile
 libhocr.pc
 Doxyfile
 src/Makefile
+examples/Makefile
+examples/hocr/Makefile
+examples/hocr-gtk/Makefile
+bindings/Makefile
+bindings/python/Makefile
 ])
 
 AC_OUTPUT

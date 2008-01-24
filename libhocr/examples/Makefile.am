@@ -1,0 +1,2 @@
+SUBDIRS = hocr hocr-gtk
+

@@ -159,6 +159,18 @@ static gchar *html_page_header =
 
 static gchar *html_page_footer = "  </div>\n</div>\n</body>\n</html>\n";
 
+static gchar *html_debug_header =
+  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\
+\"http://www.w3.org/TR/html4/strict.dtd\">\n\
+<html>\n\
+<head>\n\
+<title></title>\n\
+</head>\n\
+<body>\n\
+<pre>\n";
+
+static gchar *html_debug_footer = "</pre>\n</body>\n</html>\n";
+
 static GOptionEntry file_entries[] = {
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
     "use PATH for output images", "PATH"},
@@ -928,15 +940,7 @@ main (int argc, char *argv[])
       }
 
       /* init the first line of data file */
-      text_out =
-        g_strdup_printf ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\
-\"http://www.w3.org/TR/html4/strict.dtd\">\n\
-<html>\n\
-<head>\n\
-<title></title>\n\
-</head>\n\
-<body>\n\
-<pre>\n");
+      text_out = g_strdup_printf (html_debug_header);
       ho_string_cat (s_data_out, text_out);
       g_free (text_out);
 
@@ -1227,7 +1231,7 @@ main (int argc, char *argv[])
   /* close data file html fromat */
   if (s_data_out)
   {
-    text_out = g_strdup_printf ("</pre>\n</body>\n</html>\n");
+    text_out = g_strdup_printf (html_debug_footer);
     ho_string_cat (s_data_out, text_out);
     g_free (text_out);
   }
