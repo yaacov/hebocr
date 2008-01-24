@@ -40,6 +40,7 @@
 #include "ho_bitmap.h"
 #include "ho_objmap.h"
 #include "ho_dimentions.h"
+#include "ho_segment.h"
 
 int
 ho_dimentions_font_width_height_nikud (ho_bitmap * m,
@@ -373,14 +374,14 @@ ho_dimentions_get_columns (const ho_bitmap * m)
   ho_bitmap_free (m_clean);
   if (!m_temp)
     return 1;
-  
+
   /* look for resnoble hlink value */
   hlink_value = ((m->width / 100) < 30) ? 30 : m->width / 100;
   m_cols = ho_bitmap_hlink (m_temp, hlink_value);
   ho_bitmap_free (m_temp);
   if (!m_cols)
     return 1;
-  
+
   /* create an object map from b/w image */
   m_obj = ho_objmap_new_from_bitmap (m_cols);
   ho_bitmap_free (m_cols);
@@ -433,7 +434,7 @@ ho_dimentions_get_columns_with_x_start (const ho_bitmap * m,
   ho_bitmap_free (m_temp);
   if (!m_cols)
     return 1;
-    
+
   /* clean small artefacts */
   m_temp = ho_bitmap_filter_by_size (m_cols,
     m->height / 8, m->height, m->width / 8, m->width);
@@ -480,6 +481,90 @@ ho_dimentions_get_columns_with_x_start (const ho_bitmap * m,
   }
 
   ho_objmap_free (m_obj);
+
+  return return_val;
+}
+
+int
+ho_dimentions_get_lines_angle (const ho_bitmap * m)
+{
+  int i, index, number_of_lines, return_val;
+  int x;
+  int y_left, y_right;
+  int width;
+  int hlink_value;
+  double angle;
+  ho_bitmap *m_lines = NULL;
+  ho_bitmap *m_temp = NULL;
+  ho_objmap *m_obj = NULL;
+  ho_bitmap *m_clean;
+
+  /* link lines */
+  m_lines = ho_segment_lines (m);
+  if (!m_lines)
+    return 0;
+
+  /* remove short lines */
+  m_temp = ho_bitmap_filter_by_size (m_lines,
+    10, m_lines->height / 2, 2 * m_lines->width / 3, m_lines->width);
+  ho_bitmap_free (m_lines);
+  if (!m_temp)
+    return 0;
+  m_lines = m_temp;
+
+  /* create an object map from b/w image */
+  m_obj = ho_objmap_new_from_bitmap (m_lines);
+  ho_bitmap_free (m_lines);
+  if (!m_obj)
+    return 0;
+
+  /* get number ot lines */
+  number_of_lines = ho_objmap_get_size (m_obj);
+
+  /* if no long lines angle is 0 */
+  if (number_of_lines < 1)
+    return 0;
+
+  /* get the first line */
+  m_temp = ho_objmap_to_bitmap_by_index_window (m_obj, 0, number_of_lines / 2);
+  ho_objmap_free (m_obj);
+  if (!m_temp)
+    return 0;
+
+  /* get angle */
+  y_left = 0;
+  for (i = 0; i < m_temp->height; i++)
+  {
+    if (ho_bitmap_get (m_temp, 1 * m_temp->width / 4, i))
+    {
+      y_left = i;
+      i = m_temp->height;
+    }
+  }
+
+  y_right = 0;
+  for (i = 0; i < m_temp->height; i++)
+  {
+    if (ho_bitmap_get (m_temp, 3 * m_temp->width / 4, i))
+    {
+      y_right = i;
+      i = m_temp->height;
+    }
+  }
+
+  ho_bitmap_free (m_temp);
+
+  width = 2 * m_temp->width / 4;
+
+  /* sanity check */
+  if ((y_left - y_right) == 0 || width < 10)
+    return 0;
+
+  /* get degree */
+  angle = 180.0 * atan2 ((double) (y_left - y_right), (double) width) / M_PI;
+
+  /* convert to int */
+  return_val = (int) ((angle >= 0.0) ? (angle + 0.5) : (angle - 0.5));
 
   return return_val;
 }

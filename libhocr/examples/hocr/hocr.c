@@ -51,6 +51,8 @@ gint threshold = 0;
 gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
 gint scale_by = 0;
+gint rotate_angle = 0;
+gboolean auto_rotate = FALSE;
 gboolean do_not_clean_image = FALSE;
 gboolean remove_dots = FALSE;
 gboolean remove_images = FALSE;
@@ -201,6 +203,12 @@ static GOptionEntry image_entries[] = {
   {"scale", 's', 0, G_OPTION_ARG_INT, &scale_by,
       "scale input image by SCALE 1..9, 0 auto",
     "SCALE"},
+  {"rotate", 'q', 0, G_OPTION_ARG_INT, &rotate_angle,
+      "rotate image clockwise in deg.",
+    "DEG"},
+  {"auto-rotate", 'Q', 0, G_OPTION_ARG_NONE, &auto_rotate,
+      "auto rotate image",
+    NULL},
   {"do-not-clean", 'n', 0, G_OPTION_ARG_NONE, &do_not_clean_image,
       "do not try to remove artefacts from image",
     NULL},
@@ -614,6 +622,53 @@ hocr_load_input_bitmap ()
 
   /* free input pixbuf */
   ho_pixbuf_free (pix);
+
+  /* rotate image */
+  if (rotate_angle)
+  {
+    m_bw_temp = ho_bitmap_rotate (m_bw, rotate_angle);
+    ho_bitmap_free (m_bw);
+
+    if (!m_bw_temp)
+    {
+      hocr_printerr ("can't rotate image \n");
+      exit (1);
+    }
+
+    m_bw = m_bw_temp;
+  }
+
+  /* auto rotate image */
+  if (auto_rotate)
+  {
+    int angle;
+
+    /* get fonts size for auto angle */
+    if (ho_dimentions_font_width_height_nikud (m_bw, 6, 200, 6, 200))
+    {
+      hocr_printerr ("can't create object map\n");
+      exit (1);
+    }
+
+    angle = ho_dimentions_get_lines_angle (m_bw);
+
+    if (debug || verbose)
+      g_print (" auto rotate: angle %d.\n", angle);
+
+    if (angle)
+    {
+      m_bw_temp = ho_bitmap_rotate (m_bw, angle);
+      ho_bitmap_free (m_bw);
+
+      if (!m_bw_temp)
+      {
+        hocr_printerr ("can't auto rotate image \n");
+        exit (1);
+      }
+
+      m_bw = m_bw_temp;
+    }
+  }
 
   return m_bw;
 }

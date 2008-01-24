@@ -447,4 +447,14 @@ int
 ho_bitmap_delete_hline (ho_bitmap * m, const int x, const int y,
   const int width);
 
+/**
+ rotate a bitmap
+ 
+ @param m the bitmap to rotate
+ @param angle the angle in deg.
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *
+ho_bitmap_rotate (const ho_bitmap * m, const int angle);
+
 #endif /* HO_BITMAP_H */

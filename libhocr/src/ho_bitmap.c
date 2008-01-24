@@ -1408,3 +1408,83 @@ ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename)
 
   return FALSE;
 }
+
+ho_bitmap *
+ho_bitmap_rotate (const ho_bitmap * m, const int angle)
+{
+  ho_bitmap *m_out;
+  int x, y;
+  int xtag, ytag;
+  double xtag_part, ytag_part;
+  double angle_rads;
+  double new_point;
+  unsigned char neighbors[2][2];
+  double affine_matrix[2][2];
+
+  /* 
+   * allocate memory 
+   */
+  m_out = ho_bitmap_new (m->width, m->height);
+  if (!m_out)
+    return NULL;
+  m_out->x = m->x;
+  m_out->y = m->y;
+
+  m_out->type = m->type;
+  m_out->font_height = m->font_height;
+  m_out->font_width = m->font_width;
+  m_out->font_spacing = m->font_spacing;
+  m_out->line_spacing = m->line_spacing;
+  m_out->avg_line_fill = m->avg_line_fill;
+  m_out->com_line_fill = m->com_line_fill;
+  m_out->nikud = m->nikud;
+
+  /* get angle in radians */
+  angle_rads = (double) angle *(2.0 * M_PI / 360);
+
+  /* fill rotation matrix */
+  affine_matrix[0][0] = cos (angle_rads);
+  affine_matrix[0][1] = sin (angle_rads);
+  affine_matrix[1][0] = -affine_matrix[0][1];
+  affine_matrix[1][1] = affine_matrix[0][0];
+
+  /* 
+   * copy data 
+   */
+  for (x = 0; x < m->width; x++)
+    for (y = 0; y < m->height; y++)
+    {
+
+      xtag_part = x * affine_matrix[0][0] + y * affine_matrix[0][1];
+      ytag_part = x * affine_matrix[1][0] + y * affine_matrix[1][1];
+      xtag = (int) xtag_part;
+      ytag = (int) ytag_part;
+      xtag_part = xtag_part - (double) xtag;
+      ytag_part = ytag_part - (double) ytag;
+
+      /* get neighbors */
+      if (xtag < 1 || ytag < 1 || xtag >= m->width || ytag >= m->height)
+      {
+        new_point = 0;
+      }
+      else
+      {
+        neighbors[0][0] = ho_bitmap_get (m, xtag - 1, ytag - 1);
+        neighbors[0][1] = ho_bitmap_get (m, xtag - 1, ytag - 0);
+        neighbors[1][0] = ho_bitmap_get (m, xtag - 0, ytag - 1);
+        neighbors[1][1] = ho_bitmap_get (m, xtag - 0, ytag - 0);
+
+        new_point =
+          (double) neighbors[0][0] * (1.0 - xtag_part) * (1.0 - ytag_part) +
+          (double) neighbors[0][1] * (1.0 - xtag_part) * ytag_part +
+          (double) neighbors[1][0] * xtag_part * (1.0 - ytag_part) +
+          (double) neighbors[1][1] * xtag_part * ytag_part;
+      }
+
+      /* get new point */
+      if (new_point > 0.5)
+        ho_bitmap_set (m_out, x, y);
+    }
+
+  return m_out;
+}
