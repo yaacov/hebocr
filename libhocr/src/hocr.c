@@ -43,6 +43,10 @@ gboolean dir_ltr = FALSE;
 gboolean text_out_html = FALSE;
 gboolean text_out_font_numbers = FALSE;
 
+gchar *html_page_title = NULL;
+gchar *html_page_author = NULL;
+gchar *html_page_year = NULL;
+
 gint threshold = 0;
 gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
@@ -131,11 +135,43 @@ Font filters list\n\
  22. right font notches.\n\
 ";
 
+static gchar *html_page_header =
+  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\
+\"http://www.w3.org/TR/html4/strict.dtd\">\n\
+<html>\n\
+<head>\n\
+<title></title>\n\
+</head>\n\
+<body dir=\"rtl\">\n\
+\n\
+<div class=\"ocr_header\" id=\"title\">\n\
+  %s\n\
+</div>\n\
+<div class=\"ocr_header\" id=\"author\">\n\
+  %s\n\
+</div>\n\
+<div class=\"ocr_header\" id=\"year\">\n\
+  %s\n\
+</div>\n\
+<br/>\n\
+<div class=\"ocr_page\" id=\"page_1\">\n\
+  <div class=\"ocr_column\" id=\"column_1\">\n";
+
+static gchar *html_page_footer = "  </div>\n</div>\n</body>\n</html>\n";
+
 static GOptionEntry file_entries[] = {
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
     "use PATH for output images", "PATH"},
   {"data-out", 'u', 0, G_OPTION_ARG_FILENAME, &data_out_filename,
     "use FILE as output data file name", "FILE"},
+  {"html-out", 'h', 0, G_OPTION_ARG_NONE, &text_out_html,
+    "output text in html format", NULL},
+  {"page-title", '1', 0, G_OPTION_ARG_FILENAME, &html_page_title,
+    "html page title", "NAME"},
+  {"page-author", '2', 0, G_OPTION_ARG_FILENAME, &html_page_author,
+    "html page author", "NAME"},
+  {"page-year", '3', 0, G_OPTION_ARG_FILENAME, &html_page_year,
+    "html date of publication", "NAME"},
   {NULL}
 };
 
@@ -182,7 +218,7 @@ static GOptionEntry segmentation_entries[] = {
       "use NUM as font slicing width, 50..250",
     "NUM"},
   {"font-spacing", 'w', 0, G_OPTION_ARG_INT, &font_spacing_code,
-      "font spacing: -1.. tight, 0 regular, 1.. spaced",
+      "font spacing: tight ..-1, 0, 1.. spaced",
     "NUM"},
   {NULL}
 };
@@ -222,8 +258,6 @@ static GOptionEntry entries[] = {
     "use FILE as input image file name", "FILE"},
   {"text-out", 'o', 0, G_OPTION_ARG_FILENAME, &text_out_filename,
     "use FILE as output text file name", "FILE"},
-  {"html-out", 'h', 0, G_OPTION_ARG_NONE, &text_out_html,
-    "output text in html format", NULL},
   /* this option is not useful fot the moment {"ltr", 'z', 0,
    * G_OPTION_ARG_NONE, &dir_ltr, "left to right text", NULL}, */
   {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
@@ -600,6 +634,14 @@ hocr_exit ()
   if (data_out_filename)
     g_free (data_out_filename);
 
+  /* free html page names */
+  if (html_page_title)
+    g_free (html_page_title);
+  if (html_page_author)
+    g_free (html_page_author);
+  if (html_page_year)
+    g_free (html_page_year);
+
   /* exit program */
   exit (0);
 
@@ -867,17 +909,20 @@ main (int argc, char *argv[])
       /* start of page */
       if (text_out_html && s_text_out)
       {
-        text_out =
-          g_strdup_printf ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\
-\"http://www.w3.org/TR/html4/strict.dtd\">\n\
-<html>\n\
-<head>\n\
-<title></title>\n\
-</head>\n\
-<body dir=\"rtl\">\n\
-\n\
-<div class=\"ocr_page\" id=\"page_1\">\n\
-  <div class=\"ocr_column\" id=\"column_1\">\n");
+        if (html_page_title && html_page_author && html_page_year)
+          text_out =
+            g_strdup_printf (html_page_header, html_page_title,
+            html_page_author, html_page_year);
+        else if (html_page_title && html_page_author)
+          text_out =
+            g_strdup_printf (html_page_header, html_page_title,
+            html_page_author, "");
+        else if (html_page_title)
+          text_out =
+            g_strdup_printf (html_page_header, html_page_title, "", "");
+        else
+          text_out = g_strdup_printf (html_page_header, "", "", "");
+
         ho_string_cat (s_text_out, text_out);
         g_free (text_out);
       }
@@ -1152,6 +1197,11 @@ main (int argc, char *argv[])
 
       /* end of paragraph */
 
+      if (text_out_html && s_text_out)
+      {
+        ho_string_cat (s_text_out, "<br/>");
+      }
+
       /* add a line-end after a block end */
       ho_string_cat (s_text_out, "\n");
 
@@ -1169,7 +1219,7 @@ main (int argc, char *argv[])
   /* end of page */
   if (text_out_html && s_text_out)
   {
-    text_out = g_strdup_printf ("  </div>\n</div>\n</body>\n</html>\n");
+    text_out = g_strdup_printf (html_page_footer);
     ho_string_cat (s_text_out, text_out);
     g_free (text_out);
   }

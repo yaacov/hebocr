@@ -3,7 +3,8 @@ libhocr (0.10.4)
  * fine tune options for segmentation functions
  * licence gpl3
  * remove web interface
- 
+ * fix pbm load bug (patch: Mikael Ylikoski <ordbrand@gmail.com>)
+
  -- Yaacov Zamir <kzamir_at_walla.co.il> Monday, 14 May 2007 18:12
  
 libhocr (0.10.3)

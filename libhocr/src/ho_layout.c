@@ -587,7 +587,7 @@ ho_layout_get_line_text (ho_layout * l_page, int block_index, int line_index)
     ho_objmap_new_from_bitmap (l_page->m_blocks_lines_mask[block_index]);
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_lines, 254, l_page->dir);
+  ho_objmap_sort_by_reading_index (o_map_lines, 1, l_page->dir);
 
   x = ho_objmap_get_object (o_map_lines, line_index).x;
   y = ho_objmap_get_object (o_map_lines, line_index).y;
@@ -644,7 +644,7 @@ ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
     ho_objmap_new_from_bitmap (l_page->m_blocks_lines_mask[block_index]);
 
   /* sort lines by reading order */
-  ho_objmap_sort_by_reading_index (o_map_lines, 254, l_page->dir);
+  ho_objmap_sort_by_reading_index (o_map_lines, 1, l_page->dir);
 
   x = ho_objmap_get_object (o_map_lines, line_index).x;
   y = ho_objmap_get_object (o_map_lines, line_index).y;
