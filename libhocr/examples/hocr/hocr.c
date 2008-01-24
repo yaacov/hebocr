@@ -52,7 +52,7 @@ gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
 gint scale_by = 0;
 gint rotate_angle = 0;
-gboolean auto_rotate = FALSE;
+gboolean do_not_auto_rotate = FALSE;
 gboolean do_not_clean_image = FALSE;
 gboolean remove_dots = FALSE;
 gboolean remove_images = FALSE;
@@ -206,8 +206,8 @@ static GOptionEntry image_entries[] = {
   {"rotate", 'q', 0, G_OPTION_ARG_INT, &rotate_angle,
       "rotate image clockwise in deg.",
     "DEG"},
-  {"auto-rotate", 'Q', 0, G_OPTION_ARG_NONE, &auto_rotate,
-      "auto rotate image",
+  {"no-auto-rotate", 'Q', 0, G_OPTION_ARG_NONE, &do_not_auto_rotate,
+      "do not auto rotate image",
     NULL},
   {"do-not-clean", 'n', 0, G_OPTION_ARG_NONE, &do_not_clean_image,
       "do not try to remove artefacts from image",
@@ -639,7 +639,7 @@ hocr_load_input_bitmap ()
   }
 
   /* auto rotate image */
-  if (auto_rotate)
+  if (!do_not_auto_rotate)
   {
     int angle;
 
