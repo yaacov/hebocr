@@ -65,8 +65,10 @@ typedef struct
 /**
  new ho_layout 
  @param m_page_text a pointer to a text bitmap
+ @param font_spacing_code -3 tight .. 0 .. 3 spaced
  @param type free text blocks or boxed 
  @param dir true-ltr false-rtl
+ @return a newly allocated layout
  */
 ho_layout *ho_layout_new (const ho_bitmap * m_page_text,
   const char font_spacing_code, const unsigned char type, const unsigned char dir);
@@ -74,12 +76,14 @@ ho_layout *ho_layout_new (const ho_bitmap * m_page_text,
 /**
  free a ho_layout
  @param l_page a pointer to a ho_layout 
+ @return FALSE
  */
 int ho_layout_free (ho_layout * l_page);
 
 /**
  create a text blocks mask and count blocks in n_blocks
  @param l_page a pointer to a ho_layout 
+ @return FALSE
  */
 int ho_layout_create_block_mask (ho_layout * l_page);
 
@@ -87,6 +91,7 @@ int ho_layout_create_block_mask (ho_layout * l_page);
  create a text lines mask and count lines in n_lines[block_index]
  @param l_page a pointer to a ho_layout 
  @param block_index the block_index to work on
+ @return FALSE
  */
 int ho_layout_create_line_mask (ho_layout * l_page, const int block_index);
 
@@ -95,6 +100,7 @@ int ho_layout_create_line_mask (ho_layout * l_page, const int block_index);
  @param l_page a pointer to a ho_layout
  @param block_index the block_index to work on
  @param line_index the line_index to work on
+ @return FALSE
  */
 int ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
   const int line_index);
@@ -107,6 +113,7 @@ int ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
  @param word_index the word_index to work on
  @param slicing_threshold the slicing threshold
  @param slicing_width the slicing width
+ @return FALSE
  */
 int ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
   const int line_index, const int word_index,

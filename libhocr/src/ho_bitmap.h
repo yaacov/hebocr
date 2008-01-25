@@ -61,7 +61,7 @@ typedef struct
 /**
  new ho_bitamp
  
- @param hight hight of pixbuf in pixels
+ @param height hight of pixbuf in pixels
  @param width width of pixbuf in pixels
  @return newly allocated ho_bitmap
  */
@@ -172,6 +172,8 @@ ho_bitmap *ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n);
  
  @param m the bitmap to erode 
  @param height the height to take
+ @param top space above black pixel included in new object
+ @param bottom space below black pixel included in new object
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_set_height (const ho_bitmap * m, const int height,
@@ -182,6 +184,8 @@ ho_bitmap *ho_bitmap_set_height (const ho_bitmap * m, const int height,
  
  @param m the bitmap to erode 
  @param height the height to take
+ @param top space above black pixel included in new object
+ @param bottom space below black pixel included in new object
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_set_height_from_bottom (const ho_bitmap * m,
@@ -223,7 +227,7 @@ ho_bitmap *ho_bitmap_closing (const ho_bitmap * m);
  horizontaly link black dots in a bitmap
  
  @param m the bitmap to horizontaly link
- @patam size maximum distance
+ @param size maximum distance
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_hlink (const ho_bitmap * m, const int size);
@@ -232,7 +236,7 @@ ho_bitmap *ho_bitmap_hlink (const ho_bitmap * m, const int size);
  horizontaly erode black dots in a bitmap
  
  @param m the bitmap to horizontaly link
- @patam size maximum distance
+ @param size maximum distance
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_herode (const ho_bitmap * m, const int size);
@@ -241,7 +245,7 @@ ho_bitmap *ho_bitmap_herode (const ho_bitmap * m, const int size);
  verticaly link black dots in a bitmap
  
  @param m the bitmap to verticaly link
- @patam size maximum distance
+ @param size maximum distance
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_vlink (const ho_bitmap * m, const int size);
@@ -273,7 +277,7 @@ ho_bitmap_get_fill (const ho_bitmap * m, const int x, const int y,
  writes ho_bitmap to pnm file
  
  @param m ho_bitmap 1 bpp
- @param filenme save as file name 
+ @param filename save as file name 
  @return FALSE
  */
 int ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename);
@@ -282,8 +286,8 @@ int ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename);
  horizontaly link short objects in a bitmap
  
  @param m the bitmap to horizontaly link
- @patam size maximum distance
- @patam max_height maximum hight of objects to link
+ @param size maximum distance
+ @param max_height maximum hight of objects to link
  @return newly allocated ho_bitmap
  */
 ho_bitmap *ho_bitmap_filter_hlink (ho_bitmap * m, int size, int max_height);
@@ -305,6 +309,8 @@ ho_bitmap *ho_bitmap_filter_by_size (const ho_bitmap * m,
  copy boxed objects from bitmap
  
  @param m pointer to an ho_bitmap
+ @param leeway_down space below object to be included in box
+ @param leeway_up space above object to be included in box
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
@@ -314,7 +320,6 @@ ho_bitmap *ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
  copy filled objects from bitmap
  
  @param m pointer to an ho_bitmap
- @param leeway add this leeway downwords to the box
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
@@ -323,7 +328,9 @@ ho_bitmap *ho_bitmap_filter_fill (const ho_bitmap * m);
  take height top pixels from objects in bitmap
  
  @param m pointer to an ho_bitmap
- @param hight of new objects
+ @param height of new objects
+ @param top space above black pixel included in new object
+ @param bottom space below black pixel included in new object
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
@@ -333,7 +340,9 @@ ho_bitmap *ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
  take height bottom pixels from objects in bitmap
  
  @param m pointer to an ho_bitmap
- @param hight of new objects
+ @param height of new objects
+ @param top space above black pixel included in new object
+ @param bottom space below black pixel included in new object
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_bitmap_filter_set_height_from_bottom (const ho_bitmap * m,

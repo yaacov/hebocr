@@ -1,7 +1,7 @@
 libhocr (0.10.4)
 
  * change licence to GPL3
- * fne tune options for segmentation functions
+ * fine tune options for segmentation functions
  * fine tune reading order functions
  * remove web interface
  * fix pbm load bug (patch: Mikael Ylikoski <ordbrand@gmail.com>)

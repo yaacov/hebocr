@@ -101,7 +101,7 @@ ho_objlist_statistics (ho_objlist * object_list,
 
 /**
  new ho_pixbuf 
- @param hight hight of pixbuf in pixels
+ @param height hight of pixbuf in pixels
  @param width width of pixbuf in pixels
  @return newly allocated ho_pixbuf
  */
@@ -124,6 +124,8 @@ int ho_objmap_clean (ho_objmap * m);
 /**
  sort the ho_objmap by reading index
  @param m pointer to an ho_objmap
+ @param col numbere of columns
+ @param dir_ltr true-ltr false-rtl
  @return FALSE
  */
 int ho_objmap_sort_by_reading_index (ho_objmap * m, const unsigned char col,
@@ -145,6 +147,7 @@ ho_objmap *ho_objmap_new_from_bitmap (const ho_bitmap * bit_in);
  @param max_width only objects with this maximal width are used
  @param height pointer to return the guessed font average  height
  @param width pointer to return the guessed font average  width
+ @param nikud pointer to return the guessed nikud in page
  @return FALSE
  */
 int ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
@@ -158,8 +161,7 @@ int ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
  @param obj_in the object map to use
  @return newly allocated ho_bitmap
  */
-ho_bitmap *
-ho_objmap_to_bitmap (const ho_objmap * obj_in);
+ho_bitmap *ho_objmap_to_bitmap (const ho_objmap * obj_in);
 
 /**
  copy objects from objmap to bitmap by size
@@ -194,6 +196,8 @@ ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
 /**
  guess reading_index
  @param m pointer to an ho_objmap
+ @param n_columns numbere of columns
+ @param dir_ltr true-ltr false-rtl
  @return FALSE
  */
 int ho_objmap_update_reading_index (ho_objmap * m,

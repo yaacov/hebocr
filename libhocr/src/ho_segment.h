@@ -98,7 +98,8 @@ ho_bitmap *ho_segment_words_fine (const ho_bitmap * m,
 
 /**
  return a bitmap of the words
- @param m pointer to an ho_bitmap
+ @param m pointer to an ho_bitmap of text
+ @param m_line_map pointer to an ho_bitmap of line
  @param font_spacing_code -1:tight 0:normal 1:spaced fonts
  @return a newly allocated bitmap
  */
@@ -107,7 +108,10 @@ ho_bitmap *ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
 /**
  return a bitmap of the interfont spaces
- @param m pointer to an ho_bitmap
+ @param m pointer to an ho_bitmap of text
+ @param m_line_map pointer to an ho_bitmap of line
+ @param slicing_threshold percent of line fill declared space between fonts
+ @param slicing_width percent of font width above try to choop font in two
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_segment_fonts (const ho_bitmap * m,

@@ -56,7 +56,7 @@ GdkPixbuf *ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix);
 /**
  read ho_pixbuf from file
  
- @param filenme file name
+ @param filename file name
  @return newly allocated ho_pixbuf
  */
 ho_pixbuf *ho_gtk_pixbuf_load (const char *filename);
@@ -65,7 +65,7 @@ ho_pixbuf *ho_gtk_pixbuf_load (const char *filename);
  writes ho_pixbuf to file
  
  @param pix ho_pixbuf 8 or 24 bpp
- @param filenme save as file name 
+ @param filename save as file name 
  @return FALSE
  */
 int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
@@ -76,7 +76,7 @@ int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
  @param m_text ho_bitmap of main font
  @param m_nikud ho_bitmap of nikud
  @param m_mask ho_bitmap of line
- @param filenme save as file name 
+ @param filename save as file name 
  @return FALSE
  */
 int

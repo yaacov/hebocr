@@ -250,10 +250,28 @@ ho_bitmap *ho_font_filter (const ho_bitmap * m_text,
 ho_bitmap *ho_font_holes_filter (const ho_bitmap * m_text,
   const ho_bitmap * m_mask, int filter_index);
 
+/**
+ writes font to file
+ 
+ @param m_text ho_bitmap of main font
+ @param m_nikud ho_bitmap of nikud
+ @param m_mask ho_bitmap of line
+ @param filename save as file name 
+ @return FALSE
+ */
 int
 ho_font_pnm_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
   const ho_bitmap * m_mask, const char *filename);
 
+/**
+ read ho_pixbuf from file
+ 
+ @param m_text pointer to return ho_bitmap of main font
+ @param m_nikud pointer to return ho_bitmap of nikud
+ @param m_mask pointer to return ho_bitmap of line
+ @param filename file name
+ @return newly allocated ho_pixbuf
+ */
 int
 ho_font_pnm_load (ho_bitmap ** m_text, ho_bitmap ** m_nikud,
   ho_bitmap ** m_mask, const char *filename);

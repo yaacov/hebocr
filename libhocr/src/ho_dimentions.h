@@ -50,14 +50,16 @@ int ho_dimentions_line_spacing (ho_bitmap * m);
 
 /**
  guess line dimentions, sets font_spacing [for a line]
- @param m pointer to an ho_bitmap
+ @param m pointer to an ho_bitmap of text
+ @param m_line_map pointer to an ho_bitmap of ine
  @return FALSE
  */
 int ho_dimentions_font_spacing (ho_bitmap * m, const ho_bitmap * m_line_map);
 
 /**
  get line fill parameters [for a line]
- @param m pointer to an ho_bitmap
+ @param m pointer to an ho_bitmap of text
+ @param m_line_map pointer to an ho_bitmap of ine
  @return FALSE
  */
 int ho_dimentions_line_fill (ho_bitmap * m, const ho_bitmap * m_line_map);
@@ -72,7 +74,7 @@ int ho_dimentions_get_columns (const ho_bitmap * m);
 /**
  guess number of columns in bitmap
  @param m pointer to an ho_bitmap
- @param column_start a newly allocated int list of start of columns x value
+ @param column_start_list a newly allocated int list of start of columns x value
  @return guessed number of columns
  */
 int
