@@ -455,6 +455,6 @@ ho_bitmap_delete_hline (ho_bitmap * m, const int x, const int y,
  @return newly allocated ho_bitmap
  */
 ho_bitmap *
-ho_bitmap_rotate (const ho_bitmap * m, const int angle);
+ho_bitmap_rotate (const ho_bitmap * m, const double angle);
 
 #endif /* HO_BITMAP_H */

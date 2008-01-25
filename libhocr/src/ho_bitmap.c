@@ -1410,7 +1410,7 @@ ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename)
 }
 
 ho_bitmap *
-ho_bitmap_rotate (const ho_bitmap * m, const int angle)
+ho_bitmap_rotate (const ho_bitmap * m, const double angle)
 {
   ho_bitmap *m_out;
   int x, y;
@@ -1440,7 +1440,7 @@ ho_bitmap_rotate (const ho_bitmap * m, const int angle)
   m_out->nikud = m->nikud;
 
   /* get angle in radians */
-  angle_rads = (double) angle *(2.0 * M_PI / 360);
+  angle_rads = angle *(2.0 * M_PI / 360);
 
   /* fill rotation matrix */
   affine_matrix[0][0] = cos (angle_rads);

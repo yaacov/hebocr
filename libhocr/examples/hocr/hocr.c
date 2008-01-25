@@ -51,7 +51,7 @@ gint threshold = 0;
 gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
 gint scale_by = 0;
-gint rotate_angle = 0;
+gdouble rotate_angle = 0.0;
 gboolean do_not_auto_rotate = FALSE;
 gboolean do_not_clean_image = FALSE;
 gboolean remove_dots = FALSE;
@@ -203,7 +203,7 @@ static GOptionEntry image_entries[] = {
   {"scale", 's', 0, G_OPTION_ARG_INT, &scale_by,
       "scale input image by SCALE 1..9, 0 auto",
     "SCALE"},
-  {"rotate", 'q', 0, G_OPTION_ARG_INT, &rotate_angle,
+  {"rotate", 'q', 0.0, G_OPTION_ARG_DOUBLE, &rotate_angle,
       "rotate image clockwise in deg.",
     "DEG"},
   {"no-auto-rotate", 'Q', 0, G_OPTION_ARG_NONE, &do_not_auto_rotate,
@@ -641,7 +641,7 @@ hocr_load_input_bitmap ()
   /* auto rotate image */
   if (!do_not_auto_rotate)
   {
-    int angle;
+    double angle;
 
     /* get fonts size for auto angle */
     if (ho_dimentions_font_width_height_nikud (m_bw, 6, 200, 6, 200))
@@ -653,7 +653,7 @@ hocr_load_input_bitmap ()
     angle = ho_dimentions_get_lines_angle (m_bw);
 
     if (debug || verbose)
-      g_print (" auto rotate: angle %d.\n", angle);
+      g_print (" auto rotate: angle %f.\n", angle);
 
     if (angle)
     {

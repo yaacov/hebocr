@@ -485,10 +485,10 @@ ho_dimentions_get_columns_with_x_start (const ho_bitmap * m,
   return return_val;
 }
 
-int
+double
 ho_dimentions_get_lines_angle (const ho_bitmap * m)
 {
-  int i, index, number_of_lines, return_val;
+  int i, index, number_of_lines;
   int x;
   int y_left, y_right;
   int width;
@@ -563,8 +563,5 @@ ho_dimentions_get_lines_angle (const ho_bitmap * m)
   /* get degree */
   angle = 180.0 * atan2 ((double) (y_left - y_right), (double) width) / M_PI;
 
-  /* convert to int */
-  return_val = (int) ((angle >= 0.0) ? (angle + 0.5) : (angle - 0.5));
-
-  return return_val;
+  return angle;
 }

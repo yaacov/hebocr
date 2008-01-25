@@ -387,7 +387,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
   double horizontal_link_factor = 9.0 / 5.0;
   double top_frame_factor = 1.0 / 2.0;
-  double bottom_frame_factor = 3.0 / 2.0;
+  double bottom_frame_factor = 1.0 / 2.0;
 
   /* if no nikud we do not need lots of bottom frame */
   if (!(m->nikud))
