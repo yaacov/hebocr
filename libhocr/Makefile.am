@@ -3,7 +3,7 @@
 SUBDIRS = src examples bindings docs
 
 EXTRA_DIST = \
-        bootstrap.sh HACKING
+        Doxyfile HACKING
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libhocr.pc
