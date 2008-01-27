@@ -119,23 +119,84 @@ int ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
   const int line_index, const int word_index,
   const unsigned char slicing_threshold, const unsigned char slicing_width);
 
+/**
+ new ho_bitamp of the text in a layout block
+ 
+ @param l_page the ho_layout to use
+ @param block_index block index
+ @return newly allocated ho_bitmap
+ */
 ho_bitmap *ho_layout_get_block_text (ho_layout * l_page, int block_index);
 
+/**
+ new ho_bitamp of the text in a layout line
+ 
+ @param l_page the ho_layout to use
+ @param block_index block index
+ @param line_index line index
+ @return newly allocated ho_bitmap
+ */
 ho_bitmap *ho_layout_get_line_text (ho_layout * l_page, int block_index,
   int line_index);
 
-ho_bitmap *ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
-  int line_index);
-
+/**
+ new ho_bitamp of the text in a layout word
+ 
+ @param l_page the ho_layout to use
+ @param block_index block index
+ @param line_index line index
+ @param word_index word index
+ @return newly allocated ho_bitmap
+ */
 ho_bitmap *ho_layout_get_word_text (ho_layout * l_page, int block_index,
   int line_index, int word_index);
 
-ho_bitmap *ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
-  int line_index, int word_index);
-
+/**
+ new ho_bitamp of the text in a layout font
+ 
+ @param l_page the ho_layout to use
+ @param block_index block index
+ @param line_index line index
+ @param word_index word index
+ @param font_index font index
+ @return newly allocated ho_bitmap
+ */
 ho_bitmap *ho_layout_get_font_text (ho_layout * l_page, int block_index,
   int line_index, int word_index, int font_index);
 
+/**
+ new ho_bitamp of the line in a layout line
+ 
+ @param l_page the ho_layout to use
+ @param block_index block index
+ @param line_index line index
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
+  int line_index);
+
+/**
+ new ho_bitamp of the line in a layout word
+ 
+ @param l_page the ho_layout to use
+ @param block_index block index
+ @param line_index line index
+ @param word_index word index
+ @return newly allocated ho_bitmap
+ */
+ho_bitmap *ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
+  int line_index, int word_index);
+
+/**
+ new ho_bitamp of the line in a layout font
+ 
+ @param l_page the ho_layout to use
+ @param block_index block index
+ @param line_index line index
+ @param word_index word index
+ @param font_index font index
+ @return newly allocated ho_bitmap
+ */
 ho_bitmap *ho_layout_get_font_line_mask (ho_layout * l_page, int block_index,
   int line_index, int word_index, int font_index);
 

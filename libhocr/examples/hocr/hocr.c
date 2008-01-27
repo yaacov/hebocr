@@ -265,7 +265,7 @@ static GOptionEntry debug_entries[] = {
   {"debug-extra", 'D', 0, G_OPTION_ARG_NONE, &debug,
     "print extra debuging information", NULL},
   {"font-filter", 'y', 0, G_OPTION_ARG_INT, &debug_font_filter,
-    "debug a font filter, use filter NUM, 1..16", "NUM"},
+    "debug a font filter, use filter NUM", "NUM"},
   {"font-filter-list", 'Y', 0, G_OPTION_ARG_NONE, &debug_font_filter_list,
     "print a list of debug a font filters", NULL},
   {"font-num-out", 'j', 0, G_OPTION_ARG_NONE, &text_out_font_numbers,
