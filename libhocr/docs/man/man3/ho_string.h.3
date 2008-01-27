@@ -1,4 +1,4 @@
-.TH "src/ho_string.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_string.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -50,6 +50,31 @@ src/ho_string.h \-
 .PP
 .SH "Function Documentation"
 .PP 
+.SS "\fBho_string\fP* ho_string_new ()"
+.PP
+creats a new \fBho_string\fP struct 
+.PP
+\fBReturns:\fP
+.RS 4
+pointer to a newly allocate \fBho_string\fP or null. 
+.RE
+.PP
+
+.SS "int ho_string_free (\fBho_string\fP * s_str)"
+.PP
+free a hocr_text_buffer struct from memory 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs_str\fP pointer to \fBho_string\fP struct. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 
+.RE
+.PP
+
 .SS "int ho_string_cat (\fBho_string\fP * s_str, const char * text)"
 .PP
 add a string to hocr_text_buffer struct 
@@ -59,6 +84,23 @@ add a string to hocr_text_buffer struct
 \fIs_str\fP pointer to hocr_text_buffer struct. 
 .br
 \fItext\fP pointer to the string to be added to the buffer. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+new size of text 
+.RE
+.PP
+
+.SS "int ho_string_set (\fBho_string\fP * s_str, const char * text)"
+.PP
+set a string to \fBho_string\fP struct 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs_str\fP pointer to hocr_text_buffer struct. 
+.br
+\fItext\fP pointer to the string to be set to the buffer. 
 .RE
 .PP
 \fBReturns:\fP
@@ -79,48 +121,6 @@ copy \fBho_string\fP struct
 \fBReturns:\fP
 .RS 4
 new \fBho_string\fP 
-.RE
-.PP
-
-.SS "int ho_string_free (\fBho_string\fP * s_str)"
-.PP
-free a hocr_text_buffer struct from memory 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIs_str\fP pointer to \fBho_string\fP struct. 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-1 
-.RE
-.PP
-
-.SS "\fBho_string\fP* ho_string_new ()"
-.PP
-creats a new \fBho_string\fP struct 
-.PP
-\fBReturns:\fP
-.RS 4
-pointer to a newly allocate \fBho_string\fP or null. 
-.RE
-.PP
-
-.SS "int ho_string_set (\fBho_string\fP * s_str, const char * text)"
-.PP
-set a string to \fBho_string\fP struct 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIs_str\fP pointer to hocr_text_buffer struct. 
-.br
-\fItext\fP pointer to the string to be set to the buffer. 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-new size of text 
 .RE
 .PP
 

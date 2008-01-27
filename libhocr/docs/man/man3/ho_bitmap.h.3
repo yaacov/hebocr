@@ -1,4 +1,4 @@
-.TH "src/ho_bitmap.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_bitmap.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -173,54 +173,52 @@ src/ho_bitmap.h \-
 .in -1c
 .SH "Define Documentation"
 .PP 
+.SS "#define HO_BITMAP_H   1"
+.PP
 .SS "#define ho_bitmap_get(m, x, y)   (((((m)->data[(x) / 8 + (y) * (m)->rowstride]) & (0x80 >> ((x) % 8))) > 0)?1:0)"
 .PP
-.SS "#define ho_bitmap_get_height(m)   ((m)->height)"
+.SS "#define ho_bitmap_set(m, x, y)   (((m)->data[(x) / 8 + (y) * (m)->rowstride]) |= (0x80 >> ((x) % 8)))"
 .PP
-.SS "#define ho_bitmap_get_width(m)   ((m)->width)"
+.SS "#define ho_bitmap_unset(m, x, y)   (((m)->data[(x) / 8 + (y) * (m)->rowstride]) &= ~(0x80 >> ((x) % 8)))"
 .PP
 .SS "#define ho_bitmap_get_x(m)   ((m)->x)"
 .PP
 .SS "#define ho_bitmap_get_y(m)   ((m)->y)"
 .PP
-.SS "#define HO_BITMAP_H   1"
-.PP
-.SS "#define ho_bitmap_set(m, x, y)   (((m)->data[(x) / 8 + (y) * (m)->rowstride]) |= (0x80 >> ((x) % 8)))"
-.PP
 .SS "#define ho_bitmap_set_x(m, new_x)   ((m)->x=(new_x))"
 .PP
 .SS "#define ho_bitmap_set_y(m, new_y)   ((m)->y=(new_y))"
 .PP
-.SS "#define ho_bitmap_unset(m, x, y)   (((m)->data[(x) / 8 + (y) * (m)->rowstride]) &= ~(0x80 >> ((x) % 8)))"
+.SS "#define ho_bitmap_get_width(m)   ((m)->width)"
+.PP
+.SS "#define ho_bitmap_get_height(m)   ((m)->height)"
 .PP
 .SH "Function Documentation"
 .PP 
-.SS "int ho_bitmap_and (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
+.SS "\fBho_bitmap\fP* ho_bitmap_new (const int width, const int height)"
 .PP
-do bitwise and of two bitmaps
+new ho_bitamp
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm_left\fP the left hand bitmap 
+\fIheight\fP hight of pixbuf in pixels 
 .br
-\fIm_right\fP the right hand bitmap 
+\fIwidth\fP width of pixbuf in pixels 
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-FALSE 
+newly allocated \fBho_bitmap\fP 
 .RE
 .PP
 
-.SS "int ho_bitmap_andnot (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
+.SS "int ho_bitmap_free (\fBho_bitmap\fP * m)"
 .PP
-do bitwise and not of two bitmaps
+free an \fBho_bitmap\fP
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm_left\fP the left hand bitmap 
-.br
-\fIm_right\fP the right hand bitmap 
+\fIm\fP pointer to an \fBho_bitmap\fP 
 .RE
 .PP
 \fBReturns:\fP
@@ -267,24 +265,9 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_bitmap_closing (const \fBho_bitmap\fP * m)"
+.SS "int ho_bitmap_and (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
 .PP
-closing of a a bitmap with 3x3 box
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to close 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "int ho_bitmap_copy (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
-.PP
-do bitwise copy of two bitmaps
+do bitwise and of two bitmaps
 .PP
 \fBParameters:\fP
 .RS 4
@@ -296,505 +279,6 @@ do bitwise copy of two bitmaps
 \fBReturns:\fP
 .RS 4
 FALSE 
-.RE
-.PP
-
-.SS "int ho_bitmap_delete_hline (\fBho_bitmap\fP * m, const int x, const int y, const int width)"
-.PP
-delete horizontal line on bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to draw on 
-.br
-\fIx\fP x-start of line 
-.br
-\fIy\fP y-start of line 
-.br
-\fIwidth\fP height of line 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_bitmap_delete_vline (\fBho_bitmap\fP * m, const int x, const int y, const int height)"
-.PP
-delete vertical line on bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to draw on 
-.br
-\fIx\fP x-start of line 
-.br
-\fIy\fP y-start of line 
-.br
-\fIheight\fP height of line 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_dilation (const \fBho_bitmap\fP * m)"
-.PP
-dilation of a a bitmap with 3x3 box
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to dilate 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_dilation_n (const \fBho_bitmap\fP * m, const unsigned char n)"
-.PP
-dilation of a a bitmap with 3x3 box
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to dilate 
-.br
-\fIn\fP dilation constant 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "int ho_bitmap_draw_box (\fBho_bitmap\fP * m, const int x, const int y, const int width, const int height)"
-.PP
-draw a black box on bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to draw on 
-.br
-\fIx\fP x-start of box 
-.br
-\fIy\fP y-start of box 
-.br
-\fIwidth\fP width of box 
-.br
-\fIheight\fP height of box 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_bitmap_draw_box_empty (\fBho_bitmap\fP * m, const int x, const int y, const int width, const int height)"
-.PP
-draw a black empty box on bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to draw on 
-.br
-\fIx\fP x-start of box 
-.br
-\fIy\fP y-start of box 
-.br
-\fIwidth\fP width of box 
-.br
-\fIheight\fP height of box 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_bitmap_draw_hline (\fBho_bitmap\fP * m, const int x, const int y, const int width)"
-.PP
-draw horizontal line on bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to draw on 
-.br
-\fIx\fP x-start of line 
-.br
-\fIy\fP y-start of line 
-.br
-\fIwidth\fP height of line 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_bitmap_draw_vline (\fBho_bitmap\fP * m, const int x, const int y, const int height)"
-.PP
-draw vertical line on bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to draw on 
-.br
-\fIx\fP x-start of line 
-.br
-\fIy\fP y-start of line 
-.br
-\fIheight\fP height of line 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_edge (const \fBho_bitmap\fP * m, const int n)"
-.PP
-copy edges in bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIn\fP width of egde 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_erosion (const \fBho_bitmap\fP * m)"
-.PP
-erosion of a a bitmap with 3x3 box
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to erode 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_erosion_n (const \fBho_bitmap\fP * m, const unsigned char n)"
-.PP
-erosion of a a bitmap with 3x3 box
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to erode 
-.br
-\fIn\fP erosion constant 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_boxes (const \fBho_bitmap\fP * m, const int leeway_down, const int leeway_up)"
-.PP
-copy boxed objects from bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIleeway_down\fP space below object to be included in box 
-.br
-\fIleeway_up\fP space above object to be included in box 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_by_size (const \fBho_bitmap\fP * m, int min_height, int max_height, int min_width, int max_width)"
-.PP
-copy objects from bitmap to bitmap by size
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fImin_height\fP only objects with this minimal height are copied 
-.br
-\fImax_height\fP only objects with this maximal height are copied 
-.br
-\fImin_width\fP only objects with this minimal width are copied 
-.br
-\fImax_width\fP only objects with this maximal width are copied 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "int ho_bitmap_filter_count_objects (const \fBho_bitmap\fP * m)"
-.PP
-count the number of objects in a bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-the number of objects in a bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_fill (const \fBho_bitmap\fP * m)"
-.PP
-copy filled objects from bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_hlink (\fBho_bitmap\fP * m, int size, int max_height)"
-.PP
-horizontaly link short objects in a bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to horizontaly link 
-.br
-\fIsize\fP maximum distance 
-.br
-\fImax_height\fP maximum hight of objects to link 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_obj_extend_lateraly (const \fBho_bitmap\fP * m, const int ext_width)"
-.PP
-take extend objects lateraly
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIext_width\fP width of lateral extention 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_remove_dots (const \fBho_bitmap\fP * m, const unsigned char erosion_n, const unsigned char dilation_n)"
-.PP
-remove halftone dots from bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIerosion_n\fP the erosion operator factor 
-.br
-\fIdilation_n\fP the dilation operator factor 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_set_height (const \fBho_bitmap\fP * m, const int height, const int top, const int bottom)"
-.PP
-take height top pixels from objects in bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIheight\fP of new objects 
-.br
-\fItop\fP space above black pixel included in new object 
-.br
-\fIbottom\fP space below black pixel included in new object 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_filter_set_height_from_bottom (const \fBho_bitmap\fP * m, const int height, const int top, const int bottom)"
-.PP
-take height bottom pixels from objects in bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIheight\fP of new objects 
-.br
-\fItop\fP space above black pixel included in new object 
-.br
-\fIbottom\fP space below black pixel included in new object 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "int ho_bitmap_free (\fBho_bitmap\fP * m)"
-.PP
-free an \fBho_bitmap\fP
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "double ho_bitmap_get_fill (const \fBho_bitmap\fP * m, const int x, const int y, const int width, const int height)"
-.PP
-return the ratio fill/volume value of a rectangle in the bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIx\fP x of rectangel 
-.br
-\fIy\fP y of rectangel 
-.br
-\fIwidth\fP width of rectangel 
-.br
-\fIheight\fP height of rectangel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-the ratio value 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_herode (const \fBho_bitmap\fP * m, const int size)"
-.PP
-horizontaly erode black dots in a bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to horizontaly link 
-.br
-\fIsize\fP maximum distance 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_hlink (const \fBho_bitmap\fP * m, const int size)"
-.PP
-horizontaly link black dots in a bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to horizontaly link 
-.br
-\fIsize\fP maximum distance 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_new (const int width, const int height)"
-.PP
-new ho_bitamp
-.PP
-\fBParameters:\fP
-.RS 4
-\fIheight\fP hight of pixbuf in pixels 
-.br
-\fIwidth\fP width of pixbuf in pixels 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_not (const \fBho_bitmap\fP * m)"
-.PP
-do bitwise not of a bitmap
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the left hand bitmap 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_bitmap_opening (const \fBho_bitmap\fP * m)"
-.PP
-opening of a a bitmap with 3x3 box
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP the bitmap to open 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_bitmap\fP 
 .RE
 .PP
 
@@ -815,15 +299,15 @@ FALSE
 .RE
 .PP
 
-.SS "int ho_bitmap_pnm_save (const \fBho_bitmap\fP * m, const char * filename)"
+.SS "int ho_bitmap_xor (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
 .PP
-writes \fBho_bitmap\fP to pnm file
+do bitwise xor of two bitmaps
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm\fP \fBho_bitmap\fP 1 bpp 
+\fIm_left\fP the left hand bitmap 
 .br
-\fIfilename\fP save as file name 
+\fIm_right\fP the right hand bitmap 
 .RE
 .PP
 \fBReturns:\fP
@@ -832,15 +316,81 @@ FALSE
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_bitmap_rotate (const \fBho_bitmap\fP * m, const double angle)"
+.SS "int ho_bitmap_andnot (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
 .PP
-rotate a bitmap
+do bitwise and not of two bitmaps
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm\fP the bitmap to rotate 
+\fIm_left\fP the left hand bitmap 
 .br
-\fIangle\fP the angle in deg. 
+\fIm_right\fP the right hand bitmap 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_bitmap_copy (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
+.PP
+do bitwise copy of two bitmaps
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_left\fP the left hand bitmap 
+.br
+\fIm_right\fP the right hand bitmap 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_not (const \fBho_bitmap\fP * m)"
+.PP
+do bitwise not of a bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the left hand bitmap 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_dilation_n (const \fBho_bitmap\fP * m, const unsigned char n)"
+.PP
+dilation of a a bitmap with 3x3 box
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to dilate 
+.br
+\fIn\fP dilation constant 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_erosion_n (const \fBho_bitmap\fP * m, const unsigned char n)"
+.PP
+erosion of a a bitmap with 3x3 box
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to erode 
+.br
+\fIn\fP erosion constant 
 .RE
 .PP
 \fBReturns:\fP
@@ -891,6 +441,100 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
+.SS "\fBho_bitmap\fP* ho_bitmap_dilation (const \fBho_bitmap\fP * m)"
+.PP
+dilation of a a bitmap with 3x3 box
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to dilate 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_erosion (const \fBho_bitmap\fP * m)"
+.PP
+erosion of a a bitmap with 3x3 box
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to erode 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_opening (const \fBho_bitmap\fP * m)"
+.PP
+opening of a a bitmap with 3x3 box
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to open 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_closing (const \fBho_bitmap\fP * m)"
+.PP
+closing of a a bitmap with 3x3 box
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to close 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_hlink (const \fBho_bitmap\fP * m, const int size)"
+.PP
+horizontaly link black dots in a bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to horizontaly link 
+.br
+\fIsize\fP maximum distance 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_herode (const \fBho_bitmap\fP * m, const int size)"
+.PP
+horizontaly erode black dots in a bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to horizontaly link 
+.br
+\fIsize\fP maximum distance 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
 .SS "\fBho_bitmap\fP* ho_bitmap_vlink (const \fBho_bitmap\fP * m, const int size)"
 .PP
 verticaly link black dots in a bitmap
@@ -908,20 +552,376 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "int ho_bitmap_xor (\fBho_bitmap\fP * m_left, const \fBho_bitmap\fP * m_right)"
+.SS "\fBho_bitmap\fP* ho_bitmap_edge (const \fBho_bitmap\fP * m, const int n)"
 .PP
-do bitwise xor of two bitmaps
+copy edges in bitmap
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm_left\fP the left hand bitmap 
+\fIm\fP pointer to an \fBho_bitmap\fP 
 .br
-\fIm_right\fP the right hand bitmap 
+\fIn\fP width of egde 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "double ho_bitmap_get_fill (const \fBho_bitmap\fP * m, const int x, const int y, const int width, const int height)"
+.PP
+return the ratio fill/volume value of a rectangle in the bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIx\fP x of rectangel 
+.br
+\fIy\fP y of rectangel 
+.br
+\fIwidth\fP width of rectangel 
+.br
+\fIheight\fP height of rectangel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the ratio value 
+.RE
+.PP
+
+.SS "int ho_bitmap_pnm_save (const \fBho_bitmap\fP * m, const char * filename)"
+.PP
+writes \fBho_bitmap\fP to pnm file
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP \fBho_bitmap\fP 1 bpp 
+.br
+\fIfilename\fP save as file name 
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
 FALSE 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_hlink (\fBho_bitmap\fP * m, int size, int max_height)"
+.PP
+horizontaly link short objects in a bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to horizontaly link 
+.br
+\fIsize\fP maximum distance 
+.br
+\fImax_height\fP maximum hight of objects to link 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_by_size (const \fBho_bitmap\fP * m, int min_height, int max_height, int min_width, int max_width)"
+.PP
+copy objects from bitmap to bitmap by size
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fImin_height\fP only objects with this minimal height are copied 
+.br
+\fImax_height\fP only objects with this maximal height are copied 
+.br
+\fImin_width\fP only objects with this minimal width are copied 
+.br
+\fImax_width\fP only objects with this maximal width are copied 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_boxes (const \fBho_bitmap\fP * m, const int leeway_down, const int leeway_up)"
+.PP
+copy boxed objects from bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIleeway_down\fP space below object to be included in box 
+.br
+\fIleeway_up\fP space above object to be included in box 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_fill (const \fBho_bitmap\fP * m)"
+.PP
+copy filled objects from bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_set_height (const \fBho_bitmap\fP * m, const int height, const int top, const int bottom)"
+.PP
+take height top pixels from objects in bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIheight\fP of new objects 
+.br
+\fItop\fP space above black pixel included in new object 
+.br
+\fIbottom\fP space below black pixel included in new object 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_set_height_from_bottom (const \fBho_bitmap\fP * m, const int height, const int top, const int bottom)"
+.PP
+take height bottom pixels from objects in bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIheight\fP of new objects 
+.br
+\fItop\fP space above black pixel included in new object 
+.br
+\fIbottom\fP space below black pixel included in new object 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_obj_extend_lateraly (const \fBho_bitmap\fP * m, const int ext_width)"
+.PP
+take extend objects lateraly
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIext_width\fP width of lateral extention 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_filter_remove_dots (const \fBho_bitmap\fP * m, const unsigned char erosion_n, const unsigned char dilation_n)"
+.PP
+remove halftone dots from bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIerosion_n\fP the erosion operator factor 
+.br
+\fIdilation_n\fP the dilation operator factor 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "int ho_bitmap_filter_count_objects (const \fBho_bitmap\fP * m)"
+.PP
+count the number of objects in a bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the number of objects in a bitmap 
+.RE
+.PP
+
+.SS "int ho_bitmap_draw_box (\fBho_bitmap\fP * m, const int x, const int y, const int width, const int height)"
+.PP
+draw a black box on bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to draw on 
+.br
+\fIx\fP x-start of box 
+.br
+\fIy\fP y-start of box 
+.br
+\fIwidth\fP width of box 
+.br
+\fIheight\fP height of box 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_bitmap_draw_box_empty (\fBho_bitmap\fP * m, const int x, const int y, const int width, const int height)"
+.PP
+draw a black empty box on bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to draw on 
+.br
+\fIx\fP x-start of box 
+.br
+\fIy\fP y-start of box 
+.br
+\fIwidth\fP width of box 
+.br
+\fIheight\fP height of box 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_bitmap_draw_vline (\fBho_bitmap\fP * m, const int x, const int y, const int height)"
+.PP
+draw vertical line on bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to draw on 
+.br
+\fIx\fP x-start of line 
+.br
+\fIy\fP y-start of line 
+.br
+\fIheight\fP height of line 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_bitmap_delete_vline (\fBho_bitmap\fP * m, const int x, const int y, const int height)"
+.PP
+delete vertical line on bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to draw on 
+.br
+\fIx\fP x-start of line 
+.br
+\fIy\fP y-start of line 
+.br
+\fIheight\fP height of line 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_bitmap_draw_hline (\fBho_bitmap\fP * m, const int x, const int y, const int width)"
+.PP
+draw horizontal line on bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to draw on 
+.br
+\fIx\fP x-start of line 
+.br
+\fIy\fP y-start of line 
+.br
+\fIwidth\fP height of line 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_bitmap_delete_hline (\fBho_bitmap\fP * m, const int x, const int y, const int width)"
+.PP
+delete horizontal line on bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to draw on 
+.br
+\fIx\fP x-start of line 
+.br
+\fIy\fP y-start of line 
+.br
+\fIwidth\fP height of line 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_bitmap_rotate (const \fBho_bitmap\fP * m, const double angle)"
+.PP
+rotate a bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the bitmap to rotate 
+.br
+\fIangle\fP the angle in deg. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
 .RE
 .PP
 

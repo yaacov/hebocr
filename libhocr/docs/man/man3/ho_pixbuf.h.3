@@ -1,4 +1,4 @@
-.TH "src/ho_pixbuf.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_pixbuf.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -150,339 +150,28 @@ src/ho_pixbuf.h \-
 .in -1c
 .SH "Define Documentation"
 .PP 
-.SS "#define ho_pixbuf_get(m, x, y, col)   (((m)->data)[(x)*(m)->n_channels+(y)*(m)->rowstride+(col)])"
-.PP
-.SS "#define ho_pixbuf_get_data(m)   ((m)->data)"
-.PP
-.SS "#define ho_pixbuf_get_height(m)   ((m)->height)"
-.PP
-.SS "#define ho_pixbuf_get_n_channels(m)   ((m)->n_channels)"
-.PP
-.SS "#define ho_pixbuf_get_rowstride(m)   ((m)->rowstride)"
-.PP
-.SS "#define ho_pixbuf_get_width(m)   ((m)->width)"
-.PP
 .SS "#define HO_PIXBUF_H   1"
-.PP
-.SS "#define ho_pixbuf_max3(a, b, c)   ((((a)>(b))&&((a)>(c))) ? (a) : (((b)>(c)) ? (b) : (c)))"
 .PP
 .SS "#define ho_pixbuf_min3(a, b, c)   ((((a)<(b))&&((a)<(c))) ? (a) : (((b)<(c)) ? (b) : (c)))"
 .PP
+.SS "#define ho_pixbuf_max3(a, b, c)   ((((a)>(b))&&((a)>(c))) ? (a) : (((b)>(c)) ? (b) : (c)))"
+.PP
 .SS "#define ho_pixbuf_set(m, x, y, col, val)   (((m)->data)[(x)*(m)->n_channels+(y)*(m)->rowstride+(col)]=(val))"
+.PP
+.SS "#define ho_pixbuf_get(m, x, y, col)   (((m)->data)[(x)*(m)->n_channels+(y)*(m)->rowstride+(col)])"
+.PP
+.SS "#define ho_pixbuf_get_n_channels(m)   ((m)->n_channels)"
+.PP
+.SS "#define ho_pixbuf_get_width(m)   ((m)->width)"
+.PP
+.SS "#define ho_pixbuf_get_height(m)   ((m)->height)"
+.PP
+.SS "#define ho_pixbuf_get_rowstride(m)   ((m)->rowstride)"
+.PP
+.SS "#define ho_pixbuf_get_data(m)   ((m)->data)"
 .PP
 .SH "Function Documentation"
 .PP 
-.SS "\fBho_pixbuf\fP* ho_pixbuf_clone (const \fBho_pixbuf\fP * m)"
-.PP
-clone \fBho_pixbuf\fP 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to a \fBho_pixbuf\fP image 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated gray \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_blue (const \fBho_pixbuf\fP * pix)"
-.PP
-take the Blue channel from an RGB pixbuf 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP the color \fBho_pixbuf\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated gray \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_gray (const \fBho_pixbuf\fP * pix)"
-.PP
-converts a color pixbuf to gray one 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP the color \fBho_pixbuf\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated gray \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_green (const \fBho_pixbuf\fP * pix)"
-.PP
-take the Green channel from an RGB pixbuf 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP the color \fBho_pixbuf\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated gray \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_red (const \fBho_pixbuf\fP * pix)"
-.PP
-take the Red channel from an RGB pixbuf 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP the color \fBho_pixbuf\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated gray \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "int ho_pixbuf_draw_bitmap (\fBho_pixbuf\fP * m, const \fBho_bitmap\fP * bit_in, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
-.PP
-draw a bitmap 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP a \fBho_pixbuf\fP 
-.br
-\fIbit_in\fP the bitmap to draw on the pixbuf 
-.br
-\fIred\fP value of red channel 
-.br
-\fIgreen\fP value of green channel 
-.br
-\fIblue\fP value of blue channel 
-.br
-\fIalpha\fP value of alpha channel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_pixbuf_draw_bitmap_at (\fBho_pixbuf\fP * m, const \fBho_bitmap\fP * bit_in, const int x1, const int y1, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
-.PP
-draw a bitmap 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP a \fBho_pixbuf\fP 
-.br
-\fIbit_in\fP the bitmap to draw on the pixbuf 
-.br
-\fIx1\fP x of upper right start of drawing 
-.br
-\fIy1\fP y of upper right start of drawing 
-.br
-\fIred\fP value of red channel 
-.br
-\fIgreen\fP value of green channel 
-.br
-\fIblue\fP value of blue channel 
-.br
-\fIalpha\fP value of alpha channel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_pixbuf_draw_grid (\fBho_pixbuf\fP * m, const int size, const int step, const unsigned char red, const unsigned char green, const unsigned char blue)"
-.PP
-draw a grid 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP a \fBho_pixbuf\fP 
-.br
-\fIsize\fP size of grid boxes 
-.br
-\fIstep\fP size of scale marks 
-.br
-\fIred\fP value of red channel 
-.br
-\fIgreen\fP value of green channel 
-.br
-\fIblue\fP value of blue channel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_pixbuf_draw_horizontal_scale (\fBho_pixbuf\fP * m, const int x1, const int y1, const int length, const int step, const unsigned char red, const unsigned char green, const unsigned char blue)"
-.PP
-draw a scale line from x1,y1 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP a \fBho_pixbuf\fP 
-.br
-\fIx1\fP x cordinate of start point 
-.br
-\fIy1\fP y cordinate of start point 
-.br
-\fIlength\fP length of scale line 
-.br
-\fIstep\fP size of scale marks 
-.br
-\fIred\fP value of red channel 
-.br
-\fIgreen\fP value of green channel 
-.br
-\fIblue\fP value of blue channel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_pixbuf_draw_line (\fBho_pixbuf\fP * m, const int x1, const int y1, const int x2, const int y2, const unsigned char red, const unsigned char green, const unsigned char blue)"
-.PP
-draw a line from x1,y1 to x2,y2 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP a \fBho_pixbuf\fP 
-.br
-\fIx1\fP x cordinate of start point 
-.br
-\fIy1\fP y cordinate of start point 
-.br
-\fIx2\fP x cordinate of end point 
-.br
-\fIy2\fP y cordinate of end point 
-.br
-\fIred\fP value of red channel 
-.br
-\fIgreen\fP value of green channel 
-.br
-\fIblue\fP value of blue channel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_pixbuf_draw_rgb_bitmap (\fBho_pixbuf\fP * m, const \fBho_bitmap\fP * bit_in_red, const \fBho_bitmap\fP * bit_in_green, const \fBho_bitmap\fP * bit_in_blue)"
-.PP
-draw RGB bitmap 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP a \fBho_pixbuf\fP 
-.br
-\fIbit_in_red\fP the bitmap to draw on the pixbuf red channel 
-.br
-\fIbit_in_green\fP the bitmap to draw on the pixbuf green channel 
-.br
-\fIbit_in_blue\fP the bitmap to draw on the pixbuf blue channel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_pixbuf_draw_vertical_scale (\fBho_pixbuf\fP * m, const int x1, const int y1, const int length, const int step, const unsigned char red, const unsigned char green, const unsigned char blue)"
-.PP
-draw a scale line from x1,y1 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP a \fBho_pixbuf\fP 
-.br
-\fIx1\fP x cordinate of start point 
-.br
-\fIy1\fP y cordinate of start point 
-.br
-\fIlength\fP length of scale line 
-.br
-\fIstep\fP size of scale marks 
-.br
-\fIred\fP value of red channel 
-.br
-\fIgreen\fP value of green channel 
-.br
-\fIblue\fP value of blue channel 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "int ho_pixbuf_free (\fBho_pixbuf\fP * pix)"
-.PP
-free an \fBho_pixbuf\fP 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP pointer to an \fBho_pixbuf\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "\fBho_pixbuf\fP* ho_pixbuf_linear_filter (const \fBho_pixbuf\fP * pix)"
-.PP
-aplay a linear filter to a gray pixbuf 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP the input \fBho_pixbuf\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated gray \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "unsigned char ho_pixbuf_minmax (const \fBho_pixbuf\fP * pix, unsigned char * min, unsigned char * max)"
-.PP
-get the min and max values in a gray pixbuf 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP gray \fBho_pixbuf\fP 
-.br
-\fImin\fP a pointer to return the min 
-.br
-\fImax\fP a pointer to return the max 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
 .SS "\fBho_pixbuf\fP* ho_pixbuf_new (const unsigned char n_channels, const int width, const int height, const int rowstride)"
 .PP
 new \fBho_pixbuf\fP 
@@ -504,6 +193,21 @@ newly allocated \fBho_pixbuf\fP
 .RE
 .PP
 
+.SS "\fBho_pixbuf\fP* ho_pixbuf_clone (const \fBho_pixbuf\fP * m)"
+.PP
+clone \fBho_pixbuf\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to a \fBho_pixbuf\fP image 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
 .SS "\fBho_pixbuf\fP* ho_pixbuf_new_from_bitmap (const \fBho_bitmap\fP * bit_in)"
 .PP
 new \fBho_pixbuf\fP from \fBho_bitmap\fP 
@@ -516,6 +220,25 @@ new \fBho_pixbuf\fP from \fBho_bitmap\fP
 \fBReturns:\fP
 .RS 4
 newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_new_from_objmap (const \fBho_objmap\fP * obj_in, const unsigned char min, const unsigned char max)"
+.PP
+new \fBho_pixbuf\fP from \fBho_objmap\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobj_in\fP pointer to an \fBho_objmap\fP image 
+.br
+\fImin\fP minimal color value 
+.br
+\fImax\fP maximal color value 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated color \fBho_pixbuf\fP 
 .RE
 .PP
 
@@ -578,49 +301,28 @@ newly allocated color \fBho_pixbuf\fP
 .RE
 .PP
 
-.SS "\fBho_pixbuf\fP* ho_pixbuf_new_from_objmap (const \fBho_objmap\fP * obj_in, const unsigned char min, const unsigned char max)"
+.SS "\fBho_pixbuf\fP* ho_pixbuf_to_rgb (const \fBho_pixbuf\fP * pix_in)"
 .PP
-new \fBho_pixbuf\fP from \fBho_objmap\fP 
+new rgb \fBho_pixbuf\fP from non rgb pixbuf 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIobj_in\fP pointer to an \fBho_objmap\fP image 
-.br
-\fImin\fP minimal color value 
-.br
-\fImax\fP maximal color value 
+\fIpix_in\fP pointer the original pixbuf 
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-newly allocated color \fBho_pixbuf\fP 
+newly allocated rgb color \fBho_pixbuf\fP 
 .RE
 .PP
 
-.SS "\fBho_pixbuf\fP* ho_pixbuf_pnm_load (const char * filename)"
+.SS "int ho_pixbuf_free (\fBho_pixbuf\fP * pix)"
 .PP
-read \fBho_pixbuf\fP from pnm file 8 or 24 bpp 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIfilename\fP file name of pnm file 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "int ho_pixbuf_pnm_save (const \fBho_pixbuf\fP * pix, const char * filename)"
-.PP
-writes \fBho_pixbuf\fP to pnm file 
+free an \fBho_pixbuf\fP 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpix\fP \fBho_pixbuf\fP 8 or 24 bpp 
-.br
-\fIfilename\fP save as file name 
+\fIpix\fP pointer to an \fBho_pixbuf\fP 
 .RE
 .PP
 \fBReturns:\fP
@@ -629,15 +331,58 @@ FALSE
 .RE
 .PP
 
-.SS "\fBho_pixbuf\fP* ho_pixbuf_scale (const \fBho_pixbuf\fP * pix, const unsigned char scale)"
+.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_gray (const \fBho_pixbuf\fP * pix)"
 .PP
-scale a gray pixbuf 
+converts a color pixbuf to gray one 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpix\fP the input \fBho_pixbuf\fP 
-.br
-\fIscale\fP scale by this factor 
+\fIpix\fP the color \fBho_pixbuf\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_red (const \fBho_pixbuf\fP * pix)"
+.PP
+take the Red channel from an RGB pixbuf 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP the color \fBho_pixbuf\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_green (const \fBho_pixbuf\fP * pix)"
+.PP
+take the Green channel from an RGB pixbuf 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP the color \fBho_pixbuf\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_blue (const \fBho_pixbuf\fP * pix)"
+.PP
+take the Blue channel from an RGB pixbuf 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP the color \fBho_pixbuf\fP 
 .RE
 .PP
 \fBReturns:\fP
@@ -679,6 +424,57 @@ newly allocated gray \fBho_pixbuf\fP
 .SS "\fBho_pixbuf\fP* ho_pixbuf_scale4 (const \fBho_pixbuf\fP * pix)"
 .PP
 scale a gray pixbuf to by 4 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP the input \fBho_pixbuf\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_scale (const \fBho_pixbuf\fP * pix, const unsigned char scale)"
+.PP
+scale a gray pixbuf 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP the input \fBho_pixbuf\fP 
+.br
+\fIscale\fP scale by this factor 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "unsigned char ho_pixbuf_minmax (const \fBho_pixbuf\fP * pix, unsigned char * min, unsigned char * max)"
+.PP
+get the min and max values in a gray pixbuf 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP gray \fBho_pixbuf\fP 
+.br
+\fImin\fP a pointer to return the min 
+.br
+\fImax\fP a pointer to return the max 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_linear_filter (const \fBho_pixbuf\fP * pix)"
+.PP
+aplay a linear filter to a gray pixbuf 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -773,18 +569,222 @@ newly allocated gray \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_pixbuf\fP* ho_pixbuf_to_rgb (const \fBho_pixbuf\fP * pix_in)"
+.SS "\fBho_pixbuf\fP* ho_pixbuf_pnm_load (const char * filename)"
 .PP
-new rgb \fBho_pixbuf\fP from non rgb pixbuf 
+read \fBho_pixbuf\fP from pnm file 8 or 24 bpp 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpix_in\fP pointer the original pixbuf 
+\fIfilename\fP file name of pnm file 
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-newly allocated rgb color \fBho_pixbuf\fP 
+newly allocated \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "int ho_pixbuf_pnm_save (const \fBho_pixbuf\fP * pix, const char * filename)"
+.PP
+writes \fBho_pixbuf\fP to pnm file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP \fBho_pixbuf\fP 8 or 24 bpp 
+.br
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_line (\fBho_pixbuf\fP * m, const int x1, const int y1, const int x2, const int y2, const unsigned char red, const unsigned char green, const unsigned char blue)"
+.PP
+draw a line from x1,y1 to x2,y2 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIx1\fP x cordinate of start point 
+.br
+\fIy1\fP y cordinate of start point 
+.br
+\fIx2\fP x cordinate of end point 
+.br
+\fIy2\fP y cordinate of end point 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_horizontal_scale (\fBho_pixbuf\fP * m, const int x1, const int y1, const int length, const int step, const unsigned char red, const unsigned char green, const unsigned char blue)"
+.PP
+draw a scale line from x1,y1 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIx1\fP x cordinate of start point 
+.br
+\fIy1\fP y cordinate of start point 
+.br
+\fIlength\fP length of scale line 
+.br
+\fIstep\fP size of scale marks 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_vertical_scale (\fBho_pixbuf\fP * m, const int x1, const int y1, const int length, const int step, const unsigned char red, const unsigned char green, const unsigned char blue)"
+.PP
+draw a scale line from x1,y1 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIx1\fP x cordinate of start point 
+.br
+\fIy1\fP y cordinate of start point 
+.br
+\fIlength\fP length of scale line 
+.br
+\fIstep\fP size of scale marks 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_grid (\fBho_pixbuf\fP * m, const int size, const int step, const unsigned char red, const unsigned char green, const unsigned char blue)"
+.PP
+draw a grid 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIsize\fP size of grid boxes 
+.br
+\fIstep\fP size of scale marks 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_bitmap (\fBho_pixbuf\fP * m, const \fBho_bitmap\fP * bit_in, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
+.PP
+draw a bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIbit_in\fP the bitmap to draw on the pixbuf 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.br
+\fIalpha\fP value of alpha channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_rgb_bitmap (\fBho_pixbuf\fP * m, const \fBho_bitmap\fP * bit_in_red, const \fBho_bitmap\fP * bit_in_green, const \fBho_bitmap\fP * bit_in_blue)"
+.PP
+draw RGB bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIbit_in_red\fP the bitmap to draw on the pixbuf red channel 
+.br
+\fIbit_in_green\fP the bitmap to draw on the pixbuf green channel 
+.br
+\fIbit_in_blue\fP the bitmap to draw on the pixbuf blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_bitmap_at (\fBho_pixbuf\fP * m, const \fBho_bitmap\fP * bit_in, const int x1, const int y1, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
+.PP
+draw a bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIbit_in\fP the bitmap to draw on the pixbuf 
+.br
+\fIx1\fP x of upper right start of drawing 
+.br
+\fIy1\fP y of upper right start of drawing 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.br
+\fIalpha\fP value of alpha channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
 .RE
 .PP
 

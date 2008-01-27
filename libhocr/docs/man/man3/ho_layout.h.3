@@ -1,4 +1,4 @@
-.TH "src/ho_layout.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_layout.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -53,16 +53,16 @@ src/ho_layout.h \-
 .RI "\fBho_bitmap\fP * \fBho_layout_get_line_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_line_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index)"
-.br
-.ti -1c
 .RI "\fBho_bitmap\fP * \fBho_layout_get_word_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_word_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_font_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_font_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_line_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_word_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
 .br
 .ti -1c
 .RI "\fBho_bitmap\fP * \fBho_layout_get_font_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
@@ -74,9 +74,30 @@ src/ho_layout.h \-
 .PP
 .SH "Function Documentation"
 .PP 
-.SS "int ho_layout_create_block_mask (\fBho_layout\fP * l_page)"
+.SS "\fBho_layout\fP* ho_layout_new (const \fBho_bitmap\fP * m_page_text, const char font_spacing_code, const unsigned char type, const unsigned char dir)"
 .PP
-create a text blocks mask and count blocks in n_blocks 
+new \fBho_layout\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_page_text\fP a pointer to a text bitmap 
+.br
+\fIfont_spacing_code\fP -3 tight .. 0 .. 3 spaced 
+.br
+\fItype\fP free text blocks or boxed 
+.br
+\fIdir\fP true-ltr false-rtl 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated layout 
+.RE
+.PP
+
+.SS "int ho_layout_free (\fBho_layout\fP * l_page)"
+.PP
+free a \fBho_layout\fP 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -89,23 +110,13 @@ FALSE
 .RE
 .PP
 
-.SS "int ho_layout_create_font_mask (\fBho_layout\fP * l_page, const int block_index, const int line_index, const int word_index, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.SS "int ho_layout_create_block_mask (\fBho_layout\fP * l_page)"
 .PP
-create a text font mask and count fonts in n_fontss[block_index][line_index][word_index] 
+create a text blocks mask and count blocks in n_blocks 
 .PP
 \fBParameters:\fP
 .RS 4
 \fIl_page\fP a pointer to a \fBho_layout\fP 
-.br
-\fIblock_index\fP the block_index to work on 
-.br
-\fIline_index\fP the line_index to work on 
-.br
-\fIword_index\fP the word_index to work on 
-.br
-\fIslicing_threshold\fP the slicing threshold 
-.br
-\fIslicing_width\fP the slicing width 
 .RE
 .PP
 \fBReturns:\fP
@@ -150,13 +161,23 @@ FALSE
 .RE
 .PP
 
-.SS "int ho_layout_free (\fBho_layout\fP * l_page)"
+.SS "int ho_layout_create_font_mask (\fBho_layout\fP * l_page, const int block_index, const int line_index, const int word_index, const unsigned char slicing_threshold, const unsigned char slicing_width)"
 .PP
-free a \fBho_layout\fP 
+create a text font mask and count fonts in n_fontss[block_index][line_index][word_index] 
 .PP
 \fBParameters:\fP
 .RS 4
 \fIl_page\fP a pointer to a \fBho_layout\fP 
+.br
+\fIblock_index\fP the block_index to work on 
+.br
+\fIline_index\fP the line_index to work on 
+.br
+\fIword_index\fP the word_index to work on 
+.br
+\fIslicing_threshold\fP the slicing threshold 
+.br
+\fIslicing_width\fP the slicing width 
 .RE
 .PP
 \fBReturns:\fP
@@ -167,36 +188,144 @@ FALSE
 
 .SS "\fBho_bitmap\fP* ho_layout_get_block_text (\fBho_layout\fP * l_page, int block_index)"
 .PP
-.SS "\fBho_bitmap\fP* ho_layout_get_font_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
-.PP
-.SS "\fBho_bitmap\fP* ho_layout_get_font_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
-.PP
-.SS "\fBho_bitmap\fP* ho_layout_get_line_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index)"
-.PP
-.SS "\fBho_bitmap\fP* ho_layout_get_line_text (\fBho_layout\fP * l_page, int block_index, int line_index)"
-.PP
-.SS "\fBho_bitmap\fP* ho_layout_get_word_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
-.PP
-.SS "\fBho_bitmap\fP* ho_layout_get_word_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
-.PP
-.SS "\fBho_layout\fP* ho_layout_new (const \fBho_bitmap\fP * m_page_text, const char font_spacing_code, const unsigned char type, const unsigned char dir)"
-.PP
-new \fBho_layout\fP 
+new ho_bitamp of the text in a layout block
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm_page_text\fP a pointer to a text bitmap 
+\fIl_page\fP the \fBho_layout\fP to use 
 .br
-\fIfont_spacing_code\fP -3 tight .. 0 .. 3 spaced 
-.br
-\fItype\fP free text blocks or boxed 
-.br
-\fIdir\fP true-ltr false-rtl 
+\fIblock_index\fP block index 
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-a newly allocated layout 
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_layout_get_line_text (\fBho_layout\fP * l_page, int block_index, int line_index)"
+.PP
+new ho_bitamp of the text in a layout line
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP the \fBho_layout\fP to use 
+.br
+\fIblock_index\fP block index 
+.br
+\fIline_index\fP line index 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_layout_get_word_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
+.PP
+new ho_bitamp of the text in a layout word
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP the \fBho_layout\fP to use 
+.br
+\fIblock_index\fP block index 
+.br
+\fIline_index\fP line index 
+.br
+\fIword_index\fP word index 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_layout_get_font_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
+.PP
+new ho_bitamp of the text in a layout font
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP the \fBho_layout\fP to use 
+.br
+\fIblock_index\fP block index 
+.br
+\fIline_index\fP line index 
+.br
+\fIword_index\fP word index 
+.br
+\fIfont_index\fP font index 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_layout_get_line_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index)"
+.PP
+new ho_bitamp of the line in a layout line
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP the \fBho_layout\fP to use 
+.br
+\fIblock_index\fP block index 
+.br
+\fIline_index\fP line index 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_layout_get_word_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
+.PP
+new ho_bitamp of the line in a layout word
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP the \fBho_layout\fP to use 
+.br
+\fIblock_index\fP block index 
+.br
+\fIline_index\fP line index 
+.br
+\fIword_index\fP word index 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_layout_get_font_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
+.PP
+new ho_bitamp of the line in a layout font
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP the \fBho_layout\fP to use 
+.br
+\fIblock_index\fP block index 
+.br
+\fIline_index\fP line index 
+.br
+\fIword_index\fP word index 
+.br
+\fIfont_index\fP font index 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_bitmap\fP 
 .RE
 .PP
 

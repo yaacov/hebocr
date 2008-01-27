@@ -1,4 +1,4 @@
-.TH "src/ho_objmap.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_objmap.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -116,42 +116,74 @@ src/ho_objmap.h \-
 .in -1c
 .SH "Define Documentation"
 .PP 
-.SS "#define ho_objmap_get(m, x, y)   (((m)->map)[(x) + (y) * (m)->width])"
-.PP
-.SS "#define ho_objmap_get_height(m)   ((m)->height)"
-.PP
-.SS "#define ho_objmap_get_object(m, i)   ((m)->obj_list->objects[(i)])"
-.PP
-.SS "#define ho_objmap_get_size(m)   ((m)->obj_list->size)"
-.PP
-.SS "#define ho_objmap_get_width(m)   ((m)->width)"
-.PP
 .SS "#define HO_OBJMAP_H   1"
 .PP
 .SS "#define ho_objmap_set(m, x, y, val)   (((m)->map)[(x) + (y) * (m)->width] = (val))"
 .PP
+.SS "#define ho_objmap_get(m, x, y)   (((m)->map)[(x) + (y) * (m)->width])"
+.PP
+.SS "#define ho_objmap_get_size(m)   ((m)->obj_list->size)"
+.PP
+.SS "#define ho_objmap_get_object(m, i)   ((m)->obj_list->objects[(i)])"
+.PP
+.SS "#define ho_objmap_get_width(m)   ((m)->width)"
+.PP
+.SS "#define ho_objmap_get_height(m)   ((m)->height)"
+.PP
 .SH "Function Documentation"
 .PP 
+.SS "\fBho_objlist\fP* ho_objlist_new ()"
+.PP
+.SS "int ho_objlist_free (\fBho_objlist\fP * object_list)"
+.PP
 .SS "int ho_objlist_add (\fBho_objlist\fP * object_list, double weight, int x, int y, int width, int height)"
 .PP
+.SS "int ho_objlist_get_index (\fBho_objlist\fP * object_list, int index)"
+.PP
 .SS "int ho_objlist_add_pixel (\fBho_objlist\fP * object_list, int index, int x, int y)"
+.PP
+.SS "int ho_objlist_link (\fBho_objlist\fP * object_list, int index1, int index2)"
 .PP
 .SS "int ho_objlist_clean (\fBho_objlist\fP * object_list, int ** map)"
 .PP
 .SS "int ho_objlist_clean_by_reading_index (\fBho_objlist\fP * object_list, int ** map)"
 .PP
-.SS "int ho_objlist_free (\fBho_objlist\fP * object_list)"
-.PP
-.SS "int ho_objlist_get_index (\fBho_objlist\fP * object_list, int index)"
-.PP
-.SS "int ho_objlist_link (\fBho_objlist\fP * object_list, int index1, int index2)"
-.PP
-.SS "\fBho_objlist\fP* ho_objlist_new ()"
-.PP
 .SS "int ho_objlist_print (\fBho_objlist\fP * object_list)"
 .PP
 .SS "int ho_objlist_statistics (\fBho_objlist\fP * object_list, int min_height, int max_height, int min_width, int max_width, int * counter, double * weight_avg, double * weight_com, double * weight_min, double * weight_max, int * height_avg, int * height_com, int * height_min, int * height_max, int * width_avg, int * width_com, int * width_min, int * width_max)"
 .PP
+.SS "\fBho_objmap\fP* ho_objmap_new (const int width, const int height)"
+.PP
+new \fBho_pixbuf\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIheight\fP hight of pixbuf in pixels 
+.br
+\fIwidth\fP width of pixbuf in pixels 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "int ho_objmap_free (\fBho_objmap\fP * m)"
+.PP
+free an \fBho_objmap\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_objmap\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
 .SS "int ho_objmap_clean (\fBho_objmap\fP * m)"
 .PP
 clean the \fBho_objmap\fP index list 
@@ -164,6 +196,40 @@ clean the \fBho_objmap\fP index list
 \fBReturns:\fP
 .RS 4
 FALSE 
+.RE
+.PP
+
+.SS "int ho_objmap_sort_by_reading_index (\fBho_objmap\fP * m, const unsigned char col, const unsigned char dir_ltr)"
+.PP
+sort the \fBho_objmap\fP by reading index 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_objmap\fP 
+.br
+\fIcol\fP numbere of columns 
+.br
+\fIdir_ltr\fP true-ltr false-rtl 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_objmap\fP* ho_objmap_new_from_bitmap (const \fBho_bitmap\fP * bit_in)"
+.PP
+new \fBho_objmap\fP from \fBho_bitmap\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbit_in\fP pointer to an \fBho_bitmap\fP image 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_objmap\fP 
 .RE
 .PP
 
@@ -196,72 +262,6 @@ FALSE
 .RE
 .PP
 
-.SS "int ho_objmap_free (\fBho_objmap\fP * m)"
-.PP
-free an \fBho_objmap\fP 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_objmap\fP 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
-.SS "\fBho_objmap\fP* ho_objmap_new (const int width, const int height)"
-.PP
-new \fBho_pixbuf\fP 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIheight\fP hight of pixbuf in pixels 
-.br
-\fIwidth\fP width of pixbuf in pixels 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "\fBho_objmap\fP* ho_objmap_new_from_bitmap (const \fBho_bitmap\fP * bit_in)"
-.PP
-new \fBho_objmap\fP from \fBho_bitmap\fP 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIbit_in\fP pointer to an \fBho_bitmap\fP image 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_objmap\fP 
-.RE
-.PP
-
-.SS "int ho_objmap_sort_by_reading_index (\fBho_objmap\fP * m, const unsigned char col, const unsigned char dir_ltr)"
-.PP
-sort the \fBho_objmap\fP by reading index 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_objmap\fP 
-.br
-\fIcol\fP numbere of columns 
-.br
-\fIdir_ltr\fP true-ltr false-rtl 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
 .SS "\fBho_bitmap\fP* ho_objmap_to_bitmap (const \fBho_objmap\fP * obj_in)"
 .PP
 new ho_bitamp from objmap
@@ -274,6 +274,29 @@ new ho_bitamp from objmap
 \fBReturns:\fP
 .RS 4
 newly allocated \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_objmap_to_bitmap_by_size (const \fBho_objmap\fP * m, int min_height, int max_height, int min_width, int max_width)"
+.PP
+copy objects from objmap to bitmap by size 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_objmap\fP 
+.br
+\fImin_height\fP only objects with this minimal height are copied 
+.br
+\fImax_height\fP only objects with this maximal height are copied 
+.br
+\fImin_width\fP only objects with this minimal width are copied 
+.br
+\fImax_width\fP only objects with this maximal width are copied 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
 .RE
 .PP
 
@@ -310,29 +333,6 @@ copy objects from objmap to bitmap by index of the object
 \fBReturns:\fP
 .RS 4
 a newly allocated bitmap size of object + frame 
-.RE
-.PP
-
-.SS "\fBho_bitmap\fP* ho_objmap_to_bitmap_by_size (const \fBho_objmap\fP * m, int min_height, int max_height, int min_width, int max_width)"
-.PP
-copy objects from objmap to bitmap by size 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP pointer to an \fBho_objmap\fP 
-.br
-\fImin_height\fP only objects with this minimal height are copied 
-.br
-\fImax_height\fP only objects with this maximal height are copied 
-.br
-\fImin_width\fP only objects with this minimal width are copied 
-.br
-\fImax_width\fP only objects with this maximal width are copied 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-a newly allocated bitmap 
 .RE
 .PP
 

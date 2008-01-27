@@ -1,4 +1,4 @@
-.TH "src/ho_gtk.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_gtk.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -46,27 +46,6 @@ src/ho_gtk.h \-
 .PP
 .SH "Function Documentation"
 .PP 
-.SS "int ho_gtk_font_save (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_nikud, const \fBho_bitmap\fP * m_mask, const char * filename)"
-.PP
-writes font to file
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm_text\fP \fBho_bitmap\fP of main font 
-.br
-\fIm_nikud\fP \fBho_bitmap\fP of nikud 
-.br
-\fIm_mask\fP \fBho_bitmap\fP of line 
-.br
-\fIfilename\fP save as file name 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
 .SS "\fBho_pixbuf\fP* ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix)"
 .PP
 new \fBho_pixbuf\fP from a gdk_pixbuf
@@ -94,6 +73,21 @@ new \fBho_pixbuf\fP from a gdk_pixbuf
 \fBReturns:\fP
 .RS 4
 newly allocated \fBho_pixbuf\fP, share data with gtk pixbuf 
+.RE
+.PP
+
+.SS "GdkPixbuf* ho_gtk_pixbuf_to_gdk (const \fBho_pixbuf\fP * hocr_pix)"
+.PP
+new gdk_pixbuf from a \fBho_pixbuf\fP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhocr_pix\fP the pixbuf to copy 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gdk_pixbuf 
 .RE
 .PP
 
@@ -129,18 +123,24 @@ FALSE
 .RE
 .PP
 
-.SS "GdkPixbuf* ho_gtk_pixbuf_to_gdk (const \fBho_pixbuf\fP * hocr_pix)"
+.SS "int ho_gtk_font_save (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_nikud, const \fBho_bitmap\fP * m_mask, const char * filename)"
 .PP
-new gdk_pixbuf from a \fBho_pixbuf\fP
+writes font to file
 .PP
 \fBParameters:\fP
 .RS 4
-\fIhocr_pix\fP the pixbuf to copy 
+\fIm_text\fP \fBho_bitmap\fP of main font 
+.br
+\fIm_nikud\fP \fBho_bitmap\fP of nikud 
+.br
+\fIm_mask\fP \fBho_bitmap\fP of line 
+.br
+\fIfilename\fP save as file name 
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-newly allocated gdk_pixbuf 
+FALSE 
 .RE
 .PP
 

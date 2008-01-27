@@ -1,4 +1,4 @@
-.TH "src/ho_segment.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_segment.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -49,19 +49,27 @@ src/ho_segment.h \-
 .PP
 .SH "Function Documentation"
 .PP 
-.SS "\fBho_bitmap\fP* ho_segment_fonts (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.SS "\fBho_bitmap\fP* ho_segment_paragraphs_fine (const \fBho_bitmap\fP * m, const unsigned char box, const double font_height_factor_min, const double font_height_factor_max, const double font_width_factor_min, const double font_width_factor_max, const double horizontal_link_factor, const double vertical_link_factor)"
 .PP
-return a bitmap of the interfont spaces 
+return a bitmap of the paragraphs, font and line dimentions _must_ be set 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP of text 
+\fIm\fP pointer to an \fBho_bitmap\fP 
 .br
-\fIm_line_map\fP pointer to an \fBho_bitmap\fP of line 
+\fIbox\fP squre (boxes) or free formed text blocks 
 .br
-\fIslicing_threshold\fP percent of line fill declared space between fonts 
+\fIfont_height_factor_min\fP filter objects height min 
 .br
-\fIslicing_width\fP percent of font width above try to choop font in two 
+\fIfont_height_factor_max\fP filter objects height max 
+.br
+\fIfont_width_factor_min\fP filter objects width min 
+.br
+\fIfont_width_factor_max\fP filter objects width max 
+.br
+\fIhorizontal_link_factor\fP link horizontaly factor 
+.br
+\fIvertical_link_factor\fP link verticaly factor 
 .RE
 .PP
 \fBReturns:\fP
@@ -70,13 +78,15 @@ a newly allocated bitmap
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_segment_lines (const \fBho_bitmap\fP * m)"
+.SS "\fBho_bitmap\fP* ho_segment_paragraphs (const \fBho_bitmap\fP * m, const unsigned char box)"
 .PP
-return a bitmap of the lines 
+return a bitmap of the paragraphs, font and line dimentions _must_ be set 
 .PP
 \fBParameters:\fP
 .RS 4
 \fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIbox\fP squre (boxes) or free formed text blocks 
 .RE
 .PP
 \fBReturns:\fP
@@ -118,15 +128,13 @@ a newly allocated bitmap
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_segment_paragraphs (const \fBho_bitmap\fP * m, const unsigned char box)"
+.SS "\fBho_bitmap\fP* ho_segment_lines (const \fBho_bitmap\fP * m)"
 .PP
-return a bitmap of the paragraphs, font and line dimentions _must_ be set 
+return a bitmap of the lines 
 .PP
 \fBParameters:\fP
 .RS 4
 \fIm\fP pointer to an \fBho_bitmap\fP 
-.br
-\fIbox\fP squre (boxes) or free formed text blocks 
 .RE
 .PP
 \fBReturns:\fP
@@ -135,27 +143,21 @@ a newly allocated bitmap
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_segment_paragraphs_fine (const \fBho_bitmap\fP * m, const unsigned char box, const double font_height_factor_min, const double font_height_factor_max, const double font_width_factor_min, const double font_width_factor_max, const double horizontal_link_factor, const double vertical_link_factor)"
+.SS "\fBho_bitmap\fP* ho_segment_words_fine (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const double horizontal_link_factor, const double top_frame_factor, const double bottom_frame_factor)"
 .PP
-return a bitmap of the paragraphs, font and line dimentions _must_ be set 
+return a bitmap of the words 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP 
+\fIm\fP pointer to an \fBho_bitmap\fP of line 
 .br
-\fIbox\fP squre (boxes) or free formed text blocks 
+\fIm_line_map\fP pointer to an \fBho_bitmap\fP of line box 
 .br
-\fIfont_height_factor_min\fP filter objects height min 
+\fIhorizontal_link_factor\fP horizontal link factor 
 .br
-\fIfont_height_factor_max\fP filter objects height max 
+\fItop_frame_factor\fP top frame factor 
 .br
-\fIfont_width_factor_min\fP filter objects width min 
-.br
-\fIfont_width_factor_max\fP filter objects width max 
-.br
-\fIhorizontal_link_factor\fP link horizontaly factor 
-.br
-\fIvertical_link_factor\fP link verticaly factor 
+\fIbottom_frame_factor\fP bottom frame factor 
 .RE
 .PP
 \fBReturns:\fP
@@ -183,21 +185,19 @@ a newly allocated bitmap
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_segment_words_fine (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const double horizontal_link_factor, const double top_frame_factor, const double bottom_frame_factor)"
+.SS "\fBho_bitmap\fP* ho_segment_fonts (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width)"
 .PP
-return a bitmap of the words 
+return a bitmap of the interfont spaces 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIm\fP pointer to an \fBho_bitmap\fP of line 
+\fIm\fP pointer to an \fBho_bitmap\fP of text 
 .br
-\fIm_line_map\fP pointer to an \fBho_bitmap\fP of line box 
+\fIm_line_map\fP pointer to an \fBho_bitmap\fP of line 
 .br
-\fIhorizontal_link_factor\fP horizontal link factor 
+\fIslicing_threshold\fP percent of line fill declared space between fonts 
 .br
-\fItop_frame_factor\fP top frame factor 
-.br
-\fIbottom_frame_factor\fP bottom frame factor 
+\fIslicing_width\fP percent of font width above try to choop font in two 
 .RE
 .PP
 \fBReturns:\fP
