@@ -1,0 +1,211 @@
+.TH "src/ho_segment.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/ho_segment.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ho_bitmap.h>\fP
+.br
+\fC#include <ho_objmap.h>\fP
+.br
+
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHO_SEGMENT_H\fP   1"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_segment_paragraphs_fine\fP (const \fBho_bitmap\fP *m, const unsigned char box, const double font_height_factor_min, const double font_height_factor_max, const double font_width_factor_min, const double font_width_factor_max, const double horizontal_link_factor, const double vertical_link_factor)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_segment_paragraphs\fP (const \fBho_bitmap\fP *m, const unsigned char box)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_segment_lines_fine\fP (const \fBho_bitmap\fP *m, const double font_height_factor_min, const double font_height_factor_max, const double font_width_factor_min, const double font_width_factor_max, const double link_arg, const double link_arg_2, const double extend_arg, const double extend_arg_2, const double erode_arg)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_segment_lines\fP (const \fBho_bitmap\fP *m)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_segment_words_fine\fP (const \fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map, const double horizontal_link_factor, const double top_frame_factor, const double bottom_frame_factor)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_segment_words\fP (const \fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map, const char font_spacing_code)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_segment_fonts\fP (const \fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.br
+.in -1c
+.SH "Define Documentation"
+.PP 
+.SS "#define HO_SEGMENT_H   1"
+.PP
+.SH "Function Documentation"
+.PP 
+.SS "\fBho_bitmap\fP* ho_segment_fonts (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.PP
+return a bitmap of the interfont spaces 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP of text 
+.br
+\fIm_line_map\fP pointer to an \fBho_bitmap\fP of line 
+.br
+\fIslicing_threshold\fP percent of line fill declared space between fonts 
+.br
+\fIslicing_width\fP percent of font width above try to choop font in two 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_segment_lines (const \fBho_bitmap\fP * m)"
+.PP
+return a bitmap of the lines 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_segment_lines_fine (const \fBho_bitmap\fP * m, const double font_height_factor_min, const double font_height_factor_max, const double font_width_factor_min, const double font_width_factor_max, const double link_arg, const double link_arg_2, const double extend_arg, const double extend_arg_2, const double erode_arg)"
+.PP
+return a bitmap of the lines 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIfont_height_factor_min\fP filter objects height min 
+.br
+\fIfont_height_factor_max\fP filter objects height max 
+.br
+\fIfont_width_factor_min\fP filter objects width min 
+.br
+\fIfont_width_factor_max\fP filter objects width max 
+.br
+\fIlink_arg\fP factor for linking letters in line 
+.br
+\fIlink_arg_2\fP factor for linking letters in line 
+.br
+\fIextend_arg\fP factor for extemding lines horizontaly 
+.br
+\fIextend_arg_2\fP factor for extemding lines horizontaly 
+.br
+\fIerode_arg\fP factor for eroding line sourface 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_segment_paragraphs (const \fBho_bitmap\fP * m, const unsigned char box)"
+.PP
+return a bitmap of the paragraphs, font and line dimentions _must_ be set 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIbox\fP squre (boxes) or free formed text blocks 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_segment_paragraphs_fine (const \fBho_bitmap\fP * m, const unsigned char box, const double font_height_factor_min, const double font_height_factor_max, const double font_width_factor_min, const double font_width_factor_max, const double horizontal_link_factor, const double vertical_link_factor)"
+.PP
+return a bitmap of the paragraphs, font and line dimentions _must_ be set 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIbox\fP squre (boxes) or free formed text blocks 
+.br
+\fIfont_height_factor_min\fP filter objects height min 
+.br
+\fIfont_height_factor_max\fP filter objects height max 
+.br
+\fIfont_width_factor_min\fP filter objects width min 
+.br
+\fIfont_width_factor_max\fP filter objects width max 
+.br
+\fIhorizontal_link_factor\fP link horizontaly factor 
+.br
+\fIvertical_link_factor\fP link verticaly factor 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_segment_words (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const char font_spacing_code)"
+.PP
+return a bitmap of the words 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP of text 
+.br
+\fIm_line_map\fP pointer to an \fBho_bitmap\fP of line 
+.br
+\fIfont_spacing_code\fP -1:tight 0:normal 1:spaced fonts 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_segment_words_fine (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const double horizontal_link_factor, const double top_frame_factor, const double bottom_frame_factor)"
+.PP
+return a bitmap of the words 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP of line 
+.br
+\fIm_line_map\fP pointer to an \fBho_bitmap\fP of line box 
+.br
+\fIhorizontal_link_factor\fP horizontal link factor 
+.br
+\fItop_frame_factor\fP top frame factor 
+.br
+\fIbottom_frame_factor\fP bottom frame factor 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.

@@ -1,0 +1,118 @@
+.TH "src/ho_recognize.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/ho_recognize.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ho_bitmap.h>\fP
+.br
+\fC#include <ho_objmap.h>\fP
+.br
+
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHO_RECOGNIZE_H\fP   1"
+.br
+.ti -1c
+.RI "#define \fBHO_ARRAY_IN_SIZE\fP   102"
+.br
+.ti -1c
+.RI "#define \fBHO_ARRAY_OUT_SIZE\fP   39"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBho_recognize_array_in_size\fP ()"
+.br
+.ti -1c
+.RI "int \fBho_recognize_array_out_size\fP ()"
+.br
+.ti -1c
+.RI "int \fBho_recognize_create_array_in\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *array_in)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_create_array_out\fP (const double *array_in, double *array_out)"
+.br
+.ti -1c
+.RI "char * \fBho_recognize_array_out_to_font\fP (const double *array_out)"
+.br
+.ti -1c
+.RI "char * \fBho_recognize_font\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_dimentions\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *height, double *width, double *top, double *bottom, double *top_left, double *top_mid, double *top_right, double *mid_left, double *mid_right, double *bottom_left, double *bottom_mid, double *bottom_right, double *has_two_hlines_up, double *has_two_hlines_down, double *has_three_hlines_up, double *has_three_hlines_down)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_bars\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_bar, double *has_bottom_bar, double *has_left_bar, double *has_right_bar, double *has_diagonal_bar, double *has_diagonal_left_bar)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_edges\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_left_edge, double *has_mid_left_edge, double *has_bottom_left_edge, double *has_top_right_edge, double *has_mid_right_edge, double *has_bottom_right_edge, double *has_left_top_edge, double *has_mid_top_edge, double *has_right_top_edge, double *has_left_bottom_edge, double *has_mid_bottom_edge, double *has_right_bottom_edge)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_edges_big\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_left_edge, double *has_mid_left_edge, double *has_bottom_left_edge, double *has_top_right_edge, double *has_mid_right_edge, double *has_bottom_right_edge, double *has_left_top_edge, double *has_mid_top_edge, double *has_right_top_edge, double *has_left_bottom_edge, double *has_mid_bottom_edge, double *has_right_bottom_edge)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_notches\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_left_notch, double *has_mid_left_notch, double *has_bottom_left_notch, double *has_top_right_notch, double *has_mid_right_notch, double *has_bottom_right_notch, double *has_left_top_notch, double *has_mid_top_notch, double *has_right_top_notch, double *has_left_bottom_notch, double *has_mid_bottom_notch, double *has_right_bottom_notch)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_parts\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_one_hole, double *has_two_holes, double *has_hey_part, double *has_dot_part, double *has_comma_part)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_ends\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_left_end, double *has_top_mid_end, double *has_top_right_end, double *has_mid_left_end, double *has_mid_mid_end, double *has_mid_right_end, double *has_bottom_left_end, double *has_bottom_mid_end, double *has_bottom_right_end, double *has_top_left_cross, double *has_top_mid_cross, double *has_top_right_cross, double *has_mid_left_cross, double *has_mid_mid_cross, double *has_mid_right_cross, double *has_bottom_left_cross, double *has_bottom_mid_cross, double *has_bottom_right_cross)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_holes_dimentions\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *height, double *width, double *top, double *bottom, double *top_left, double *top_right, double *bottom_left, double *bottom_right)"
+.br
+.ti -1c
+.RI "int \fBho_recognize_holes_edges\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_left_edge, double *has_mid_left_edge, double *has_bottom_left_edge, double *has_top_right_edge, double *has_mid_right_edge, double *has_bottom_right_edge, double *has_left_top_edge, double *has_mid_top_edge, double *has_right_top_edge, double *has_left_bottom_edge, double *has_mid_bottom_edge, double *has_right_bottom_edge)"
+.br
+.in -1c
+.SH "Define Documentation"
+.PP 
+.SS "#define HO_ARRAY_IN_SIZE   102"
+.PP
+.SS "#define HO_ARRAY_OUT_SIZE   39"
+.PP
+.SS "#define HO_RECOGNIZE_H   1"
+.PP
+.SH "Function Documentation"
+.PP 
+.SS "int ho_recognize_array_in_size ()"
+.PP
+.SS "int ho_recognize_array_out_size ()"
+.PP
+.SS "char* ho_recognize_array_out_to_font (const double * array_out)"
+.PP
+.SS "int ho_recognize_bars (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_bar, double * has_bottom_bar, double * has_left_bar, double * has_right_bar, double * has_diagonal_bar, double * has_diagonal_left_bar)"
+.PP
+.SS "int ho_recognize_create_array_in (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * array_in)"
+.PP
+.SS "int ho_recognize_create_array_out (const double * array_in, double * array_out)"
+.PP
+.SS "int ho_recognize_dimentions (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * height, double * width, double * top, double * bottom, double * top_left, double * top_mid, double * top_right, double * mid_left, double * mid_right, double * bottom_left, double * bottom_mid, double * bottom_right, double * has_two_hlines_up, double * has_two_hlines_down, double * has_three_hlines_up, double * has_three_hlines_down)"
+.PP
+.SS "int ho_recognize_edges (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_left_edge, double * has_mid_left_edge, double * has_bottom_left_edge, double * has_top_right_edge, double * has_mid_right_edge, double * has_bottom_right_edge, double * has_left_top_edge, double * has_mid_top_edge, double * has_right_top_edge, double * has_left_bottom_edge, double * has_mid_bottom_edge, double * has_right_bottom_edge)"
+.PP
+.SS "int ho_recognize_edges_big (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_left_edge, double * has_mid_left_edge, double * has_bottom_left_edge, double * has_top_right_edge, double * has_mid_right_edge, double * has_bottom_right_edge, double * has_left_top_edge, double * has_mid_top_edge, double * has_right_top_edge, double * has_left_bottom_edge, double * has_mid_bottom_edge, double * has_right_bottom_edge)"
+.PP
+.SS "int ho_recognize_ends (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_left_end, double * has_top_mid_end, double * has_top_right_end, double * has_mid_left_end, double * has_mid_mid_end, double * has_mid_right_end, double * has_bottom_left_end, double * has_bottom_mid_end, double * has_bottom_right_end, double * has_top_left_cross, double * has_top_mid_cross, double * has_top_right_cross, double * has_mid_left_cross, double * has_mid_mid_cross, double * has_mid_right_cross, double * has_bottom_left_cross, double * has_bottom_mid_cross, double * has_bottom_right_cross)"
+.PP
+.SS "char* ho_recognize_font (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+.SS "int ho_recognize_holes_dimentions (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * height, double * width, double * top, double * bottom, double * top_left, double * top_right, double * bottom_left, double * bottom_right)"
+.PP
+.SS "int ho_recognize_holes_edges (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_left_edge, double * has_mid_left_edge, double * has_bottom_left_edge, double * has_top_right_edge, double * has_mid_right_edge, double * has_bottom_right_edge, double * has_left_top_edge, double * has_mid_top_edge, double * has_right_top_edge, double * has_left_bottom_edge, double * has_mid_bottom_edge, double * has_right_bottom_edge)"
+.PP
+.SS "int ho_recognize_notches (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_left_notch, double * has_mid_left_notch, double * has_bottom_left_notch, double * has_top_right_notch, double * has_mid_right_notch, double * has_bottom_right_notch, double * has_left_top_notch, double * has_mid_top_notch, double * has_right_top_notch, double * has_left_bottom_notch, double * has_mid_bottom_notch, double * has_right_bottom_notch)"
+.PP
+.SS "int ho_recognize_parts (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_one_hole, double * has_two_holes, double * has_hey_part, double * has_dot_part, double * has_comma_part)"
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.

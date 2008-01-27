@@ -1,0 +1,205 @@
+.TH "src/ho_layout.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/ho_layout.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ho_bitmap.h>\fP
+.br
+\fC#include <ho_objmap.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBho_layout\fP"
+.br
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHO_LAYOUT_H\fP   1"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBho_layout\fP * \fBho_layout_new\fP (const \fBho_bitmap\fP *m_page_text, const char font_spacing_code, const unsigned char type, const unsigned char dir)"
+.br
+.ti -1c
+.RI "int \fBho_layout_free\fP (\fBho_layout\fP *l_page)"
+.br
+.ti -1c
+.RI "int \fBho_layout_create_block_mask\fP (\fBho_layout\fP *l_page)"
+.br
+.ti -1c
+.RI "int \fBho_layout_create_line_mask\fP (\fBho_layout\fP *l_page, const int block_index)"
+.br
+.ti -1c
+.RI "int \fBho_layout_create_word_mask\fP (\fBho_layout\fP *l_page, const int block_index, const int line_index)"
+.br
+.ti -1c
+.RI "int \fBho_layout_create_font_mask\fP (\fBho_layout\fP *l_page, const int block_index, const int line_index, const int word_index, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_block_text\fP (\fBho_layout\fP *l_page, int block_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_line_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_line_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_word_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_word_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_font_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_layout_get_font_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
+.br
+.in -1c
+.SH "Define Documentation"
+.PP 
+.SS "#define HO_LAYOUT_H   1"
+.PP
+.SH "Function Documentation"
+.PP 
+.SS "int ho_layout_create_block_mask (\fBho_layout\fP * l_page)"
+.PP
+create a text blocks mask and count blocks in n_blocks 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP a pointer to a \fBho_layout\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_layout_create_font_mask (\fBho_layout\fP * l_page, const int block_index, const int line_index, const int word_index, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.PP
+create a text font mask and count fonts in n_fontss[block_index][line_index][word_index] 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP a pointer to a \fBho_layout\fP 
+.br
+\fIblock_index\fP the block_index to work on 
+.br
+\fIline_index\fP the line_index to work on 
+.br
+\fIword_index\fP the word_index to work on 
+.br
+\fIslicing_threshold\fP the slicing threshold 
+.br
+\fIslicing_width\fP the slicing width 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_layout_create_line_mask (\fBho_layout\fP * l_page, const int block_index)"
+.PP
+create a text lines mask and count lines in n_lines[block_index] 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP a pointer to a \fBho_layout\fP 
+.br
+\fIblock_index\fP the block_index to work on 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_layout_create_word_mask (\fBho_layout\fP * l_page, const int block_index, const int line_index)"
+.PP
+create a text word mask and count words in n_words[block_index][line_index] 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP a pointer to a \fBho_layout\fP 
+.br
+\fIblock_index\fP the block_index to work on 
+.br
+\fIline_index\fP the line_index to work on 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_layout_free (\fBho_layout\fP * l_page)"
+.PP
+free a \fBho_layout\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP a pointer to a \fBho_layout\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_layout_get_block_text (\fBho_layout\fP * l_page, int block_index)"
+.PP
+.SS "\fBho_bitmap\fP* ho_layout_get_font_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
+.PP
+.SS "\fBho_bitmap\fP* ho_layout_get_font_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
+.PP
+.SS "\fBho_bitmap\fP* ho_layout_get_line_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index)"
+.PP
+.SS "\fBho_bitmap\fP* ho_layout_get_line_text (\fBho_layout\fP * l_page, int block_index, int line_index)"
+.PP
+.SS "\fBho_bitmap\fP* ho_layout_get_word_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
+.PP
+.SS "\fBho_bitmap\fP* ho_layout_get_word_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
+.PP
+.SS "\fBho_layout\fP* ho_layout_new (const \fBho_bitmap\fP * m_page_text, const char font_spacing_code, const unsigned char type, const unsigned char dir)"
+.PP
+new \fBho_layout\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_page_text\fP a pointer to a text bitmap 
+.br
+\fIfont_spacing_code\fP -3 tight .. 0 .. 3 spaced 
+.br
+\fItype\fP free text blocks or boxed 
+.br
+\fIdir\fP true-ltr false-rtl 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated layout 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.

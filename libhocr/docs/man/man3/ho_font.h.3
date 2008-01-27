@@ -1,0 +1,585 @@
+.TH "src/ho_font.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/ho_font.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ho_bitmap.h>\fP
+.br
+\fC#include <ho_objmap.h>\fP
+.br
+
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHO_FONT_H\fP   1"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_main_sign\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_second_object\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_holes\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_hbars\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_vbars\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_diagonal\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_diagonal_left\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_thin_naive\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_thin\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_cross\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_ends\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_top\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_top_big\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_bottom\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_bottom_big\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_left\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_left_big\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_right\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_edges_right_big\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_notch_top\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_notch_bottom\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_notch_left\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_notch_right\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_filter\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, int filter_index)"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBho_font_holes_filter\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, int filter_index)"
+.br
+.ti -1c
+.RI "int \fBho_font_pnm_save\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_nikud, const \fBho_bitmap\fP *m_mask, const char *filename)"
+.br
+.ti -1c
+.RI "int \fBho_font_pnm_load\fP (\fBho_bitmap\fP **m_text, \fBho_bitmap\fP **m_nikud, \fBho_bitmap\fP **m_mask, const char *filename)"
+.br
+.in -1c
+.SH "Define Documentation"
+.PP 
+.SS "#define HO_FONT_H   1"
+.PP
+.SH "Function Documentation"
+.PP 
+.SS "\fBho_bitmap\fP* ho_font_cross (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of cross points in input image 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_diagonal (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of -45 deg. diagonals found in the bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_diagonal_left (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of +45 deg. diagonals found in the bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_bottom (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of bottom side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_bottom_big (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of big bottom side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_left (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of left side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_left_big (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of big left side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_right (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of right side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_right_big (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of big right side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_top (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of top side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_edges_top_big (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of big top side picks in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_ends (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of end points in input image 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_filter (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, int filter_index)"
+.PP
+return a bitmap of a filter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.br
+\fIfilter_index\fP the index of the filter to use 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_hbars (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of horizontal bars found in the bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_holes (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of holes in the bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_holes_filter (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, int filter_index)"
+.PP
+return a bitmap of a filter used on font holes 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.br
+\fIfilter_index\fP the index of the filter to use 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_main_sign (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of the main signs in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_notch_bottom (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of bottom side notches in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_notch_left (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of left side notches in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_notch_right (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of right side notches in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_notch_top (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of top side notches in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "int ho_font_pnm_load (\fBho_bitmap\fP ** m_text, \fBho_bitmap\fP ** m_nikud, \fBho_bitmap\fP ** m_mask, const char * filename)"
+.PP
+read \fBho_pixbuf\fP from file
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to return \fBho_bitmap\fP of main font 
+.br
+\fIm_nikud\fP pointer to return \fBho_bitmap\fP of nikud 
+.br
+\fIm_mask\fP pointer to return \fBho_bitmap\fP of line 
+.br
+\fIfilename\fP file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "int ho_font_pnm_save (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_nikud, const \fBho_bitmap\fP * m_mask, const char * filename)"
+.PP
+writes font to file
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP \fBho_bitmap\fP of main font 
+.br
+\fIm_nikud\fP \fBho_bitmap\fP of nikud 
+.br
+\fIm_mask\fP \fBho_bitmap\fP of line 
+.br
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_second_object (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of the second object sign in the font 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_thin (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a thinned bitmap and fix artefacts 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_thin_naive (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a thinned bitmap without fixing artefacts 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* ho_font_vbars (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask)"
+.PP
+return a bitmap of vertical bars found in the bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_text\fP pointer to the text bitmap 
+.br
+\fIm_mask\fP pointer to the line map 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated bitmap 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.

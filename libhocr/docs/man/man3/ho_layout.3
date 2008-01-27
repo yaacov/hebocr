@@ -1,0 +1,106 @@
+.TH "ho_layout" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ho_layout \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ho_layout.h>\fP
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBfont_spacing_code\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBtype\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBdir\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBm_page_text\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBm_page_blocks_mask\fP"
+.br
+.ti -1c
+.RI "int \fBn_blocks\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP ** \fBm_blocks_text\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP ** \fBm_blocks_lines_mask\fP"
+.br
+.ti -1c
+.RI "int * \fBn_lines\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP *** \fBm_lines_text\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP *** \fBm_lines_line_mask\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP *** \fBm_lines_words_mask\fP"
+.br
+.ti -1c
+.RI "int ** \fBn_words\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP **** \fBm_words_text\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP **** \fBm_words_line_mask\fP"
+.br
+.ti -1c
+.RI "\fBho_bitmap\fP **** \fBm_words_font_mask\fP"
+.br
+.ti -1c
+.RI "int *** \fBn_fonts\fP"
+.br
+.in -1c
+.SH "Field Documentation"
+.PP 
+.SS "char \fBho_layout::font_spacing_code\fP"
+.PP
+.SS "unsigned char \fBho_layout::type\fP"
+.PP
+.SS "unsigned char \fBho_layout::dir\fP"
+.PP
+.SS "\fBho_bitmap\fP* \fBho_layout::m_page_text\fP"
+.PP
+.SS "\fBho_bitmap\fP* \fBho_layout::m_page_blocks_mask\fP"
+.PP
+.SS "int \fBho_layout::n_blocks\fP"
+.PP
+.SS "\fBho_bitmap\fP** \fBho_layout::m_blocks_text\fP"
+.PP
+.SS "\fBho_bitmap\fP** \fBho_layout::m_blocks_lines_mask\fP"
+.PP
+.SS "int* \fBho_layout::n_lines\fP"
+.PP
+.SS "\fBho_bitmap\fP*** \fBho_layout::m_lines_text\fP"
+.PP
+.SS "\fBho_bitmap\fP*** \fBho_layout::m_lines_line_mask\fP"
+.PP
+.SS "\fBho_bitmap\fP*** \fBho_layout::m_lines_words_mask\fP"
+.PP
+.SS "int** \fBho_layout::n_words\fP"
+.PP
+.SS "\fBho_bitmap\fP**** \fBho_layout::m_words_text\fP"
+.PP
+.SS "\fBho_bitmap\fP**** \fBho_layout::m_words_line_mask\fP"
+.PP
+.SS "\fBho_bitmap\fP**** \fBho_layout::m_words_font_mask\fP"
+.PP
+.SS "int*** \fBho_layout::n_fonts\fP"
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.

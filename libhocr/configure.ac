@@ -88,6 +88,10 @@ examples/hocr/Makefile
 examples/hocr-gtk/Makefile
 bindings/Makefile
 bindings/python/Makefile
+docs/Makefile
+docs/man/Makefile
+docs/man/man1/Makefile
+docs/man/man3/Makefile
 ])
 
 AC_OUTPUT

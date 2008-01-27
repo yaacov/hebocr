@@ -1,0 +1,173 @@
+.TH "src/ho_dimentions.h" 3 "25 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/ho_dimentions.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ho_bitmap.h>\fP
+.br
+\fC#include <ho_objmap.h>\fP
+.br
+
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHO_DIMENTIONS_H\fP   1"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBho_dimentions_font_width_height_nikud\fP (\fBho_bitmap\fP *m, const int min_height, const int max_height, const int min_width, const int max_width)"
+.br
+.ti -1c
+.RI "int \fBho_dimentions_line_spacing\fP (\fBho_bitmap\fP *m)"
+.br
+.ti -1c
+.RI "int \fBho_dimentions_font_spacing\fP (\fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map)"
+.br
+.ti -1c
+.RI "int \fBho_dimentions_line_fill\fP (\fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map)"
+.br
+.ti -1c
+.RI "int \fBho_dimentions_get_columns\fP (const \fBho_bitmap\fP *m)"
+.br
+.ti -1c
+.RI "int \fBho_dimentions_get_columns_with_x_start\fP (const \fBho_bitmap\fP *m, int **column_start_list)"
+.br
+.ti -1c
+.RI "double \fBho_dimentions_get_lines_angle\fP (const \fBho_bitmap\fP *m)"
+.br
+.in -1c
+.SH "Define Documentation"
+.PP 
+.SS "#define HO_DIMENTIONS_H   1"
+.PP
+.SH "Function Documentation"
+.PP 
+.SS "int ho_dimentions_font_spacing (\fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map)"
+.PP
+guess line dimentions, sets font_spacing [for a line] 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP of text 
+.br
+\fIm_line_map\fP pointer to an \fBho_bitmap\fP of ine 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_dimentions_font_width_height_nikud (\fBho_bitmap\fP * m, const int min_height, const int max_height, const int min_width, const int max_width)"
+.PP
+guess font dimentions, sets: font_height, font_width and nikud [for a page or block] 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fImin_height\fP only objects with this minimal height are used 
+.br
+\fImax_height\fP only objects with this maximal height are used 
+.br
+\fImin_width\fP only objects with this minimal width are used 
+.br
+\fImax_width\fP only objects with this maximal width are used 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_dimentions_get_columns (const \fBho_bitmap\fP * m)"
+.PP
+guess number of columns in bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+guessed number of columns 
+.RE
+.PP
+
+.SS "int ho_dimentions_get_columns_with_x_start (const \fBho_bitmap\fP * m, int ** column_start_list)"
+.PP
+guess number of columns in bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.br
+\fIcolumn_start_list\fP a newly allocated int list of start of columns x value 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+guessed number of columns 
+.RE
+.PP
+
+.SS "double ho_dimentions_get_lines_angle (const \fBho_bitmap\fP * m)"
+.PP
+guess angle of page lines 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+guessed angle in degrees 
+.RE
+.PP
+
+.SS "int ho_dimentions_line_fill (\fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map)"
+.PP
+get line fill parameters [for a line] 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP of text 
+.br
+\fIm_line_map\fP pointer to an \fBho_bitmap\fP of ine 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_dimentions_line_spacing (\fBho_bitmap\fP * m)"
+.PP
+guess line dimentions, sets line_spacing [for a block] 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_bitmap\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.
