@@ -43,14 +43,11 @@ gboolean dir_ltr = FALSE;
 gboolean text_out_html = FALSE;
 gboolean text_out_font_numbers = FALSE;
 
-gchar *html_page_title = NULL;
-gchar *html_page_author = NULL;
-gchar *html_page_year = NULL;
-
 gint threshold = 0;
 gint adaptive_threshold = 0;
 gint adaptive_threshold_type = 0;
 gint scale_by = 0;
+gboolean do_not_auto_scale = FALSE;
 gdouble rotate_angle = 0.0;
 gboolean do_not_auto_rotate = FALSE;
 
@@ -173,14 +170,20 @@ static GOptionEntry file_entries[] = {
     "use PATH for output images", "PATH"},
   {"data-out", 'u', 0, G_OPTION_ARG_FILENAME, &data_out_filename,
     "use FILE as output data file name", "FILE"},
-  {"html-out", 'h', 0, G_OPTION_ARG_NONE, &text_out_html,
-    "output text in html format", NULL},
-  {"page-title", '1', 0, G_OPTION_ARG_FILENAME, &html_page_title,
-    "html page title", "NAME"},
-  {"page-author", '2', 0, G_OPTION_ARG_FILENAME, &html_page_author,
-    "html page author", "NAME"},
-  {"page-year", '3', 0, G_OPTION_ARG_FILENAME, &html_page_year,
-    "html date of publication", "NAME"},
+  {"save-copy", 'C', 0, G_OPTION_ARG_NONE, &save_copy,
+    "save a compy of original image", NULL},
+  {"save-bw", 'b', 0, G_OPTION_ARG_NONE, &save_bw,
+    "save proccesd bw image", NULL},
+  {"save-bw-exit", 'B', 0, G_OPTION_ARG_NONE, &only_image_proccesing,
+    "save proccesd bw image and exit", NULL},
+  {"save-layout", 'l', 0, G_OPTION_ARG_NONE, &save_layout,
+    "save layout image", NULL},
+  {"save-layout-exit", 'L', 0, G_OPTION_ARG_NONE, &only_layout_analysis,
+    "save layout image and exit", NULL},
+  {"save-fonts", 'f', 0, G_OPTION_ARG_NONE, &save_fonts,
+    "save fonts", NULL},
+  {"save-fonts-exit", 'F', 0, G_OPTION_ARG_NONE, &only_save_fonts,
+    "save fonts images and exit", NULL},
   {NULL}
 };
 
@@ -198,6 +201,9 @@ static GOptionEntry image_entries[] = {
   {"scale", 's', 0, G_OPTION_ARG_INT, &scale_by,
       "scale input image by SCALE 1..9, 0 auto",
     "SCALE"},
+  {"no-auto-scale", 'S', 0, G_OPTION_ARG_NONE, &do_not_auto_scale,
+      "do not auto acale image",
+    NULL},
   {"rotate", 'q', 0.0, G_OPTION_ARG_DOUBLE, &rotate_angle,
       "rotate image clockwise in deg.",
     "DEG"},
@@ -226,20 +232,6 @@ static GOptionEntry segmentation_entries[] = {
 static GOptionEntry debug_entries[] = {
   {"draw-grid", 'g', 0, G_OPTION_ARG_NONE, &show_grid,
     "draw grid on output images", NULL},
-  {"save-copy", 'C', 0, G_OPTION_ARG_NONE, &save_copy,
-    "save a compy of original image", NULL},
-  {"save-bw", 'b', 0, G_OPTION_ARG_NONE, &save_bw,
-    "save proccesd bw image", NULL},
-  {"save-bw-exit", 'B', 0, G_OPTION_ARG_NONE, &only_image_proccesing,
-    "save proccesd bw image and exit", NULL},
-  {"save-layout", 'l', 0, G_OPTION_ARG_NONE, &save_layout,
-    "save layout image", NULL},
-  {"save-layout-exit", 'L', 0, G_OPTION_ARG_NONE, &only_layout_analysis,
-    "save layout image and exit", NULL},
-  {"save-fonts", 'f', 0, G_OPTION_ARG_NONE, &save_fonts,
-    "save fonts", NULL},
-  {"save-fonts-exit", 'F', 0, G_OPTION_ARG_NONE, &only_save_fonts,
-    "save fonts images and exit", NULL},
   {"debug", 'd', 0, G_OPTION_ARG_NONE, &verbose,
     "print debuging information while running", NULL},
   {"debug-extra", 'D', 0, G_OPTION_ARG_NONE, &debug,
@@ -258,8 +250,8 @@ static GOptionEntry entries[] = {
     "use FILE as input image file name", "FILE"},
   {"text-out", 'o', 0, G_OPTION_ARG_FILENAME, &text_out_filename,
     "use FILE as output text file name", "FILE"},
-  /* this option is not useful fot the moment {"ltr", 'z', 0,
-   * G_OPTION_ARG_NONE, &dir_ltr, "left to right text", NULL}, */
+  {"html-out", 'h', 0, G_OPTION_ARG_NONE, &text_out_html,
+    "output text in html format", NULL},
   {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
     "do not use gtk for file input and output", NULL},
   {"version", 'v', 0, G_OPTION_ARG_NONE, &version,
@@ -430,6 +422,23 @@ hocr_load_input_bitmap ()
     }
   }
 
+  /* if user do not nead fidback just do image proccesing and exit */
+  if (!debug && !verbose)
+  {
+    m_bw =
+      hocr_image_processing (pix,
+      scale_by,
+      do_not_auto_scale,
+      rotate_angle,
+      do_not_auto_rotate,
+      adaptive_threshold_type, threshold, adaptive_threshold);
+
+    /* free input pixbuf */
+    ho_pixbuf_free (pix);
+
+    return m_bw;
+  }
+
   m_bw =
     ho_pixbuf_to_bitmap_wrapper (pix, scale_by, adaptive_threshold_type,
     threshold, adaptive_threshold);
@@ -585,14 +594,6 @@ hocr_exit ()
     g_free (text_out_filename);
   if (data_out_filename)
     g_free (data_out_filename);
-
-  /* free html page names */
-  if (html_page_title)
-    g_free (html_page_title);
-  if (html_page_author)
-    g_free (html_page_author);
-  if (html_page_year)
-    g_free (html_page_year);
 
   /* exit program */
   exit (0);
@@ -862,19 +863,7 @@ main (int argc, char *argv[])
       /* start of page */
       if (text_out_html && s_text_out)
       {
-        if (html_page_title && html_page_author && html_page_year)
-          text_out =
-            g_strdup_printf (html_page_header, html_page_title,
-            html_page_author, html_page_year);
-        else if (html_page_title && html_page_author)
-          text_out =
-            g_strdup_printf (html_page_header, html_page_title,
-            html_page_author, "");
-        else if (html_page_title)
-          text_out =
-            g_strdup_printf (html_page_header, html_page_title, "", "");
-        else
-          text_out = g_strdup_printf (html_page_header, "", "", "");
+        text_out = g_strdup_printf (html_page_header, "", "", "");
 
         ho_string_cat (s_text_out, text_out);
         g_free (text_out);

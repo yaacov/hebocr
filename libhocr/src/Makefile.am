@@ -7,6 +7,7 @@ INCLUDES = \
 pkglib_LTLIBRARIES = libhocr.la libhocrgtk.la
 
 libhocr_la_SOURCES = \
+        hocr.c \
         ho_pixbuf.c \
         ho_bitmap.c \
         ho_objmap.c \
@@ -24,7 +25,8 @@ libhocr_la_LIBADD = \
 libhocr_la_LDFLAGS = -version-info 0:0:0
 
 library_includedir = $(includedir)/libhocr
-library_include_HEADERS = hocr.h \
+library_include_HEADERS = \
+         hocr.h \
          ho_pixbuf.h \
          ho_bitmap.h \
          ho_objmap.h \

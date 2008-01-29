@@ -64,7 +64,35 @@ BEGIN_C_DECLS
 #include <ho_font.h>
 #include <ho_recognize.h>
 
+/* specific font recognition */
+#include <ho_recognize_font_david.h>
+
 /* string utilities */
 #include <ho_string.h>
-  END_C_DECLS
+
+/* wrapper function */
+
+/**
+ convert a gray pixbuf to bitmap 
+
+ @param pix_in the input ho_pixbuf
+ @param scale the scale to use
+ @param no_auto_scale do not try to autoscale
+ @param rotate the rotation angle to use
+ @param no_auto_rotate do not try to autorotate
+ @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
+ @param threshold the threshold to use 0..100 (0-auto)
+ @param a_threshold the threshold to use for adaptive thresholding 0..100 (0-auto)
+ @return newly allocated gray ho_bitmap
+ */
+  ho_bitmap *
+hocr_image_processing (const ho_pixbuf * pix_in,
+  const unsigned char scale,
+  const unsigned char no_auto_scale,
+  double rotate,
+  const unsigned char no_auto_rotate,
+  const unsigned char adaptive,
+  const unsigned char threshold, const unsigned char a_threshold);
+
+END_C_DECLS
 #endif /* HOCR_H */

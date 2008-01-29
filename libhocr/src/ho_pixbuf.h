@@ -256,7 +256,7 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
  convert a gray pixbuf to bitmap wrapper function
  @param pix_in the input ho_pixbuf
  @param scale the scale to use
- @param adaptive what type of thresholding to use
+ @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
  @param threshold the threshold to use 0..100
  @param a_threshold the threshold to use for adaptive thresholding 0..100
  @return newly allocated gray ho_bitmap
