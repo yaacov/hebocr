@@ -53,11 +53,6 @@ gint adaptive_threshold_type = 0;
 gint scale_by = 0;
 gdouble rotate_angle = 0.0;
 gboolean do_not_auto_rotate = FALSE;
-gboolean do_not_clean_image = FALSE;
-gboolean remove_dots = FALSE;
-gboolean remove_images = FALSE;
-gboolean fix_broken_fonts = FALSE;
-gboolean fix_ligated_fonts = FALSE;
 
 gint paragraph_setup = 0;
 gint slicing_threshold = 0;
@@ -208,21 +203,6 @@ static GOptionEntry image_entries[] = {
     "DEG"},
   {"no-auto-rotate", 'Q', 0, G_OPTION_ARG_NONE, &do_not_auto_rotate,
       "do not auto rotate image",
-    NULL},
-  {"do-not-clean", 'n', 0, G_OPTION_ARG_NONE, &do_not_clean_image,
-      "do not try to remove artefacts from image",
-    NULL},
-  {"remove-halfton", 'r', 0, G_OPTION_ARG_NONE, &remove_dots,
-      "remove halfton dots from input image",
-    NULL},
-  {"remove-images", 'R', 0, G_OPTION_ARG_NONE, &remove_images,
-      "remove images from input image",
-    NULL},
-  {"fix-broken-fonts", 'e', 0, G_OPTION_ARG_NONE, &fix_broken_fonts,
-      "try to link broken fonts",
-    NULL},
-  {"fix-ligated-fonts", 'E', 0, G_OPTION_ARG_NONE, &fix_ligated_fonts,
-      "try to break ligated fonts",
     NULL},
   {NULL}
 };
@@ -510,7 +490,7 @@ hocr_load_input_bitmap ()
   }
 
   /* remove very small and very large things */
-  if (!do_not_clean_image)
+
   {
     m_bw_temp =
       ho_bitmap_filter_by_size (m_bw, 3, 3 * m_bw->height / 4, 3,
@@ -523,105 +503,10 @@ hocr_load_input_bitmap ()
     }
   }
 
-  /* remove halfton dots this also imply that input image is b/w */
-  if (remove_dots)
-  {
-    if (debug)
-      g_print (" remove halfton dots.\n");
-
-    m_bw_temp = ho_bitmap_filter_remove_dots (m_bw, 4, 4);
-    if (m_bw_temp)
-    {
-      ho_bitmap_free (m_bw);
-      m_bw = m_bw_temp;
-      m_bw_temp = NULL;
-    }
-  }
-
-  /* fix_broken_fonts */
-  if (fix_broken_fonts)
-  {
-    if (debug)
-      g_print (" try to fix broken fonts.\n");
-
-    m_bw_temp = ho_bitmap_dilation (m_bw);
-    if (m_bw_temp)
-    {
-      ho_bitmap_free (m_bw);
-      m_bw = m_bw_temp;
-      m_bw_temp = NULL;
-    }
-  }
-
-  /* fix_ligated_fonts */
-  if (fix_ligated_fonts)
-  {
-    if (debug)
-      g_print (" try to fix ligated fonts.\n");
-
-    m_bw_temp = ho_bitmap_opening (m_bw);
-    if (m_bw_temp)
-    {
-      ho_bitmap_free (m_bw);
-      m_bw = m_bw_temp;
-      m_bw_temp = NULL;
-    }
-  }
-
-  /* remove too big and too small objects */
-  if (remove_images)
-  {
-    if (debug)
-      g_print (" remove images.\n");
-
-    /* adaptive threshold braks big objects use adaptive_threshold_type = 1
-     * (none) */
-    m_bw_temp = ho_pixbuf_to_bitmap_wrapper (pix, scale_by,
-      1, threshold, adaptive_threshold);
-    if (!m_bw_temp)
-    {
-      hocr_printerr ("can't convert to black and white for image removal \n");
-      exit (1);
-    }
-
-    /* get fonts size for autoscale */
-    if (ho_dimentions_font_width_height_nikud (m_bw, 6, 200, 6, 200))
-    {
-      hocr_printerr ("can't create object map\n");
-      exit (1);
-    }
-
-    /* remove big objects */
-    m_bw_temp2 = ho_bitmap_filter_by_size (m_bw_temp,
-      m_bw->font_height * 4,
-      m_bw_temp->height, m_bw->font_width * 9, m_bw_temp->width);
-
-    if (!m_bw_temp2)
-    {
-      hocr_printerr ("can't convert to black and white for image removal \n");
-      exit (1);
-    }
-
-    ho_bitmap_andnot (m_bw, m_bw_temp2);
-    ho_bitmap_free (m_bw_temp2);
-
-    /* remove small objects */
-    m_bw_temp2 = ho_bitmap_filter_by_size (m_bw_temp,
-      1, m_bw->font_height / 5, 1, m_bw->font_width / 8);
-    ho_bitmap_free (m_bw_temp);
-
-    if (!m_bw_temp2)
-    {
-      hocr_printerr ("can't convert to black and white for image removal \n");
-      exit (1);
-    }
-
-    ho_bitmap_andnot (m_bw, m_bw_temp2);
-    ho_bitmap_free (m_bw_temp2);
-  }
-
   /* free input pixbuf */
   ho_pixbuf_free (pix);
+
+/* from here on we only use the black and white image */
 
   /* rotate image */
   if (rotate_angle)
@@ -638,8 +523,8 @@ hocr_load_input_bitmap ()
     m_bw = m_bw_temp;
   }
 
-  /* auto rotate image */
-  if (!do_not_auto_rotate)
+  /* if no rotate angle given by user auto rotate image */
+  else if (!do_not_auto_rotate)
   {
     double angle;
 
