@@ -105,6 +105,7 @@ echo prefix: $prefix
 echo compiler: ${CC}
 echo
 echo build hocr: yes
+echo build hocr-gtk: yes
 echo
 echo have swig:	${have_swig}
 echo build python binding: ${build_python}
