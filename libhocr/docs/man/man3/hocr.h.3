@@ -1,4 +1,4 @@
-.TH "src/hocr.h" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/hocr.h" 3 "30 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,6 +22,8 @@ src/hocr.h \-
 .br
 \fC#include <ho_recognize.h>\fP
 .br
+\fC#include <ho_recognize_font_david.h>\fP
+.br
 \fC#include <ho_string.h>\fP
 .br
 
@@ -38,6 +40,19 @@ src/hocr.h \-
 .RI "#define \fBEND_C_DECLS\fP"
 .br
 .in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "BEGIN_C_DECLS \fBho_bitmap\fP * \fBhocr_image_processing\fP (const \fBho_pixbuf\fP *pix_in, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
+.br
+.ti -1c
+.RI "\fBho_layout\fP * \fBhocr_layout_analysis\fP (const \fBho_bitmap\fP *m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr)"
+.br
+.ti -1c
+.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html)"
+.br
+.in -1c
 .SH "Define Documentation"
 .PP 
 .SS "#define HOCR_H   1"
@@ -46,6 +61,81 @@ src/hocr.h \-
 .PP
 .SS "#define END_C_DECLS"
 .PP
+.SH "Function Documentation"
+.PP 
+.SS "BEGIN_C_DECLS \fBho_bitmap\fP* hocr_image_processing (const \fBho_pixbuf\fP * pix_in, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
+.PP
+convert a gray pixbuf to bitmap
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix_in\fP the input \fBho_pixbuf\fP 
+.br
+\fIscale\fP the scale to use 
+.br
+\fIno_auto_scale\fP do not try to autoscale 
+.br
+\fIrotate\fP the rotation angle to use 
+.br
+\fIno_auto_rotate\fP do not try to autorotate 
+.br
+\fIadaptive\fP what type of thresholding to use. 0-normal,1-no,2-fine. 
+.br
+\fIthreshold\fP the threshold to use 0..100 (0-auto) 
+.br
+\fIa_threshold\fP the threshold to use for adaptive thresholding 0..100 (0-auto) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_bitmap\fP 
+.RE
+.PP
+
+.SS "\fBho_layout\fP* hocr_layout_analysis (const \fBho_bitmap\fP * m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr)"
+.PP
+new \fBho_layout\fP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_in\fP a pointer to a text bitmap 
+.br
+\fIfont_spacing_code\fP -3 tight .. 0 .. 3 spaced 
+.br
+\fIparagraph_setup\fP free text blocks or boxed in columns 
+.br
+\fIslicing_threshold\fP percent of line fill to cut fonts 
+.br
+\fIslicing_width\fP what is a wide font 
+.br
+\fIdir\fP true-ltr false-rtl 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a newly allocated and filled layout 
+.RE
+.PP
+
+.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html)"
+.PP
+fill a text buffer with fonts recognized from a page layout
+.PP
+\fBParameters:\fP
+.RS 4
+\fIl_page\fP the page layout to recognize 
+.br
+\fIs_text_out\fP the text buffer to fill 
+.br
+\fIhtml\fP output format is html 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for libhocr from the source code.

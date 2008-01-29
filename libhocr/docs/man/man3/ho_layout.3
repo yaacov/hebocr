@@ -1,4 +1,4 @@
-.TH "ho_layout" 3 "27 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "ho_layout" 3 "30 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -19,6 +19,9 @@ ho_layout \-
 .br
 .ti -1c
 .RI "unsigned char \fBdir\fP"
+.br
+.ti -1c
+.RI "int \fBnumber_of_fonts\fP"
 .br
 .ti -1c
 .RI "\fBho_bitmap\fP * \fBm_page_text\fP"
@@ -70,6 +73,8 @@ ho_layout \-
 .SS "unsigned char \fBho_layout::type\fP"
 .PP
 .SS "unsigned char \fBho_layout::dir\fP"
+.PP
+.SS "int \fBho_layout::number_of_fonts\fP"
 .PP
 .SS "\fBho_bitmap\fP* \fBho_layout::m_page_text\fP"
 .PP

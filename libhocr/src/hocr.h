@@ -110,5 +110,17 @@ ho_layout *hocr_layout_analysis (const ho_bitmap * m_in,
   const int slicing_threshold, const int slicing_width,
   const unsigned char dir_ltr);
 
+/**
+ fill a text buffer with fonts recognized from a page layout
+
+ @param l_page the page layout to recognize
+ @param s_text_out the text buffer to fill
+ @param html output format is html
+ @return FALSE
+ */
+int
+hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
+  const unsigned char html);
+
 END_C_DECLS
 #endif /* HOCR_H */

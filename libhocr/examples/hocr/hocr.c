@@ -80,9 +80,6 @@ ho_bitmap *m_page_text = NULL;
 /* text layout */
 ho_layout *l_page = NULL;
 
-/* text for output */
-gchar *text_out = NULL;
-
 static gchar *copyright_message = "hocr - Hebrew OCR utility\n\
 %s\n\
 http://hocr.berlios.de\n\
@@ -259,6 +256,20 @@ static GOptionEntry entries[] = {
   {NULL}
 };
 
+/* headers */
+int hocr_exit ();
+
+int hocr_printerr (const char *msg);
+
+int hocr_cmd_parser (int *argc, char **argv[]);
+
+ho_bitmap *hocr_load_input_bitmap ();
+
+ho_layout *hocr_create_layout (const ho_bitmap * m_in,
+  const int font_spacing_code, const int paragraph_setup,
+  const unsigned char dir_ltr);
+
+/* definitions */
 int
 hocr_printerr (const char *msg)
 {
@@ -574,6 +585,7 @@ hocr_create_layout (const ho_bitmap * m_in, const int font_spacing_code,
   int block_index;
   int line_index;
   int word_index;
+
   ho_layout *layout_out = NULL;
 
   if (!debug && !verbose)
@@ -651,6 +663,571 @@ hocr_create_layout (const ho_bitmap * m_in, const int font_spacing_code,
 
 /* FIXME: this functions use globals */
 int
+hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
+  ho_string * s_data_out)
+{
+  int i;
+  int font_number = 0;
+  int number_of_fonts = l_page->number_of_fonts;
+  int block_index;
+  int line_index;
+  int word_index;
+  int font_index;
+
+  ho_pixbuf *pix_out = NULL;
+  ho_bitmap *m_text = NULL;
+  ho_bitmap *m_mask = NULL;
+  ho_bitmap *m_font_main_sign = NULL;
+  ho_bitmap *m_font_nikud = NULL;
+  ho_bitmap *m_font_filter = NULL;
+  ho_bitmap *m_font_test = NULL;
+  ho_bitmap *m_edge = NULL;
+
+  ho_objmap *o_fonts = NULL;
+
+  gchar *text_out = NULL;
+  gchar *filename = NULL;
+  gsize length;
+  gsize terminator_pos;
+  GError *error = NULL;
+
+  for (block_index = 0; block_index < l_page->n_blocks; block_index++)
+  {
+    /* start of paragraph */
+
+    if (text_out_html && s_text_out)
+    {
+      text_out =
+        g_strdup_printf
+        ("    <div class=\"ocr_par\" id=\"par_%d\" title=\"bbox %d %d %d %d\">\n",
+        block_index + 1, l_page->m_blocks_text[block_index]->x,
+        l_page->m_blocks_text[block_index]->y,
+        l_page->m_blocks_text[block_index]->x +
+        l_page->m_blocks_text[block_index]->width,
+        l_page->m_blocks_text[block_index]->y +
+        l_page->m_blocks_text[block_index]->height);
+      ho_string_cat (s_text_out, text_out);
+      g_free (text_out);
+    }
+
+    for (line_index = 0; line_index < l_page->n_lines[block_index];
+      line_index++)
+    {
+      /* start of line */
+
+      /* if user asked, print current font number at begining of line */
+      if (text_out_font_numbers)
+      {
+        text_out = g_strdup_printf ("(%04d) ", font_number + 1);
+        ho_string_cat (s_text_out, text_out);
+        g_free (text_out);
+      }
+
+      /* loop on all the words in this line */
+      for (word_index = 0;
+        word_index < l_page->n_words[block_index][line_index]; word_index++)
+      {
+        /* start of word */
+        for (font_index = 0;
+          font_index <
+          l_page->n_fonts[block_index][line_index][word_index]; font_index++)
+        {
+          /* count recognized fonts */
+          font_number++;
+
+          /* print debug information about fonts */
+          if (verbose || debug)
+            g_print ("    recognizing font %d (%d).\n", font_number,
+              number_of_fonts);
+
+          if (debug)
+            g_print
+              ("    in - block:%d line:%d word:%d font:%d.\n",
+              block_index + 1, line_index + 1, word_index + 1, font_index + 1);
+
+          /* get font images */
+
+          /* get the font */
+          m_text =
+            ho_layout_get_font_text (l_page, block_index,
+            line_index, word_index, font_index);
+          if (!m_text)
+          {
+            hocr_printerr ("can't get font text");
+            hocr_exit ();
+          }
+          /* get font line mask */
+          m_mask =
+            ho_layout_get_font_line_mask (l_page, block_index,
+            line_index, word_index, font_index);
+          if (!m_mask)
+          {
+            hocr_printerr ("can't get font line make");
+            hocr_exit ();
+          }
+          /* get font main sign */
+          m_font_main_sign = ho_font_main_sign (m_text, m_mask);
+          if (!m_font_main_sign)
+          {
+            hocr_printerr ("can't get font main sign");
+            hocr_exit ();
+          }
+          /* get font nikud */
+          m_font_nikud = ho_bitmap_clone (m_text);
+          if (!m_font_nikud)
+          {
+            hocr_printerr ("can't get font nikud");
+            hocr_exit ();
+          }
+          ho_bitmap_andnot (m_font_nikud, m_font_main_sign);
+
+          /* recognize font from images */
+          {
+            char *font;
+            double array_in[HO_ARRAY_IN_SIZE];
+            double array_out[HO_ARRAY_OUT_SIZE];
+
+            /* get font */
+
+            /* insert font to text out */
+            ho_recognize_create_array_in (m_font_main_sign, m_mask, array_in);
+            ho_recognize_create_array_out (array_in, array_out);
+            font = ho_recognize_array_out_to_font (array_out);
+            /* font = ho_recognize_font (m_font_main_sign, m_mask); */
+
+            /* insert font to text out */
+            ho_string_cat (s_text_out, font);
+
+            /* print debug information */
+
+            /* if debug printout font data stream */
+            if (debug)
+            {
+              int i;
+
+              for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+              {
+                if (!(i % 50))
+                  g_print ("\n");
+                if (!(i % 10))
+                  g_print ("\n");
+                else if (!(i % 5))
+                  g_print (" ");
+
+                g_print ("%03.2f, ", array_in[i]);
+
+              }
+
+              g_print ("\n");
+
+              g_print ("font guess is %s\n\n", font);
+            }
+
+            /* if user want to dump data to file */
+            if (data_out_filename)
+            {
+              int i;
+
+              /* print out the number of the font */
+              text_out = g_strdup_printf ("\nfont %d:\n ", font_number);
+              ho_string_cat (s_data_out, text_out);
+              g_free (text_out);
+
+              /* print font images in html code */
+              if (save_fonts && s_data_out)
+              {
+                text_out =
+                  g_strdup_printf
+                  ("\nfont image: <img src=\"%s-font-%d.png\" alt=\"font image\">\n",
+                  image_out_path, font_number);
+                ho_string_cat (s_data_out, text_out);
+                g_free (text_out);
+              }
+
+              /* print font filter images in html code */
+              if (debug_font_filter && s_data_out)
+              {
+                if (debug_font_filter < 99)
+                {
+                  text_out =
+                    g_strdup_printf
+                    ("font filter %d: <img src=\"%s-font-%d-%d.png\" alt=\"filter\">",
+                    debug_font_filter, image_out_path, font_number,
+                    debug_font_filter);
+                  ho_string_cat (s_data_out, text_out);
+
+                  g_free (text_out);
+
+                  text_out =
+                    g_strdup_printf
+                    ("<img src=\"%s-font-%d-%d-h.png\" alt=\"filter image\">",
+                    image_out_path, font_number, debug_font_filter);
+                  ho_string_cat (s_data_out, text_out);
+
+                  g_free (text_out);
+                }
+                else
+                {
+                  int filter_number;
+
+                  for (filter_number = 2; filter_number < 23; filter_number++)
+                  {
+                    text_out =
+                      g_strdup_printf
+                      (" %d: <img src=\"%s-font-%d-%d.png\" alt=\" \">",
+                      filter_number, image_out_path, font_number,
+                      filter_number);
+                    ho_string_cat (s_data_out, text_out);
+
+                    g_free (text_out);
+
+                    text_out =
+                      g_strdup_printf
+                      ("<img src=\"%s-font-%d-%d-h.png\" alt=\" \">",
+                      image_out_path, font_number, filter_number);
+                    ho_string_cat (s_data_out, text_out);
+
+                    if (filter_number == 10 || filter_number == 18)
+                      ho_string_cat (s_data_out, "\n");
+
+                    g_free (text_out);
+                  }
+                }
+
+              }
+
+              /* add new line after images */
+              if (debug_font_filter && s_data_out)
+              {
+                ho_string_cat (s_data_out, "\n");
+              }
+
+              for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
+              {
+                if (!(i % 50))
+                  ho_string_cat (s_data_out, "\n");
+                if (!(i % 10))
+                  ho_string_cat (s_data_out, "\n");
+                else if (!(i % 5))
+                  ho_string_cat (s_data_out, "  ");
+
+                text_out = g_strdup_printf ("%03.2f, ", array_in[i]);
+                ho_string_cat (s_data_out, text_out);
+
+                g_free (text_out);
+              }
+
+              /* insert font guess to debug file */
+              {
+                text_out = g_strdup_printf ("\nfont guess is %s\n\n", font);
+                ho_string_cat (s_data_out, text_out);
+                g_free (text_out);
+              }
+            }
+          }                     /* end of recognize font from images */
+
+          /* save font image to dist */
+          if (save_fonts)
+          {
+            if (no_gtk)
+              filename =
+                g_strdup_printf ("%s-font-%d.pgm", image_out_path, font_number);
+            else
+              filename =
+                g_strdup_printf ("%s-font-%d.png", image_out_path, font_number);
+
+            m_font_main_sign->x = 0;
+            m_font_main_sign->y = 0;
+            m_font_nikud->x = 0;
+            m_font_nikud->y = 0;
+            m_mask->x = 0;
+            m_mask->y = 0;
+
+            if (no_gtk)
+              ho_font_pnm_save (m_font_main_sign,
+                m_font_nikud, m_mask, filename);
+            else
+              ho_gtk_font_save (m_font_main_sign,
+                m_font_nikud, m_mask, filename);
+
+            /* free filename */
+            g_free (filename);
+          }
+
+          /* save font filter images to disk */
+          if (debug_font_filter)
+          {
+            if (debug_font_filter < 99)
+            {
+              /* font filter */
+              {
+                /* create an image of filter */
+                m_font_test =
+                  ho_font_filter (m_font_main_sign, m_mask, debug_font_filter);
+
+                if (m_font_test)
+                {
+                  /* dilate points 9 (ends) 10 (crosses) */
+                  if (debug_font_filter == 9 || debug_font_filter == 10)
+                  {
+                    ho_bitmap *m_temp = NULL;
+
+                    m_temp = ho_bitmap_dilation (m_font_test);
+                    ho_bitmap_free (m_font_test);
+                    m_font_test = m_temp;
+                  }
+
+                  /* save the filter to file */
+                  if (no_gtk)
+                    filename =
+                      g_strdup_printf ("%s-font-%d-%d.pgm",
+                      image_out_path, font_number, debug_font_filter);
+                  else
+                    filename =
+                      g_strdup_printf ("%s-font-%d-%d.png",
+                      image_out_path, font_number, debug_font_filter);
+
+                  m_font_main_sign->x = 0;
+                  m_font_main_sign->y = 0;
+                  m_font_test->x = 0;
+                  m_font_test->y = 0;
+                  m_mask->x = 0;
+                  m_mask->y = 0;
+
+                  if (no_gtk)
+                    ho_font_pnm_save (m_font_main_sign,
+                      m_font_test, m_mask, filename);
+                  else
+                    ho_gtk_font_save (m_font_main_sign,
+                      m_font_test, m_mask, filename);
+
+                  /* free file name */
+                  g_free (filename);
+
+                  /* free filter bitmap */
+                  ho_bitmap_free (m_font_test);
+                  m_font_test = NULL;
+                }
+              }
+
+              /* hole filter */
+              {
+                /* create an image of hole filter */
+                m_font_test =
+                  ho_font_holes_filter (m_font_main_sign,
+                  m_mask, debug_font_filter);
+
+                if (m_font_test)
+                {
+                  /* dilate points 9 (ends) 10 (crosses) */
+                  if (debug_font_filter == 9 || debug_font_filter == 10)
+                  {
+                    ho_bitmap *m_temp = NULL;
+
+                    m_temp = ho_bitmap_dilation (m_font_test);
+
+                    ho_bitmap_free (m_font_test);
+                    m_font_test = m_temp;
+                  }
+
+                  /* save the filter to file */
+                  if (no_gtk)
+                    filename =
+                      g_strdup_printf ("%s-font-%d-%d-h.pgm",
+                      image_out_path, font_number, debug_font_filter);
+                  else
+                    filename =
+                      g_strdup_printf ("%s-font-%d-%d-h.png",
+                      image_out_path, font_number, debug_font_filter);
+
+                  m_font_main_sign->x = 0;
+                  m_font_main_sign->y = 0;
+                  m_font_test->x = 0;
+                  m_font_test->y = 0;
+                  m_mask->x = 0;
+                  m_mask->y = 0;
+
+                  if (no_gtk)
+                    ho_font_pnm_save (m_font_main_sign,
+                      m_font_test, m_mask, filename);
+                  else
+                    ho_gtk_font_save (m_font_main_sign,
+                      m_font_test, m_mask, filename);
+
+                  /* free file name */
+                  g_free (filename);
+
+                  /* free filter bitmap */
+                  ho_bitmap_free (m_font_test);
+                  m_font_test = NULL;
+                }
+              }
+            }
+            else
+            {
+              int filter_number;
+
+              for (filter_number = 2; filter_number < 23; filter_number++)
+              {
+                {
+                  /* create an image of filter */
+                  m_font_test =
+                    ho_font_filter (m_font_main_sign, m_mask, filter_number);
+
+                  if (m_font_test)
+                  {
+                    /* dilate points 9 (ends) 10 (crosses) */
+                    if (filter_number == 9 || filter_number == 10)
+                    {
+                      ho_bitmap *m_temp = NULL;
+
+                      m_temp = ho_bitmap_dilation (m_font_test);
+                      ho_bitmap_free (m_font_test);
+                      m_font_test = m_temp;
+                    }
+
+                    /* save the filter to file */
+                    if (no_gtk)
+                      filename =
+                        g_strdup_printf ("%s-font-%d-%d.pgm",
+                        image_out_path, font_number, filter_number);
+                    else
+                      filename =
+                        g_strdup_printf ("%s-font-%d-%d.png",
+                        image_out_path, font_number, filter_number);
+
+                    m_font_main_sign->x = 0;
+                    m_font_main_sign->y = 0;
+                    m_font_test->x = 0;
+                    m_font_test->y = 0;
+                    m_mask->x = 0;
+                    m_mask->y = 0;
+
+                    if (no_gtk)
+                      ho_font_pnm_save (m_font_main_sign,
+                        m_font_test, m_mask, filename);
+                    else
+                      ho_gtk_font_save (m_font_main_sign,
+                        m_font_test, m_mask, filename);
+
+                    /* free file name */
+                    g_free (filename);
+
+                    /* free filter bitmap */
+                    ho_bitmap_free (m_font_test);
+                    m_font_test = NULL;
+                  }
+                }
+
+                /* hole filter */
+                {
+                  /* create an image of hole filter */
+                  m_font_test =
+                    ho_font_holes_filter (m_font_main_sign,
+                    m_mask, filter_number);
+
+                  if (m_font_test)
+                  {
+                    /* dilate points 9 (ends) 10 (crosses) */
+                    if (filter_number == 9 || filter_number == 10)
+                    {
+                      ho_bitmap *m_temp = NULL;
+
+                      m_temp = ho_bitmap_dilation (m_font_test);
+
+                      ho_bitmap_free (m_font_test);
+                      m_font_test = m_temp;
+                    }
+
+                    /* save the filter to file */
+                    if (no_gtk)
+                      filename =
+                        g_strdup_printf ("%s-font-%d-%d-h.pgm",
+                        image_out_path, font_number, filter_number);
+                    else
+                      filename =
+                        g_strdup_printf ("%s-font-%d-%d-h.png",
+                        image_out_path, font_number, filter_number);
+
+                    m_font_main_sign->x = 0;
+                    m_font_main_sign->y = 0;
+                    m_font_test->x = 0;
+                    m_font_test->y = 0;
+                    m_mask->x = 0;
+                    m_mask->y = 0;
+
+                    if (no_gtk)
+                      ho_font_pnm_save (m_font_main_sign,
+                        m_font_test, m_mask, filename);
+                    else
+                      ho_gtk_font_save (m_font_main_sign,
+                        m_font_test, m_mask, filename);
+
+                    /* free file name */
+                    g_free (filename);
+
+                    /* free filter bitmap */
+                    ho_bitmap_free (m_font_test);
+                    m_font_test = NULL;
+                  }
+                }
+              }
+            }
+          }
+
+          /* free bitmaps and others */
+          ho_bitmap_free (m_font_nikud);
+          ho_bitmap_free (m_font_filter);
+          ho_bitmap_free (m_font_main_sign);
+          ho_bitmap_free (m_text);
+          ho_bitmap_free (m_mask);
+
+          /* this are empty pointers */
+          m_text = m_mask = m_font_nikud = m_font_filter =
+            m_font_main_sign = NULL;
+
+          /* oh ... */
+
+        }                       /* end of fonts loop */
+        /* add a space after a word to text out */
+        ho_string_cat (s_text_out, " ");
+
+      }                         /* end of words loop */
+
+      /* end of line */
+
+      if (text_out_html && s_text_out)
+      {
+        ho_string_cat (s_text_out, "<br/>");
+      }
+
+      /* add a line-end after a line to text out */
+      ho_string_cat (s_text_out, "\n");
+    }
+
+    /* end of paragraph */
+
+    if (text_out_html && s_text_out)
+    {
+      ho_string_cat (s_text_out, "<br/>");
+    }
+
+    /* add a line-end after a block end */
+    ho_string_cat (s_text_out, "\n");
+
+    if (text_out_html && s_text_out)
+    {
+      text_out = g_strdup_printf ("    </div>\n");
+      ho_string_cat (s_text_out, text_out);
+      g_free (text_out);
+    }
+  }
+
+  return FALSE;
+}
+
+/* FIXME: this functions use globals */
+int
 hocr_exit ()
 {
   int block_index;
@@ -688,6 +1265,7 @@ main (int argc, char *argv[])
   int number_of_fonts;
   ho_string *s_text_out = NULL;
   ho_string *s_data_out = NULL;
+  gchar *text_out = NULL;
 
   /* start of argument analyzing section */
 
@@ -832,602 +1410,47 @@ main (int argc, char *argv[])
   if (debug || verbose)
     g_print ("  found %d fonts in page.\n", number_of_fonts);
 
+  /* start the text out */
+  s_text_out = ho_string_new ();
+  if (!s_text_out)
   {
-    int i;
-    int font_number = 0;
-    int block_index;
-    int line_index;
-    int word_index;
-    int font_index;
+    hocr_printerr ("can't allocate text memory");
+    hocr_exit ();
+  }
 
-    ho_pixbuf *pix_out = NULL;
-    ho_bitmap *m_text = NULL;
-    ho_bitmap *m_mask = NULL;
-    ho_bitmap *m_font_main_sign = NULL;
-    ho_bitmap *m_font_nikud = NULL;
-    ho_bitmap *m_font_filter = NULL;
-    ho_bitmap *m_font_test = NULL;
-    ho_bitmap *m_edge = NULL;
+  /* start of page */
 
-    ho_objmap *o_fonts = NULL;
+  /* if html print html header */
+  if (text_out_html)
+  {
+    text_out = g_strdup_printf (html_page_header, "", "", "");
 
-    gchar *filename = NULL;
-    gsize length;
-    gsize terminator_pos;
-    GError *error = NULL;
+    ho_string_cat (s_text_out, text_out);
+    g_free (text_out);
+  }
 
-    /* start the text out */
-    s_text_out = ho_string_new ();
-    if (!s_text_out)
+  /* start the data out */
+  if (data_out_filename)
+  {
+    s_data_out = ho_string_new ();
+    if (!s_data_out)
     {
-      hocr_printerr ("can't allocate text memory");
+      hocr_printerr ("can't allocate data memory");
       hocr_exit ();
     }
 
-    /* start the data out */
-    if (data_out_filename)
-    {
-      s_data_out = ho_string_new ();
-      if (!s_data_out)
-      {
-        hocr_printerr ("can't allocate data memory");
-        hocr_exit ();
-      }
-
-      /* start of page */
-      if (text_out_html && s_text_out)
-      {
-        text_out = g_strdup_printf (html_page_header, "", "", "");
-
-        ho_string_cat (s_text_out, text_out);
-        g_free (text_out);
-      }
-
-      /* init the first line of data file */
-      text_out = g_strdup_printf (html_debug_header);
-      ho_string_cat (s_data_out, text_out);
-      g_free (text_out);
-
-    }
-
-    for (block_index = 0; block_index < l_page->n_blocks; block_index++)
-    {
-      /* start of paragraph */
-
-      if (text_out_html && s_text_out)
-      {
-        text_out =
-          g_strdup_printf
-          ("    <div class=\"ocr_par\" id=\"par_%d\" title=\"bbox %d %d %d %d\">\n",
-          block_index + 1, l_page->m_blocks_text[block_index]->x,
-          l_page->m_blocks_text[block_index]->y,
-          l_page->m_blocks_text[block_index]->x +
-          l_page->m_blocks_text[block_index]->width,
-          l_page->m_blocks_text[block_index]->y +
-          l_page->m_blocks_text[block_index]->height);
-        ho_string_cat (s_text_out, text_out);
-        g_free (text_out);
-      }
-
-      for (line_index = 0; line_index < l_page->n_lines[block_index];
-        line_index++)
-      {
-        /* start of line */
-
-        /* if user asked, print current font number at begining of line */
-        if (text_out_font_numbers)
-        {
-          text_out = g_strdup_printf ("(%04d) ", font_number + 1);
-          ho_string_cat (s_text_out, text_out);
-          g_free (text_out);
-        }
-
-        /* loop on all the words in this line */
-        for (word_index = 0;
-          word_index < l_page->n_words[block_index][line_index]; word_index++)
-        {
-          /* start of word */
-          for (font_index = 0;
-            font_index <
-            l_page->n_fonts[block_index][line_index][word_index]; font_index++)
-          {
-            /* count recognized fonts */
-            font_number++;
-
-            /* print debug information about fonts */
-            if (verbose || debug)
-              g_print ("    recognizing font %d (%d).\n", font_number,
-                number_of_fonts);
-
-            if (debug)
-              g_print
-                ("    in - block:%d line:%d word:%d font:%d.\n",
-                block_index + 1, line_index + 1, word_index + 1,
-                font_index + 1);
-
-            /* get font images */
-
-            /* get the font */
-            m_text =
-              ho_layout_get_font_text (l_page, block_index,
-              line_index, word_index, font_index);
-            if (!m_text)
-            {
-              hocr_printerr ("can't get font text");
-              hocr_exit ();
-            }
-            /* get font line mask */
-            m_mask =
-              ho_layout_get_font_line_mask (l_page, block_index,
-              line_index, word_index, font_index);
-            if (!m_mask)
-            {
-              hocr_printerr ("can't get font line make");
-              hocr_exit ();
-            }
-            /* get font main sign */
-            m_font_main_sign = ho_font_main_sign (m_text, m_mask);
-            if (!m_font_main_sign)
-            {
-              hocr_printerr ("can't get font main sign");
-              hocr_exit ();
-            }
-            /* get font nikud */
-            m_font_nikud = ho_bitmap_clone (m_text);
-            if (!m_font_nikud)
-            {
-              hocr_printerr ("can't get font nikud");
-              hocr_exit ();
-            }
-            ho_bitmap_andnot (m_font_nikud, m_font_main_sign);
-
-            /* recognize font from images */
-            {
-              char *font;
-              double array_in[HO_ARRAY_IN_SIZE];
-              double array_out[HO_ARRAY_OUT_SIZE];
-
-              /* get font */
-
-              /* insert font to text out */
-              ho_recognize_create_array_in (m_font_main_sign, m_mask, array_in);
-              ho_recognize_create_array_out (array_in, array_out);
-              font = ho_recognize_array_out_to_font (array_out);
-              /* font = ho_recognize_font (m_font_main_sign, m_mask); */
-
-              /* insert font to text out */
-              ho_string_cat (s_text_out, font);
-
-              /* print debug information */
-
-              /* if debug printout font data stream */
-              if (debug)
-              {
-                int i;
-
-                for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
-                {
-                  if (!(i % 50))
-                    g_print ("\n");
-                  if (!(i % 10))
-                    g_print ("\n");
-                  else if (!(i % 5))
-                    g_print (" ");
-
-                  g_print ("%03.2f, ", array_in[i]);
-
-                }
-
-                g_print ("\n");
-
-                g_print ("font guess is %s\n\n", font);
-              }
-
-              /* if user want to dump data to file */
-              if (data_out_filename)
-              {
-                int i;
-
-                /* print out the number of the font */
-                text_out = g_strdup_printf ("\nfont %d:\n ", font_number);
-                ho_string_cat (s_data_out, text_out);
-                g_free (text_out);
-
-                /* print font images in html code */
-                if (save_fonts && s_data_out)
-                {
-                  text_out =
-                    g_strdup_printf
-                    ("\nfont image: <img src=\"%s-font-%d.png\" alt=\"font image\">\n",
-                    image_out_path, font_number);
-                  ho_string_cat (s_data_out, text_out);
-                  g_free (text_out);
-                }
-
-                /* print font filter images in html code */
-                if (debug_font_filter && s_data_out)
-                {
-                  if (debug_font_filter < 99)
-                  {
-                    text_out =
-                      g_strdup_printf
-                      ("font filter %d: <img src=\"%s-font-%d-%d.png\" alt=\"filter\">",
-                      debug_font_filter, image_out_path, font_number,
-                      debug_font_filter);
-                    ho_string_cat (s_data_out, text_out);
-
-                    g_free (text_out);
-
-                    text_out =
-                      g_strdup_printf
-                      ("<img src=\"%s-font-%d-%d-h.png\" alt=\"filter image\">",
-                      image_out_path, font_number, debug_font_filter);
-                    ho_string_cat (s_data_out, text_out);
-
-                    g_free (text_out);
-                  }
-                  else
-                  {
-                    int filter_number;
-
-                    for (filter_number = 2; filter_number < 23; filter_number++)
-                    {
-                      text_out =
-                        g_strdup_printf
-                        (" %d: <img src=\"%s-font-%d-%d.png\" alt=\" \">",
-                        filter_number, image_out_path, font_number,
-                        filter_number);
-                      ho_string_cat (s_data_out, text_out);
-
-                      g_free (text_out);
-
-                      text_out =
-                        g_strdup_printf
-                        ("<img src=\"%s-font-%d-%d-h.png\" alt=\" \">",
-                        image_out_path, font_number, filter_number);
-                      ho_string_cat (s_data_out, text_out);
-
-                      if (filter_number == 10 || filter_number == 18)
-                        ho_string_cat (s_data_out, "\n");
-
-                      g_free (text_out);
-                    }
-                  }
-
-                }
-
-                /* add new line after images */
-                if (debug_font_filter && s_data_out)
-                {
-                  ho_string_cat (s_data_out, "\n");
-                }
-
-                for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
-                {
-                  if (!(i % 50))
-                    ho_string_cat (s_data_out, "\n");
-                  if (!(i % 10))
-                    ho_string_cat (s_data_out, "\n");
-                  else if (!(i % 5))
-                    ho_string_cat (s_data_out, "  ");
-
-                  text_out = g_strdup_printf ("%03.2f, ", array_in[i]);
-                  ho_string_cat (s_data_out, text_out);
-
-                  g_free (text_out);
-                }
-
-                /* insert font guess to debug file */
-                {
-                  text_out = g_strdup_printf ("\nfont guess is %s\n\n", font);
-                  ho_string_cat (s_data_out, text_out);
-                  g_free (text_out);
-                }
-              }
-            }                   /* end of recognize font from images */
-
-            /* save font image to dist */
-            if (save_fonts)
-            {
-              if (no_gtk)
-                filename =
-                  g_strdup_printf ("%s-font-%d.pgm",
-                  image_out_path, font_number);
-              else
-                filename =
-                  g_strdup_printf ("%s-font-%d.png",
-                  image_out_path, font_number);
-
-              m_font_main_sign->x = 0;
-              m_font_main_sign->y = 0;
-              m_font_nikud->x = 0;
-              m_font_nikud->y = 0;
-              m_mask->x = 0;
-              m_mask->y = 0;
-
-              if (no_gtk)
-                ho_font_pnm_save (m_font_main_sign,
-                  m_font_nikud, m_mask, filename);
-              else
-                ho_gtk_font_save (m_font_main_sign,
-                  m_font_nikud, m_mask, filename);
-
-              /* free filename */
-              g_free (filename);
-            }
-
-            /* save font filter images to disk */
-            if (debug_font_filter)
-            {
-              if (debug_font_filter < 99)
-              {
-                /* font filter */
-                {
-                  /* create an image of filter */
-                  m_font_test =
-                    ho_font_filter (m_font_main_sign, m_mask,
-                    debug_font_filter);
-
-                  if (m_font_test)
-                  {
-                    /* dilate points 9 (ends) 10 (crosses) */
-                    if (debug_font_filter == 9 || debug_font_filter == 10)
-                    {
-                      ho_bitmap *m_temp = NULL;
-
-                      m_temp = ho_bitmap_dilation (m_font_test);
-                      ho_bitmap_free (m_font_test);
-                      m_font_test = m_temp;
-                    }
-
-                    /* save the filter to file */
-                    if (no_gtk)
-                      filename =
-                        g_strdup_printf ("%s-font-%d-%d.pgm",
-                        image_out_path, font_number, debug_font_filter);
-                    else
-                      filename =
-                        g_strdup_printf ("%s-font-%d-%d.png",
-                        image_out_path, font_number, debug_font_filter);
-
-                    m_font_main_sign->x = 0;
-                    m_font_main_sign->y = 0;
-                    m_font_test->x = 0;
-                    m_font_test->y = 0;
-                    m_mask->x = 0;
-                    m_mask->y = 0;
-
-                    if (no_gtk)
-                      ho_font_pnm_save (m_font_main_sign,
-                        m_font_test, m_mask, filename);
-                    else
-                      ho_gtk_font_save (m_font_main_sign,
-                        m_font_test, m_mask, filename);
-
-                    /* free file name */
-                    g_free (filename);
-
-                    /* free filter bitmap */
-                    ho_bitmap_free (m_font_test);
-                    m_font_test = NULL;
-                  }
-                }
-
-                /* hole filter */
-                {
-                  /* create an image of hole filter */
-                  m_font_test =
-                    ho_font_holes_filter (m_font_main_sign,
-                    m_mask, debug_font_filter);
-
-                  if (m_font_test)
-                  {
-                    /* dilate points 9 (ends) 10 (crosses) */
-                    if (debug_font_filter == 9 || debug_font_filter == 10)
-                    {
-                      ho_bitmap *m_temp = NULL;
-
-                      m_temp = ho_bitmap_dilation (m_font_test);
-
-                      ho_bitmap_free (m_font_test);
-                      m_font_test = m_temp;
-                    }
-
-                    /* save the filter to file */
-                    if (no_gtk)
-                      filename =
-                        g_strdup_printf ("%s-font-%d-%d-h.pgm",
-                        image_out_path, font_number, debug_font_filter);
-                    else
-                      filename =
-                        g_strdup_printf ("%s-font-%d-%d-h.png",
-                        image_out_path, font_number, debug_font_filter);
-
-                    m_font_main_sign->x = 0;
-                    m_font_main_sign->y = 0;
-                    m_font_test->x = 0;
-                    m_font_test->y = 0;
-                    m_mask->x = 0;
-                    m_mask->y = 0;
-
-                    if (no_gtk)
-                      ho_font_pnm_save (m_font_main_sign,
-                        m_font_test, m_mask, filename);
-                    else
-                      ho_gtk_font_save (m_font_main_sign,
-                        m_font_test, m_mask, filename);
-
-                    /* free file name */
-                    g_free (filename);
-
-                    /* free filter bitmap */
-                    ho_bitmap_free (m_font_test);
-                    m_font_test = NULL;
-                  }
-                }
-              }
-              else
-              {
-                int filter_number;
-
-                for (filter_number = 2; filter_number < 23; filter_number++)
-                {
-                  {
-                    /* create an image of filter */
-                    m_font_test =
-                      ho_font_filter (m_font_main_sign, m_mask, filter_number);
-
-                    if (m_font_test)
-                    {
-                      /* dilate points 9 (ends) 10 (crosses) */
-                      if (filter_number == 9 || filter_number == 10)
-                      {
-                        ho_bitmap *m_temp = NULL;
-
-                        m_temp = ho_bitmap_dilation (m_font_test);
-                        ho_bitmap_free (m_font_test);
-                        m_font_test = m_temp;
-                      }
-
-                      /* save the filter to file */
-                      if (no_gtk)
-                        filename =
-                          g_strdup_printf ("%s-font-%d-%d.pgm",
-                          image_out_path, font_number, filter_number);
-                      else
-                        filename =
-                          g_strdup_printf ("%s-font-%d-%d.png",
-                          image_out_path, font_number, filter_number);
-
-                      m_font_main_sign->x = 0;
-                      m_font_main_sign->y = 0;
-                      m_font_test->x = 0;
-                      m_font_test->y = 0;
-                      m_mask->x = 0;
-                      m_mask->y = 0;
-
-                      if (no_gtk)
-                        ho_font_pnm_save (m_font_main_sign,
-                          m_font_test, m_mask, filename);
-                      else
-                        ho_gtk_font_save (m_font_main_sign,
-                          m_font_test, m_mask, filename);
-
-                      /* free file name */
-                      g_free (filename);
-
-                      /* free filter bitmap */
-                      ho_bitmap_free (m_font_test);
-                      m_font_test = NULL;
-                    }
-                  }
-
-                  /* hole filter */
-                  {
-                    /* create an image of hole filter */
-                    m_font_test =
-                      ho_font_holes_filter (m_font_main_sign,
-                      m_mask, filter_number);
-
-                    if (m_font_test)
-                    {
-                      /* dilate points 9 (ends) 10 (crosses) */
-                      if (filter_number == 9 || filter_number == 10)
-                      {
-                        ho_bitmap *m_temp = NULL;
-
-                        m_temp = ho_bitmap_dilation (m_font_test);
-
-                        ho_bitmap_free (m_font_test);
-                        m_font_test = m_temp;
-                      }
-
-                      /* save the filter to file */
-                      if (no_gtk)
-                        filename =
-                          g_strdup_printf ("%s-font-%d-%d-h.pgm",
-                          image_out_path, font_number, filter_number);
-                      else
-                        filename =
-                          g_strdup_printf ("%s-font-%d-%d-h.png",
-                          image_out_path, font_number, filter_number);
-
-                      m_font_main_sign->x = 0;
-                      m_font_main_sign->y = 0;
-                      m_font_test->x = 0;
-                      m_font_test->y = 0;
-                      m_mask->x = 0;
-                      m_mask->y = 0;
-
-                      if (no_gtk)
-                        ho_font_pnm_save (m_font_main_sign,
-                          m_font_test, m_mask, filename);
-                      else
-                        ho_gtk_font_save (m_font_main_sign,
-                          m_font_test, m_mask, filename);
-
-                      /* free file name */
-                      g_free (filename);
-
-                      /* free filter bitmap */
-                      ho_bitmap_free (m_font_test);
-                      m_font_test = NULL;
-                    }
-                  }
-                }
-              }
-            }
-
-            /* free bitmaps and others */
-            ho_bitmap_free (m_font_nikud);
-            ho_bitmap_free (m_font_filter);
-            ho_bitmap_free (m_font_main_sign);
-            ho_bitmap_free (m_text);
-            ho_bitmap_free (m_mask);
-
-            /* this are empty pointers */
-            m_text = m_mask = m_font_nikud = m_font_filter =
-              m_font_main_sign = NULL;
-
-            /* oh ... */
-
-          }                     /* end of fonts loop */
-          /* add a space after a word to text out */
-          ho_string_cat (s_text_out, " ");
-
-        }                       /* end of words loop */
-
-        /* end of line */
-
-        if (text_out_html && s_text_out)
-        {
-          ho_string_cat (s_text_out, "<br/>");
-        }
-
-        /* add a line-end after a line to text out */
-        ho_string_cat (s_text_out, "\n");
-      }
-
-      /* end of paragraph */
-
-      if (text_out_html && s_text_out)
-      {
-        ho_string_cat (s_text_out, "<br/>");
-      }
-
-      /* add a line-end after a block end */
-      ho_string_cat (s_text_out, "\n");
-
-      if (text_out_html && s_text_out)
-      {
-        text_out = g_strdup_printf ("    </div>\n");
-        ho_string_cat (s_text_out, text_out);
-        g_free (text_out);
-      }
-
-    }
-
+    /* init the first line of data file */
+    text_out = g_strdup_printf (html_debug_header);
+    ho_string_cat (s_data_out, text_out);
+    g_free (text_out);
   }
+
+  /* do character recognition */
+  if (debug || verbose || text_out_font_numbers || data_out_filename
+    || debug_font_filter || save_fonts)
+    hocr_recognize_fonts_with_debug (l_page, s_text_out, s_data_out);
+  else
+    hocr_font_recognition (l_page, s_text_out, text_out_html);
 
   /* end of page */
   if (text_out_html && s_text_out)

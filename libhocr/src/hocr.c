@@ -22,6 +22,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <math.h>
 
 #include "hocr.h"
@@ -137,6 +138,7 @@ hocr_image_processing (const ho_pixbuf * pix_in,
 
 /**
  new ho_layout 
+
  @param m_in a pointer to a text bitmap
  @param font_spacing_code -3 tight .. 0 .. 3 spaced
  @param paragraph_setup free text blocks or boxed in columns
@@ -184,4 +186,121 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
   }
 
   return layout_out;
+}
+
+/**
+ fill a text buffer with fonts recognized from a page layout
+
+ @param l_page the page layout to recognize
+ @param s_text_out the text buffer to fill
+ @param html output format is html
+ @return FALSE
+ */
+int
+hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
+  const unsigned char html)
+{
+  int block_index;
+  int line_index;
+  int word_index;
+  int font_index;
+
+  ho_bitmap *m_text = NULL;
+  ho_bitmap *m_mask = NULL;
+  ho_bitmap *m_font_main_sign = NULL;
+
+  char text_out[200];
+  char *font;
+
+  /* did we get a text buffer and a layout ? */
+  if (!s_text_out || !l_page)
+    return TRUE;
+
+  /* loop over the layout */
+  for (block_index = 0; block_index < l_page->n_blocks; block_index++)
+  {
+    /* start of paragraph */
+    if (html)
+    {
+      /* FIXME: text overflow ?! */
+      sprintf (text_out,
+        "    <div class=\"ocr_par\" id=\"par_%d\" title=\"bbox %d %d %d %d\">\n",
+        block_index + 1, l_page->m_blocks_text[block_index]->x,
+        l_page->m_blocks_text[block_index]->y,
+        l_page->m_blocks_text[block_index]->x +
+        l_page->m_blocks_text[block_index]->width,
+        l_page->m_blocks_text[block_index]->y +
+        l_page->m_blocks_text[block_index]->height);
+      ho_string_cat (s_text_out, text_out);
+    }
+
+    for (line_index = 0; line_index < l_page->n_lines[block_index];
+      line_index++)
+    {
+      /* start of line */
+
+      /* loop on all the words in this line */
+      for (word_index = 0;
+        word_index < l_page->n_words[block_index][line_index]; word_index++)
+      {
+        /* start of word */
+        for (font_index = 0;
+          font_index <
+          l_page->n_fonts[block_index][line_index][word_index]; font_index++)
+        {
+          /* get font images */
+
+          /* get the font */
+          m_text =
+            ho_layout_get_font_text (l_page, block_index,
+            line_index, word_index, font_index);
+          if (!m_text)
+            return TRUE;
+
+          /* get font line mask */
+          m_mask =
+            ho_layout_get_font_line_mask (l_page, block_index,
+            line_index, word_index, font_index);
+          if (!m_mask)
+            return TRUE;
+
+          /* get font main sign */
+          m_font_main_sign = ho_font_main_sign (m_text, m_mask);
+          if (!m_font_main_sign)
+            return TRUE;
+
+          /* recognize font from images */
+          font = ho_recognize_font (m_font_main_sign, m_mask);
+
+          /* insert font to text out */
+          ho_string_cat (s_text_out, font);
+
+          /* free bitmaps */
+          ho_bitmap_free (m_font_main_sign);
+          ho_bitmap_free (m_text);
+          ho_bitmap_free (m_mask);
+
+          /* this are empty pointers */
+          m_text = m_mask = m_font_main_sign = NULL;
+        }
+
+        /* end of word */
+        ho_string_cat (s_text_out, " ");
+      }
+
+      /* end of line */
+      if (html)
+        ho_string_cat (s_text_out, "<br/>\n");
+      else
+        ho_string_cat (s_text_out, "\n");
+    }
+
+    /* end of block */
+    if (html)
+      ho_string_cat (s_text_out, "<br/>\n    </div>\n");
+    else
+      ho_string_cat (s_text_out, "\n");
+  }
+
+  return FALSE;
 }
