@@ -84,6 +84,8 @@ ho_layout_new (const ho_bitmap * m_page_text, const char font_spacing_code,
 
   l_new->n_fonts = NULL;
 
+  l_new->number_of_fonts = 0;
+  
   return l_new;
 }
 
@@ -513,9 +515,13 @@ ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
       && !ho_bitmap_get (m_word_font_mask, x, 2); x++) ;
   }
 
-  /* set number of words */
+  /* set number of fonts */
   l_page->n_fonts[block_index][line_index][word_index] = i;
 
+  /* update total number of fonts */
+  /* FIXME: this only works if create is used only once */
+  l_page->number_of_fonts += i;
+  
   return FALSE;
 }
 

@@ -35,7 +35,8 @@ typedef struct
   char font_spacing_code;
   unsigned char type;
   unsigned char dir;
-
+  int number_of_fonts;
+  
   /* black and white text image */
   ho_bitmap *m_page_text;
   ho_bitmap *m_page_blocks_mask;

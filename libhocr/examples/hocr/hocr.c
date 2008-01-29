@@ -515,7 +515,7 @@ hocr_load_input_bitmap ()
   /* free input pixbuf */
   ho_pixbuf_free (pix);
 
-/* from here on we only use the black and white image */
+  /* from here on we only use the black and white image */
 
   /* rotate image */
   if (rotate_angle)
@@ -567,8 +567,89 @@ hocr_load_input_bitmap ()
   return m_bw;
 }
 
-/* FIXME: this functions use globals */
+ho_layout *
+hocr_create_layout (const ho_bitmap * m_in, const int font_spacing_code,
+  const int paragraph_setup, const unsigned char dir_ltr)
+{
+  int block_index;
+  int line_index;
+  int word_index;
+  ho_layout *layout_out = NULL;
 
+  if (!debug && !verbose)
+  {
+    layout_out = hocr_layout_analysis (m_in, font_spacing_code,
+      paragraph_setup, slicing_threshold, slicing_width, dir_ltr);
+
+    return layout_out;
+  }
+
+  layout_out =
+    ho_layout_new (m_in, font_spacing_code, paragraph_setup, dir_ltr);
+  if (!layout_out)
+    return NULL;
+
+  ho_layout_create_block_mask (layout_out);
+
+  if (debug || verbose)
+    g_print ("  found %d blocks.\n", layout_out->n_blocks);
+
+  /* look for lines inside blocks */
+  for (block_index = 0; block_index < layout_out->n_blocks; block_index++)
+  {
+    if (debug || verbose)
+      g_print ("  analyzing block %d.\n", block_index + 1);
+    ho_layout_create_line_mask (layout_out, block_index);
+
+    if (debug || verbose)
+      g_print ("    found %d lines.\n", layout_out->n_lines[block_index]);
+
+    if (debug)
+      g_print
+        ("    font height %d width %d, line spacing %d\n",
+        layout_out->m_blocks_text[block_index]->font_height,
+        layout_out->m_blocks_text[block_index]->font_width,
+        layout_out->m_blocks_text[block_index]->line_spacing);
+
+    /* look for words inside line */
+    for (line_index = 0; line_index < layout_out->n_lines[block_index];
+      line_index++)
+    {
+      if (debug || verbose)
+        g_print ("      analyzing line %d.\n", line_index + 1);
+      ho_layout_create_word_mask (layout_out, block_index, line_index);
+
+      if (debug)
+        g_print ("        line avg fill %d common fill %d\n",
+          layout_out->m_lines_text[block_index][line_index]->
+          avg_line_fill,
+          layout_out->m_lines_text[block_index][line_index]->com_line_fill);
+
+      if (debug)
+        g_print ("        found %d words. font spacing %d\n",
+          layout_out->n_words[block_index][line_index],
+          layout_out->m_lines_text[block_index][line_index]->font_spacing);
+
+      /* look for fonts inside word */
+      for (word_index = 0;
+        word_index < layout_out->n_words[block_index][line_index]; word_index++)
+      {
+        if (debug)
+          g_print ("        analyzing word %d.\n", word_index + 1);
+        ho_layout_create_font_mask (layout_out, block_index, line_index,
+          word_index, slicing_threshold, slicing_width);
+
+        if (debug)
+          g_print ("          found %d fonts.\n",
+            layout_out->n_fonts[block_index][line_index][word_index]);
+      }
+    }
+  }
+
+  return layout_out;
+}
+
+/* FIXME: this functions use globals */
 int
 hocr_exit ()
 {
@@ -695,77 +776,10 @@ main (int argc, char *argv[])
   }
 
   l_page =
-    ho_layout_new (m_page_text, font_spacing_code, paragraph_setup, dir_ltr);
+    hocr_create_layout (m_page_text, font_spacing_code, paragraph_setup,
+    dir_ltr);
 
-  ho_layout_create_block_mask (l_page);
-
-  if (debug || verbose)
-    g_print ("  found %d blocks.\n", l_page->n_blocks);
-
-  /* start counting fonts */
-  number_of_fonts = 0;
-
-  /* look for lines inside blocks */
-  {
-    int block_index;
-    int line_index;
-    int word_index;
-
-    for (block_index = 0; block_index < l_page->n_blocks; block_index++)
-    {
-      if (debug || verbose)
-        g_print ("  analyzing block %d.\n", block_index + 1);
-      ho_layout_create_line_mask (l_page, block_index);
-
-      if (debug || verbose)
-        g_print ("    found %d lines.\n", l_page->n_lines[block_index]);
-
-      if (debug)
-        g_print
-          ("    font height %d width %d, line spacing %d\n",
-          l_page->m_blocks_text[block_index]->font_height,
-          l_page->m_blocks_text[block_index]->font_width,
-          l_page->m_blocks_text[block_index]->line_spacing);
-
-      /* look for words inside line */
-      for (line_index = 0; line_index < l_page->n_lines[block_index];
-        line_index++)
-      {
-        if (debug || verbose)
-          g_print ("      analyzing line %d.\n", line_index + 1);
-        ho_layout_create_word_mask (l_page, block_index, line_index);
-
-        if (debug)
-          g_print ("        line avg fill %d common fill %d\n",
-            l_page->m_lines_text[block_index][line_index]->
-            avg_line_fill,
-            l_page->m_lines_text[block_index][line_index]->com_line_fill);
-
-        if (debug)
-          g_print ("        found %d words. font spacing %d\n",
-            l_page->n_words[block_index][line_index],
-            l_page->m_lines_text[block_index][line_index]->font_spacing);
-
-        /* look for fonts inside word */
-        for (word_index = 0;
-          word_index < l_page->n_words[block_index][line_index]; word_index++)
-        {
-          if (debug)
-            g_print ("        analyzing word %d.\n", word_index + 1);
-          ho_layout_create_font_mask (l_page, block_index, line_index,
-            word_index, slicing_threshold, slicing_width);
-
-          if (debug)
-            g_print ("          found %d fonts.\n",
-              l_page->n_fonts[block_index][line_index][word_index]);
-
-          /* count fonts */
-          number_of_fonts += l_page->
-            n_fonts[block_index][line_index][word_index];
-        }
-      }
-    }
-  }
+  number_of_fonts = l_page->number_of_fonts;
 
   if (debug || verbose)
     g_print ("end of image layout analysis.\n");

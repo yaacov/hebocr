@@ -94,5 +94,21 @@ hocr_image_processing (const ho_pixbuf * pix_in,
   const unsigned char adaptive,
   const unsigned char threshold, const unsigned char a_threshold);
 
+/**
+ new ho_layout 
+
+ @param m_in a pointer to a text bitmap
+ @param font_spacing_code -3 tight .. 0 .. 3 spaced
+ @param paragraph_setup free text blocks or boxed in columns
+ @param slicing_threshold percent of line fill to cut fonts
+ @param slicing_width what is a wide font
+ @param dir true-ltr false-rtl
+ @return a newly allocated and filled layout
+ */
+ho_layout *hocr_layout_analysis (const ho_bitmap * m_in,
+  const int font_spacing_code, const int paragraph_setup,
+  const int slicing_threshold, const int slicing_width,
+  const unsigned char dir_ltr);
+
 END_C_DECLS
 #endif /* HOCR_H */

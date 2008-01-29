@@ -103,7 +103,7 @@ hocr_image_processing (const ho_pixbuf * pix_in,
   ho_bitmap_free (bitmap_temp);
   if (!bitmap_out)
     return NULL;
-  
+
   /* rotate image */
   if (rotate)
   {
@@ -111,7 +111,7 @@ hocr_image_processing (const ho_pixbuf * pix_in,
     ho_bitmap_free (bitmap_out);
     if (!bitmap_temp)
       return NULL;
-    
+
     bitmap_out = bitmap_temp;
   }
   else if (!no_auto_rotate)
@@ -133,4 +133,55 @@ hocr_image_processing (const ho_pixbuf * pix_in,
   }
 
   return bitmap_out;
+}
+
+/**
+ new ho_layout 
+ @param m_in a pointer to a text bitmap
+ @param font_spacing_code -3 tight .. 0 .. 3 spaced
+ @param paragraph_setup free text blocks or boxed in columns
+ @param slicing_threshold percent of line fill to cut fonts
+ @param slicing_width what is a wide font
+ @param dir true-ltr false-rtl
+ @return a newly allocated and filled layout
+ */
+ho_layout *
+hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
+  const int paragraph_setup, const int slicing_threshold,
+  const int slicing_width, const unsigned char dir_ltr)
+{
+  int block_index;
+  int line_index;
+  int word_index;
+  ho_layout *layout_out = NULL;
+
+  layout_out =
+    ho_layout_new (m_in, font_spacing_code, paragraph_setup, dir_ltr);
+  if (!layout_out)
+    return NULL;
+
+  ho_layout_create_block_mask (layout_out);
+
+  /* look for lines inside blocks */
+  for (block_index = 0; block_index < layout_out->n_blocks; block_index++)
+  {
+    ho_layout_create_line_mask (layout_out, block_index);
+
+    /* look for words inside line */
+    for (line_index = 0; line_index < layout_out->n_lines[block_index];
+      line_index++)
+    {
+      ho_layout_create_word_mask (layout_out, block_index, line_index);
+
+      /* look for fonts inside word */
+      for (word_index = 0;
+        word_index < layout_out->n_words[block_index][line_index]; word_index++)
+      {
+        ho_layout_create_font_mask (layout_out, block_index, line_index,
+          word_index, slicing_threshold, slicing_width);
+      }
+    }
+  }
+
+  return layout_out;
 }
