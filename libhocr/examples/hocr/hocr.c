@@ -916,10 +916,28 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
                 g_free (text_out);
               }
+              
+              /* printout the font guess array */
+              ho_string_cat (s_data_out, "\n\noutput:");
+              
+              for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
+              {
+                if (!(i % 50))
+                  ho_string_cat (s_data_out, "\n");
+                if (!(i % 10))
+                  ho_string_cat (s_data_out, "\n");
+                else if (!(i % 5))
+                  ho_string_cat (s_data_out, "  ");
+
+                text_out = g_strdup_printf ("%03.2f, ", array_out[i]);
+                ho_string_cat (s_data_out, text_out);
+
+                g_free (text_out);
+              }
 
               /* insert font guess to debug file */
               {
-                text_out = g_strdup_printf ("\nfont guess is %s\n\n", font);
+                text_out = g_strdup_printf ("\n\nfont guess is %s\n\n", font);
                 ho_string_cat (s_data_out, text_out);
                 g_free (text_out);
               }
