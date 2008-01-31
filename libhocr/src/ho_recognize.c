@@ -258,8 +258,8 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
 int
 ho_recognize_bars (const ho_bitmap * m_text,
   const ho_bitmap * m_mask, double *has_top_bar,
-  double *has_bottom_bar, double *has_left_bar,
-  double *has_right_bar, double *has_diagonal_bar,
+  double *has_mid_hbar, double *has_bottom_bar, double *has_left_bar,
+  double *has_mid_vbar, double *has_right_bar, double *has_diagonal_bar,
   double *has_diagonal_left_bar)
 {
   int sum, x, y;
@@ -1639,8 +1639,10 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   double has_three_hlines_down;
 
   double has_top_bar;
+  double has_mid_hbar;
   double has_bottom_bar;
   double has_left_bar;
+  double has_mid_vbar;
   double has_right_bar;
   double has_diagonal_bar;
   double has_diagonal_left_bar;
@@ -1715,21 +1717,35 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   array_in[3] = top;
   array_in[4] = bottom;
   array_in[5] = top_left;
-  array_in[6] = top_right;
-  array_in[7] = bottom_left;
-  array_in[8] = bottom_right;
+  array_in[6] = top_mid;
+  array_in[7] = top_right;
+  array_in[8] = mid_left;
+  array_in[9] = mid_right;
+  array_in[10] = bottom_left;
+  array_in[11] = bottom_mid;
+  array_in[12] = bottom_right;
+
+  array_in[13] = has_two_hlines_up;
+  array_in[14] = has_two_hlines_down;
+  array_in[15] = has_three_hlines_up;
+  array_in[16] = has_three_hlines_down;
 
   ho_recognize_bars (m_text, m_mask,
-    &has_top_bar,
+    &has_top_bar, &has_mid_hbar,
     &has_bottom_bar,
-    &has_left_bar, &has_right_bar, &has_diagonal_bar, &has_diagonal_left_bar);
+    &has_left_bar, &has_mid_vbar, &has_right_bar, &has_diagonal_bar,
+    &has_diagonal_left_bar);
 
-  array_in[9] = has_top_bar;
-  array_in[10] = has_bottom_bar;
-  array_in[11] = has_left_bar;
-  array_in[12] = has_right_bar;
-  array_in[13] = has_diagonal_bar;
-  array_in[14] = has_diagonal_left_bar;
+  array_in[17] = has_top_bar;
+  array_in[18] = has_mid_hbar;
+  array_in[19] = has_bottom_bar;
+
+  array_in[20] = has_left_bar;
+  array_in[21] = has_mid_vbar;
+  array_in[22] = has_right_bar;
+
+  array_in[23] = has_diagonal_bar;
+  array_in[24] = has_diagonal_left_bar;
 
   ho_recognize_edges (m_text, m_mask,
     &has_top_left_edge,
@@ -1743,21 +1759,21 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
     &has_right_top_edge,
     &has_left_bottom_edge, &has_mid_bottom_edge, &has_right_bottom_edge);
 
-  array_in[15] = has_top_left_edge;
-  array_in[16] = has_mid_left_edge;
-  array_in[17] = has_bottom_left_edge;
+  array_in[25] = has_top_left_edge;
+  array_in[26] = has_mid_left_edge;
+  array_in[27] = has_bottom_left_edge;
 
-  array_in[18] = has_top_right_edge;
-  array_in[19] = has_mid_right_edge;
-  array_in[20] = has_bottom_right_edge;
+  array_in[28] = has_top_right_edge;
+  array_in[29] = has_mid_right_edge;
+  array_in[30] = has_bottom_right_edge;
 
-  array_in[21] = has_left_top_edge;
-  array_in[22] = has_mid_top_edge;
-  array_in[23] = has_right_top_edge;
+  array_in[31] = has_left_top_edge;
+  array_in[32] = has_mid_top_edge;
+  array_in[33] = has_right_top_edge;
 
-  array_in[24] = has_left_bottom_edge;
-  array_in[25] = has_mid_bottom_edge;
-  array_in[26] = has_right_bottom_edge;
+  array_in[34] = has_left_bottom_edge;
+  array_in[35] = has_mid_bottom_edge;
+  array_in[36] = has_right_bottom_edge;
 
   ho_recognize_notches (m_text,
     m_mask,
@@ -1772,21 +1788,21 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
     &has_right_top_notch,
     &has_left_bottom_notch, &has_mid_bottom_notch, &has_right_bottom_notch);
 
-  array_in[27] = has_top_left_notch;
-  array_in[28] = has_mid_left_notch;
-  array_in[29] = has_bottom_left_notch;
+  array_in[37] = has_top_left_notch;
+  array_in[38] = has_mid_left_notch;
+  array_in[39] = has_bottom_left_notch;
 
-  array_in[30] = has_top_right_notch;
-  array_in[31] = has_mid_right_notch;
-  array_in[32] = has_bottom_right_notch;
+  array_in[40] = has_top_right_notch;
+  array_in[41] = has_mid_right_notch;
+  array_in[42] = has_bottom_right_notch;
 
-  array_in[33] = has_left_top_notch;
-  array_in[34] = has_mid_top_notch;
-  array_in[35] = has_right_top_notch;
+  array_in[43] = has_left_top_notch;
+  array_in[44] = has_mid_top_notch;
+  array_in[45] = has_right_top_notch;
 
-  array_in[36] = has_left_bottom_notch;
-  array_in[37] = has_mid_bottom_notch;
-  array_in[38] = has_right_bottom_notch;
+  array_in[46] = has_left_bottom_notch;
+  array_in[47] = has_mid_bottom_notch;
+  array_in[48] = has_right_bottom_notch;
 
   ho_recognize_ends (m_text,
     m_mask,
@@ -1807,37 +1823,39 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
     &has_mid_right_cross,
     &has_bottom_left_cross, &has_bottom_mid_cross, &has_bottom_right_cross);
 
-  array_in[39] = has_top_left_end;
-  array_in[40] = has_top_mid_end;
-  array_in[41] = has_top_right_end;
+  array_in[49] = has_top_left_end;
+  array_in[50] = has_top_mid_end;
+  array_in[51] = has_top_right_end;
 
-  array_in[42] = has_mid_left_end;
-  array_in[43] = has_mid_mid_end;
-  array_in[44] = has_mid_right_end;
+  array_in[52] = has_mid_left_end;
+  array_in[53] = has_mid_mid_end;
+  array_in[54] = has_mid_right_end;
 
-  array_in[45] = has_bottom_left_end;
-  array_in[46] = has_bottom_mid_end;
-  array_in[47] = has_bottom_right_end;
+  array_in[55] = has_bottom_left_end;
+  array_in[56] = has_bottom_mid_end;
+  array_in[57] = has_bottom_right_end;
 
-  array_in[48] = has_top_left_cross;
-  array_in[49] = has_top_mid_cross;
-  array_in[50] = has_top_right_cross;
+  array_in[58] = has_top_left_cross;
+  array_in[59] = has_top_mid_cross;
+  array_in[60] = has_top_right_cross;
 
-  array_in[51] = has_mid_left_cross;
-  array_in[52] = has_mid_mid_cross;
-  array_in[53] = has_mid_right_cross;
+  array_in[61] = has_mid_left_cross;
+  array_in[62] = has_mid_mid_cross;
+  array_in[63] = has_mid_right_cross;
 
-  array_in[54] = has_bottom_left_cross;
-  array_in[55] = has_bottom_mid_cross;
-  array_in[56] = has_bottom_right_cross;
+  array_in[64] = has_bottom_left_cross;
+  array_in[65] = has_bottom_mid_cross;
+  array_in[66] = has_bottom_right_cross;
 
   ho_recognize_parts (m_text,
     m_mask, &has_one_hole, &has_two_holes, &has_hey_part,
     &has_dot_part, &has_comma_part);
 
-  array_in[57] = has_one_hole;
-  array_in[58] = has_two_holes;
-  array_in[59] = has_hey_part;
+  array_in[67] = has_one_hole;
+  array_in[68] = has_two_holes;
+  array_in[69] = has_hey_part;
+  array_in[70] = has_dot_part;
+  array_in[71] = has_comma_part;
 
   ho_recognize_holes_edges (m_text, m_mask,
     &has_top_left_edge,
@@ -1851,34 +1869,34 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
     &has_right_top_edge,
     &has_left_bottom_edge, &has_mid_bottom_edge, &has_right_bottom_edge);
 
-  array_in[60] = has_top_left_edge;
-  array_in[61] = has_mid_left_edge;
-  array_in[62] = has_bottom_left_edge;
+  array_in[72] = has_top_left_edge;
+  array_in[73] = has_mid_left_edge;
+  array_in[74] = has_bottom_left_edge;
 
-  array_in[63] = has_top_right_edge;
-  array_in[64] = has_mid_right_edge;
-  array_in[65] = has_bottom_right_edge;
+  array_in[75] = has_top_right_edge;
+  array_in[76] = has_mid_right_edge;
+  array_in[77] = has_bottom_right_edge;
 
-  array_in[66] = has_left_top_edge;
-  array_in[67] = has_mid_top_edge;
-  array_in[68] = has_right_top_edge;
+  array_in[78] = has_left_top_edge;
+  array_in[79] = has_mid_top_edge;
+  array_in[80] = has_right_top_edge;
 
-  array_in[69] = has_left_bottom_edge;
-  array_in[70] = has_mid_bottom_edge;
-  array_in[71] = has_right_bottom_edge;
+  array_in[81] = has_left_bottom_edge;
+  array_in[82] = has_mid_bottom_edge;
+  array_in[83] = has_right_bottom_edge;
 
   ho_recognize_holes_dimentions (m_text, m_mask,
     &height, &width, &top, &bottom,
     &top_left, &top_right, &bottom_left, &bottom_right);
 
-  array_in[72] = height;
-  array_in[73] = width;
-  array_in[74] = top;
-  array_in[75] = bottom;
-  array_in[76] = top_left;
-  array_in[77] = top_right;
-  array_in[78] = bottom_left;
-  array_in[79] = bottom_right;
+  array_in[84] = height;
+  array_in[85] = width;
+  array_in[86] = top;
+  array_in[87] = bottom;
+  array_in[88] = top_left;
+  array_in[89] = top_right;
+  array_in[90] = bottom_left;
+  array_in[91] = bottom_right;
 
   ho_recognize_edges_big (m_text, m_mask,
     &has_top_left_edge,
@@ -1892,39 +1910,21 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
     &has_right_top_edge,
     &has_left_bottom_edge, &has_mid_bottom_edge, &has_right_bottom_edge);
 
-  array_in[80] = has_top_left_edge;
-  array_in[81] = has_mid_left_edge;
-  array_in[82] = has_bottom_left_edge;
+  array_in[92] = has_top_left_edge;
+  array_in[93] = has_mid_left_edge;
+  array_in[94] = has_bottom_left_edge;
 
-  array_in[83] = has_top_right_edge;
-  array_in[84] = has_mid_right_edge;
-  array_in[85] = has_bottom_right_edge;
+  array_in[95] = has_top_right_edge;
+  array_in[96] = has_mid_right_edge;
+  array_in[97] = has_bottom_right_edge;
 
-  array_in[86] = has_left_top_edge;
-  array_in[87] = has_mid_top_edge;
-  array_in[88] = has_right_top_edge;
+  array_in[98] = has_left_top_edge;
+  array_in[99] = has_mid_top_edge;
+  array_in[100] = has_right_top_edge;
 
-  array_in[89] = has_left_bottom_edge;
-  array_in[90] = has_mid_bottom_edge;
-  array_in[91] = has_right_bottom_edge;
-
-  /* more dimentions args (others are in 0..8) */
-  /* ho_recognize_dimentions (m_text, m_mask, &height, &width, &top, &bottom,
-   * &top_left, &top_mid, &top_right, &mid_left, &mid_right, &bottom_left,
-   * &bottom_mid, &bottom_right); */
-
-  array_in[92] = top_mid;
-  array_in[93] = mid_left;
-  array_in[94] = mid_right;
-  array_in[95] = bottom_mid;
-
-  array_in[96] = has_dot_part;
-  array_in[97] = has_two_hlines_up;
-  array_in[98] = has_two_hlines_down;
-  array_in[99] = has_three_hlines_up;
-  array_in[100] = has_three_hlines_down;
-
-  array_in[101] = has_comma_part;
+  array_in[101] = has_left_bottom_edge;
+  array_in[102] = has_mid_bottom_edge;
+  array_in[103] = has_right_bottom_edge;
 
   return 0;
 }

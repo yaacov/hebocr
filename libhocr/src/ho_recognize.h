@@ -28,7 +28,7 @@
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
-#define HO_ARRAY_IN_SIZE 102
+#define HO_ARRAY_IN_SIZE 104
 #define HO_ARRAY_OUT_SIZE 49
 
 /* font shapes codes*/
@@ -67,8 +67,8 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
 int
 ho_recognize_bars (const ho_bitmap * m_text,
   const ho_bitmap * m_mask, double *has_top_bar,
-  double *has_bottom_bar, double *has_left_bar,
-  double *has_right_bar, double *has_diagonal_bar,
+  double *has_mid_hbar, double *has_bottom_bar, double *has_left_bar,
+  double *has_mid_vbar, double *has_right_bar, double *has_diagonal_bar,
   double *has_diagonal_left_bar);
 
 int
