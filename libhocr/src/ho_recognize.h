@@ -29,14 +29,15 @@
 #include <ho_objmap.h>
 
 #define HO_ARRAY_IN_SIZE 102
-#define HO_ARRAY_OUT_SIZE 39
+#define HO_ARRAY_OUT_SIZE 49
 
 /* font shapes codes*/
 static char *ho_sign_array[HO_ARRAY_OUT_SIZE] =
   { "*", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ",
   "ך", "ל", "מ", "ם", "נ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",
   "ק", "ר", "ש", "ת", ".", ",",
-  "'", "?", "!", ":", ";", ")", "(", "-", "+"
+  "'", "?", "!", ":", ";", ")", "(", "-", "+",
+  "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
 };
 
 int ho_recognize_array_in_size ();

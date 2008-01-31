@@ -907,7 +907,12 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
                 if (!(i % 50))
                   ho_string_cat (s_data_out, "\n");
                 if (!(i % 10))
-                  ho_string_cat (s_data_out, "\n");
+                {
+                  text_out = g_strdup_printf ("\n(%02d) ", i);
+                  ho_string_cat (s_data_out, text_out);
+
+                  g_free (text_out);
+                }
                 else if (!(i % 5))
                   ho_string_cat (s_data_out, "  ");
 
@@ -916,16 +921,21 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
                 g_free (text_out);
               }
-              
+
               /* printout the font guess array */
               ho_string_cat (s_data_out, "\n\noutput:");
-              
+
               for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
               {
                 if (!(i % 50))
                   ho_string_cat (s_data_out, "\n");
                 if (!(i % 10))
-                  ho_string_cat (s_data_out, "\n");
+                {
+                  text_out = g_strdup_printf ("\n(%02d) ", i);
+                  ho_string_cat (s_data_out, text_out);
+
+                  g_free (text_out);
+                }
                 else if (!(i % 5))
                   ho_string_cat (s_data_out, "  ");
 

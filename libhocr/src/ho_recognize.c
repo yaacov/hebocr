@@ -269,7 +269,6 @@ ho_recognize_bars (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts;
 
   ho_bitmap *m_bars = NULL;
 
@@ -304,31 +303,29 @@ ho_recognize_bars (const ho_bitmap * m_text,
   if (!font_height || !line_height)
     return TRUE;
 
-  /* if short font it has only two parts (high and low) */
-  font_parts = 3;
-  if (font_height / line_height < 0.6)
-    font_parts = 2;
-
   /* get horizontal bars */
   m_bars = ho_font_hbars (m_text, m_mask);
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in top 1/4 of font */
+  /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_bar = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 2)
+        *has_top_bar = 1.0;
+      else
+        *has_bottom_bar = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_bar = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   /* get vertical bars */
   ho_bitmap_free (m_bars);
@@ -336,21 +333,24 @@ ho_recognize_bars (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = 0; x < m_bars->width / font_parts && !ho_bitmap_get (m_bars, x, y);
-    x++) ;
-  if (ho_bitmap_get (m_bars, x, y) && x < m_bars->width / font_parts)
-    *has_left_bar = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 2)
+        *has_left_bar = 1.0;
+      else
+        *has_right_bar = 1.0;
 
-  /* look for a bar in right 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_bars->width - 1;
-    x > (font_parts - 1) * m_bars->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > (font_parts - 1) * m_bars->width / font_parts)
-    *has_right_bar = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   /* get diagonals */
   ho_bitmap_free (m_bars);
@@ -403,7 +403,6 @@ ho_recognize_edges (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts;
 
   ho_bitmap *m_bars = NULL;
 
@@ -449,34 +448,26 @@ ho_recognize_edges (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* if short font it has only two parts (high and low) */
-  font_parts = 3;
-  if (font_height / line_height < 0.6)
-    font_parts = 2;
-
-  /* look for a bar in top 1/4 of font */
+  /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_left_edge = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_left_edge = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_left_edge = 1.0;
+      else
+        *has_bottom_left_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end - 2 * font_height / font_parts;
-    y <= font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_left_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_left_edge = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -484,62 +475,52 @@ ho_recognize_edges (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in top 1/4 of font */
+  /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_right_edge = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_right_edge = 1.0;
+      else if ((y - font_start) < (2 * font_height / 3))
+        *has_mid_right_edge = 1.0;
+      else
+        *has_bottom_right_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end - 2 * font_height / font_parts;
-    y <= font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_right_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_right_edge = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
   m_bars = ho_font_edges_top (m_text, m_mask);
   if (!m_bars)
     return TRUE;
 
-  /* if thin font it has only two parts (high and low) */
-  font_parts = 3;
-
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = 0;
-    x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
-    *has_left_top_edge = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_top_edge = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_top_edge = 1.0;
+      else
+        *has_right_top_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = (font_parts - 2) * m_text->width / font_parts;
-    x <= (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < (font_parts - 1) * m_text->width / font_parts)
-    *has_mid_top_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width;
-    x > (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > (font_parts - 1) * m_text->width / font_parts)
-    *has_right_top_edge = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -547,30 +528,26 @@ ho_recognize_edges (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = 0;
-    x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
-    *has_left_bottom_edge = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_bottom_edge = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_bottom_edge = 1.0;
+      else
+        *has_right_bottom_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = (font_parts - 2) * m_text->width / font_parts;
-    x <= (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < (font_parts - 1) * m_text->width / font_parts)
-    *has_mid_bottom_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width;
-    x > (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > (font_parts - 1) * m_text->width / font_parts)
-    *has_right_bottom_edge = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
 
@@ -599,7 +576,6 @@ ho_recognize_edges_big (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts = 3;
 
   ho_bitmap *m_bars = NULL;
 
@@ -645,33 +621,26 @@ ho_recognize_edges_big (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* if short font it has only two parts (high and low) */
-  if (font_height / line_height < 0.6)
-    font_parts = 2;
-
-  /* look for a bar in top 1/4 of font */
+  /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_left_edge = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_left_edge = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_left_edge = 1.0;
+      else
+        *has_bottom_left_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end - 2 * font_height / font_parts;
-    y < font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_left_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_left_edge = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -679,62 +648,52 @@ ho_recognize_edges_big (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in top 1/4 of font */
+  /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_right_edge = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_right_edge = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_right_edge = 1.0;
+      else
+        *has_bottom_right_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end - 2 * font_height / font_parts;
-    y <= font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_right_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_right_edge = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
   m_bars = ho_font_edges_top_big (m_text, m_mask);
   if (!m_bars)
     return TRUE;
 
-  /* if thin font it has only two parts (high and low) */
-  font_parts = 3;
-
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = 0;
-    x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
-    *has_left_top_edge = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_top_edge = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_top_edge = 1.0;
+      else
+        *has_right_top_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = (font_parts - 2) * m_text->width / font_parts;
-    x <= (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < (font_parts - 1) * m_text->width / font_parts)
-    *has_mid_top_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width;
-    x > (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > (font_parts - 1) * m_text->width / font_parts)
-    *has_right_top_edge = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -742,30 +701,26 @@ ho_recognize_edges_big (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = 0;
-    x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
-    *has_left_bottom_edge = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_bottom_edge = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_bottom_edge = 1.0;
+      else
+        *has_right_bottom_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = (font_parts - 2) * m_text->width / font_parts;
-    x <= (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < (font_parts - 1) * m_text->width / font_parts)
-    *has_mid_bottom_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width;
-    x > (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > (font_parts - 1) * m_text->width / font_parts)
-    *has_right_bottom_edge = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
 
@@ -794,7 +749,6 @@ ho_recognize_notches (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts = 3;
 
   ho_bitmap *m_bars = NULL;
 
@@ -835,34 +789,30 @@ ho_recognize_notches (const ho_bitmap * m_text,
   if (!font_height || !line_height)
     return TRUE;
 
-  /* get horizontal left egdes */
+  /* get horizontal left notches */
   m_bars = ho_font_notch_left (m_text, m_mask);
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in top 1/4 of font */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_left_notch = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_left_notch = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_left_notch = 1.0;
+      else
+        *has_bottom_left_notch = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_start + font_height / font_parts;
-    y <= font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_left_notch = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_left_notch = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -870,59 +820,51 @@ ho_recognize_notches (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in top 1/4 of font */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_right_notch = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_right_notch = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_right_notch = 1.0;
+      else
+        *has_bottom_right_notch = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_start + font_height / font_parts;
-    y <= font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_right_notch = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_right_notch = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
   m_bars = ho_font_notch_top (m_text, m_mask);
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = 0;
-    x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
-    *has_left_top_notch = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_top_notch = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_top_notch = 1.0;
+      else
+        *has_right_top_notch = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width / font_parts;
-    x <= (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < (font_parts - 1) * m_text->width / font_parts)
-    *has_mid_top_notch = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width;
-    x > (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > (font_parts - 1) * m_text->width / font_parts)
-    *has_right_top_notch = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -930,30 +872,26 @@ ho_recognize_notches (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = 0;
-    x < m_text->width / font_parts && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y) && x < m_text->width / font_parts)
-    *has_left_bottom_notch = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_bottom_notch = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_bottom_notch = 1.0;
+      else
+        *has_right_bottom_notch = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width / font_parts;
-    x <= (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < (font_parts - 1) * m_text->width / font_parts)
-    *has_mid_bottom_notch = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = m_text->width;
-    x > (font_parts - 1) * m_text->width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > (font_parts - 1) * m_text->width / font_parts)
-    *has_right_bottom_notch = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
 
@@ -1502,7 +1440,6 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-  int font_parts = 3;
 
   ho_bitmap *m_bars = NULL;
   ho_bitmap *m_holes = NULL;
@@ -1572,33 +1509,26 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* if short font it has only two parts (high and low) */
-  if (font_height / line_height < 0.6)
-    font_parts = 2;
-
-  /* look for a bar in top 1/4 of font */
+  /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_left_edge = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_left_edge = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_left_edge = 1.0;
+      else
+        *has_bottom_left_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end - 2 * font_height / font_parts;
-    y < font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_left_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_left_edge = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -1606,64 +1536,52 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in top 1/4 of font */
+  /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
-  for (y = font_start;
-    y < font_start + font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_start + font_height / font_parts)
-    *has_top_right_edge = 1.0;
+  for (y = font_start; y < font_end; y++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if ((y - font_start) < font_height / 3)
+        *has_top_right_edge = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_right_edge = 1.0;
+      else
+        *has_bottom_right_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end - 2 * font_height / font_parts;
-    y < font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y++) ;
-  if (ho_bitmap_get (m_bars, x, y) && y < font_end - font_height / font_parts)
-    *has_mid_right_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  x = m_bars->width / 2;
-  for (y = font_end;
-    y > font_end - font_height / font_parts
-    && !ho_bitmap_get (m_bars, x, y); y--) ;
-  if (ho_bitmap_get (m_bars, x, y) && y > font_end - font_height / font_parts)
-    *has_bottom_right_edge = 1.0;
+      /* get out of the line */
+      y++;
+      for (; y < font_end && ho_bitmap_get (m_bars, x, y); y++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
   m_bars = ho_font_edges_top (m_holes, m_mask);
   if (!m_bars)
     return TRUE;
 
-  /* if thin font it has only two parts (high and low) */
-  font_parts = 3;
-
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = font_start_x;
-    x < font_start_x + font_width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < font_start_x + font_width / font_parts)
-    *has_left_top_edge = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_top_edge = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_top_edge = 1.0;
+      else
+        *has_right_top_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = font_start_x + (font_parts - 2) * font_width / font_parts;
-    x < font_start_x + (font_parts - 1) * font_width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < font_start_x + (font_parts - 1) * font_width / font_parts)
-    *has_mid_top_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = font_end_x;
-    x > font_start_x + (font_parts - 1) * font_width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > font_start_x + (font_parts - 1) * font_width / font_parts)
-    *has_right_top_edge = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
@@ -1671,32 +1589,26 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   if (!m_bars)
     return TRUE;
 
-  /* look for a bar in left 1/4 of font */
+  /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
-  for (x = font_start_x;
-    x < font_start_x + font_width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x++) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < font_start_x + font_width / font_parts)
-    *has_left_bottom_edge = 1.0;
+  for (x = 0; x < m_bars->width; x++)
+  {
+    /* find a line */
+    if (ho_bitmap_get (m_bars, x, y))
+    {
+      /* where are we in fonts */
+      if (x < m_bars->width / 3)
+        *has_left_bottom_edge = 1.0;
+      else if (x < (2 * m_bars->width / 3))
+        *has_mid_bottom_edge = 1.0;
+      else
+        *has_right_bottom_edge = 1.0;
 
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = font_start_x + (font_parts - 2) * font_width / font_parts;
-    x < font_start_x + (font_parts - 1) * font_width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x < font_start_x + (font_parts - 1) * font_width / font_parts)
-    *has_mid_bottom_edge = 1.0;
-
-  /* look for a bar in bottom 1/4 of font */
-  y = m_bars->height / 2;
-  for (x = font_end_x;
-    x > font_start_x + (font_parts - 1) * font_width / font_parts
-    && !ho_bitmap_get (m_bars, x, y); x--) ;
-  if (ho_bitmap_get (m_bars, x, y)
-    && x > font_start_x + (font_parts - 1) * font_width / font_parts)
-    *has_right_bottom_edge = 1.0;
+      /* get out of the line */
+      x++;
+      for (; x < m_bars->width && ho_bitmap_get (m_bars, x, y); x++) ;
+    }
+  }
 
   ho_bitmap_free (m_bars);
 
@@ -2021,7 +1933,7 @@ double
 ho_recognize_array (const double *array_in, const int sign_index)
 {
   int i;
-  double return_value = 0.0;
+  double return_value;
 
   switch (sign_index)
   {
@@ -2129,6 +2041,18 @@ ho_recognize_array (const double *array_in, const int sign_index)
     break;
   case 37:                     /* minus */
     return_value = ho_recognize_font_david_minus (array_in);
+  case 38:                     /* 0 */
+  case 39:                     /* 1 */
+  case 40:                     /* 2 */
+  case 41:                     /* 3 */
+  case 42:                     /* 4 */
+  case 43:                     /* 5 */
+  case 44:                     /* 6 */
+  case 45:                     /* 7 */
+  case 46:                     /* 8 */
+  case 47:                     /* 9 */
+  default:
+    return_value = 0.0;
     break;
   }
 
@@ -2141,7 +2065,7 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
   int i;
 
   /* set array out */
-  array_out[0] = 0.5;
+  array_out[0] = 0.2;
   for (i = 1; i < HO_ARRAY_OUT_SIZE; i++)
     array_out[i] = ho_recognize_array (array_in, i);
   return FALSE;
