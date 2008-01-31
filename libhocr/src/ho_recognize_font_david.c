@@ -140,12 +140,17 @@ ho_recognize_font_david_bet (const double *array_in)
 
   if (array_in[9] > 0.9)
     return_value += 0.1;
-  if (array_in[20] > 0.9)
+  if (array_in[10] > 0.9)
     return_value += 0.1;
-  if (array_in[20] > 0.9)
+  if (array_in[11] < 0.1)
     return_value += 0.1;
+  if (array_in[12] < 0.1)
+    return_value += 0.1;
+  
+  if (array_in[20] > 0.9)
+    return_value += 0.2;
   if (array_in[28] > 0.9)
-    return_value += 0.1;
+    return_value += 0.2;
   
   if (array_in[37] > 0.9)
     return_value -= 0.2;
@@ -184,6 +189,24 @@ ho_recognize_font_david_dalet (const double *array_in)
 {
   double return_value = 0.0;
 
+  if (array_in[9] > 0.9)
+    return_value += 0.1;
+  if (array_in[10] < 0.1)
+    return_value += 0.1;
+  if (array_in[11] < 0.1)
+    return_value += 0.1;
+  if (array_in[12] > 0.9)
+    return_value += 0.1;
+  
+  if (array_in[18] > 0.9)
+    return_value += 0.1;
+  
+  if (array_in[26] > 0.9)
+    return_value -= 0.3;
+  
+  if (array_in[59])
+    return_value -= 0.3;
+  
   return return_value;
 }
 
@@ -191,7 +214,19 @@ double
 ho_recognize_font_david_hey (const double *array_in)
 {
   double return_value = 0.0;
-
+  
+  if (array_in[59])
+    return_value += 0.3;
+  
+  if (array_in[9] > 0.9)
+    return_value += 0.1;
+  if (array_in[10] < 0.1)
+    return_value += 0.1;
+  if (array_in[11] < 0.1)
+    return_value += 0.1;
+  if (array_in[12] > 0.9)
+    return_value += 0.1;
+  
   return return_value;
 }
 
