@@ -22,13 +22,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file ho_layout.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HO_LAYOUT_H
 #define HO_LAYOUT_H 1
 
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
-/* hocr layout */
+/** @struct ho_layout
+  @brief libhocr layout struct
+*/
 typedef struct
 {
   /* paragraph settings type */

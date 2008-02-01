@@ -22,6 +22,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file ho_font.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HO_FONT_H
 #define HO_FONT_H 1
 

@@ -22,6 +22,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file ho_bitmap.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HO_BITMAP_H
 #define HO_BITMAP_H 1
 
@@ -37,6 +43,9 @@
 #define ho_bitmap_get_width(m) ((m)->width)
 #define ho_bitmap_get_height(m) ((m)->height)
 
+/** @struct ho_bitmap
+  @brief libhocr bitmap struct
+*/
 typedef struct
 {
   unsigned char type;

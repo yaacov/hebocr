@@ -22,6 +22,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file ho_dimentions.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HO_DIMENTIONS_H
 #define HO_DIMENTIONS_H 1
 

@@ -22,6 +22,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file ho_objmap.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HO_OBJMAP_H
 #define HO_OBJMAP_H 1
 
@@ -37,7 +43,9 @@
 #define ho_objmap_get_width(m) ((m)->width)
 #define ho_objmap_get_height(m) ((m)->height)
 
-/* hocr_object */
+/** @struct ho_obj
+  @brief libhocr object struct
+*/
 typedef struct
 {
   int index;
@@ -49,7 +57,9 @@ typedef struct
   int height;
 } ho_obj;
 
-/* hocr_object_list */
+/** @struct ho_objlist
+  @brief libhocr object list struct
+*/
 typedef struct
 {
   int size;
@@ -57,7 +67,9 @@ typedef struct
   ho_obj *objects;
 } ho_objlist;
 
-/* hocr_object_map */
+/** @struct ho_objmap
+  @brief libhocr object map struct
+*/
 typedef struct
 {
   int x;

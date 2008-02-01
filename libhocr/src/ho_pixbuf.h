@@ -22,6 +22,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file ho_pixbuf.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HO_PIXBUF_H
 #define HO_PIXBUF_H 1
 
@@ -43,7 +49,9 @@
 #define ho_pixbuf_get_rowstride(m) ((m)->rowstride)
 #define ho_pixbuf_get_data(m) ((m)->data)
 
-/* hocr pixbuf: copy of gtk_pixbuf */
+/** @struct ho_pixbuf
+  @brief libhocr pixbuf map struct (copy gtk pixbuf)
+*/
 typedef struct
 {
   unsigned char n_channels;

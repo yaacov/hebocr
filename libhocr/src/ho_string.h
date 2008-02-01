@@ -22,9 +22,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @file ho_string.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HO_STRING_H
 #define HO_STRING_H 1
 
+/** @struct ho_string
+  @brief libhocr string struct
+*/
 typedef struct
 {
   char *string;

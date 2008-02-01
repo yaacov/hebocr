@@ -41,6 +41,12 @@
  *
  */
 
+/** @file hocr.h
+    @brief libhocr C language header.
+    
+    libhocr - LIBrary for Hebrew Optical Character Recognition 
+*/
+
 #ifndef HOCR_H
 #define HOCR_H 1
 
