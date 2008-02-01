@@ -1,4 +1,4 @@
-.TH "src/ho_recognize.h" 3 "30 Jan 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_recognize.h" 3 "1 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -18,10 +18,10 @@ src/ho_recognize.h \-
 .RI "#define \fBHO_RECOGNIZE_H\fP   1"
 .br
 .ti -1c
-.RI "#define \fBHO_ARRAY_IN_SIZE\fP   102"
+.RI "#define \fBHO_ARRAY_IN_SIZE\fP   104"
 .br
 .ti -1c
-.RI "#define \fBHO_ARRAY_OUT_SIZE\fP   39"
+.RI "#define \fBHO_ARRAY_OUT_SIZE\fP   49"
 .br
 .in -1c
 .SS "Functions"
@@ -49,7 +49,7 @@ src/ho_recognize.h \-
 .RI "int \fBho_recognize_dimentions\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *height, double *width, double *top, double *bottom, double *top_left, double *top_mid, double *top_right, double *mid_left, double *mid_right, double *bottom_left, double *bottom_mid, double *bottom_right, double *has_two_hlines_up, double *has_two_hlines_down, double *has_three_hlines_up, double *has_three_hlines_down)"
 .br
 .ti -1c
-.RI "int \fBho_recognize_bars\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_bar, double *has_bottom_bar, double *has_left_bar, double *has_right_bar, double *has_diagonal_bar, double *has_diagonal_left_bar)"
+.RI "int \fBho_recognize_bars\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_bar, double *has_mid_hbar, double *has_bottom_bar, double *has_left_bar, double *has_mid_vbar, double *has_right_bar, double *has_diagonal_bar, double *has_diagonal_left_bar)"
 .br
 .ti -1c
 .RI "int \fBho_recognize_edges\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *has_top_left_edge, double *has_mid_left_edge, double *has_bottom_left_edge, double *has_top_right_edge, double *has_mid_right_edge, double *has_bottom_right_edge, double *has_left_top_edge, double *has_mid_top_edge, double *has_right_top_edge, double *has_left_bottom_edge, double *has_mid_bottom_edge, double *has_right_bottom_edge)"
@@ -77,9 +77,9 @@ src/ho_recognize.h \-
 .PP 
 .SS "#define HO_RECOGNIZE_H   1"
 .PP
-.SS "#define HO_ARRAY_IN_SIZE   102"
+.SS "#define HO_ARRAY_IN_SIZE   104"
 .PP
-.SS "#define HO_ARRAY_OUT_SIZE   39"
+.SS "#define HO_ARRAY_OUT_SIZE   49"
 .PP
 .SH "Function Documentation"
 .PP 
@@ -97,7 +97,7 @@ src/ho_recognize.h \-
 .PP
 .SS "int ho_recognize_dimentions (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * height, double * width, double * top, double * bottom, double * top_left, double * top_mid, double * top_right, double * mid_left, double * mid_right, double * bottom_left, double * bottom_mid, double * bottom_right, double * has_two_hlines_up, double * has_two_hlines_down, double * has_three_hlines_up, double * has_three_hlines_down)"
 .PP
-.SS "int ho_recognize_bars (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_bar, double * has_bottom_bar, double * has_left_bar, double * has_right_bar, double * has_diagonal_bar, double * has_diagonal_left_bar)"
+.SS "int ho_recognize_bars (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_bar, double * has_mid_hbar, double * has_bottom_bar, double * has_left_bar, double * has_mid_vbar, double * has_right_bar, double * has_diagonal_bar, double * has_diagonal_left_bar)"
 .PP
 .SS "int ho_recognize_edges (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * has_top_left_edge, double * has_mid_left_edge, double * has_bottom_left_edge, double * has_top_right_edge, double * has_mid_right_edge, double * has_bottom_right_edge, double * has_left_top_edge, double * has_mid_top_edge, double * has_right_top_edge, double * has_left_bottom_edge, double * has_mid_bottom_edge, double * has_right_bottom_edge)"
 .PP

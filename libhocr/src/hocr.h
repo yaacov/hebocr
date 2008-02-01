@@ -23,10 +23,18 @@
  */
 
 /** @mainpage libhocr
+ *
+ * @ref README @ref HACKING @ref ChangeLog
+ *
  * LIBrary for Hebrew Optical Character Recognition 
+ *
+ * http://hocr.berlios.de
  *
  * @section README
  * @include README
+ * 
+ * @section HACKING
+ * @include HACKING
  * 
  * @section ChangeLog
  * @include ChangeLog
