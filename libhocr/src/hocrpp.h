@@ -45,14 +45,14 @@ namespace hocr
    @brief Hocr class.
 	
    class for Hebrew Optical Character Recognition 
-	 */
+   */
   class Hocr;
 
   /**
    @brief Hocr class.
 	
    class for Hebrew Optical Character Recognition 
-	 */
+   */
   class Hocr
   {
 
@@ -60,7 +60,7 @@ namespace hocr
 
     /**
      @brief Hocr constructor.
-		 */
+     */
     Hocr ()
     {
       /* lock free pointers */
@@ -92,7 +92,7 @@ namespace hocr
 
     /**
      @brief Hocr constructor.
-		 */
+     */
     Hocr (ho_pixbuf * m_in)
     {
       /* set pixbuf */
@@ -126,7 +126,7 @@ namespace hocr
 
     /**
      @brief Hocr destructor.
-		 */
+     */
      ~Hocr ()
     {
       ho_pixbuf_free (m_pix_orig);
@@ -139,7 +139,7 @@ namespace hocr
     
      @param m_in the pixbuf to use
      @return 0
-		 */
+     */
     int set_pixbuf (ho_pixbuf * m_in)
     {
       /* free existing data if present */
@@ -163,7 +163,7 @@ namespace hocr
     
      @param m_in the b/w bitmap to use
      @return 0
-		 */
+     */
     int set_bitmap (ho_bitmap * m_in)
     {
       /* free existing data if present */
@@ -186,7 +186,7 @@ namespace hocr
      @brief get pixbuf
     
      @return the object pixbuf
-		 */
+     */
     ho_pixbuf *get_pixbuf ()
     {
       return m_pix_orig;
@@ -196,7 +196,7 @@ namespace hocr
      @brief get bitmap
     
      @return the object bitmap
-		 */
+     */
     ho_bitmap *get_bitmap ()
     {
       return m_bit_bw;
@@ -206,7 +206,7 @@ namespace hocr
      @brief get layout pixbuf
     
      @return a pixbuf of the object layout
-		 */
+     */
     ho_pixbuf *get_layout_pixbuf ()
     {
       ho_pixbuf *m_pix_out = NULL;
@@ -233,7 +233,7 @@ namespace hocr
      @brief get text
      
      @return the recognized text
-		 */
+     */
     const char *get_text ()
     {
       /* do we have text ? */
@@ -247,7 +247,7 @@ namespace hocr
      @brief get progress of ocr
      
      @return the progress 0..100
-		 */
+     */
     int get_progress ()
     {
       return progress;
@@ -257,7 +257,7 @@ namespace hocr
      @brief do image processing
     
      @return 0
-		 */
+     */
     int do_image_processing ()
     {
       if (!m_pix_orig)
@@ -275,7 +275,7 @@ namespace hocr
      @brief do layout analysis
     
      @return 0
-		 */
+     */
     int do_layout_analysis ()
     {
       if (!m_bit_bw)
@@ -292,7 +292,7 @@ namespace hocr
      @brief do font recognition
     
      @return 0
-		 */
+     */
     int do_font_recognition ()
     {
       if (!page_layout)
@@ -309,7 +309,7 @@ namespace hocr
      @brief do ocr
     
      @return 0
-		 */
+     */
     int do_ocr ()
     {
       /* do all ocr stages */
