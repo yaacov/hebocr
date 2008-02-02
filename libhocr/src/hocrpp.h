@@ -134,6 +134,12 @@ namespace hocr
       ho_string_free (text_out);
     }
 
+    /**
+		 @brief set pixbuf
+    
+     @param m_in the pixbuf to use
+     @return 0
+		 */
     int set_pixbuf (ho_pixbuf * m_in)
     {
       /* free existing data if present */
@@ -152,6 +158,12 @@ namespace hocr
       return 0;
     }
 
+    /**
+		 @brief set b/w bitmap
+    
+     @param m_in the b/w bitmap to use
+     @return 0
+		 */
     int set_bitmap (ho_bitmap * m_in)
     {
       /* free existing data if present */
@@ -170,16 +182,31 @@ namespace hocr
       return 0;
     }
 
+    /**
+		 @brief get pixbuf
+    
+     @return the object pixbuf
+		 */
     ho_pixbuf *get_pixbuf ()
     {
       return m_pix_orig;
     }
 
+    /**
+		 @brief get bitmap
+    
+     @return the object bitmap
+		 */
     ho_bitmap *get_bitmap ()
     {
       return m_bit_bw;
     }
 
+    /**
+		 @brief get layout pixbuf
+    
+     @return a pixbuf of the object layout
+		 */
     ho_pixbuf *get_layout_pixbuf ()
     {
       ho_pixbuf *m_pix_out = NULL;
@@ -202,6 +229,11 @@ namespace hocr
       return m_pix_out;
     }
 
+    /**
+		 @brief get text
+    
+     @return the recognized text
+		 */
     const char *get_text ()
     {
       /* do we have text ? */
@@ -211,11 +243,21 @@ namespace hocr
       return text_out->string;
     }
 
+    /**
+		 @brief get progress of ocr
+    
+     @return the progress 0..100
+		 */
     int get_progress ()
     {
       return progress;
     }
 
+    /**
+		 @brief do image processing
+    
+     @return 0
+		 */
     int do_image_processing ()
     {
       if (!m_pix_orig)
@@ -229,6 +271,11 @@ namespace hocr
       return 0;
     }
 
+    /**
+		 @brief do layout analysis
+    
+     @return 0
+		 */
     int do_layout_analysis ()
     {
       if (!m_bit_bw)
@@ -241,6 +288,11 @@ namespace hocr
       return 0;
     }
 
+    /**
+		 @brief do font recognition
+    
+     @return 0
+		 */
     int do_font_recognition ()
     {
       if (!page_layout)
@@ -253,6 +305,11 @@ namespace hocr
       return 0;
     }
 
+    /**
+		 @brief do ocr
+    
+     @return 0
+		 */
     int do_ocr ()
     {
       /* do all ocr stages */
