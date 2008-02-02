@@ -263,6 +263,12 @@ namespace hocr
       if (!m_pix_orig)
         return 1;
 
+      if (m_bit_bw)
+      {
+        ho_bitmap_free (m_bit_bw);
+        m_bit_bw = NULL;
+      }
+
       m_bit_bw = hocr_image_processing (m_pix_orig,
         scale,
         no_auto_scale,
@@ -281,6 +287,12 @@ namespace hocr
       if (!m_bit_bw)
         return 1;
 
+      if (page_layout)
+      {
+        ho_layout_free (page_layout);
+        page_layout = NULL;
+      }
+
       page_layout = hocr_layout_analysis (m_bit_bw,
         font_spacing_code, paragraph_setup,
         slicing_threshold, slicing_width, dir_ltr, &progress);
@@ -297,6 +309,12 @@ namespace hocr
     {
       if (!page_layout)
         return 1;
+
+      if (text_out)
+      {
+        ho_string_free (text_out);
+        text_out = NULL;
+      }
 
       text_out = ho_string_new ();
 
