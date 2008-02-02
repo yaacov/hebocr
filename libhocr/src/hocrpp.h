@@ -42,16 +42,16 @@ namespace hocr
 {
 
   /**
-	 @brief Hocr class.
+   @brief Hocr class.
 	
-	 class for Hebrew Optical Character Recognition 
+   class for Hebrew Optical Character Recognition 
 	 */
   class Hocr;
 
   /**
-	 @brief Hocr class.
+   @brief Hocr class.
 	
-	 class for Hebrew Optical Character Recognition 
+   class for Hebrew Optical Character Recognition 
 	 */
   class Hocr
   {
@@ -59,7 +59,7 @@ namespace hocr
   public:
 
     /**
-		 @brief Hocr constructor.
+     @brief Hocr constructor.
 		 */
     Hocr ()
     {
@@ -91,7 +91,7 @@ namespace hocr
     }
 
     /**
-		 @brief Hocr constructor.
+     @brief Hocr constructor.
 		 */
     Hocr (ho_pixbuf * m_in)
     {
@@ -125,7 +125,7 @@ namespace hocr
     }
 
     /**
-		 @brief Hocr destructor.
+     @brief Hocr destructor.
 		 */
      ~Hocr ()
     {
@@ -135,7 +135,7 @@ namespace hocr
     }
 
     /**
-		 @brief set pixbuf
+     @brief set pixbuf
     
      @param m_in the pixbuf to use
      @return 0
@@ -159,7 +159,7 @@ namespace hocr
     }
 
     /**
-		 @brief set b/w bitmap
+     @brief set b/w bitmap
     
      @param m_in the b/w bitmap to use
      @return 0
@@ -183,7 +183,7 @@ namespace hocr
     }
 
     /**
-		 @brief get pixbuf
+     @brief get pixbuf
     
      @return the object pixbuf
 		 */
@@ -193,7 +193,7 @@ namespace hocr
     }
 
     /**
-		 @brief get bitmap
+     @brief get bitmap
     
      @return the object bitmap
 		 */
@@ -203,7 +203,7 @@ namespace hocr
     }
 
     /**
-		 @brief get layout pixbuf
+     @brief get layout pixbuf
     
      @return a pixbuf of the object layout
 		 */
@@ -230,8 +230,8 @@ namespace hocr
     }
 
     /**
-		 @brief get text
-    
+     @brief get text
+     
      @return the recognized text
 		 */
     const char *get_text ()
@@ -244,8 +244,8 @@ namespace hocr
     }
 
     /**
-		 @brief get progress of ocr
-    
+     @brief get progress of ocr
+     
      @return the progress 0..100
 		 */
     int get_progress ()
@@ -254,7 +254,7 @@ namespace hocr
     }
 
     /**
-		 @brief do image processing
+     @brief do image processing
     
      @return 0
 		 */
@@ -272,7 +272,7 @@ namespace hocr
     }
 
     /**
-		 @brief do layout analysis
+     @brief do layout analysis
     
      @return 0
 		 */
@@ -289,7 +289,7 @@ namespace hocr
     }
 
     /**
-		 @brief do font recognition
+     @brief do font recognition
     
      @return 0
 		 */
@@ -299,14 +299,14 @@ namespace hocr
         return 1;
 
       text_out = ho_string_new ();
-      
+
       hocr_font_recognition (page_layout, text_out, html, &progress);
 
       return 0;
     }
 
     /**
-		 @brief do ocr
+     @brief do ocr
     
      @return 0
 		 */
