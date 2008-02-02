@@ -48,6 +48,7 @@
  @param adaptive what type of thresholding to use
  @param threshold the threshold to use 0..100
  @param a_threshold the threshold to use for adaptive thresholding 0..100
+ @param progress a progress indicator 0..100
  @return newly allocated gray ho_bitmap
  */
 ho_bitmap *
@@ -57,7 +58,7 @@ hocr_image_processing (const ho_pixbuf * pix_in,
   double rotate,
   const unsigned char no_auto_rotate,
   const unsigned char adaptive,
-  const unsigned char threshold, const unsigned char a_threshold)
+  const unsigned char threshold, const unsigned char a_threshold, int *progress)
 {
 
   ho_bitmap *bitmap_out = NULL;
@@ -65,11 +66,17 @@ hocr_image_processing (const ho_pixbuf * pix_in,
   double angle = 0.0;
   int scale_by = 0;
 
+  /* init progress */
+  *progress = 0;
+
   /* get the raw b/w bitmap from the pixbuf */
   bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
     scale, adaptive, threshold, a_threshold);
   if (!bitmap_temp)
     return NULL;
+
+  /* update progress */
+  *progress = 25;
 
   /* do we want to auto scale ? */
   if (!scale && !no_auto_scale)
@@ -97,6 +104,9 @@ hocr_image_processing (const ho_pixbuf * pix_in,
     }
   }
 
+  /* update progress */
+  *progress = 50;
+
   /* remove very small and very large things */
   bitmap_out =
     ho_bitmap_filter_by_size (bitmap_temp, 3, 3 * bitmap_temp->height / 4, 3,
@@ -104,6 +114,9 @@ hocr_image_processing (const ho_pixbuf * pix_in,
   ho_bitmap_free (bitmap_temp);
   if (!bitmap_out)
     return NULL;
+
+  /* update progress */
+  *progress = 75;
 
   /* rotate image */
   if (rotate)
@@ -145,18 +158,23 @@ hocr_image_processing (const ho_pixbuf * pix_in,
  @param slicing_threshold percent of line fill to cut fonts
  @param slicing_width what is a wide font
  @param dir true-ltr false-rtl
+ @param progress a progress indicator 0..100
  @return a newly allocated and filled layout
  */
 ho_layout *
 hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
   const int paragraph_setup, const int slicing_threshold,
-  const int slicing_width, const unsigned char dir_ltr)
+  const int slicing_width, const unsigned char dir_ltr, int *progress)
 {
   int block_index;
   int line_index;
   int word_index;
   ho_layout *layout_out = NULL;
 
+  /* init progress */
+  *progress = 0;
+
+  /* create a new layout */
   layout_out =
     ho_layout_new (m_in, font_spacing_code, paragraph_setup, dir_ltr);
   if (!layout_out)
@@ -182,6 +200,11 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
         ho_layout_create_font_mask (layout_out, block_index, line_index,
           word_index, slicing_threshold, slicing_width);
       }
+
+      /* update progress */
+      *progress = 100 *
+        block_index / layout_out->n_blocks +
+        line_index / layout_out->n_lines[block_index];
     }
   }
 
@@ -194,16 +217,20 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
  @param l_page the page layout to recognize
  @param s_text_out the text buffer to fill
  @param html output format is html
+ @param progress a progress indicator 0..100
  @return FALSE
  */
 int
 hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-  const unsigned char html)
+  const unsigned char html, int *progress)
 {
   int block_index;
   int line_index;
   int word_index;
   int font_index;
+
+  int current_font_number = 0;
+  int number_of_fonts = l_page->number_of_fonts;
 
   ho_bitmap *m_text = NULL;
   ho_bitmap *m_mask = NULL;
@@ -211,6 +238,9 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
 
   char text_out[200];
   char *font;
+
+  /* init progress */
+  *progress = 0;
 
   /* did we get a text buffer and a layout ? */
   if (!s_text_out || !l_page)
@@ -282,6 +312,10 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
 
           /* this are empty pointers */
           m_text = m_mask = m_font_main_sign = NULL;
+
+          /* update progress */
+          current_font_number++;
+          *progress = 100 * current_font_number / number_of_fonts;
         }
 
         /* end of word */

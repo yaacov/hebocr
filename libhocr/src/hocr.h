@@ -51,14 +51,9 @@
 #define HOCR_H 1
 
 #ifdef __cplusplus
-#  define BEGIN_C_DECLS extern "C" {
-#  define END_C_DECLS   }
-#else /* !__cplusplus */
-#  define BEGIN_C_DECLS
-#  define END_C_DECLS
-#endif /* __cplusplus */
-
-BEGIN_C_DECLS
+extern "C"
+{
+#endif                          /* __cplusplus */
 
 /* color image map */
 #include <ho_pixbuf.h>
@@ -97,16 +92,17 @@ BEGIN_C_DECLS
  @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
  @param threshold the threshold to use 0..100 (0-auto)
  @param a_threshold the threshold to use for adaptive thresholding 0..100 (0-auto)
+ @param progress a progress indicator 0..100
  @return newly allocated gray ho_bitmap
  */
-  ho_bitmap *
-hocr_image_processing (const ho_pixbuf * pix_in,
-  const unsigned char scale,
-  const unsigned char no_auto_scale,
-  double rotate,
-  const unsigned char no_auto_rotate,
-  const unsigned char adaptive,
-  const unsigned char threshold, const unsigned char a_threshold);
+  ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in,
+    const unsigned char scale,
+    const unsigned char no_auto_scale,
+    double rotate,
+    const unsigned char no_auto_rotate,
+    const unsigned char adaptive,
+    const unsigned char threshold, const unsigned char a_threshold,
+    int *progress);
 
 /**
  new ho_layout 
@@ -117,12 +113,13 @@ hocr_image_processing (const ho_pixbuf * pix_in,
  @param slicing_threshold percent of line fill to cut fonts
  @param slicing_width what is a wide font
  @param dir true-ltr false-rtl
+ @param progress a progress indicator 0..100
  @return a newly allocated and filled layout
  */
-ho_layout *hocr_layout_analysis (const ho_bitmap * m_in,
-  const int font_spacing_code, const int paragraph_setup,
-  const int slicing_threshold, const int slicing_width,
-  const unsigned char dir_ltr);
+  ho_layout *hocr_layout_analysis (const ho_bitmap * m_in,
+    const int font_spacing_code, const int paragraph_setup,
+    const int slicing_threshold, const int slicing_width,
+    const unsigned char dir_ltr, int *progress);
 
 /**
  fill a text buffer with fonts recognized from a page layout
@@ -130,11 +127,15 @@ ho_layout *hocr_layout_analysis (const ho_bitmap * m_in,
  @param l_page the page layout to recognize
  @param s_text_out the text buffer to fill
  @param html output format is html
+ @param progress a progress indicator 0..100
  @return FALSE
  */
-int
-hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-  const unsigned char html);
+  int
+    hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
+    const unsigned char html, int *progress);
 
-END_C_DECLS
-#endif /* HOCR_H */
+#ifdef __cplusplus
+}
+#endif                          /* __cplusplus */
+
+#endif                          /* HOCR_H */

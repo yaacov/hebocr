@@ -135,7 +135,7 @@ int ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
  @param block_index block index
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_layout_get_block_text (ho_layout * l_page, int block_index);
+ho_bitmap *ho_layout_get_block_text (const ho_layout * l_page, int block_index);
 
 /**
  new ho_bitamp of the text in a layout line
@@ -145,7 +145,7 @@ ho_bitmap *ho_layout_get_block_text (ho_layout * l_page, int block_index);
  @param line_index line index
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_layout_get_line_text (ho_layout * l_page, int block_index,
+ho_bitmap *ho_layout_get_line_text (const ho_layout * l_page, int block_index,
   int line_index);
 
 /**
@@ -157,7 +157,7 @@ ho_bitmap *ho_layout_get_line_text (ho_layout * l_page, int block_index,
  @param word_index word index
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_layout_get_word_text (ho_layout * l_page, int block_index,
+ho_bitmap *ho_layout_get_word_text (const ho_layout * l_page, int block_index,
   int line_index, int word_index);
 
 /**
@@ -170,7 +170,7 @@ ho_bitmap *ho_layout_get_word_text (ho_layout * l_page, int block_index,
  @param font_index font index
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_layout_get_font_text (ho_layout * l_page, int block_index,
+ho_bitmap *ho_layout_get_font_text (const ho_layout * l_page, int block_index,
   int line_index, int word_index, int font_index);
 
 /**
@@ -181,7 +181,7 @@ ho_bitmap *ho_layout_get_font_text (ho_layout * l_page, int block_index,
  @param line_index line index
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
+ho_bitmap *ho_layout_get_line_line_mask (const ho_layout * l_page, int block_index,
   int line_index);
 
 /**
@@ -193,7 +193,7 @@ ho_bitmap *ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
  @param word_index word index
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
+ho_bitmap *ho_layout_get_word_line_mask (const ho_layout * l_page, int block_index,
   int line_index, int word_index);
 
 /**
@@ -206,7 +206,7 @@ ho_bitmap *ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
  @param font_index font index
  @return newly allocated ho_bitmap
  */
-ho_bitmap *ho_layout_get_font_line_mask (ho_layout * l_page, int block_index,
+ho_bitmap *ho_layout_get_font_line_mask (const ho_layout * l_page, int block_index,
   int line_index, int word_index, int font_index);
 
 #endif /* HO_LAYOUT_H */

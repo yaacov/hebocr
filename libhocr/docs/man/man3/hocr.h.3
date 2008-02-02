@@ -1,4 +1,4 @@
-.TH "src/hocr.h" 3 "1 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/hocr.h" 3 "2 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -33,24 +33,18 @@ src/hocr.h \- libhocr C language header.
 .ti -1c
 .RI "#define \fBHOCR_H\fP   1"
 .br
-.ti -1c
-.RI "#define \fBBEGIN_C_DECLS\fP"
-.br
-.ti -1c
-.RI "#define \fBEND_C_DECLS\fP"
-.br
 .in -1c
 .SS "Functions"
 
 .in +1c
 .ti -1c
-.RI "BEGIN_C_DECLS \fBho_bitmap\fP * \fBhocr_image_processing\fP (const \fBho_pixbuf\fP *pix_in, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
+.RI "\fBho_bitmap\fP * \fBhocr_image_processing\fP (const \fBho_pixbuf\fP *pix_in, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, int *progress)"
 .br
 .ti -1c
-.RI "\fBho_layout\fP * \fBhocr_layout_analysis\fP (const \fBho_bitmap\fP *m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr)"
+.RI "\fBho_layout\fP * \fBhocr_layout_analysis\fP (const \fBho_bitmap\fP *m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, int *progress)"
 .br
 .ti -1c
-.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html)"
+.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int *progress)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -62,13 +56,9 @@ libhocr - LIBrary for Hebrew Optical Character Recognition
 .PP 
 .SS "#define HOCR_H   1"
 .PP
-.SS "#define BEGIN_C_DECLS"
-.PP
-.SS "#define END_C_DECLS"
-.PP
 .SH "Function Documentation"
 .PP 
-.SS "BEGIN_C_DECLS \fBho_bitmap\fP* hocr_image_processing (const \fBho_pixbuf\fP * pix_in, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
+.SS "\fBho_bitmap\fP* hocr_image_processing (const \fBho_pixbuf\fP * pix_in, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, int * progress)"
 .PP
 convert a gray pixbuf to bitmap
 .PP
@@ -89,6 +79,8 @@ convert a gray pixbuf to bitmap
 \fIthreshold\fP the threshold to use 0..100 (0-auto) 
 .br
 \fIa_threshold\fP the threshold to use for adaptive thresholding 0..100 (0-auto) 
+.br
+\fIprogress\fP a progress indicator 0..100 
 .RE
 .PP
 \fBReturns:\fP
@@ -97,7 +89,7 @@ newly allocated gray \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_layout\fP* hocr_layout_analysis (const \fBho_bitmap\fP * m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr)"
+.SS "\fBho_layout\fP* hocr_layout_analysis (const \fBho_bitmap\fP * m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, int * progress)"
 .PP
 new \fBho_layout\fP
 .PP
@@ -114,6 +106,8 @@ new \fBho_layout\fP
 \fIslicing_width\fP what is a wide font 
 .br
 \fIdir\fP true-ltr false-rtl 
+.br
+\fIprogress\fP a progress indicator 0..100 
 .RE
 .PP
 \fBReturns:\fP
@@ -122,7 +116,7 @@ a newly allocated and filled layout
 .RE
 .PP
 
-.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html)"
+.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html, int * progress)"
 .PP
 fill a text buffer with fonts recognized from a page layout
 .PP
@@ -133,6 +127,8 @@ fill a text buffer with fonts recognized from a page layout
 \fIs_text_out\fP the text buffer to fill 
 .br
 \fIhtml\fP output format is html 
+.br
+\fIprogress\fP a progress indicator 0..100 
 .RE
 .PP
 \fBReturns:\fP

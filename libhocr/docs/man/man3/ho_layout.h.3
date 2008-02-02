@@ -1,4 +1,4 @@
-.TH "src/ho_layout.h" 3 "1 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_layout.h" 3 "2 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -48,25 +48,25 @@ src/ho_layout.h \- libhocr C language header.
 .RI "int \fBho_layout_create_font_mask\fP (\fBho_layout\fP *l_page, const int block_index, const int line_index, const int word_index, const unsigned char slicing_threshold, const unsigned char slicing_width)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_block_text\fP (\fBho_layout\fP *l_page, int block_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_block_text\fP (const \fBho_layout\fP *l_page, int block_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_line_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_line_text\fP (const \fBho_layout\fP *l_page, int block_index, int line_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_word_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_word_text\fP (const \fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_font_text\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_font_text\fP (const \fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_line_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_line_line_mask\fP (const \fBho_layout\fP *l_page, int block_index, int line_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_word_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_word_line_mask\fP (const \fBho_layout\fP *l_page, int block_index, int line_index, int word_index)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_layout_get_font_line_mask\fP (\fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
+.RI "\fBho_bitmap\fP * \fBho_layout_get_font_line_mask\fP (const \fBho_layout\fP *l_page, int block_index, int line_index, int word_index, int font_index)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -192,7 +192,7 @@ FALSE
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_layout_get_block_text (\fBho_layout\fP * l_page, int block_index)"
+.SS "\fBho_bitmap\fP* ho_layout_get_block_text (const \fBho_layout\fP * l_page, int block_index)"
 .PP
 new ho_bitamp of the text in a layout block
 .PP
@@ -209,7 +209,7 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_layout_get_line_text (\fBho_layout\fP * l_page, int block_index, int line_index)"
+.SS "\fBho_bitmap\fP* ho_layout_get_line_text (const \fBho_layout\fP * l_page, int block_index, int line_index)"
 .PP
 new ho_bitamp of the text in a layout line
 .PP
@@ -228,7 +228,7 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_layout_get_word_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
+.SS "\fBho_bitmap\fP* ho_layout_get_word_text (const \fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
 .PP
 new ho_bitamp of the text in a layout word
 .PP
@@ -249,7 +249,7 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_layout_get_font_text (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
+.SS "\fBho_bitmap\fP* ho_layout_get_font_text (const \fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
 .PP
 new ho_bitamp of the text in a layout font
 .PP
@@ -272,7 +272,7 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_layout_get_line_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index)"
+.SS "\fBho_bitmap\fP* ho_layout_get_line_line_mask (const \fBho_layout\fP * l_page, int block_index, int line_index)"
 .PP
 new ho_bitamp of the line in a layout line
 .PP
@@ -291,7 +291,7 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_layout_get_word_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
+.SS "\fBho_bitmap\fP* ho_layout_get_word_line_mask (const \fBho_layout\fP * l_page, int block_index, int line_index, int word_index)"
 .PP
 new ho_bitamp of the line in a layout word
 .PP
@@ -312,7 +312,7 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_layout_get_font_line_mask (\fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
+.SS "\fBho_bitmap\fP* ho_layout_get_font_line_mask (const \fBho_layout\fP * l_page, int block_index, int line_index, int word_index, int font_index)"
 .PP
 new ho_bitamp of the line in a layout font
 .PP

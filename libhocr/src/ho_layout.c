@@ -526,7 +526,7 @@ ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
 }
 
 ho_bitmap *
-ho_layout_get_block_text (ho_layout * l_page, int block_index)
+ho_layout_get_block_text (const ho_layout * l_page, int block_index)
 {
   ho_bitmap *m_block_text = NULL;
   ho_bitmap *m_temp = NULL;
@@ -579,7 +579,7 @@ ho_layout_get_block_text (ho_layout * l_page, int block_index)
 }
 
 ho_bitmap *
-ho_layout_get_line_text (ho_layout * l_page, int block_index, int line_index)
+ho_layout_get_line_text (const ho_layout * l_page, int block_index, int line_index)
 {
   ho_bitmap *m_line_text = NULL;
   ho_bitmap *m_temp = NULL;
@@ -635,7 +635,7 @@ ho_layout_get_line_text (ho_layout * l_page, int block_index, int line_index)
 }
 
 ho_bitmap *
-ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
+ho_layout_get_line_line_mask (const ho_layout * l_page, int block_index,
   int line_index)
 {
   ho_bitmap *m_line_mask = NULL;
@@ -684,7 +684,7 @@ ho_layout_get_line_line_mask (ho_layout * l_page, int block_index,
 }
 
 ho_bitmap *
-ho_layout_get_word_text (ho_layout * l_page, int block_index, int line_index,
+ho_layout_get_word_text (const ho_layout * l_page, int block_index, int line_index,
   int word_index)
 {
   ho_bitmap *m_word_text = NULL;
@@ -727,7 +727,7 @@ ho_layout_get_word_text (ho_layout * l_page, int block_index, int line_index,
 }
 
 ho_bitmap *
-ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
+ho_layout_get_word_line_mask (const ho_layout * l_page, int block_index,
   int line_index, int word_index)
 {
   ho_bitmap *m_word_line_mask = NULL;
@@ -761,7 +761,7 @@ ho_layout_get_word_line_mask (ho_layout * l_page, int block_index,
 }
 
 ho_bitmap *
-ho_layout_get_font_text (ho_layout * l_page, int block_index, int line_index,
+ho_layout_get_font_text (const ho_layout * l_page, int block_index, int line_index,
   int word_index, int font_index)
 {
   ho_bitmap *m_font_text = NULL;
@@ -822,7 +822,7 @@ ho_layout_get_font_text (ho_layout * l_page, int block_index, int line_index,
 }
 
 ho_bitmap *
-ho_layout_get_font_line_mask (ho_layout * l_page, int block_index,
+ho_layout_get_font_line_mask (const ho_layout * l_page, int block_index,
   int line_index, int word_index, int font_index)
 {
   ho_bitmap *m_font_line_mask = NULL;

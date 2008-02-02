@@ -436,13 +436,15 @@ hocr_load_input_bitmap ()
   /* if user do not nead fidback just do image proccesing and exit */
   if (!debug && !verbose)
   {
+    int progress;
+
     m_bw =
       hocr_image_processing (pix,
       scale_by,
       do_not_auto_scale,
       rotate_angle,
       do_not_auto_rotate,
-      adaptive_threshold_type, threshold, adaptive_threshold);
+      adaptive_threshold_type, threshold, adaptive_threshold, &progress);
 
     /* free input pixbuf */
     ho_pixbuf_free (pix);
@@ -590,8 +592,10 @@ hocr_create_layout (const ho_bitmap * m_in, const int font_spacing_code,
 
   if (!debug && !verbose)
   {
+    int progress;
+
     layout_out = hocr_layout_analysis (m_in, font_spacing_code,
-      paragraph_setup, slicing_threshold, slicing_width, dir_ltr);
+      paragraph_setup, slicing_threshold, slicing_width, dir_ltr, &progress);
 
     return layout_out;
   }
@@ -1478,7 +1482,11 @@ main (int argc, char *argv[])
     || debug_font_filter || save_fonts)
     hocr_recognize_fonts_with_debug (l_page, s_text_out, s_data_out);
   else
-    hocr_font_recognition (l_page, s_text_out, text_out_html);
+  {
+    int progress;
+
+    hocr_font_recognition (l_page, s_text_out, text_out_html, &progress);
+  }
 
   /* end of page */
   if (text_out_html && s_text_out)

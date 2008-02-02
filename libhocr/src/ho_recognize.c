@@ -1704,9 +1704,12 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
   double has_bottom_mid_cross;
   double has_bottom_right_cross;
 
+  /* init values to zero, if some function fails */
   for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
     array_in[i] = 0.0;
 
+  /* fill array with values */
+  
   ho_recognize_dimentions (m_text, m_mask,
     &height, &width, &top, &bottom,
     &top_left, &top_mid, &top_right,
@@ -1938,7 +1941,6 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 double
 ho_recognize_array (const double *array_in, const int sign_index)
 {
-  int i;
   double return_value;
 
   switch (sign_index)
@@ -2083,6 +2085,7 @@ ho_recognize_array_out_to_font (const double *array_out)
   int i = 0;
   int max_i = 0;
 
+  /* find the font with hiegher score */
   for (i = 1; i < HO_ARRAY_OUT_SIZE; i++)
     if (array_out[i] > array_out[max_i])
       max_i = i;
@@ -2095,10 +2098,10 @@ ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   double array_in[HO_ARRAY_IN_SIZE];
   double array_out[HO_ARRAY_OUT_SIZE];
   char *font;
-  int i;
 
   ho_recognize_create_array_in (m_text, m_mask, array_in);
   ho_recognize_create_array_out (array_in, array_out);
   font = ho_recognize_array_out_to_font (array_out);
+  
   return font;
 }
