@@ -1,0 +1,217 @@
+.TH "hocr::Hocr" 3 "3 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+hocr::Hocr \- \fBHocr\fP class.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <hocrpp.h>\fP
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHocr\fP ()"
+.br
+.RI "\fI\fBHocr\fP constructor. \fP"
+.ti -1c
+.RI "\fBHocr\fP (\fBho_pixbuf\fP *m_in)"
+.br
+.RI "\fI\fBHocr\fP constructor. \fP"
+.ti -1c
+.RI "\fB~Hocr\fP ()"
+.br
+.RI "\fI\fBHocr\fP destructor. \fP"
+.ti -1c
+.RI "int \fBset_pixbuf\fP (\fBho_pixbuf\fP *m_in)"
+.br
+.RI "\fIset pixbuf \fP"
+.ti -1c
+.RI "int \fBset_bitmap\fP (\fBho_bitmap\fP *m_in)"
+.br
+.RI "\fIset b/w bitmap \fP"
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBget_pixbuf\fP ()"
+.br
+.RI "\fIget pixbuf \fP"
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBget_bitmap\fP ()"
+.br
+.RI "\fIget bitmap \fP"
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBget_layout_pixbuf\fP ()"
+.br
+.RI "\fIget layout pixbuf \fP"
+.ti -1c
+.RI "const char * \fBget_text\fP ()"
+.br
+.RI "\fIget text \fP"
+.ti -1c
+.RI "int \fBget_progress\fP ()"
+.br
+.RI "\fIget progress of ocr \fP"
+.ti -1c
+.RI "int \fBdo_image_processing\fP ()"
+.br
+.RI "\fIdo image processing \fP"
+.ti -1c
+.RI "int \fBdo_layout_analysis\fP ()"
+.br
+.RI "\fIdo layout analysis \fP"
+.ti -1c
+.RI "int \fBdo_font_recognition\fP ()"
+.br
+.RI "\fIdo font recognition \fP"
+.ti -1c
+.RI "int \fBdo_ocr\fP ()"
+.br
+.RI "\fIdo ocr \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBHocr\fP class. 
+
+class for Hebrew Optical Character Recognition 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "hocr::Hocr::Hocr ()\fC [inline]\fP"
+.PP
+\fBHocr\fP constructor. 
+.PP
+.SS "hocr::Hocr::Hocr (\fBho_pixbuf\fP * m_in)\fC [inline]\fP"
+.PP
+\fBHocr\fP constructor. 
+.PP
+.SS "hocr::Hocr::~Hocr ()\fC [inline]\fP"
+.PP
+\fBHocr\fP destructor. 
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "int hocr::Hocr::set_pixbuf (\fBho_pixbuf\fP * m_in)\fC [inline]\fP"
+.PP
+set pixbuf 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_in\fP the pixbuf to use 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_bitmap (\fBho_bitmap\fP * m_in)\fC [inline]\fP"
+.PP
+set b/w bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_in\fP the b/w bitmap to use 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* hocr::Hocr::get_pixbuf ()\fC [inline]\fP"
+.PP
+get pixbuf 
+.PP
+\fBReturns:\fP
+.RS 4
+the object pixbuf 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* hocr::Hocr::get_bitmap ()\fC [inline]\fP"
+.PP
+get bitmap 
+.PP
+\fBReturns:\fP
+.RS 4
+the object bitmap 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* hocr::Hocr::get_layout_pixbuf ()\fC [inline]\fP"
+.PP
+get layout pixbuf 
+.PP
+\fBReturns:\fP
+.RS 4
+a pixbuf of the object layout 
+.RE
+.PP
+
+.SS "const char* hocr::Hocr::get_text ()\fC [inline]\fP"
+.PP
+get text 
+.PP
+\fBReturns:\fP
+.RS 4
+the recognized text 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_progress ()\fC [inline]\fP"
+.PP
+get progress of ocr 
+.PP
+\fBReturns:\fP
+.RS 4
+the progress 0..100 
+.RE
+.PP
+
+.SS "int hocr::Hocr::do_image_processing ()\fC [inline]\fP"
+.PP
+do image processing 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.SS "int hocr::Hocr::do_layout_analysis ()\fC [inline]\fP"
+.PP
+do layout analysis 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.SS "int hocr::Hocr::do_font_recognition ()\fC [inline]\fP"
+.PP
+do font recognition 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.SS "int hocr::Hocr::do_ocr ()\fC [inline]\fP"
+.PP
+do ocr 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.
