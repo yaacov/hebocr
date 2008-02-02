@@ -96,7 +96,7 @@ namespace hocr
     Hocr (ho_pixbuf * m_in)
     {
       /* set pixbuf */
-      m_pix_orig = NULL;
+      m_pix_orig = m_in;
 
       /* lock free pointers */
       m_bit_bw = NULL;
@@ -246,6 +246,8 @@ namespace hocr
       if (!page_layout)
         return 1;
 
+      text_out = ho_string_new ();
+      
       hocr_font_recognition (page_layout, text_out, html, &progress);
 
       return 0;
