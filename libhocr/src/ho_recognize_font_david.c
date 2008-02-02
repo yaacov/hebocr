@@ -159,17 +159,17 @@
 #define HOLE_MID_BOTTOM_EDGE (array_in[82])
 #define HOLE_RIGHT_BOTTOM_EDGE (array_in[83])
 
-#define HEIGHT (array_in[84])
-#define WIDTH (array_in[85])
+#define HOLE_HEIGHT (array_in[84])
+#define HOLE_WIDTH (array_in[85])
 
-#define TOP (array_in[86])
-#define BOTTOM (array_in[87])
+#define HOLE_TOP (array_in[86])
+#define HOLE_BOTTOM (array_in[87])
 
-#define TOP_LEFT (array_in[88])
-#define TOP_RIGHT (array_in[89])
+#define HOLE_TOP_LEFT (array_in[88])
+#define HOLE_TOP_RIGHT (array_in[89])
 
-#define BOTTOM_LEFT (array_in[90])
-#define BOTTOM_RIGHT (array_in[91])
+#define HOLE_BOTTOM_LEFT (array_in[90])
+#define HOLE_BOTTOM_RIGHT (array_in[91])
 
 #define BIG_TOP_LEFT_EDGE (array_in[92])
 #define BIG_MID_LEFT_EDGE (array_in[93])
