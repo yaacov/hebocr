@@ -273,8 +273,10 @@ ho_recognize_bars (const ho_bitmap * m_text,
   ho_bitmap *m_bars = NULL;
 
   *has_top_bar = 0.0;
+  *has_mid_hbar = 0.0;
   *has_bottom_bar = 0.0;
   *has_left_bar = 0.0;
+  *has_mid_vbar = 0.0;
   *has_right_bar = 0.0;
   *has_diagonal_bar = 0.0;
   *has_diagonal_left_bar = 0.0;
@@ -316,8 +318,10 @@ ho_recognize_bars (const ho_bitmap * m_text,
     if (ho_bitmap_get (m_bars, x, y))
     {
       /* where are we in fonts */
-      if ((y - font_start) < font_height / 2)
+      if ((y - font_start) < font_height / 3)
         *has_top_bar = 1.0;
+      else if ((y - font_start) < 2 * font_height / 3)
+        *has_mid_hbar = 1.0;
       else
         *has_bottom_bar = 1.0;
 
@@ -341,8 +345,10 @@ ho_recognize_bars (const ho_bitmap * m_text,
     if (ho_bitmap_get (m_bars, x, y))
     {
       /* where are we in fonts */
-      if (x < m_bars->width / 2)
+      if (x < m_bars->width / 3)
         *has_left_bar = 1.0;
+      else if (x < 2 * m_bars->width / 3)
+        *has_mid_vbar = 1.0;
       else
         *has_right_bar = 1.0;
 
