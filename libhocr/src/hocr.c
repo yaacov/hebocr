@@ -204,7 +204,7 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
       /* update progress */
       *progress = 100 *
         block_index / layout_out->n_blocks +
-        line_index / layout_out->n_lines[block_index];
+        100 * line_index / layout_out->n_lines[block_index];
     }
   }
 
