@@ -35,13 +35,18 @@
 
 #include <hocr.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif                          /* __cplusplus */
+
 /**
  new ho_pixbuf from a gdk_pixbuf
  
  @param gdk_pix the pixbuf to copy
  @return newly allocated ho_pixbuf
  */
-ho_pixbuf *ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix);
+  ho_pixbuf *ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix);
 
 /**
  new ho_pixbuf from a gdk_pixbuf
@@ -49,7 +54,7 @@ ho_pixbuf *ho_gtk_pixbuf_from_gdk (const GdkPixbuf * gdk_pix);
  @param gdk_pix the pixbuf to share data with
  @return newly allocated ho_pixbuf, share data with gtk pixbuf
  */
-ho_pixbuf *ho_gtk_pixbuf_from_gdk_share_data (const GdkPixbuf * gdk_pix);
+  ho_pixbuf *ho_gtk_pixbuf_from_gdk_share_data (const GdkPixbuf * gdk_pix);
 
 /**
  new gdk_pixbuf from a ho_pixbuf
@@ -57,7 +62,7 @@ ho_pixbuf *ho_gtk_pixbuf_from_gdk_share_data (const GdkPixbuf * gdk_pix);
  @param hocr_pix the pixbuf to copy
  @return newly allocated gdk_pixbuf
  */
-GdkPixbuf *ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix);
+  GdkPixbuf *ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix);
 
 /**
  read ho_pixbuf from file
@@ -65,7 +70,7 @@ GdkPixbuf *ho_gtk_pixbuf_to_gdk (const ho_pixbuf * hocr_pix);
  @param filename file name
  @return newly allocated ho_pixbuf
  */
-ho_pixbuf *ho_gtk_pixbuf_load (const char *filename);
+  ho_pixbuf *ho_gtk_pixbuf_load (const char *filename);
 
 /**
  writes ho_pixbuf to file
@@ -74,7 +79,7 @@ ho_pixbuf *ho_gtk_pixbuf_load (const char *filename);
  @param filename save as file name 
  @return FALSE
  */
-int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
+  int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
 
 /**
  writes font to file
@@ -85,8 +90,12 @@ int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
  @param filename save as file name 
  @return FALSE
  */
-int
-ho_gtk_font_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
-  const ho_bitmap * m_mask, const char *filename);
+  int
+    ho_gtk_font_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
+    const ho_bitmap * m_mask, const char *filename);
 
-#endif /* HO_GTK_H */
+#ifdef __cplusplus
+}
+#endif                          /* __cplusplus */
+
+#endif                          /* HO_GTK_H */

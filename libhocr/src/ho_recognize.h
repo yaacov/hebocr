@@ -38,7 +38,7 @@
 #define HO_ARRAY_OUT_SIZE 49
 
 /* font shapes codes*/
-static char *ho_sign_array[HO_ARRAY_OUT_SIZE] =
+static const char *ho_sign_array[HO_ARRAY_OUT_SIZE] =
   { "*", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ",
   "ך", "ל", "מ", "ם", "נ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",
   "ק", "ר", "ש", "ת", ".", ",",
@@ -55,9 +55,9 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 
 int ho_recognize_create_array_out (const double *array_in, double *array_out);
 
-char *ho_recognize_array_out_to_font (const double *array_out);
+const char *ho_recognize_array_out_to_font (const double *array_out);
 
-char *ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask);
+const char *ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask);
 
 int
 ho_recognize_dimentions (const ho_bitmap * m_text,

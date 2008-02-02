@@ -1,7 +1,7 @@
 // file : hocr.i
 %module hocr
 %{
-#include "../../src/hocr.h"
+#include "../../src/hocrpp.h"
 #include "../../src/ho_gtk.h"
 %}
 
@@ -16,6 +16,8 @@
 %include ../../src/ho_string.h
 
 %include ../../src/ho_gtk.h
+
+%include ../../src/hocrpp.h
 
 // on linux do:
 // swig -python hocr.i

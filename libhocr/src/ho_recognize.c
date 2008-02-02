@@ -2079,7 +2079,7 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
   return FALSE;
 }
 
-char *
+const char *
 ho_recognize_array_out_to_font (const double *array_out)
 {
   int i = 0;
@@ -2092,12 +2092,12 @@ ho_recognize_array_out_to_font (const double *array_out)
   return ho_sign_array[max_i];
 }
 
-char *
+const char *
 ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   double array_in[HO_ARRAY_IN_SIZE];
   double array_out[HO_ARRAY_OUT_SIZE];
-  char *font;
+  const char *font;
 
   ho_recognize_create_array_in (m_text, m_mask, array_in);
   ho_recognize_create_array_out (array_in, array_out);

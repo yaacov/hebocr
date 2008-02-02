@@ -237,7 +237,7 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
   ho_bitmap *m_font_main_sign = NULL;
 
   char text_out[200];
-  char *font;
+  const char *font;
 
   /* init progress */
   *progress = 0;

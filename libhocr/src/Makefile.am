@@ -4,7 +4,7 @@
 INCLUDES = \
         $(hspell_CFLAGS)
 
-pkglib_LTLIBRARIES = libhocr.la libhocrgtk.la
+lib_LTLIBRARIES = libhocr.la libhocrgtk.la
 
 libhocr_la_SOURCES = \
         hocr.c \
@@ -18,15 +18,13 @@ libhocr_la_SOURCES = \
         ho_recognize_font_david.c \
         ho_string.c \
         ho_layout.c
-
-libhocr_la_LIBADD = \
-        $(hspell_LIBS)
-        
+     
 libhocr_la_LDFLAGS = -version-info 0:0:0
 
 library_includedir = $(includedir)/libhocr
 library_include_HEADERS = \
          hocr.h \
+         hocrpp.h \
          ho_pixbuf.h \
          ho_bitmap.h \
          ho_objmap.h \
@@ -52,4 +50,3 @@ libhocrgtk_la_LIBADD = \
         -L. -lhocr
         
 libhocrgtk_la_LDFLAGS = $(libhocr_la_LDFLAGS)
-

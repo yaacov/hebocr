@@ -787,7 +787,7 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
           /* recognize font from images */
           {
-            char *font;
+            const char *font;
             double array_in[HO_ARRAY_IN_SIZE];
             double array_out[HO_ARRAY_OUT_SIZE];
 

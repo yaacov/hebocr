@@ -5,17 +5,17 @@ if WITH_PYTHON
 
 DEPS= $(top_builddir)/src/libhocr.la
 
-CLEANFILES = *.o *.c *.so *wrap* *.py
+CLEANFILES = *.o *.cxx *.so *wrap* *.py
 
 all-am: _hocr.so
 	
 
-_hocr.so: hocr_wrap.c
-	gcc -fpic -c hocr_wrap.c $(PY_CFLAGS) $(gtk_CFLAGS) -I$(top_srcdir)/src
-	gcc -shared $(gtk_LIBS) $(top_builddir)/src/*.o  hocr_wrap.o -o _hocr.so
+_hocr.so: hocr_wrap.cxx
+	g++ -fpic -c hocr_wrap.cxx $(PY_CFLAGS) $(gtk_CFLAGS) -I$(top_srcdir)/src
+	g++ -shared $(gtk_LIBS) ../../src/.libs/libhocr.so ../../src/.libs/libhocrgtk.so  hocr_wrap.o -o _hocr.so
 
-hocr_wrap.c: hocr.i
-	swig -python hocr.i
+hocr_wrap.cxx: hocr.i
+	swig -python -c++ hocr.i
 
 install-data-local: _hocr.so
 	$(mkinstalldirs) $(DESTDIR)$(PY_MODULES_PATH)
