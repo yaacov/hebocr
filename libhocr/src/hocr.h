@@ -42,7 +42,7 @@
  */
 
 /** @file hocr.h
-    @brief libhocr C language header.
+    @brief libhocr main C language header.
     
     libhocr - LIBrary for Hebrew Optical Character Recognition 
 */

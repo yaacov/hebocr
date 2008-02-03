@@ -20,6 +20,6 @@
 %include ../../src/hocrpp.h
 
 // on linux do:
-// swig -python hocr.i
-// gcc -fpic -c hocr_wrap.c `pkg-config --cflags gtk+-2.0` -I/usr/include/python2.3
-// gcc -shared `pkg-config --libs gtk+-2.0`../../src/*.o hocr_wrap.o -o _hocr.so
+// swig -python -c++ hocr.i
+// g++ -fpic -c hocr_wrap.cxx `pkg-config --cflags gtk+-2.0` -I/usr/include/python2.3
+// g++ -shared `pkg-config --libs gtk+-2.0`.../../src/.libs/libhocr.so ../../src/.libs/libhocrgtk.so  hocr_wrap.o -o _hocr.so

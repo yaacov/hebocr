@@ -42,6 +42,10 @@ hocr::Hocr \- \fBHocr\fP class.
 .br
 .RI "\fIget bitmap \fP"
 .ti -1c
+.RI "\fBho_pixbuf\fP * \fBget_bitmap_pixbuf\fP ()"
+.br
+.RI "\fIget bitmap pixbuf \fP"
+.ti -1c
 .RI "\fBho_pixbuf\fP * \fBget_layout_pixbuf\fP ()"
 .br
 .RI "\fIget layout pixbuf \fP"
@@ -69,6 +73,14 @@ hocr::Hocr \- \fBHocr\fP class.
 .RI "int \fBdo_ocr\fP ()"
 .br
 .RI "\fIdo ocr \fP"
+.ti -1c
+.RI "int \fBget_html\fP ()"
+.br
+.RI "\fIget html param \fP"
+.ti -1c
+.RI "int \fBset_html\fP (unsigned char html_in)"
+.br
+.RI "\fIset html param \fP"
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -141,6 +153,16 @@ the object bitmap
 .RE
 .PP
 
+.SS "\fBho_pixbuf\fP* hocr::Hocr::get_bitmap_pixbuf ()\fC [inline]\fP"
+.PP
+get bitmap pixbuf 
+.PP
+\fBReturns:\fP
+.RS 4
+a pixbuf of the object bitmap 
+.RE
+.PP
+
 .SS "\fBho_pixbuf\fP* hocr::Hocr::get_layout_pixbuf ()\fC [inline]\fP"
 .PP
 get layout pixbuf 
@@ -208,6 +230,31 @@ do ocr
 \fBReturns:\fP
 .RS 4
 0 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_html ()\fC [inline]\fP"
+.PP
+get html param 
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE-no html in output, TRUE-output html text 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_html (unsigned char html_in)\fC [inline]\fP"
+.PP
+set html param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhtml_in\fP new value of html param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE-no html in output, TRUE-output html text 
 .RE
 .PP
 
