@@ -203,6 +203,23 @@ namespace hocr
     }
 
     /**
+     @brief get bitmap pixbuf
+    
+     @return a pixbuf of the object bitmap
+     */
+    ho_pixbuf *get_bitmap_pixbuf ()
+    {
+      ho_pixbuf *m_pix_out = NULL;
+
+      if (!m_bit_bw)
+        return NULL;
+
+      m_pix_out = ho_pixbuf_new_from_bitmap (m_bit_bw);
+
+      return m_pix_out;
+    }
+
+    /**
      @brief get layout pixbuf
     
      @return a pixbuf of the object layout
@@ -338,6 +355,29 @@ namespace hocr
       return 0;
     }
 
+    /**
+     @brief get html param
+    
+     @return FALSE-no html in output, TRUE-output html text 
+     */
+    int get_html()
+    {      
+      return html;
+    }
+    
+    /**
+     @brief set html param
+    
+     @param html_in new value of html param
+     @return FALSE-no html in output, TRUE-output html text 
+     */
+    int set_html(unsigned char html_in)
+    {
+      html = html_in;
+      
+      return html;
+    }
+    
   private:
 
     ho_pixbuf * m_pix_orig;
