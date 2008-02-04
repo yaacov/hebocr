@@ -261,8 +261,39 @@ ho_recognize_font_david_alef (const double *array_in)
 {
   double return_value = 0.0;
 
+  /* is */
   if (DIAGONAL_BAR > 0.5)
-    return_value += 0.2;
+    return_value += 0.1;
+  if (LEFT_BOTTOM_EDGE)
+    return_value += 0.1;
+  if (LEFT_BOTTOM_NOTCH || MID_BOTTOM_NOTCH)
+    return_value += 0.1;
+  if (MID_MID_CROSS)
+    return_value += 0.1;
+  if (TOP_LEFT_NOTCH || MID_LEFT_NOTCH)
+    return_value += 0.1;
+  if (MID_RIGHT_NOTCH)
+    return_value += 0.1;
+  if (BOTTOM_LEFT_END && BOTTOM_RIGHT_END)
+    return_value += 0.1;
+  
+  /* not */
+  if (DIAGONAL_BAR < 0.5)
+    return_value -= 0.1;
+  if (WIDTH <  0.45)
+    return_value -= 0.1;
+  if (WIDTH <  0.40 || HEIGHT < 0.40)
+    return_value -= 0.2;
+  if (HEIGHT > 0.55)
+    return_value -= 0.2;
+  if (RIGHT_VBAR)
+    return_value -= 0.1;
+  if (BOTTOM_HBAR)
+    return_value -= 0.1;
+  if (BOTTOM_MID == 1.0)
+    return_value -= 0.2;
+  if (MID_RIGTH_EDGE)
+    return_value -= 0.1;
   
   return return_value;
 }
