@@ -2073,7 +2073,8 @@ ho_recognize_create_array_out (const double *array_in, double *array_out)
   int i;
 
   /* set array out */
-  array_out[0] = 0.2;
+  array_out[0] = 0.1;
+  
   for (i = 1; i < HO_ARRAY_OUT_SIZE; i++)
     array_out[i] = ho_recognize_array (array_in, i);
   return FALSE;

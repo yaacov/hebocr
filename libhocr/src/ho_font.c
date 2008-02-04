@@ -775,12 +775,7 @@ ho_font_ends (const ho_bitmap * m_text, const ho_bitmap * m_mask)
         /* one neigbor it's an end */
         if (neighbors < 2)
         {
-          /* ho_bitmap_set (m_out, x, y - 1); ho_bitmap_set (m_out, x + 1, y -
-           * 1); ho_bitmap_set (m_out, x - 1, y - 1); */
           ho_bitmap_set (m_out, x, y);
-          /* ho_bitmap_set (m_out, x + 1, y); ho_bitmap_set (m_out, x - 1, y);
-           * ho_bitmap_set (m_out, x, y + 1); ho_bitmap_set (m_out, x + 1, y +
-           * 1); ho_bitmap_set (m_out, x - 1, y + 1); */
         }
       }
     }
@@ -826,12 +821,7 @@ ho_font_cross (const ho_bitmap * m_text, const ho_bitmap * m_mask)
         /* more then two neigbors it's a cross */
         if (neighbors > 2)
         {
-          /* ho_bitmap_set (m_out, x, y - 1); ho_bitmap_set (m_out, x + 1, y -
-           * 1); ho_bitmap_set (m_out, x - 1, y - 1); */
           ho_bitmap_set (m_out, x, y);
-          /* ho_bitmap_set (m_out, x + 1, y); ho_bitmap_set (m_out, x - 1, y);
-           * ho_bitmap_set (m_out, x, y + 1); ho_bitmap_set (m_out, x + 1, y +
-           * 1); ho_bitmap_set (m_out, x - 1, y + 1); */
         }
       }
     }
@@ -881,10 +871,9 @@ ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   m_out = m_temp;
 
   /* fix holes m_temp = ho_bitmap_hlink (m_out, line_height / 10);
-   * ho_bitmap_free (m_out); if (!m_temp) return NULL;
-   * 
-   * m_out = ho_bitmap_vlink (m_temp, line_height / 10); ho_bitmap_free
-   * (m_temp); if (!m_out) return NULL; */
+   * ho_bitmap_free (m_out); if (!m_temp) return NULL; m_out = ho_bitmap_vlink
+   * (m_temp, line_height / 10); ho_bitmap_free (m_temp); if (!m_out) return
+   * NULL; */
 
   /* smoth font edges */
   m_temp = ho_bitmap_closing (m_out);
@@ -1134,7 +1123,7 @@ ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 10;
+  int threshold = 0;
   int sum;
 
   /* get font start and end */
@@ -1182,15 +1171,15 @@ ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* set lines where it looks like a notch */
   for (x = 0; x < m_out->width; x++)
   {
-    if (((x < dx || a_height[x - dx] > a_height[x] + dy)
-        && (x > m_out->width - dx
-          || a_height[x + dx] > a_height[x] + dy))
-      || ((x < 2 * dx || a_height[x - dx * 2] > a_height[x] + dy)
-        && (x > m_out->width - 2 * dx
-          || a_height[x + dx * 2] > a_height[x] + dy)) ||
-      ((x < 3 * dx || a_height[x - dx * 3] > a_height[x] + dy)
-        && (x > m_out->width - 3 * dx
-          || a_height[x + dx * 3] > a_height[x] + dy)))
+    if (((x < dx || a_height[x - dx] > (a_height[x] + dy))
+        && ((x + dx) >= m_out->width - dx
+          || a_height[x + dx] > (a_height[x] + dy)))
+      || ((x < 2 * dx || a_height[x - dx * 2] > (a_height[x] + dy))
+        && (x > (m_out->width - 2 * dx)
+          || a_height[x + dx * 2] > (a_height[x] + dy))) ||
+      ((x < 3 * dx || a_height[x - dx * 3] > (a_height[x] + dy))
+        && (x > (m_out->width - 3 * dx)
+          || a_height[x + dx * 3] > (a_height[x] + dy))))
     {
       ho_bitmap_draw_vline (m_out, x, 0, m_out->height);
     }
@@ -1254,7 +1243,7 @@ ho_font_edges_bottom_big (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 20;
+  int threshold = 10;
   int sum;
 
   /* get font start and end */
@@ -1842,7 +1831,7 @@ ho_font_notch_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 2;
+  int threshold = 0;
   int sum;
 
   /* get font start and end */
@@ -1866,7 +1855,7 @@ ho_font_notch_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* set y start and y end */
-  dy = threshold * line_height / 100 + 2;
+  dy = threshold * line_height / 100 + 1;
   y1 = y_start - line_height / 6 - 3;
   y2 = y_start + line_height / 2 + 3;
   if (y1 < 0)
@@ -1952,7 +1941,7 @@ ho_font_notch_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 2;
+  int threshold = 0;
   int sum;
 
   /* get font start and end */
@@ -1976,7 +1965,7 @@ ho_font_notch_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* set y start and y end */
-  dy = threshold * line_height / 100 + 2;
+  dy = threshold * line_height / 100 + 1;
   y1 = y_start + line_height - line_height / 2 - 3;
   y2 = y_start + line_height + line_height / 6 + 3;
   if (y2 > m_text->height - 1)
@@ -2068,7 +2057,7 @@ ho_font_notch_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 2;
+  int threshold = 0;
   int sum;
 
   /* get font start and end */
@@ -2087,7 +2076,7 @@ ho_font_notch_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* set y start and y end */
-  dx = threshold * line_height / 100 + 2;
+  dx = threshold * line_height / 100 + 1;
   x1 = 0;
   x2 = 3 * m_text->width / 4 + 1;
 
@@ -2116,14 +2105,15 @@ ho_font_notch_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   /* set lines where it looks like a notch */
   for (y = y1; y < y2 && y < m_out->height; y++)
   {
-    if (((y > y1 + dy && a_height[y - dy - y1] < a_height[y - y1] - dx)
-        && (y < y2 - dy
-          && a_height[y + dy - y1] < a_height[y - y1] - dx))
+    if (((y > (y1 + dy) &&
+          a_height[y - dy - y1] < (a_height[y - y1] - dx))
+        && (y < (y2 - dy)
+          && a_height[y + dy - y1] < (a_height[y - y1] - dx)))
       ||
-      ((y > y1 + 2 * dy
-          && a_height[y - dy * 2 - y1] < a_height[y - y1] - dx)
-        && (y < y2 - 2 * dy
-          && a_height[y + dy * 2 - y1] < a_height[y - y1] - dx)))
+      ((y > (y1 + 2 * dy)
+          && a_height[y - dy * 2 - y1] < (a_height[y - y1] - dx))
+        && (y < (y2 - 2 * dy)
+          && a_height[y + dy * 2 - y1] < (a_height[y - y1] - dx))))
     {
       ho_bitmap_draw_hline (m_out, 0, y, m_out->width);
     }
@@ -2201,7 +2191,7 @@ ho_font_notch_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
     return NULL;
 
   /* set y start and y end */
-  dx = threshold * m_text->width / 100 + 2;
+  dx = threshold * m_text->width / 100 + 1;
   x1 = m_text->width - 3 * m_text->width / 4 - 1;
   x2 = m_text->width;
 

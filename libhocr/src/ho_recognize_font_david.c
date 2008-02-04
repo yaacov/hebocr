@@ -261,6 +261,9 @@ ho_recognize_font_david_alef (const double *array_in)
 {
   double return_value = 0.0;
 
+  if (DIAGONAL_BAR > 0.5)
+    return_value += 0.2;
+  
   return return_value;
 }
 
@@ -269,6 +272,13 @@ ho_recognize_font_david_bet (const double *array_in)
 {
   double return_value = 0.0;
 
+  if (TOP_HBAR)
+    return_value += 0.05;
+  if (BOTTOM_HBAR)
+    return_value += 0.05;
+  if (RIGHT_VBAR)
+    return_value += 0.05;
+  
   return return_value;
 }
 
@@ -277,6 +287,15 @@ ho_recognize_font_david_gimal (const double *array_in)
 {
   double return_value = 0.0;
 
+  if (LEFT_BOTTOM_EDGE)
+    return_value += 0.05;
+  if (BOTTOM_RIGTH_EDGE)
+    return_value += 0.05;
+  if (LEFT_TOP_EDGE)
+    return_value += 0.05;
+  if (MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH)
+    return_value += 0.05;
+  
   return return_value;
 }
 
