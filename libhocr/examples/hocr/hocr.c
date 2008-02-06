@@ -912,7 +912,7 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
                   ho_string_cat (s_data_out, "\n");
                 if (!(i % 10))
                 {
-                  text_out = g_strdup_printf ("\n(%02d) ", i);
+                  text_out = g_strdup_printf ("\ni(%02d) ", i);
                   ho_string_cat (s_data_out, text_out);
 
                   g_free (text_out);
@@ -935,7 +935,7 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
                   ho_string_cat (s_data_out, "\n");
                 if (!(i % 10))
                 {
-                  text_out = g_strdup_printf ("\n(%02d) ", i);
+                  text_out = g_strdup_printf ("\no(%02d) ", i);
                   ho_string_cat (s_data_out, text_out);
 
                   g_free (text_out);
@@ -943,7 +943,7 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
                 else if (!(i % 5))
                   ho_string_cat (s_data_out, "  ");
 
-                text_out = g_strdup_printf ("%03.2f, ", array_out[i]);
+                text_out = g_strdup_printf ("%s:%03.2f, ", ho_sign_array[i], array_out[i]);
                 ho_string_cat (s_data_out, text_out);
 
                 g_free (text_out);
@@ -1484,8 +1484,9 @@ main (int argc, char *argv[])
   else
   {
     int progress;
-
-    hocr_font_recognition (l_page, s_text_out, text_out_html, &progress);
+    unsigned char font_code = 0;
+    
+    hocr_font_recognition (l_page, s_text_out, font_code, text_out_html, &progress);
   }
 
   /* end of page */

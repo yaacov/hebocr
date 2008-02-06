@@ -217,12 +217,13 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
  @param l_page the page layout to recognize
  @param s_text_out the text buffer to fill
  @param html output format is html
+ @param font_code code for the font to use
  @param progress a progress indicator 0..100
  @return FALSE
  */
 int
 hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-  const unsigned char html, int *progress)
+  const unsigned char html, const unsigned char font_code, int *progress)
 {
   int block_index;
   int line_index;

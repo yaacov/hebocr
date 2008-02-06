@@ -84,6 +84,7 @@ namespace hocr
       slicing_threshold = 0;
       slicing_width = 0;
 
+      font_code = 0;
       html = 0;
 
       /* init progress */
@@ -118,6 +119,7 @@ namespace hocr
       slicing_threshold = 0;
       slicing_width = 0;
 
+      font_code = 0;
       html = 0;
 
       /* init progress */
@@ -335,7 +337,7 @@ namespace hocr
 
       text_out = ho_string_new ();
 
-      hocr_font_recognition (page_layout, text_out, html, &progress);
+      hocr_font_recognition (page_layout, text_out, font_code, html, &progress);
 
       return 0;
     }
@@ -378,6 +380,29 @@ namespace hocr
       return html;
     }
     
+    /**
+     @brief get font param
+    
+     @return font code of objct
+     */
+    int get_font()
+    {      
+      return font_code;
+    }
+    
+    /**
+     @brief set font param
+    
+     @param font_in new value of font param
+     @return font code of objct
+     */
+    int set_font(unsigned char font_in)
+    {
+      font_code = font_in;
+      
+      return font_code;
+    }
+    
   private:
 
     ho_pixbuf * m_pix_orig;
@@ -399,6 +424,7 @@ namespace hocr
     int slicing_threshold;
     int slicing_width;
 
+    unsigned char font_code;
     unsigned char html;
 
     int progress;

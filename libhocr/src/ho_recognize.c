@@ -217,12 +217,12 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
   *has_two_hlines_up = 0.0;
   *has_three_hlines_up = 0.0;
   sum = 0;
-  y = font_start + font_height / 3;
+  y = font_start + font_height / 4;
   x = 0;
   while (x < m_text->width)
   {
     for (; x < m_text->width, !ho_bitmap_get (m_clean, x, y); x++) ;
-    if (ho_bitmap_get (m_clean, x, y))
+    if (ho_bitmap_get (m_clean, x, y) && x < m_text->width)
       sum++;
     for (; x < m_text->width, ho_bitmap_get (m_clean, x, y); x++) ;
   }
@@ -235,12 +235,12 @@ ho_recognize_dimentions (const ho_bitmap * m_text,
   *has_two_hlines_down = 0.0;
   *has_three_hlines_down = 0.0;
   sum = 0;
-  y = font_start + 2 * font_height / 3;
+  y = font_start + 3 * font_height / 4;
   x = 0;
   while (x < m_text->width)
   {
     for (; x < m_text->width, !ho_bitmap_get (m_clean, x, y); x++) ;
-    if (ho_bitmap_get (m_text, x, y))
+    if (ho_bitmap_get (m_text, x, y) && x < m_text->width)
       sum++;
     for (; x < m_text->width, ho_bitmap_get (m_clean, x, y); x++) ;
   }
@@ -2064,6 +2064,12 @@ ho_recognize_array (const double *array_in, const int sign_index)
     break;
   }
 
+  /* we only use the 0..1 range */
+  if (return_value < 0.0)
+    return_value = 0.0;
+  if (return_value > 1.0)
+    return_value = 1.0;
+  
   return return_value;
 }
 

@@ -127,12 +127,13 @@ extern "C"
  @param l_page the page layout to recognize
  @param s_text_out the text buffer to fill
  @param html output format is html
+ @param font_code code for the font to use
  @param progress a progress indicator 0..100
  @return FALSE
  */
-  int
-    hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-    const unsigned char html, int *progress);
+int
+hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
+  const unsigned char html, const unsigned char font_code, int *progress);
 
 #ifdef __cplusplus
 }
