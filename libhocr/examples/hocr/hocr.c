@@ -257,8 +257,6 @@ static GOptionEntry entries[] = {
 };
 
 /* headers */
-int hocr_exit ();
-
 int hocr_printerr (const char *msg);
 
 int hocr_cmd_parser (int *argc, char **argv[]);
@@ -268,6 +266,12 @@ ho_bitmap *hocr_load_input_bitmap ();
 ho_layout *hocr_create_layout (const ho_bitmap * m_in,
   const int font_spacing_code, const int paragraph_setup,
   const unsigned char dir_ltr);
+
+int
+hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
+  ho_string * s_data_out);
+
+int hocr_exit ();
 
 /* definitions */
 int

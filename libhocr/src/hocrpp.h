@@ -61,40 +61,7 @@ namespace hocr
     /**
      @brief Hocr constructor.
      */
-    Hocr ()
-    {
-      /* lock free pointers */
-      m_pix_orig = NULL;
-      m_bit_bw = NULL;
-      page_layout = NULL;
-      text_out = NULL;
-
-      /* set defaults */
-      scale = 0;
-      no_auto_scale = 0;
-      rotate = 0;
-      no_auto_rotate = 0;
-      adaptive = 0;
-      threshold = 0;
-      a_threshold = 0;
-
-      dir_ltr = 0;
-      font_spacing_code = 0;
-      paragraph_setup = 0;
-      slicing_threshold = 0;
-      slicing_width = 0;
-
-      font_code = 0;
-      html = 0;
-
-      /* init progress */
-      progress = 0;
-    }
-
-    /**
-     @brief Hocr constructor.
-     */
-    Hocr (ho_pixbuf * m_in)
+    Hocr (ho_pixbuf * m_in = NULL)
     {
       /* set pixbuf */
       m_pix_orig = m_in;
