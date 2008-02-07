@@ -503,23 +503,15 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
   }
 
   /* remove very small and very large things */
-
+  m_bw_temp =
+    ho_bitmap_filter_by_size (m_bw, 3, 3 * m_bw->height / 4, 3,
+    3 * m_bw->width / 4);
+  if (m_bw_temp)
   {
-    m_bw_temp =
-      ho_bitmap_filter_by_size (m_bw, 3, 3 * m_bw->height / 4, 3,
-      3 * m_bw->width / 4);
-    if (m_bw_temp)
-    {
-      ho_bitmap_free (m_bw);
-      m_bw = m_bw_temp;
-      m_bw_temp = NULL;
-    }
+    ho_bitmap_free (m_bw);
+    m_bw = m_bw_temp;
+    m_bw_temp = NULL;
   }
-
-  /* free input pixbuf */
-  ho_pixbuf_free (pix);
-
-  /* from here on we only use the black and white image */
 
   /* rotate image */
   if (rotate_angle)
