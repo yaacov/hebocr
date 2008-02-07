@@ -272,7 +272,7 @@ ho_layout *hocr_layout_analysis_with_debug (const ho_bitmap * m_in,
   const unsigned char dir_ltr);
 
 int
-hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
+hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
   ho_string * s_data_out);
 
 /* definitions */
@@ -641,7 +641,7 @@ hocr_layout_analysis_with_debug (const ho_bitmap * m_in,
 
 /* FIXME: this functions use globals */
 int
-hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
+hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
   ho_string * s_data_out)
 {
   int i;
@@ -1312,14 +1312,14 @@ main (int argc, char *argv[])
     m_page_text = hocr_image_processing_with_debug (pix);
   }
 
+  /* free input pixbuf */
+  ho_pixbuf_free (pix);
+
   if (!m_page_text)
   {
     hocr_printerr ("can't do image processing");
     exit (1);
   }
-
-  /* free input pixbuf */
-  ho_pixbuf_free (pix);
 
   if (debug || verbose)
     if (scale_by > 1)
@@ -1406,14 +1406,13 @@ main (int argc, char *argv[])
 
   if (!l_page)
   {
+    ho_bitmap_free (m_page_text);
+    
     hocr_printerr ("can't do layout analysis");
     exit (1);
   }
 
   number_of_fonts = l_page->number_of_fonts;
-
-  if (debug || verbose)
-    g_print ("end of image layout analysis.\n");
 
   /* if only layout analysis or save layout image */
   if (save_layout || only_layout_analysis)
@@ -1452,17 +1451,20 @@ main (int argc, char *argv[])
     }
   }
 
+  if (debug || verbose)
+    g_print ("end of image layout analysis.\n");
+  
   /* if user only want layout image exit now */
   if (only_layout_analysis)
     hocr_exit ();
 
   /* start of word recognition section */
   if (debug || verbose)
+  {
     g_print ("start word recognition section.\n");
-
-  if (debug || verbose)
     g_print ("  found %d fonts in page.\n", number_of_fonts);
-
+  }
+  
   /* start the text out */
   s_text_out = ho_string_new ();
   if (!s_text_out)
@@ -1501,7 +1503,7 @@ main (int argc, char *argv[])
   /* do character recognition */
   if (debug || verbose || text_out_font_numbers || data_out_filename
     || debug_font_filter || save_fonts)
-    hocr_recognize_fonts_with_debug (l_page, s_text_out, s_data_out);
+    hocr_font_recognition_with_debug (l_page, s_text_out, s_data_out);
   else
   {
     int progress;
