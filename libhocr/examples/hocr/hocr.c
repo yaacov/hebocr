@@ -261,17 +261,19 @@ int hocr_printerr (const char *msg);
 
 int hocr_cmd_parser (int *argc, char **argv[]);
 
-ho_bitmap *hocr_load_input_bitmap ();
+int hocr_exit ();
 
-ho_layout *hocr_create_layout (const ho_bitmap * m_in,
+ho_pixbuf *hocr_pixbuf_load_with_debug ();
+
+ho_bitmap *hocr_image_processing_with_debug (ho_pixbuf * pix);
+
+ho_layout *hocr_layout_analysis_with_debug (const ho_bitmap * m_in,
   const int font_spacing_code, const int paragraph_setup,
   const unsigned char dir_ltr);
 
 int
 hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
   ho_string * s_data_out);
-
-int hocr_exit ();
 
 /* definitions */
 int
@@ -388,15 +390,11 @@ hocr_cmd_parser (int *argc, char **argv[])
   return FALSE;
 }
 
-/* FIXME: this function use globals */
-ho_bitmap *
-hocr_load_input_bitmap ()
+ho_pixbuf *
+hocr_pixbuf_load_with_debug ()
 {
   ho_pixbuf *pix = NULL;
-  ho_bitmap *m_bw = NULL;
-
-  ho_bitmap *m_bw_temp = NULL;
-  ho_bitmap *m_bw_temp2 = NULL;
+  gchar *filename;
 
   /* read image from file */
   if (no_gtk)
@@ -417,8 +415,6 @@ hocr_load_input_bitmap ()
   /* if copy image */
   if (save_copy)
   {
-    gchar *filename;
-
     /* create file name */
     if (no_gtk)
       filename = g_strdup_printf ("%s-image-copy.pgm", image_out_path);
@@ -437,24 +433,15 @@ hocr_load_input_bitmap ()
     }
   }
 
-  /* if user do not nead fidback just do image proccesing and exit */
-  if (!debug && !verbose)
-  {
-    int progress;
+  return pix;
+}
 
-    m_bw =
-      hocr_image_processing (pix,
-      scale_by,
-      do_not_auto_scale,
-      rotate_angle,
-      do_not_auto_rotate,
-      adaptive_threshold_type, threshold, adaptive_threshold, &progress);
-
-    /* free input pixbuf */
-    ho_pixbuf_free (pix);
-
-    return m_bw;
-  }
+/* FIXME: this function use globals */
+ho_bitmap *
+hocr_image_processing_with_debug (ho_pixbuf * pix)
+{
+  ho_bitmap *m_bw = NULL;
+  ho_bitmap *m_bw_temp = NULL;
 
   m_bw =
     ho_pixbuf_to_bitmap_wrapper (pix, scale_by, adaptive_threshold_type,
@@ -585,24 +572,15 @@ hocr_load_input_bitmap ()
 }
 
 ho_layout *
-hocr_create_layout (const ho_bitmap * m_in, const int font_spacing_code,
-  const int paragraph_setup, const unsigned char dir_ltr)
+hocr_layout_analysis_with_debug (const ho_bitmap * m_in,
+  const int font_spacing_code, const int paragraph_setup,
+  const unsigned char dir_ltr)
 {
   int block_index;
   int line_index;
   int word_index;
 
   ho_layout *layout_out = NULL;
-
-  if (!debug && !verbose)
-  {
-    int progress;
-
-    layout_out = hocr_layout_analysis (m_in, font_spacing_code,
-      paragraph_setup, slicing_threshold, slicing_width, dir_ltr, &progress);
-
-    return layout_out;
-  }
 
   layout_out =
     ho_layout_new (m_in, font_spacing_code, paragraph_setup, dir_ltr);
@@ -947,7 +925,9 @@ hocr_recognize_fonts_with_debug (ho_layout * l_page, ho_string * s_text_out,
                 else if (!(i % 5))
                   ho_string_cat (s_data_out, "  ");
 
-                text_out = g_strdup_printf ("%s:%03.2f, ", ho_sign_array[i], array_out[i]);
+                text_out =
+                  g_strdup_printf ("%s:%03.2f, ", ho_sign_array[i],
+                  array_out[i]);
                 ho_string_cat (s_data_out, text_out);
 
                 g_free (text_out);
@@ -1302,6 +1282,7 @@ main (int argc, char *argv[])
   ho_string *s_text_out = NULL;
   ho_string *s_data_out = NULL;
   gchar *text_out = NULL;
+  ho_pixbuf *pix = NULL;
 
   /* start of argument analyzing section */
 
@@ -1318,7 +1299,35 @@ main (int argc, char *argv[])
     g_print ("start image proccesing.\n");
 
   /* load the image from input filename */
-  m_page_text = hocr_load_input_bitmap ();
+  pix = hocr_pixbuf_load_with_debug ();
+
+  /* if user do not nead fidback just do image proccesing */
+  if (!debug && !verbose)
+  {
+    int progress;
+
+    m_page_text =
+      hocr_image_processing (pix,
+      scale_by,
+      do_not_auto_scale,
+      rotate_angle,
+      do_not_auto_rotate,
+      adaptive_threshold_type, threshold, adaptive_threshold, &progress);
+  }
+  else
+    /* do image proccesing with fidback */
+  {
+    m_page_text = hocr_image_processing_with_debug (pix);
+  }
+
+  if (!m_page_text)
+  {
+    hocr_printerr ("can't do image processing");
+    exit (1);
+  }
+
+  /* free input pixbuf */
+  ho_pixbuf_free (pix);
 
   if (debug || verbose)
     if (scale_by > 1)
@@ -1389,9 +1398,25 @@ main (int argc, char *argv[])
       g_print ("  guessing one column.\n");
   }
 
-  l_page =
-    hocr_create_layout (m_page_text, font_spacing_code, paragraph_setup,
-    dir_ltr);
+  if (!debug && !verbose)
+  {
+    int progress;
+
+    l_page = hocr_layout_analysis (m_page_text, font_spacing_code,
+      paragraph_setup, slicing_threshold, slicing_width, dir_ltr, &progress);
+  }
+  else
+  {
+    l_page =
+      hocr_layout_analysis_with_debug (m_page_text, font_spacing_code,
+      paragraph_setup, dir_ltr);
+  }
+
+  if (!l_page)
+  {
+    hocr_printerr ("can't do layout analysis");
+    exit (1);
+  }
 
   number_of_fonts = l_page->number_of_fonts;
 
@@ -1489,8 +1514,9 @@ main (int argc, char *argv[])
   {
     int progress;
     unsigned char font_code = 0;
-    
-    hocr_font_recognition (l_page, s_text_out, font_code, text_out_html, &progress);
+
+    hocr_font_recognition (l_page, s_text_out, font_code, text_out_html,
+      &progress);
   }
 
   /* end of page */
