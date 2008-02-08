@@ -363,7 +363,7 @@ namespace hocr
      @param font_in new value of font param
      @return font code of objct
      */
-    int set_font(unsigned char font_in)
+    int set_font(int font_in)
     {
       font_code = font_in;
       
@@ -391,7 +391,7 @@ namespace hocr
     int slicing_threshold;
     int slicing_width;
 
-    unsigned char font_code;
+    int font_code;
     unsigned char html;
 
     int progress;

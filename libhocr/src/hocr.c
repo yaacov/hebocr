@@ -223,7 +223,7 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
  */
 int
 hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-  const unsigned char html, const unsigned char font_code, int *progress)
+  const unsigned char html, int font_code, int *progress)
 {
   int block_index;
   int line_index;
@@ -301,7 +301,7 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
             return TRUE;
 
           /* recognize font from images */
-          font = ho_recognize_font (m_font_main_sign, m_mask);
+          font = ho_recognize_font (m_font_main_sign, m_mask, font_code);
 
           /* insert font to text out */
           ho_string_cat (s_text_out, font);

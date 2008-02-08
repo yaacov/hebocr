@@ -53,11 +53,13 @@ int
 ho_recognize_create_array_in (const ho_bitmap * m_text,
   const ho_bitmap * m_mask, double *array_in);
 
-int ho_recognize_create_array_out (const double *array_in, double *array_out);
+int ho_recognize_create_array_out (const double *array_in, double *array_out,
+  int font_code);
 
 const char *ho_recognize_array_out_to_font (const double *array_out);
 
-const char *ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask);
+const char *ho_recognize_font (const ho_bitmap * m_text,
+  const ho_bitmap * m_mask, int font_code);
 
 int
 ho_recognize_dimentions (const ho_bitmap * m_text,

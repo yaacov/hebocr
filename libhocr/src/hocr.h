@@ -133,7 +133,7 @@ extern "C"
  */
 int
 hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-  const unsigned char html, const unsigned char font_code, int *progress);
+  const unsigned char html, int font_code, int *progress);
 
 #ifdef __cplusplus
 }

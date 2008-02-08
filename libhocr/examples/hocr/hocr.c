@@ -80,6 +80,9 @@ ho_bitmap *m_page_text = NULL;
 /* text layout */
 ho_layout *l_page = NULL;
 
+/* progress indicator */
+gint progress;
+
 static gchar *copyright_message = "hocr - Hebrew OCR utility\n\
 %s\n\
 http://hocr.berlios.de\n\
@@ -769,9 +772,9 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
             /* insert font to text out */
             ho_recognize_create_array_in (m_font_main_sign, m_mask, array_in);
-            ho_recognize_create_array_out (array_in, array_out);
+            ho_recognize_create_array_out (array_in, array_out, font_code);
             font = ho_recognize_array_out_to_font (array_out);
-            /* font = ho_recognize_font (m_font_main_sign, m_mask); */
+            /* font = ho_recognize_font (m_font_main_sign, m_mask, font_code); */
 
             /* insert font to text out */
             ho_string_cat (s_text_out, font);
@@ -1203,7 +1206,6 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
       }                         /* end of words loop */
 
       /* end of line */
-
       if (text_out_html && s_text_out)
       {
         ho_string_cat (s_text_out, "<br/>");
@@ -1214,7 +1216,6 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
     }
 
     /* end of paragraph */
-
     if (text_out_html && s_text_out)
     {
       ho_string_cat (s_text_out, "<br/>");
@@ -1296,8 +1297,6 @@ main (int argc, char *argv[])
   /* if user do not nead fidback just do image proccesing */
   if (!debug && !verbose)
   {
-    int progress;
-
     m_page_text =
       hocr_image_processing (pix,
       scale_by,
@@ -1392,8 +1391,6 @@ main (int argc, char *argv[])
 
   if (!debug && !verbose)
   {
-    int progress;
-
     l_page = hocr_layout_analysis (m_page_text, font_spacing_code,
       paragraph_setup, slicing_threshold, slicing_width, dir_ltr, &progress);
   }
@@ -1407,7 +1404,7 @@ main (int argc, char *argv[])
   if (!l_page)
   {
     ho_bitmap_free (m_page_text);
-    
+
     hocr_printerr ("can't do layout analysis");
     exit (1);
   }
@@ -1453,7 +1450,7 @@ main (int argc, char *argv[])
 
   if (debug || verbose)
     g_print ("end of image layout analysis.\n");
-  
+
   /* if user only want layout image exit now */
   if (only_layout_analysis)
     hocr_exit ();
@@ -1464,7 +1461,7 @@ main (int argc, char *argv[])
     g_print ("start word recognition section.\n");
     g_print ("  found %d fonts in page.\n", number_of_fonts);
   }
-  
+
   /* start the text out */
   s_text_out = ho_string_new ();
   if (!s_text_out)
@@ -1503,12 +1500,11 @@ main (int argc, char *argv[])
   /* do character recognition */
   if (debug || verbose || text_out_font_numbers || data_out_filename
     || debug_font_filter || save_fonts)
+  {
     hocr_font_recognition_with_debug (l_page, s_text_out, s_data_out);
+  }
   else
   {
-    int progress;
-    unsigned char font_code = 0;
-
     hocr_font_recognition (l_page, s_text_out, font_code, text_out_html,
       &progress);
   }
