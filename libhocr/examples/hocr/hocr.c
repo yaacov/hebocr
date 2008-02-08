@@ -254,6 +254,8 @@ static GOptionEntry entries[] = {
     "output text in html format", NULL},
   {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
     "do not use gtk for file input and output", NULL},
+  {"font", 'z', 0, G_OPTION_ARG_INT, &font_code,
+    "use font NUM", "NUM"},
   {"version", 'v', 0, G_OPTION_ARG_NONE, &version,
     "print version information and exit", NULL},
   {NULL}
@@ -1505,7 +1507,7 @@ main (int argc, char *argv[])
   }
   else
   {
-    hocr_font_recognition (l_page, s_text_out, font_code, text_out_html,
+    hocr_font_recognition (l_page, s_text_out, text_out_html, font_code,
       &progress);
   }
 

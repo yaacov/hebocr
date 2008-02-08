@@ -304,7 +304,7 @@ namespace hocr
 
       text_out = ho_string_new ();
 
-      hocr_font_recognition (page_layout, text_out, font_code, html, &progress);
+      hocr_font_recognition (page_layout, text_out, html, font_code, &progress);
 
       return 0;
     }
@@ -329,47 +329,47 @@ namespace hocr
     
      @return FALSE-no html in output, TRUE-output html text 
      */
-    int get_html()
-    {      
+    int get_html ()
+    {
       return html;
     }
-    
+
     /**
      @brief set html param
     
      @param html_in new value of html param
      @return FALSE-no html in output, TRUE-output html text 
      */
-    int set_html(unsigned char html_in)
+    int set_html (unsigned char html_in)
     {
       html = html_in;
-      
+
       return html;
     }
-    
+
     /**
      @brief get font param
     
      @return font code of objct
      */
-    int get_font()
-    {      
+    int get_font ()
+    {
       return font_code;
     }
-    
+
     /**
      @brief set font param
     
      @param font_in new value of font param
      @return font code of objct
      */
-    int set_font(int font_in)
+    int set_font (int font_in)
     {
       font_code = font_in;
-      
+
       return font_code;
     }
-    
+
   private:
 
     ho_pixbuf * m_pix_orig;
