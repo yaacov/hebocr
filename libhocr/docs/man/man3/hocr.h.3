@@ -1,4 +1,4 @@
-.TH "src/hocr.h" 3 "3 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/hocr.h" 3 "9 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -44,7 +44,7 @@ src/hocr.h \- libhocr main C language header.
 .RI "\fBho_layout\fP * \fBhocr_layout_analysis\fP (const \fBho_bitmap\fP *m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, int *progress)"
 .br
 .ti -1c
-.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int *progress)"
+.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, int *progress)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -116,7 +116,7 @@ a newly allocated and filled layout
 .RE
 .PP
 
-.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html, int * progress)"
+.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, int * progress)"
 .PP
 fill a text buffer with fonts recognized from a page layout
 .PP
@@ -127,6 +127,8 @@ fill a text buffer with fonts recognized from a page layout
 \fIs_text_out\fP the text buffer to fill 
 .br
 \fIhtml\fP output format is html 
+.br
+\fIfont_code\fP code for the font to use 
 .br
 \fIprogress\fP a progress indicator 0..100 
 .RE

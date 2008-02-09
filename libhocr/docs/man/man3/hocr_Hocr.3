@@ -1,4 +1,4 @@
-.TH "hocr::Hocr" 3 "3 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "hocr::Hocr" 3 "9 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,11 +14,7 @@ hocr::Hocr \- \fBHocr\fP class.
 
 .in +1c
 .ti -1c
-.RI "\fBHocr\fP ()"
-.br
-.RI "\fI\fBHocr\fP constructor. \fP"
-.ti -1c
-.RI "\fBHocr\fP (\fBho_pixbuf\fP *m_in)"
+.RI "\fBHocr\fP (\fBho_pixbuf\fP *m_in=NULL)"
 .br
 .RI "\fI\fBHocr\fP constructor. \fP"
 .ti -1c
@@ -81,6 +77,14 @@ hocr::Hocr \- \fBHocr\fP class.
 .RI "int \fBset_html\fP (unsigned char html_in)"
 .br
 .RI "\fIset html param \fP"
+.ti -1c
+.RI "int \fBget_font\fP ()"
+.br
+.RI "\fIget font param \fP"
+.ti -1c
+.RI "int \fBset_font\fP (int font_in)"
+.br
+.RI "\fIset font param \fP"
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -89,11 +93,7 @@ hocr::Hocr \- \fBHocr\fP class.
 class for Hebrew Optical Character Recognition 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "hocr::Hocr::Hocr ()\fC [inline]\fP"
-.PP
-\fBHocr\fP constructor. 
-.PP
-.SS "hocr::Hocr::Hocr (\fBho_pixbuf\fP * m_in)\fC [inline]\fP"
+.SS "hocr::Hocr::Hocr (\fBho_pixbuf\fP * m_in = \fCNULL\fP)\fC [inline]\fP"
 .PP
 \fBHocr\fP constructor. 
 .PP
@@ -255,6 +255,31 @@ set html param
 \fBReturns:\fP
 .RS 4
 FALSE-no html in output, TRUE-output html text 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_font ()\fC [inline]\fP"
+.PP
+get font param 
+.PP
+\fBReturns:\fP
+.RS 4
+font code of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_font (int font_in)\fC [inline]\fP"
+.PP
+set font param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfont_in\fP new value of font param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+font code of objct 
 .RE
 .PP
 
