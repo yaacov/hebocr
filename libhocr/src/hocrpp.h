@@ -98,9 +98,14 @@ namespace hocr
      */
      ~Hocr ()
     {
-      ho_pixbuf_free (m_pix_orig);
-      ho_bitmap_free (m_bit_bw);
-      ho_string_free (text_out);
+      if (m_pix_orig)
+        ho_pixbuf_free (m_pix_orig);
+      if (m_bit_bw)
+        ho_bitmap_free (m_bit_bw);
+      if (page_layout)
+        ho_layout_free (page_layout);
+      if (text_out)
+        ho_string_free (text_out);
     }
 
     /**
@@ -112,9 +117,14 @@ namespace hocr
     int set_pixbuf (ho_pixbuf * m_in)
     {
       /* free existing data if present */
-      ho_pixbuf_free (m_pix_orig);
-      ho_bitmap_free (m_bit_bw);
-      ho_string_free (text_out);
+      if (m_pix_orig)
+        ho_pixbuf_free (m_pix_orig);
+      if (m_bit_bw)
+        ho_bitmap_free (m_bit_bw);
+      if (page_layout)
+        ho_layout_free (page_layout);
+      if (text_out)
+        ho_string_free (text_out);
 
       /* create a new data based on the new image */
       m_pix_orig = m_in;
@@ -136,9 +146,14 @@ namespace hocr
     int set_bitmap (ho_bitmap * m_in)
     {
       /* free existing data if present */
-      ho_pixbuf_free (m_pix_orig);
-      ho_bitmap_free (m_bit_bw);
-      ho_string_free (text_out);
+      if (m_pix_orig)
+        ho_pixbuf_free (m_pix_orig);
+      if (m_bit_bw)
+        ho_bitmap_free (m_bit_bw);
+      if (page_layout)
+        ho_layout_free (page_layout);
+      if (text_out)
+        ho_string_free (text_out);
 
       /* create a new data based on the new image */
       m_pix_orig = NULL;
@@ -370,6 +385,8 @@ namespace hocr
       return font_code;
     }
 
+    int progress; // this is public
+    
   private:
 
     ho_pixbuf * m_pix_orig;
@@ -393,8 +410,6 @@ namespace hocr
 
     int font_code;
     unsigned char html;
-
-    int progress;
   };                            // class
 }                               // name space
 
