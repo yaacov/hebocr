@@ -91,7 +91,6 @@ class MainWindow:
 
         # widgets
         self.window_main = xml.get_widget('window_main')
-        self.menuitem_show_layout = xml.get_widget('menuitem_show_layout')
         self.image = xml.get_widget('image')
         self.textview = xml.get_widget('textview')
         self.progressbar = xml.get_widget('progressbar')
