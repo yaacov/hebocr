@@ -264,7 +264,7 @@ class MainWindow:
         else:
               self.hocr_obj.set_paragraph_setup(1)
         
-        # TODO: this progressbar is useless, use threading
+        # run ocr
         ro = RunOCR()
         ro.start()
     
