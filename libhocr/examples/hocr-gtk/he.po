@@ -60,11 +60,11 @@ msgstr "קובץ"
 
 #: hocr-gtk.glade.h:3
 msgid "_Help"
-msgstr ""
+msgstr "עזרה"
 
 #: hocr-gtk.glade.h:4
 msgid "_View"
-msgstr "עזרה"
+msgstr "תצוגה"
 
 #: hocr-gtk.glade.h:5
 msgid "auto"
