@@ -1,4 +1,5 @@
-# Hebrew translations for libhocr package.
+# Swedish translations for libhocr package
+# Svenska översättningar för paket libhocr.
 # Copyright (C) 2008 THE libhocr'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the libhocr package.
 # kobi <kzamir@walla.co.il>, 2008.
@@ -7,80 +8,77 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libhocr 0.10.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-11 10:56+0200\n"
-"PO-Revision-Date: 2008-02-11 10:56+0200\n"
-"Last-Translator: kobi <kzamir@walla.co.il>\n"
-"Language-Team: Hebrew\n"
+"POT-Creation-Date: 2008-02-12 00:47+0200\n"
+"PO-Revision-Date: 2008-02-12 00:55+0200\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: hocr-gtk.py:51
+#: hocr-gtk.py:70
 msgid ""
 "Hocr-GTK, Hebrew optical character recognition\n"
 "graphical front end (GTK)\n"
 "\n"
 msgstr ""
-"Hocr-GTK, מזהה אותיות אופטי עברי\n"
-"מנשק גרפי (GTK)\n"
+"Hocr-GTK - Programvara för att känna igen hebreiska tecken.\n"
 "\n"
 
-#: hocr-gtk.py:86
+#: hocr-gtk.py:166
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"
 "Exit program."
 msgstr ""
-"לא מסוגל למצא את קובץ המנשק הגרפי, בדוק את ההתקנה.\n"
-"יוצא מהתכנית."
 
-#: hocr-gtk.py:127
+#: hocr-gtk.py:213
 msgid "Open.."
-msgstr "פתח.."
+msgstr "Ny.."
 
-#: hocr-gtk.py:148 hocr-gtk.py:169
+#: hocr-gtk.py:234 hocr-gtk.py:255
 msgid "Closed, no files selected"
-msgstr "סוגר, לא נבחרו קבצים"
+msgstr ""
 
-#: hocr-gtk.py:156
+#: hocr-gtk.py:242
 msgid "Save.."
-msgstr "שמור.."
+msgstr "Spara.."
 
-#: hocr-gtk.py:184
+#: hocr-gtk.py:270
 msgid "Can't load image."
-msgstr "לא מסוגל לקרוא קובץ תמונה."
+msgstr ""
 
 #: hocr-gtk.py:374
 msgid "translator-credits"
-msgstr "יעקב זמיר"
+msgstr "Daniel Nylander <po@danielnylander.se>"
 
 #: hocr-gtk.glade.h:1
 msgid "_Edit"
-msgstr "עריכה"
+msgstr "_Redigera"
 
 #: hocr-gtk.glade.h:2
 msgid "_File"
-msgstr "קובץ"
+msgstr "_Arkiv"
 
 #: hocr-gtk.glade.h:3
 msgid "_Help"
-msgstr "עזרה"
+msgstr "_Hjälp"
 
 #: hocr-gtk.glade.h:4
 msgid "_View"
-msgstr "תצוגה"
+msgstr "_Visa"
 
 #: hocr-gtk.glade.h:5
 msgid "auto"
-msgstr "אוטומטי"
+msgstr "auto"
 
 #: hocr-gtk.glade.h:6
 msgid "clear"
-msgstr "נקה"
+msgstr "Töm"
 
 #: hocr-gtk.glade.h:7
 msgid "column"
-msgstr "עמודות"
+msgstr "kolonn"
 
 #: hocr-gtk.glade.h:8
 msgid "gtk-about"
@@ -136,12 +134,12 @@ msgstr ""
 
 #: hocr-gtk.glade.h:21
 msgid "html"
-msgstr ""
+msgstr "html"
 
 #: hocr-gtk.glade.h:22
 msgid "nikud"
-msgstr "ניקוד"
+msgstr "Använd nikud"
 
 #: hocr-gtk.glade.h:23
 msgid "one column"
-msgstr "עמודה אחת"
+msgstr "en kolonn"

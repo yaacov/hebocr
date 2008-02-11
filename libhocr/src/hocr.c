@@ -166,6 +166,7 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
   const int paragraph_setup, const int slicing_threshold,
   const int slicing_width, const unsigned char dir_ltr, int *progress)
 {
+  int cols = paragraph_setup;
   int block_index;
   int line_index;
   int word_index;
@@ -174,9 +175,13 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
   /* init progress */
   *progress = 0;
 
+  /* check paragraph_setup */
+  if (!cols)
+    cols = ho_dimentions_get_columns (m_in);
+  
   /* create a new layout */
   layout_out =
-    ho_layout_new (m_in, font_spacing_code, paragraph_setup, dir_ltr);
+    ho_layout_new (m_in, font_spacing_code, cols, dir_ltr);
   if (!layout_out)
     return NULL;
 
