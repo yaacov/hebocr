@@ -15,7 +15,7 @@ _hocr.so: hocr_wrap.cxx
 	g++ -shared $(gtk_LIBS) ../../src/.libs/libhocr.so ../../src/.libs/libhocrgtk.so  hocr_wrap.o -o _hocr.so
 
 hocr_wrap.cxx: hocr.i
-	swig -python -c++ hocr.i
+	swig -python -c++ -threads hocr.i
 
 install-data-local: _hocr.so
 	$(mkinstalldirs) $(DESTDIR)$(PY_MODULES_PATH)

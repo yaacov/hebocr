@@ -20,10 +20,14 @@
 # Copyright (C) 2008 Yaacov Zamir <kzamir_a_walla.co.il>
 
 import sys, os
+import threading
+import time
+
 import pygtk
 pygtk.require('2.0')
 
 import gtk, gtk.glade
+
 from hocr import *
 
 # set gettext support
@@ -70,9 +74,70 @@ def show_error_message(message):
 	dlg.run()
 	dlg.destroy()
 
+class ProgressSet(threading.Thread):
+        "set the fraction of the progressbar"
+        
+        # thread event, stops the thread if it is set.
+        stopthread = threading.Event()
+        
+        def run(self):
+                "run while thread is alive."
+                
+                # importing the progressbar from the global scope
+                global progressbar 
+                global hocr_obj
+                
+                self.stopthread.clear()
+                
+                # main loop
+                while not self.stopthread.isSet() :
+                        # acquiring the gtk global mutex
+                        gtk.gdk.threads_enter()
+                        # set the fraction
+                        progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
+                        # releasing the gtk global mutex
+                        gtk.gdk.threads_leave()
+                        
+                        # delaying 
+                        time.sleep(0.1)
+                        
+        def stop(self):
+                "stop main loop"
+                progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
+                self.stopthread.set()
+
+class RunOCR(threading.Thread):
+        def run(self):
+                # importing the ocr object from the global scope
+                global hocr_obj
+                global menuitem_clear
+                global textbuffer
+                global textview
+                
+                ps = ProgressSet()
+                
+                # do ocr
+                ps.start()
+                hocr_obj.do_ocr()
+                ps.stop()
+                
+                # set text
+                if hocr_obj.get_text():
+                    if menuitem_clear.get_active():
+                        textbuffer.set_text(hocr_obj.get_text())
+                    else:
+                        textbuffer.insert_at_cursor(hocr_obj.get_text())
+                textview.grab_focus()
+
 # set main window class
 class MainWindow:
     def __init__(self):
+        global progressbar 
+        global hocr_obj
+        global menuitem_clear
+        global textbuffer
+        global textview
+        
         # create widget tree ...
         xml = False
         if os.path.isfile(glade_file):
@@ -95,11 +160,14 @@ class MainWindow:
         self.textview = xml.get_widget('textview')
         self.progressbar = xml.get_widget('progressbar')
         self.statusbar1 = xml.get_widget('statusbar1')
+        progressbar = self.progressbar
+        textview = self.textview
         
         # text 
         self.textbuffer =  self.textview.get_buffer()
         self.clipboard = gtk.Clipboard()
         self.textview.grab_focus()
+        textbuffer = self.textbuffer
         
         # image
         self.preview = gtk.Image()
@@ -113,10 +181,13 @@ class MainWindow:
         self.menuitem_nikud = xml.get_widget('menuitem_nikud')
         self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
         self.menuitem_column_one = xml.get_widget('menuitem_column_one')
+        menuitem_clear = self.menuitem_clear
         
         # ocr
         self.hocr_obj = Hocr()
-                
+        
+        hocr_obj = self.hocr_obj
+    
     # signal handlers
     def on_window_main_delete_event(self, widget, obj):
         "on_window_main_delete_event activated"
@@ -194,17 +265,9 @@ class MainWindow:
               self.hocr_obj.set_paragraph_setup(1)
         
         # TODO: this progressbar is useless, use threading
-        self.progressbar.set_fraction(self.hocr_obj.progress / 100)
-        self.hocr_obj.do_ocr()
-        self.progressbar.set_fraction(self.hocr_obj.progress / 100)
-        
-        if self.hocr_obj.get_text():
-            if self.menuitem_clear.get_active():
-                self.textbuffer.set_text(self.hocr_obj.get_text())
-            else:
-                self.textbuffer.insert_at_cursor(self.hocr_obj.get_text())
-        self.textview.grab_focus()
-                
+        ro = RunOCR()
+        ro.start()
+    
     def on_imagemenuitem_quit_activate(self, obj, event = None):
         "on_imagemenuitem_quit_activate activated"
         gtk.main_quit()
@@ -336,6 +399,13 @@ def main():
 
 #Initializing the gtk's thread engine
 gtk.gdk.threads_init()
+
+# things we need global
+progressbar = None
+hocr_obj = None
+menuitem_clear = None
+textbuffer = None
+textview = None
 
 if __name__ == "__main__":
     main()
