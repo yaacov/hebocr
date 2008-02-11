@@ -48,7 +48,8 @@ app_version = "0.1.0"
 author_name = "Yaacov Zamir"
 author_email = "<kzamir@walla.co.il>"
 copyright = author_name + " " + author_email
-comments = _("Hocr, Hebrew optical character recognition graphical front end")
+comments = _("Hocr-GTK, Hebrew optical character recognition\ngraphical front end (GTK)\n\n")
+comments += hocr_get_build_string()
 
 # set global functions
 def update_preview_cb(file_chooser, preview):
@@ -105,6 +106,13 @@ class MainWindow:
         self.filename = ""
         self.pixbuf = None
         self.zoom_factor = 1.0
+        
+        # edit
+        self.menuitem_clear = xml.get_widget('menuitem_clear')
+        self.menuitem_html = xml.get_widget('menuitem_html')
+        self.menuitem_nikud = xml.get_widget('menuitem_nikud')
+        self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
+        self.menuitem_column_one = xml.get_widget('menuitem_column_one')
         
         # ocr
         self.hocr_obj = Hocr()
@@ -165,16 +173,36 @@ class MainWindow:
         self.textview.grab_focus()
         
     def on_menuitem_apply_activate(self, obj, event = None):
-        "on_menuitem_apply_activate activated"        
+        "on_menuitem_apply_activate activated"
+        if not (self.filename and self.pixbuf) :
+            return
+           
         pix = ho_gtk_pixbuf_load(self.filename)
+
+        if not pix:
+            print "ERROR: Can't load image."
+            show_error_message(_("Can't load image."))
+            return
+        
+        # set ocr options
         self.hocr_obj.set_pixbuf(pix)
+        self.hocr_obj.set_html(self.menuitem_html.get_active())
+        self.hocr_obj.set_nikud(self.menuitem_nikud.get_active())
+        if self.menuitem_column_auto.get_active():
+              self.hocr_obj.set_paragraph_setup(0)
+        else:
+              self.hocr_obj.set_paragraph_setup(1)
         
         # TODO: this progressbar is useless, use threading
         self.progressbar.set_fraction(self.hocr_obj.progress / 100)
         self.hocr_obj.do_ocr()
         self.progressbar.set_fraction(self.hocr_obj.progress / 100)
         
-        self.textbuffer.set_text(self.hocr_obj.get_text())
+        if self.hocr_obj.get_text():
+            if self.menuitem_clear.get_active():
+                self.textbuffer.set_text(self.hocr_obj.get_text())
+            else:
+                self.textbuffer.insert_at_cursor(self.hocr_obj.get_text())
         self.textview.grab_focus()
                 
     def on_imagemenuitem_quit_activate(self, obj, event = None):
@@ -201,6 +229,9 @@ class MainWindow:
         "on_menuitem_zoom_in_activate activated"
         self.zoom_factor *= 1.2
         
+        if not self.pixbuf:
+            return
+        
         factor = self.zoom_factor
         w = self.pixbuf.get_width()
         h = self.pixbuf.get_height()
@@ -210,6 +241,9 @@ class MainWindow:
     def on_menuitem_zoom_out_activate(self, obj, event = None):
         "on_menuitem_zoom_out_activate activated"
         self.zoom_factor *= 0.8
+        
+        if not self.pixbuf:
+            return
         
         factor = self.zoom_factor
         w = self.pixbuf.get_width()
@@ -221,9 +255,31 @@ class MainWindow:
         "on_menuitem_zoom_100_activate activated"
         self.zoom_factor = 1.0
         
+        if not self.pixbuf:
+            return
+        
         factor = self.zoom_factor
         w = self.pixbuf.get_width()
         h = self.pixbuf.get_height()
+        window_pixbuf = self.pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        self.image.set_from_pixbuf(window_pixbuf)
+    
+    def on_menuitem_best_fit_activate(self, obj, event = None):
+        "on_menuitem_best_fit_activate activated"
+        
+        if not self.pixbuf:
+            return
+        
+        width, height = self.window_main.get_size()
+        w = self.pixbuf.get_width()
+        h = self.pixbuf.get_height()
+        # give image some leeway
+        if width > 100:
+            width -= 40;
+        self.zoom_factor = 1.0 * width / w
+                
+        factor = self.zoom_factor
+        
         window_pixbuf = self.pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
     
@@ -263,7 +319,14 @@ class MainWindow:
     def on_toolbutton_zoom_100_clicked(self, obj, event = None):
         "on_toolbutton_zoom_100_clicked activated"
         self.on_menuitem_zoom_100_activate(self, None)
-
+    
+    def on_toolbutton_best_fit_clicked(self, obj, event = None):
+        "on_toolbutton_zoom_100_clicked activated"
+        self.on_menuitem_best_fit_activate(self, None)
+    
+    def on_toolbutton_quit_clicked(self, obj, event = None):
+        "on_toolbutton_quit_clicked activated"
+        gtk.main_quit()
 
 # run main loop
 def main():

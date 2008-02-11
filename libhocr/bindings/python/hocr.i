@@ -16,7 +16,7 @@
 %include ../../src/ho_string.h
 
 %include ../../src/ho_gtk.h
-
+%include ../../src/hocr.h
 %include ../../src/hocrpp.h
 
 // on linux do:

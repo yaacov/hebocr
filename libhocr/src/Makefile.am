@@ -2,7 +2,8 @@
 
 # The libhocr library
 INCLUDES = \
-        $(hspell_CFLAGS)
+        $(hspell_CFLAGS) \
+        -DBUILD=\"$(BUILD_STR)\" 
 
 lib_LTLIBRARIES = libhocr.la libhocrgtk.la
 

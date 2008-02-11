@@ -131,9 +131,16 @@ extern "C"
  @param progress a progress indicator 0..100
  @return FALSE
  */
-int
-hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-  const unsigned char html, int font_code, int *progress);
+  int
+    hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
+    const unsigned char html, int font_code, int *progress);
+
+/**
+ return the build string
+
+ @return build string
+ */
+  const char *hocr_get_build_string ();
 
 #ifdef __cplusplus
 }

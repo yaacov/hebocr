@@ -339,3 +339,9 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
 
   return FALSE;
 }
+
+const char *
+hocr_get_build_string ()
+{
+  return BUILD;
+}
