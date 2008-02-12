@@ -351,7 +351,7 @@ hocr_cmd_parser (int *argc, char **argv[])
 
   if (!no_gtk && !image_in_filename)
   {
-    hocr_printerr ("no input image file name (use -n for pipeing)");
+    hocr_printerr ("no input image file name (use -N for pipeing)");
     exit (1);
   }
 
