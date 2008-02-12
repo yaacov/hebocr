@@ -26,6 +26,10 @@ msgstr ""
 "מנשק גרפי (GTK)\n"
 "\n"
 
+#: hocr-gtk.py:72
+msgid "Shlomi Israel <sijproject@gmail.com>"
+msgstr "שלומי ישראל <sijproject@gmail.com>"
+
 #: hocr-gtk.py:86
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"
@@ -52,7 +56,7 @@ msgstr "לא מסוגל לקרוא קובץ תמונה."
 
 #: hocr-gtk.py:374
 msgid "translator-credits"
-msgstr "יעקב זמיר"
+msgstr "יעקב זמיר <kzamir@walla.co.il>"
 
 #: hocr-gtk.glade.h:1
 msgid "_Edit"

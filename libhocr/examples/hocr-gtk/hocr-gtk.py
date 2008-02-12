@@ -69,6 +69,7 @@ author_email = "<kzamir@walla.co.il>"
 copyright = author_name + " " + author_email
 comments = _("Hocr-GTK, Hebrew optical character recognition\ngraphical front end (GTK)\n\n")
 comments += hocr_get_build_string()
+artists = [_("Shlomi Israel <sijproject@gmail.com>")]
 
 # set global functions
 def update_preview_cb(file_chooser, preview):
@@ -370,6 +371,7 @@ class MainWindow:
         dialog.set_logo(logo_pix)
         dialog.set_license(gpl_text)
         dialog.set_translator_credits(_("translator-credits"))
+        dialog.set_artists(artists)
         dialog.run()
         
         dialog.destroy()
