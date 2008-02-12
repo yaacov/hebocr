@@ -1,4 +1,4 @@
-.TH "src/hocr.h" 3 "10 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/hocr.h" 3 "12 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -44,7 +44,10 @@ src/hocr.h \- libhocr main C language header.
 .RI "\fBho_layout\fP * \fBhocr_layout_analysis\fP (const \fBho_bitmap\fP *m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, int *progress)"
 .br
 .ti -1c
-.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, int *progress)"
+.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, const unsigned char nikud, int *progress)"
+.br
+.ti -1c
+.RI "const char * \fBhocr_get_build_string\fP ()"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -89,6 +92,8 @@ newly allocated gray \fBho_bitmap\fP
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_image_processing().
 .SS "\fBho_layout\fP* hocr_layout_analysis (const \fBho_bitmap\fP * m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, int * progress)"
 .PP
 new \fBho_layout\fP
@@ -116,7 +121,9 @@ a newly allocated and filled layout
 .RE
 .PP
 
-.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, int * progress)"
+.PP
+Referenced by hocr::Hocr::do_layout_analysis().
+.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, const unsigned char nikud, int * progress)"
 .PP
 fill a text buffer with fonts recognized from a page layout
 .PP
@@ -130,6 +137,8 @@ fill a text buffer with fonts recognized from a page layout
 .br
 \fIfont_code\fP code for the font to use 
 .br
+\fInikud\fP recognize nikud in image 
+.br
 \fIprogress\fP a progress indicator 0..100 
 .RE
 .PP
@@ -139,6 +148,20 @@ FALSE
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_font_recognition().
+.SS "const char* hocr_get_build_string ()"
+.PP
+return the build string
+.PP
+\fBReturns:\fP
+.RS 4
+build string 
+.RE
+.PP
+
+.PP
+Referenced by hocr::Hocr::get_build_string().
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for libhocr from the source code.

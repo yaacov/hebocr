@@ -88,8 +88,8 @@ namespace hocr
 
       font_code = 0;
       html = 0;
-      nikud = 0;
-      
+      nikud = 1;
+
       /* init progress */
       progress = 0;
     }
@@ -320,7 +320,8 @@ namespace hocr
 
       text_out = ho_string_new ();
 
-      hocr_font_recognition (page_layout, text_out, html, font_code, &progress);
+      hocr_font_recognition (page_layout, text_out, html, font_code, nikud,
+        &progress);
 
       return 0;
     }
@@ -356,7 +357,7 @@ namespace hocr
      @param html_in new value of html param
      @return FALSE-no html in output, TRUE-output html text 
      */
-    int set_html (unsigned char html_in)
+    int set_html (const unsigned char html_in)
     {
       html = html_in;
 
@@ -379,19 +380,19 @@ namespace hocr
      @param font_in new value of font param
      @return font code of objct
      */
-    int set_font (int font_in)
+    int set_font (const int font_in)
     {
       font_code = font_in;
 
       return font_code;
     }
-    
+
     /**
      @brief get nikud param
     
      @return nikud of objct
      */
-    int get_nikud ()
+    unsigned char get_nikud ()
     {
       return nikud;
     }
@@ -402,7 +403,7 @@ namespace hocr
      @param nikud_in new value of nikud param
      @return nikud of objct
      */
-    int set_nikud (int nikud_in)
+    unsigned char set_nikud (const unsigned char nikud_in)
     {
       nikud = nikud_in;
 
@@ -425,28 +426,28 @@ namespace hocr
      @param paragraph_setup_in new value of font param
      @return paragraph setup of objct
      */
-    int set_paragraph_setup (int paragraph_setup_in)
+    int set_paragraph_setup (const int paragraph_setup_in)
     {
       paragraph_setup = paragraph_setup_in;
 
       return paragraph_setup;
     }
-    
+
     /**
      @brief get build string
     
      @return build string
      */
-    const char * get_build_string ()
+    const char *get_build_string ()
     {
-      return hocr_get_build_string();
+      return hocr_get_build_string ();
     }
-    
-    int progress; // this is public
-    
+
+    int progress;               // this is public
+
   private:
 
-    ho_pixbuf *m_pix_orig;
+    ho_pixbuf * m_pix_orig;
     ho_bitmap *m_bit_bw;
     ho_layout *page_layout;
     ho_string *text_out;
@@ -465,7 +466,7 @@ namespace hocr
     int slicing_threshold;
     int slicing_width;
 
-    int nikud;
+    unsigned char nikud;
     int font_code;
     unsigned char html;
   };                            // class

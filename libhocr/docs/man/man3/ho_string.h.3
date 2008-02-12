@@ -1,4 +1,4 @@
-.TH "src/ho_string.h" 3 "10 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_string.h" 3 "12 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -66,6 +66,8 @@ pointer to a newly allocate \fBho_string\fP or null.
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_font_recognition().
 .SS "int ho_string_free (\fBho_string\fP * s_str)"
 .PP
 free a hocr_text_buffer struct from memory 
@@ -81,6 +83,8 @@ free a hocr_text_buffer struct from memory
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_font_recognition(), hocr::Hocr::set_bitmap(), hocr::Hocr::set_pixbuf(), and hocr::Hocr::~Hocr().
 .SS "int ho_string_cat (\fBho_string\fP * s_str, const char * text)"
 .PP
 add a string to hocr_text_buffer struct 

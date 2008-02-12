@@ -74,75 +74,73 @@ comments += hocr_get_build_string()
 def update_preview_cb(file_chooser, preview):
     filename = file_chooser.get_preview_filename()
     try:
-      pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 128, 128)
-      preview.set_from_pixbuf(pixbuf)
-      have_preview = True
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 128, 128)
+        preview.set_from_pixbuf(pixbuf)
+        have_preview = True
     except:
-      have_preview = False
+        have_preview = False
     file_chooser.set_preview_widget_active(have_preview)
     return
 
 def show_error_message(message):
-	dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR
-				,message_format = message
-				,buttons=gtk.BUTTONS_OK)
-	dlg.run()
-	dlg.destroy()
+    dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR ,message_format = message ,buttons=gtk.BUTTONS_OK)
+    dlg.run()
+    dlg.destroy()
 
 class ProgressSet(threading.Thread):
-        "set the fraction of the progressbar"
+    "set the fraction of the progressbar"
+    
+    # thread event, stops the thread if it is set.
+    stopthread = threading.Event()
         
-        # thread event, stops the thread if it is set.
-        stopthread = threading.Event()
+    def run(self):
+        "run while thread is alive."
         
-        def run(self):
-                "run while thread is alive."
-                
-                # importing the progressbar from the global scope
-                global progressbar 
-                global hocr_obj
-                
-                self.stopthread.clear()
-                
-                # main loop
-                while not self.stopthread.isSet() :
-                        # acquiring the gtk global mutex
-                        gtk.gdk.threads_enter()
-                        # set the fraction
-                        progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
-                        # releasing the gtk global mutex
-                        gtk.gdk.threads_leave()
-                        
-                        # delaying 
-                        time.sleep(0.1)
-                        
-        def stop(self):
-                "stop main loop"
-                progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
-                self.stopthread.set()
+        # importing the progressbar from the global scope
+        global progressbar 
+        global hocr_obj
+        
+        self.stopthread.clear()
+        
+        # main loop
+        while not self.stopthread.isSet() :
+            # acquiring the gtk global mutex
+            gtk.gdk.threads_enter()
+            # set the fraction
+            progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
+            # releasing the gtk global mutex
+            gtk.gdk.threads_leave()
+            
+            # delaying 
+            time.sleep(0.2)
+        
+    def stop(self):
+        "stop main loop"
+        progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
+        self.stopthread.set()
 
 class RunOCR(threading.Thread):
-        def run(self):
-                # importing the ocr object from the global scope
-                global hocr_obj
-                global menuitem_clear
-                global textbuffer
-                global textview
-                
-                ps = ProgressSet()
-                
-                # do ocr
-                ps.start()
-                hocr_obj.do_ocr()
-                ps.stop()
-                
-                # set text
-                if hocr_obj.get_text():
-                    if menuitem_clear.get_active():
-                        textbuffer.set_text(hocr_obj.get_text())
-                    else:
-                        textbuffer.insert_at_cursor(hocr_obj.get_text())
-                textview.grab_focus()
+    def run(self):
+        # importing the ocr object from the global scope
+        global hocr_obj
+        global menuitem_clear
+        global textbuffer
+        global textview
+        
+        ps = ProgressSet()
+        
+        # do ocr
+        ps.start()
+        hocr_obj.do_ocr()
+        ps.stop()
+        
+        # set text
+        if hocr_obj.get_text():
+            if menuitem_clear.get_active():
+                textbuffer.set_text(hocr_obj.get_text())
+            else:
+                textbuffer.insert_at_cursor(hocr_obj.get_text())
+            textview.grab_focus()
 
 # set main window class
 class MainWindow:

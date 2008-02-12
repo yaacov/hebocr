@@ -1,4 +1,4 @@
-.TH "hocr::Hocr" 3 "10 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "hocr::Hocr" 3 "12 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -74,7 +74,7 @@ hocr::Hocr \- \fBHocr\fP class.
 .br
 .RI "\fIget html param \fP"
 .ti -1c
-.RI "int \fBset_html\fP (unsigned char html_in)"
+.RI "int \fBset_html\fP (const unsigned char html_in)"
 .br
 .RI "\fIset html param \fP"
 .ti -1c
@@ -82,9 +82,29 @@ hocr::Hocr \- \fBHocr\fP class.
 .br
 .RI "\fIget font param \fP"
 .ti -1c
-.RI "int \fBset_font\fP (int font_in)"
+.RI "int \fBset_font\fP (const int font_in)"
 .br
 .RI "\fIset font param \fP"
+.ti -1c
+.RI "unsigned char \fBget_nikud\fP ()"
+.br
+.RI "\fIget nikud param \fP"
+.ti -1c
+.RI "unsigned char \fBset_nikud\fP (const unsigned char nikud_in)"
+.br
+.RI "\fIset nikud param \fP"
+.ti -1c
+.RI "int \fBget_paragraph_setup\fP ()"
+.br
+.RI "\fIget paragraph setup param \fP"
+.ti -1c
+.RI "int \fBset_paragraph_setup\fP (const int paragraph_setup_in)"
+.br
+.RI "\fIset paragraph setup param \fP"
+.ti -1c
+.RI "const char * \fBget_build_string\fP ()"
+.br
+.RI "\fIget build string \fP"
 .in -1c
 .SS "Data Fields"
 
@@ -104,10 +124,12 @@ class for Hebrew Optical Character Recognition
 .PP
 \fBHocr\fP constructor. 
 .PP
+References progress.
 .SS "hocr::Hocr::~Hocr ()\fC [inline]\fP"
 .PP
 \fBHocr\fP destructor. 
 .PP
+References ho_bitmap_free(), ho_layout_free(), ho_pixbuf_free(), and ho_string_free().
 .SH "Member Function Documentation"
 .PP 
 .SS "int hocr::Hocr::set_pixbuf (\fBho_pixbuf\fP * m_in)\fC [inline]\fP"
@@ -125,6 +147,8 @@ set pixbuf
 .RE
 .PP
 
+.PP
+References ho_bitmap_free(), ho_layout_free(), ho_pixbuf_free(), ho_string_free(), and progress.
 .SS "int hocr::Hocr::set_bitmap (\fBho_bitmap\fP * m_in)\fC [inline]\fP"
 .PP
 set b/w bitmap 
@@ -140,6 +164,8 @@ set b/w bitmap
 .RE
 .PP
 
+.PP
+References ho_bitmap_free(), ho_layout_free(), ho_pixbuf_free(), ho_string_free(), and progress.
 .SS "\fBho_pixbuf\fP* hocr::Hocr::get_pixbuf ()\fC [inline]\fP"
 .PP
 get pixbuf 
@@ -170,6 +196,8 @@ a pixbuf of the object bitmap
 .RE
 .PP
 
+.PP
+References ho_pixbuf_new_from_bitmap().
 .SS "\fBho_pixbuf\fP* hocr::Hocr::get_layout_pixbuf ()\fC [inline]\fP"
 .PP
 get layout pixbuf 
@@ -180,6 +208,8 @@ a pixbuf of the object layout
 .RE
 .PP
 
+.PP
+References ho_pixbuf_new_from_layout().
 .SS "const char* hocr::Hocr::get_text ()\fC [inline]\fP"
 .PP
 get text 
@@ -190,6 +220,8 @@ the recognized text
 .RE
 .PP
 
+.PP
+References ho_string::string.
 .SS "int hocr::Hocr::get_progress ()\fC [inline]\fP"
 .PP
 get progress of ocr 
@@ -200,6 +232,8 @@ the progress 0..100
 .RE
 .PP
 
+.PP
+References progress.
 .SS "int hocr::Hocr::do_image_processing ()\fC [inline]\fP"
 .PP
 do image processing 
@@ -210,6 +244,10 @@ do image processing
 .RE
 .PP
 
+.PP
+References ho_bitmap_free(), hocr_image_processing(), and progress.
+.PP
+Referenced by do_ocr().
 .SS "int hocr::Hocr::do_layout_analysis ()\fC [inline]\fP"
 .PP
 do layout analysis 
@@ -220,6 +258,10 @@ do layout analysis
 .RE
 .PP
 
+.PP
+References ho_layout_free(), hocr_layout_analysis(), and progress.
+.PP
+Referenced by do_ocr().
 .SS "int hocr::Hocr::do_font_recognition ()\fC [inline]\fP"
 .PP
 do font recognition 
@@ -230,6 +272,10 @@ do font recognition
 .RE
 .PP
 
+.PP
+References ho_string_free(), ho_string_new(), hocr_font_recognition(), and progress.
+.PP
+Referenced by do_ocr().
 .SS "int hocr::Hocr::do_ocr ()\fC [inline]\fP"
 .PP
 do ocr 
@@ -240,6 +286,8 @@ do ocr
 .RE
 .PP
 
+.PP
+References do_font_recognition(), do_image_processing(), and do_layout_analysis().
 .SS "int hocr::Hocr::get_html ()\fC [inline]\fP"
 .PP
 get html param 
@@ -250,7 +298,7 @@ FALSE-no html in output, TRUE-output html text
 .RE
 .PP
 
-.SS "int hocr::Hocr::set_html (unsigned char html_in)\fC [inline]\fP"
+.SS "int hocr::Hocr::set_html (const unsigned char html_in)\fC [inline]\fP"
 .PP
 set html param 
 .PP
@@ -275,7 +323,7 @@ font code of objct
 .RE
 .PP
 
-.SS "int hocr::Hocr::set_font (int font_in)\fC [inline]\fP"
+.SS "int hocr::Hocr::set_font (const int font_in)\fC [inline]\fP"
 .PP
 set font param 
 .PP
@@ -290,11 +338,73 @@ font code of objct
 .RE
 .PP
 
+.SS "unsigned char hocr::Hocr::get_nikud ()\fC [inline]\fP"
+.PP
+get nikud param 
+.PP
+\fBReturns:\fP
+.RS 4
+nikud of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_nikud (const unsigned char nikud_in)\fC [inline]\fP"
+.PP
+set nikud param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInikud_in\fP new value of nikud param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+nikud of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_paragraph_setup ()\fC [inline]\fP"
+.PP
+get paragraph setup param 
+.PP
+\fBReturns:\fP
+.RS 4
+paragraph setup 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_paragraph_setup (const int paragraph_setup_in)\fC [inline]\fP"
+.PP
+set paragraph setup param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIparagraph_setup_in\fP new value of font param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+paragraph setup of objct 
+.RE
+.PP
+
+.SS "const char* hocr::Hocr::get_build_string ()\fC [inline]\fP"
+.PP
+get build string 
+.PP
+\fBReturns:\fP
+.RS 4
+build string 
+.RE
+.PP
+
+.PP
+References hocr_get_build_string().
 .SH "Field Documentation"
 .PP 
 .SS "int \fBhocr::Hocr::progress\fP"
 .PP
-
+Referenced by do_font_recognition(), do_image_processing(), do_layout_analysis(), get_progress(), Hocr(), set_bitmap(), and set_pixbuf().
 
 .SH "Author"
 .PP 

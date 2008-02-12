@@ -71,6 +71,7 @@ gboolean only_save_fonts = FALSE;
 gint spacing_code = 0;
 gint lang_code = 0;
 gint font_code = 0;
+gboolean dont_recognize_nikud = FALSE;
 
 GError *error = NULL;
 
@@ -256,6 +257,8 @@ static GOptionEntry entries[] = {
     "do not use gtk for file input and output", NULL},
   {"font", 'z', 0, G_OPTION_ARG_INT, &font_code,
     "use font NUM", "NUM"},
+  {"no-nikud", 'n', 0, G_OPTION_ARG_NONE, &dont_recognize_nikud,
+    "do not recognize nikud", NULL},
   {"version", 'v', 0, G_OPTION_ARG_NONE, &version,
     "print version information and exit", NULL},
   {NULL}
@@ -1508,7 +1511,7 @@ main (int argc, char *argv[])
   else
   {
     hocr_font_recognition (l_page, s_text_out, text_out_html, font_code,
-      &progress);
+      !dont_recognize_nikud, &progress);
   }
 
   /* end of page */

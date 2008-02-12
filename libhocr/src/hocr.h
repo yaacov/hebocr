@@ -128,12 +128,14 @@ extern "C"
  @param s_text_out the text buffer to fill
  @param html output format is html
  @param font_code code for the font to use
+ @param nikud recognize nikud in image
  @param progress a progress indicator 0..100
  @return FALSE
  */
   int
     hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-    const unsigned char html, int font_code, int *progress);
+    const unsigned char html, int font_code, const unsigned char nikud,
+    int *progress);
 
 /**
  return the build string
