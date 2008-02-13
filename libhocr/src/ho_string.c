@@ -99,7 +99,7 @@ int
 ho_string_set (ho_string * string_buffer, const char *new_string)
 {
   int len;
-  char *new_allocated_string;
+  char *new_allocated_string = NULL;
 
   len = strlen (new_string);
 
@@ -128,11 +128,32 @@ ho_string_set (ho_string * string_buffer, const char *new_string)
   return FALSE;
 }
 
+char *
+ho_string_get (const ho_string * s_str)
+{
+  int len;
+  char *new_allocated_string = NULL;
+
+  len = strlen (s_str->string);
+
+  /* try to get memory */
+  new_allocated_string = (char *) malloc (sizeof (char) * (len + 1));
+
+  /* got new memory */
+  if (!new_allocated_string)
+    return NULL;
+
+  /* add the new string */
+  strcpy (new_allocated_string, s_str->string);
+
+  return new_allocated_string;
+}
+
 int
 ho_string_cat (ho_string * string_buffer, const char *new_string)
 {
   int len;
-  char *new_allocated_string;
+  char *new_allocated_string = NULL;
 
   len = strlen (new_string);
 
@@ -149,11 +170,10 @@ ho_string_cat (ho_string * string_buffer, const char *new_string)
       string_buffer->string = new_allocated_string;
       string_buffer->allocated_size += len + MEMORY_CHANK_FOR_TEXT_BUFFER;
     }
+
     /* did not get new memory */
     else
-    {
       return TRUE;
-    }
   }
 
   /* add the new string */
@@ -169,8 +189,6 @@ ho_string_copy (const ho_string * string_buffer)
   ho_string *new_string = NULL;
 
   new_string = ho_string_new ();
-
   ho_string_cat (new_string, string_buffer->string);
-
   return new_string;
 }

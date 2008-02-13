@@ -81,11 +81,13 @@ dnl output
 AC_CONFIG_FILES([
 Makefile
 libhocr.pc
+libhocr-gtk.pc
 Doxyfile
 src/Makefile
 examples/Makefile
 examples/hocr/Makefile
 examples/hocr-gtk/Makefile
+examples/bindings/Makefile
 bindings/Makefile
 bindings/python/Makefile
 docs/Makefile

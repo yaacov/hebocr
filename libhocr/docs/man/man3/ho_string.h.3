@@ -1,4 +1,4 @@
-.TH "src/ho_string.h" 3 "12 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_string.h" 3 "13 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -40,6 +40,10 @@ src/ho_string.h \- libhocr C language header.
 .RI "int \fBho_string_set\fP (\fBho_string\fP *s_str, const char *text)"
 .br
 .RI "\fIset a string to \fBho_string\fP struct \fP"
+.ti -1c
+.RI "char * \fBho_string_get\fP (const \fBho_string\fP *s_str)"
+.br
+.RI "\fIget the string of \fBho_string\fP struct \fP"
 .ti -1c
 .RI "\fBho_string\fP * \fBho_string_copy\fP (const \fBho_string\fP *s_str)"
 .br
@@ -116,6 +120,21 @@ set a string to \fBho_string\fP struct
 \fBReturns:\fP
 .RS 4
 new size of text 
+.RE
+.PP
+
+.SS "char* ho_string_get (const \fBho_string\fP * s_str)"
+.PP
+get the string of \fBho_string\fP struct 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs_str\fP pointer to hocr_text_buffer struct. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+pointer to a newly allocated string (use free to free it) 
 .RE
 .PP
 

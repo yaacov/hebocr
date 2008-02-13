@@ -6,7 +6,7 @@ EXTRA_DIST = \
         Doxyfile HACKING
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libhocr.pc
+pkgconfig_DATA = libhocr.pc libhocr-gtk.pc
 
 hocrdocdir = ${prefix}/share/doc/libhocr
 hocrdoc_DATA = \

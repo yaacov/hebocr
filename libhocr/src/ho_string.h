@@ -75,6 +75,14 @@ int ho_string_cat (ho_string * s_str, const char *text);
 int ho_string_set (ho_string * s_str, const char *text);
 
 /**
+ @brief get the string of ho_string struct
+
+ @param s_str pointer to hocr_text_buffer struct.
+ @return pointer to a newly allocated string (use free to free it)
+ */
+char * ho_string_get (const ho_string * s_str);
+
+/**
  @brief copy ho_string struct
 
  @param s_str pointer to hocr_text_buffer struct.

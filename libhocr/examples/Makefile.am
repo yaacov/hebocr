@@ -1,2 +1,2 @@
-SUBDIRS = hocr hocr-gtk
+SUBDIRS = hocr hocr-gtk bindings
 

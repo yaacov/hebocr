@@ -137,6 +137,58 @@ extern "C"
     const unsigned char html, int font_code, const unsigned char nikud,
     int *progress);
 
+ /**
+ do ocr on a pixbuf 
+
+ @param pix_in the input ho_pixbuf
+ @param s_text_out the text buffer to fill
+ @param scale the scale to use
+ @param no_auto_scale do not try to autoscale
+ @param rotate the rotation angle to use
+ @param no_auto_rotate do not try to autorotate
+ @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
+ @param threshold the threshold to use 0..100 (0-auto)
+ @param a_threshold the threshold to use for adaptive thresholding 0..100 (0-auto)
+ @param m_in a pointer to a text bitmap
+ @param font_spacing_code -3 tight .. 0 .. 3 spaced
+ @param paragraph_setup free text blocks or boxed in columns
+ @param slicing_threshold percent of line fill to cut fonts
+ @param slicing_width what is a wide font
+ @param dir true-ltr false-rtl
+ @param html output format is html
+ @param font_code code for the font to use
+ @param nikud recognize nikud in image
+ @param progress a progress indicator 0..100
+ @return FALSE
+ */
+  int hocr_do_ocr_fine (const ho_pixbuf * pix_in,
+    ho_string * s_text_out,
+    const unsigned char scale,
+    const unsigned char no_auto_scale,
+    double rotate,
+    const unsigned char no_auto_rotate,
+    const unsigned char adaptive,
+    const unsigned char threshold, const unsigned char a_threshold,
+    const int font_spacing_code, const int paragraph_setup,
+    const int slicing_threshold, const int slicing_width,
+    const unsigned char dir_ltr,
+    const unsigned char html, int font_code, const unsigned char nikud,
+    int *progress);
+
+ /**
+ do ocr on a pixbuf, using default values
+
+ @param pix_in the input ho_pixbuf
+ @param s_text_out the text buffer to fill
+ @param html output format is html
+ @param font_code code for the font to use
+ @param progress a progress indicator 0..100
+ @return FALSE
+ */
+  int hocr_do_ocr (const ho_pixbuf * pix_in,
+    ho_string * s_text_out, const unsigned char html, int font_code,
+    int *progress);
+
 /**
  return the build string
 

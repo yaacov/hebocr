@@ -1,4 +1,4 @@
-.TH "src/hocr.h" 3 "12 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/hocr.h" 3 "13 Feb 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -45,6 +45,12 @@ src/hocr.h \- libhocr main C language header.
 .br
 .ti -1c
 .RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, const unsigned char nikud, int *progress)"
+.br
+.ti -1c
+.RI "int \fBhocr_do_ocr_fine\fP (const \fBho_pixbuf\fP *pix_in, \fBho_string\fP *s_text_out, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, const unsigned char html, int font_code, const unsigned char nikud, int *progress)"
+.br
+.ti -1c
+.RI "int \fBhocr_do_ocr\fP (const \fBho_pixbuf\fP *pix_in, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, int *progress)"
 .br
 .ti -1c
 .RI "const char * \fBhocr_get_build_string\fP ()"
@@ -150,6 +156,80 @@ FALSE
 
 .PP
 Referenced by hocr::Hocr::do_font_recognition().
+.SS "int hocr_do_ocr_fine (const \fBho_pixbuf\fP * pix_in, \fBho_string\fP * s_text_out, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, const unsigned char html, int font_code, const unsigned char nikud, int * progress)"
+.PP
+do ocr on a pixbuf
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix_in\fP the input \fBho_pixbuf\fP 
+.br
+\fIs_text_out\fP the text buffer to fill 
+.br
+\fIscale\fP the scale to use 
+.br
+\fIno_auto_scale\fP do not try to autoscale 
+.br
+\fIrotate\fP the rotation angle to use 
+.br
+\fIno_auto_rotate\fP do not try to autorotate 
+.br
+\fIadaptive\fP what type of thresholding to use. 0-normal,1-no,2-fine. 
+.br
+\fIthreshold\fP the threshold to use 0..100 (0-auto) 
+.br
+\fIa_threshold\fP the threshold to use for adaptive thresholding 0..100 (0-auto) 
+.br
+\fIm_in\fP a pointer to a text bitmap 
+.br
+\fIfont_spacing_code\fP -3 tight .. 0 .. 3 spaced 
+.br
+\fIparagraph_setup\fP free text blocks or boxed in columns 
+.br
+\fIslicing_threshold\fP percent of line fill to cut fonts 
+.br
+\fIslicing_width\fP what is a wide font 
+.br
+\fIdir\fP true-ltr false-rtl 
+.br
+\fIhtml\fP output format is html 
+.br
+\fIfont_code\fP code for the font to use 
+.br
+\fInikud\fP recognize nikud in image 
+.br
+\fIprogress\fP a progress indicator 0..100 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int hocr_do_ocr (const \fBho_pixbuf\fP * pix_in, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, int * progress)"
+.PP
+do ocr on a pixbuf, using default values
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix_in\fP the input \fBho_pixbuf\fP 
+.br
+\fIs_text_out\fP the text buffer to fill 
+.br
+\fIhtml\fP output format is html 
+.br
+\fIfont_code\fP code for the font to use 
+.br
+\fIprogress\fP a progress indicator 0..100 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
 .SS "const char* hocr_get_build_string ()"
 .PP
 return the build string

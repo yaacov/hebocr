@@ -7,6 +7,6 @@ Name: libhocr
 Description: A C library for hebrew optical character recognition
 Version: @VERSION@
 
-Requires: @requires@
-Libs: -lhocr -lhocrgtk -lm
+Requires:
+Libs: -lhocr -lm
 Cflags: -I${includedir}/libhocr

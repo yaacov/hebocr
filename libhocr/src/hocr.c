@@ -346,6 +346,62 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
   return FALSE;
 }
 
+int
+hocr_do_ocr_fine (const ho_pixbuf * pix_in,
+  ho_string * s_text_out,
+  const unsigned char scale,
+  const unsigned char no_auto_scale,
+  double rotate,
+  const unsigned char no_auto_rotate,
+  const unsigned char adaptive,
+  const unsigned char threshold, const unsigned char a_threshold,
+  const int font_spacing_code, const int paragraph_setup,
+  const int slicing_threshold, const int slicing_width,
+  const unsigned char dir_ltr,
+  const unsigned char html, int font_code, const unsigned char nikud,
+  int *progress)
+{
+  ho_bitmap *m_in = NULL;
+  ho_layout *l_page = NULL;
+  int return_val;
+
+  if (!pix_in)
+    return TRUE;
+
+  m_in = hocr_image_processing (pix_in,
+    scale,
+    no_auto_scale,
+    rotate, no_auto_rotate, adaptive, threshold, a_threshold, progress);
+
+  if (!m_in)
+    return TRUE;
+
+  l_page = hocr_layout_analysis (m_in,
+    font_spacing_code, paragraph_setup,
+    slicing_threshold, slicing_width, dir_ltr, progress);
+
+  if (!l_page)
+  {
+    ho_bitmap_free (m_in);
+    return TRUE;
+  }
+
+  return_val = hocr_font_recognition (l_page, s_text_out,
+    html, font_code, nikud, progress);
+
+  return return_val;
+}
+
+int
+hocr_do_ocr (const ho_pixbuf * pix_in,
+  ho_string * s_text_out,
+  const unsigned char html, int font_code, int *progress)
+{
+  return hocr_do_ocr_fine (pix_in,
+    s_text_out,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, html, font_code, 1, progress);
+}
+
 const char *
 hocr_get_build_string ()
 {
