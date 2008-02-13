@@ -30,9 +30,15 @@ import gtk, gtk.glade
 
 from hocr import *
 
-# set gettext support
+# set global paths
+# FIXME: this can change from system to system
 app_name = "hocr-gtk"
 locale_dir = '/usr/share/locale'
+glade_file = 'hocr-gtk.glade'
+glade_dir = '/usr/share/hocr-gtk/glade/'
+logo_filename = '/usr/share/pixmaps/hocr1-128.png'
+
+# import the locale system
 try:
     import locale
     import gettext
@@ -43,10 +49,7 @@ except (IOError,locale.Error), e:
     print "WARNING: Can't load locale"
     _ = lambda x : x
 
-# set global parmeters
-glade_file = 'hocr-gtk.glade'
-glade_dir = '/usr/share/hocr-gtk/glade/'
-logo_filename = '/usr/share/pixmaps/hocr1-48.png'
+# gpl text
 gpl_text = """
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -64,12 +67,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # program info
 app_version = "0.1.0"
-author_name = "Yaacov Zamir"
-author_email = "<kzamir@walla.co.il>"
-copyright = author_name + " " + author_email
+copyright = "Copyright (C) Yaacov Zamir <kzamir@walla.co.il>"
 comments = _("Hocr-GTK, Hebrew optical character recognition\ngraphical front end (GTK)\n\n")
 comments += hocr_get_build_string()
 artists = [_("Shlomi Israel <sijproject@gmail.com>")]
+authors = [_("Yaacov Zamir <kzamir@walla.co.il>")]
 
 # set global functions
 def update_preview_cb(file_chooser, preview):
@@ -372,6 +374,7 @@ class MainWindow:
         dialog.set_license(gpl_text)
         dialog.set_translator_credits(_("translator-credits"))
         dialog.set_artists(artists)
+        dialog.set_authors(authors)
         dialog.run()
         
         dialog.destroy()

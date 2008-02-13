@@ -30,6 +30,10 @@ msgstr ""
 msgid "Shlomi Israel <sijproject@gmail.com>"
 msgstr "שלומי ישראל <sijproject@gmail.com>"
 
+#: hocr-gtk.py:74
+msgid "Yaacov Zamir <kzamir@walla.co.il>"
+msgstr "יעקב זמיר <kzamir@walla.co.il>"
+
 #: hocr-gtk.py:86
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"
