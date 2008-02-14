@@ -1,11 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # 
 # hocr_python.py
 #
 # example file for libhocr.
-# use: python python.py IMAGE_FILENAME
+# use: python hocr_python.py IMAGE_FILENAME
 #
 # Copyright (C) 2008  Yaacov Zamir <kzamir@walla.co.il>
-#
 #
 
 #  
@@ -27,7 +29,7 @@
 import sys
 
 # we need gtk for the hocr python bindings,
-# it is actually a binding of hocr-gtk
+# python-hocr is actually a binding of hocr-gtk
 import gtk 
 from hocr import *
 

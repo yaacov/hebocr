@@ -7,7 +7,6 @@
 //
 // Copyright (C) 2008  Yaacov Zamir <kzamir@walla.co.il>
 //
-//
 
 //  
 //  This program is free software: you can redistribute it and/or modify
@@ -27,39 +26,38 @@
 #include <iostream>
 #include <hocrpp.h>
 
-#include <ho_gtk.h> // we will use hocr-gtk in this example to load images
-#include <gtk/gtk.h> // when we use hocr-gtk we also need gtk 
+#include <ho_gtk.h>             // we will use hocr-gtk in this example to load 
+                                // images
+#include <gtk/gtk.h>            // when we use hocr-gtk we also need gtk
 
 using namespace std;
 using namespace hocr;
 
 int
-main (int argc, char * argv[])
+main (int argc, char *argv[])
 {
-  ho_pixbuf * pix = NULL;
-  Hocr * ocr_obj = NULL;
-  
+  ho_pixbuf *pix = NULL;
+  Hocr *ocr_obj = NULL;
+
   // we use hocr-gtk, we need to init gtk
   gtk_init (&argc, &argv);
-  
+
   // load the picture pointed to by argv[1]
-  /* NOTE: this function use the hocr-gtk functions 
-     to load images */
+  /* NOTE: this program use the hocr-gtk functions to load images */
   pix = ho_gtk_pixbuf_load (argv[1]);
-  
+
   // create a new hocr object
   ocr_obj = new Hocr (pix);
-  
+
   // do ocr on picture
-  ocr_obj->do_ocr();
-  
+  ocr_obj->do_ocr ();
+
   // print out the text
   cout << ocr_obj->get_text () << endl;
-  
+
   // free ocr object
-  /* NOTE: the picture will be deleted as part of 
-     the object */
+  /* NOTE: the picture will be deleted as part of the object */
   delete (ocr_obj);
-  
+
   return 0;
 }
