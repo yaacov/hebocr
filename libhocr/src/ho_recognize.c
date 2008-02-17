@@ -1709,7 +1709,7 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
     array_in[i] = 0.0;
 
   /* fill array with values */
-  
+
   ho_recognize_dimentions (m_text, m_mask,
     &height, &width, &top, &bottom,
     &top_left, &top_mid, &top_right,
@@ -2049,16 +2049,16 @@ ho_recognize_array (const double *array_in, const int sign_index, int font_code)
     break;
   case 37:                     /* minus */
     return_value = ho_recognize_font_david_minus (array_in);
-  case 38:                     /* 0 */
-  case 39:                     /* 1 */
-  case 40:                     /* 2 */
-  case 41:                     /* 3 */
-  case 42:                     /* 4 */
-  case 43:                     /* 5 */
-  case 44:                     /* 6 */
-  case 45:                     /* 7 */
-  case 46:                     /* 8 */
-  case 47:                     /* 9 */
+  case 40:                     /* 0 */
+  case 41:                     /* 1 */
+  case 42:                     /* 2 */
+  case 43:                     /* 3 */
+  case 44:                     /* 4 */
+  case 45:                     /* 5 */
+  case 46:                     /* 6 */
+  case 47:                     /* 7 */
+  case 48:                     /* 8 */
+  case 49:                     /* 9 */
   default:
     return_value = 0.0;
     break;
@@ -2069,18 +2069,19 @@ ho_recognize_array (const double *array_in, const int sign_index, int font_code)
     return_value = 0.0;
   if (return_value > 1.0)
     return_value = 1.0;
-  
+
   return return_value;
 }
 
 int
-ho_recognize_create_array_out (const double *array_in, double *array_out, int font_code)
+ho_recognize_create_array_out (const double *array_in, double *array_out,
+  int font_code)
 {
   int i;
 
   /* set array out */
   array_out[0] = 0.1;
-  
+
   for (i = 1; i < HO_ARRAY_OUT_SIZE; i++)
     array_out[i] = ho_recognize_array (array_in, i, font_code);
   return FALSE;
@@ -2100,7 +2101,8 @@ ho_recognize_array_out_to_font (const double *array_out)
 }
 
 const char *
-ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask, int font_code)
+ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask,
+  int font_code)
 {
   double array_in[HO_ARRAY_IN_SIZE];
   double array_out[HO_ARRAY_OUT_SIZE];
@@ -2109,6 +2111,6 @@ ho_recognize_font (const ho_bitmap * m_text, const ho_bitmap * m_mask, int font_
   ho_recognize_create_array_in (m_text, m_mask, array_in);
   ho_recognize_create_array_out (array_in, array_out, font_code);
   font = ho_recognize_array_out_to_font (array_out);
-  
+
   return font;
 }
