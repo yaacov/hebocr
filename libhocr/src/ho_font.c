@@ -237,7 +237,7 @@ ho_font_holes (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 
   m_out =
     ho_bitmap_filter_by_size (m_negative, line_height / 5,
-    m_negative->height - 2, line_height / 5, m_negative->width - 2);
+    m_negative->height - 2, line_height / 10, m_negative->width - 2);
 
   ho_bitmap_free (m_negative);
 

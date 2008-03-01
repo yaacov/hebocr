@@ -913,18 +913,14 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
               for (i = 0; i < HO_ARRAY_OUT_SIZE; i++)
               {
-                if (!(i % 50))
-                  ho_string_cat (s_data_out, "\n");
-                if (!(i % 10))
+                if (!(i % 8))
                 {
                   text_out = g_strdup_printf ("\no(%02d) ", i);
                   ho_string_cat (s_data_out, text_out);
 
                   g_free (text_out);
                 }
-                else if (!(i % 5))
-                  ho_string_cat (s_data_out, "  ");
-
+                
                 text_out =
                   g_strdup_printf ("%s:%03.2f, ", ho_sign_array[i],
                   array_out[i]);
