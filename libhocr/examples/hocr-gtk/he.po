@@ -58,6 +58,10 @@ msgstr "שמור.."
 msgid "Can't load image."
 msgstr "לא מסוגל לקרוא קובץ תמונה."
 
+#: hocr-gtk.py:387
+msgid "Set text font"
+msgstr "קבע סוג אות"
+
 #: hocr-gtk.py:374
 msgid "translator-credits"
 msgstr "יעקב זמיר <kzamir@walla.co.il>"

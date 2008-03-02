@@ -27,6 +27,7 @@ import pygtk
 pygtk.require('2.0')
 
 import gtk, gtk.glade
+import pango
 
 from hocr import *
 
@@ -377,6 +378,16 @@ class MainWindow:
         dialog.set_authors(authors)
         dialog.run()
         
+        dialog.destroy()
+        
+        self.textview.grab_focus()
+        
+    def on_menuitem_select_font_activate(self, obj, event = None):
+        "on_imagemenuitem_about_activate activated"
+        dialog = gtk.FontSelectionDialog(_("Set text font"))
+        
+        dialog.run()
+        self.textview.modify_font(pango.FontDescription(dialog.get_font_name()))
         dialog.destroy()
         
         self.textview.grab_focus()

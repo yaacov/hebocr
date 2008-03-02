@@ -48,6 +48,10 @@ msgstr "Spara.."
 msgid "Can't load image."
 msgstr ""
 
+#: hocr-gtk.py:387
+msgid "Set text font"
+msgstr "Ställ in texttypsnitt"
+
 #: hocr-gtk.py:374
 msgid "translator-credits"
 msgstr "Daniel Nylander <po@danielnylander.se>"
