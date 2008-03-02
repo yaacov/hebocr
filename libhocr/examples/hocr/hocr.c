@@ -779,11 +779,12 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
             ho_recognize_create_array_in (m_font_main_sign, m_mask, array_in);
             ho_recognize_create_array_out (array_in, array_out, font_code);
             font = ho_recognize_array_out_to_font (array_out);
-            /* font = ho_recognize_font (m_font_main_sign, m_mask, font_code); */
 
             /* insert font to text out */
             ho_string_cat (s_text_out, font);
-
+            
+            /* get nikud */
+            
             /* print debug information */
 
             /* if debug printout font data stream */
