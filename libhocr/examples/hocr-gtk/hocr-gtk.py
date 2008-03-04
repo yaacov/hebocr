@@ -130,13 +130,25 @@ class RunOCR(threading.Thread):
         global menuitem_clear
         global textbuffer
         global textview
+        global progressbar 
         
         ps = ProgressSet()
+        
+        # set cursor to gtk.gdk.WATCH and print processing on the progress bar
+        textview.get_parent_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        progressbar.set_text(_("Processing..."))
+        progressbar.show()
         
         # do ocr
         ps.start()
         hocr_obj.do_ocr()
         ps.stop()
+        
+        # return original cursor and print idle on the progress bar
+        textview.get_parent_window().set_cursor(None)
+        progressbar.set_text("")
+        progressbar.set_fraction(0.0)
+        progressbar.hide()
         
         # set text
         if hocr_obj.get_text():
@@ -179,6 +191,7 @@ class MainWindow:
         self.statusbar1 = xml.get_widget('statusbar1')
         progressbar = self.progressbar
         textview = self.textview
+        progressbar.hide()
         
         # text 
         self.textbuffer =  self.textview.get_buffer()

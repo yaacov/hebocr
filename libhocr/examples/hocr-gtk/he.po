@@ -34,6 +34,14 @@ msgstr "שלומי ישראל <sijproject@gmail.com>"
 msgid "Yaacov Zamir <kzamir@walla.co.il>"
 msgstr "יעקב זמיר <kzamir@walla.co.il>"
 
+#: hocr-gtk.py:140
+msgid "Processing..."
+msgstr "מעבד..."
+
+#: hocr-gtk.py:149
+msgid "Done"
+msgstr "בוצע"
+
 #: hocr-gtk.py:86
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"

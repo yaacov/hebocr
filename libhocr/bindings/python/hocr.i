@@ -13,6 +13,7 @@
 %include ../../src/ho_segment.h
 %include ../../src/ho_font.h
 %include ../../src/ho_recognize.h
+%include ../../src/ho_recognize_nikud.h
 %include ../../src/ho_string.h
 
 %include ../../src/ho_gtk.h

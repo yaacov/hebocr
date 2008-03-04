@@ -26,6 +26,14 @@ msgstr ""
 "Hocr-GTK - Programvara för att känna igen hebreiska tecken.\n"
 "\n"
 
+#: hocr-gtk.py:140
+msgid "Processing..."
+msgstr ""
+
+#: hocr-gtk.py:149
+msgid "Done"
+msgstr ""
+
 #: hocr-gtk.py:166
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"

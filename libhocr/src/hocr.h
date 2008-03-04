@@ -72,6 +72,7 @@ extern "C"
 /* font recognition */
 #include <ho_font.h>
 #include <ho_recognize.h>
+#include <ho_recognize_nikud.h>
 
 /* specific font recognition */
 #include <ho_recognize_font_david.h>
