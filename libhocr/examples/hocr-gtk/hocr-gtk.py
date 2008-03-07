@@ -136,7 +136,6 @@ class RunOCR(threading.Thread):
         
         # set cursor to gtk.gdk.WATCH and print processing on the progress bar
         textview.get_parent_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-        progressbar.set_text(_("Processing..."))
         progressbar.show()
         
         # do ocr
@@ -146,8 +145,6 @@ class RunOCR(threading.Thread):
         
         # return original cursor and print idle on the progress bar
         textview.get_parent_window().set_cursor(None)
-        progressbar.set_text("")
-        progressbar.set_fraction(0.0)
         progressbar.hide()
         
         # set text
@@ -191,6 +188,9 @@ class MainWindow:
         self.statusbar1 = xml.get_widget('statusbar1')
         progressbar = self.progressbar
         textview = self.textview
+        
+        # init progress bar and hide it
+        progressbar.set_text(_("Processing..."))
         progressbar.hide()
         
         # text 

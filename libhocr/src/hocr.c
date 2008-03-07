@@ -247,6 +247,8 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
   char text_out[200];
   const char *font;
   const char *font_nikud;
+  const char *font_dagesh;
+  const char *font_shin;
 
   /* init progress */
   *progress = 0;
@@ -307,7 +309,7 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
           m_font_main_sign = ho_font_main_sign (m_text, m_mask);
           if (!m_font_main_sign)
             return TRUE;
-          
+
           /* recognize font from images */
           font = ho_recognize_font (m_font_main_sign, m_mask, font_code);
 
@@ -321,14 +323,21 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
             if (!m_font_nikud)
               return TRUE;
             ho_bitmap_andnot (m_font_nikud, m_font_main_sign);
-            
-            /* insert font nikud to text out */
-            ho_string_cat (s_text_out, font_nikud);
-            
+
+            /* recognize font from images */
+            font_nikud = ho_recognize_nikud (m_font_nikud, m_mask,
+              font_code, &font_dagesh, &font_shin);
+
             /* free bitmaps */
             ho_bitmap_free (m_font_nikud);
+            m_font_nikud = NULL;
+
+            /* insert font nikud to text out */
+            ho_string_cat (s_text_out, font_shin);
+            ho_string_cat (s_text_out, font_dagesh);
+            ho_string_cat (s_text_out, font_nikud);
           }
-          
+
           /* free bitmaps */
           ho_bitmap_free (m_font_main_sign);
           ho_bitmap_free (m_text);

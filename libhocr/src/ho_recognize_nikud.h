@@ -34,11 +34,11 @@
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 
-#define HO_NIKUD_ARRAY_IN_SIZE 16
+#define HO_NIKUD_ARRAY_IN_SIZE 24
 #define HO_NIKUD_ARRAY_OUT_SIZE 16
 
 /* font shapes codes*/
-static const char *ho_nikud_array[HO_NIKUD_ARRAY_OUT_SIZE] = { "*", /* none */
+static const char *ho_nikud_array[HO_NIKUD_ARRAY_OUT_SIZE] = { "",  /* none */
   "ָ",                         /* kamatz */
   "ַ",                         /* patach */
   "ֵ",                         /* tzere */
@@ -59,24 +59,21 @@ static const char *ho_nikud_array[HO_NIKUD_ARRAY_OUT_SIZE] = { "*", /* none */
 int ho_recognize_nikud_array_in_size ();
 int ho_recognize_nikud_array_out_size ();
 
-double
-ho_recognize_nikud_array (const double *array_in, const int sign_index,
-  int font_code);
-
 int
-ho_recognize_create_nikud_array_in (const ho_bitmap * m_nikud,
+ho_recognize_nikud_array_in (const ho_bitmap * m_nikud,
   const ho_bitmap * m_mask, double *array_in);
 
-int ho_recognize_create_nikud_array_out (const double *array_in,
+int ho_recognize_nikud_array_out (const double *array_in,
   double *array_out, int font_code);
 
 const char *ho_recognize_array_out_to_nikud (const double *array_out);
 
 const char *ho_recognize_nikud (const ho_bitmap * m_nikud,
-  const ho_bitmap * m_mask, int font_code);
+  const ho_bitmap * m_mask, int font_code, const char **dagesh,
+  const char **shin);
 
 int
-ho_recognize_nikud_dimentions (const ho_bitmap * m_nikud,
+ho_recognize_nikud_dimentions (const ho_bitmap * m_text,
   const ho_bitmap * m_mask, double *height,
   double *width, double *top, double *bottom,
   double *top_left, double *top_mid, double *top_right,
@@ -84,6 +81,8 @@ ho_recognize_nikud_dimentions (const ho_bitmap * m_nikud,
   double *bottom_left, double *bottom_mid,
   double *bottom_right,
   double *dots_above, double *dots_below, double *dots_inside,
-  double *objs_above, double *objs_below, double *objs_inside);
+  double *objs_above, double *objs_below, double *objs_inside,
+  double *main_obj_height, double *main_obj_width,
+  double *top_dot_x, double *inside_dot_x, double *font_width_by_height);
 
 #endif /* HO_RECOGNIZE_NIKUD_H */

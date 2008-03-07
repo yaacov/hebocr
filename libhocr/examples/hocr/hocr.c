@@ -758,6 +758,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
             hocr_printerr ("can't get font main sign");
             hocr_exit ();
           }
+
           /* get font nikud */
           m_font_nikud = ho_bitmap_clone (m_text);
           if (!m_font_nikud)
@@ -770,8 +771,11 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
           /* recognize font from images */
           {
             const char *font;
+            const char *nikud;
             double array_in[HO_ARRAY_IN_SIZE];
             double array_out[HO_ARRAY_OUT_SIZE];
+            double array_nikud_in[HO_NIKUD_ARRAY_IN_SIZE];
+            double array_nikud_out[HO_NIKUD_ARRAY_OUT_SIZE];
 
             /* get font */
 
@@ -782,9 +786,30 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
             /* insert font to text out */
             ho_string_cat (s_text_out, font);
-            
+
             /* get nikud */
-            
+            ho_recognize_nikud_array_in (m_font_nikud, m_mask, array_nikud_in);
+            ho_recognize_nikud_array_out (array_nikud_in, array_nikud_out,
+              font_code);
+            nikud = ho_recognize_array_out_to_nikud (array_nikud_out);
+
+            /* insert nikud to text out if user ask */
+            if (!dont_recognize_nikud)
+            {
+              /* shin */
+              if (array_nikud_out[14] == -1.0)
+                ho_string_cat (s_text_out, ho_nikud_array[14]);
+              if (array_nikud_out[15] == -1.0)
+                ho_string_cat (s_text_out, ho_nikud_array[15]);
+
+              /* dagesh */
+              if (array_nikud_out[13] == -1.0)
+                ho_string_cat (s_text_out, ho_nikud_array[13]);
+
+              /* insert nikud to text out */
+              ho_string_cat (s_text_out, nikud);
+            }
+
             /* print debug information */
 
             /* if debug printout font data stream */
@@ -807,7 +832,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
               g_print ("\n");
 
-              g_print ("font guess is %s\n\n", font);
+              g_print ("font guess is %s%s\n\n", font, nikud);
             }
 
             /* if user want to dump data to file */
@@ -889,6 +914,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
                 ho_string_cat (s_data_out, "\n");
               }
 
+              /* print font array in */
               for (i = 0; i < HO_ARRAY_IN_SIZE; i++)
               {
                 if (!(i % 50))
@@ -909,6 +935,30 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
                 g_free (text_out);
               }
 
+              /* print nikud array in */
+              if (!dont_recognize_nikud)
+              {
+                for (i = 0; i < HO_NIKUD_ARRAY_IN_SIZE; i++)
+                {
+                  if (!(i % 50))
+                    ho_string_cat (s_data_out, "\n");
+                  if (!(i % 10))
+                  {
+                    text_out = g_strdup_printf ("\ni(%02d) ", i);
+                    ho_string_cat (s_data_out, text_out);
+
+                    g_free (text_out);
+                  }
+                  else if (!(i % 5))
+                    ho_string_cat (s_data_out, "  ");
+
+                  text_out = g_strdup_printf ("%03.2f, ", array_nikud_in[i]);
+                  ho_string_cat (s_data_out, text_out);
+
+                  g_free (text_out);
+                }
+              }
+
               /* printout the font guess array */
               ho_string_cat (s_data_out, "\n\noutput:");
 
@@ -921,7 +971,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
                   g_free (text_out);
                 }
-                
+
                 text_out =
                   g_strdup_printf ("%s:%03.2f, ", ho_sign_array[i],
                   array_out[i]);
@@ -929,10 +979,28 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 
                 g_free (text_out);
               }
+              for (i = 0; i < HO_NIKUD_ARRAY_OUT_SIZE; i++)
+              {
+                if (!(i % 8))
+                {
+                  text_out = g_strdup_printf ("\no(%02d) ", i);
+                  ho_string_cat (s_data_out, text_out);
+
+                  g_free (text_out);
+                }
+
+                text_out =
+                  g_strdup_printf ("%s:%03.2f, ", ho_nikud_array[i],
+                  array_nikud_out[i]);
+                ho_string_cat (s_data_out, text_out);
+
+                g_free (text_out);
+              }
 
               /* insert font guess to debug file */
               {
-                text_out = g_strdup_printf ("\n\nfont guess is %s\n\n", font);
+                text_out =
+                  g_strdup_printf ("\n\nfont guess is %s%s\n\n", font, nikud);
                 ho_string_cat (s_data_out, text_out);
                 g_free (text_out);
               }

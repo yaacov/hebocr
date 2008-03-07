@@ -157,6 +157,9 @@ ho_string_cat (ho_string * string_buffer, const char *new_string)
 
   len = strlen (new_string);
 
+  if (len < 1)
+    return FALSE;
+  
   /* check for allocated space and try to get more memory */
   if ((string_buffer->size + len) >= string_buffer->allocated_size)
   {
