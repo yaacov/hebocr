@@ -2048,15 +2048,35 @@ ho_recognize_array (const double *array_in, const int sign_index, int font_code)
     return_value = ho_recognize_font_david_div (array_in);
     break;
   case 41:                     /* 0 */
+    return_value = ho_recognize_font_david_zero (array_in);
+    break;
   case 42:                     /* 1 */
+    return_value = ho_recognize_font_david_one (array_in);
+    break;
   case 43:                     /* 2 */
+    return_value = ho_recognize_font_david_two (array_in);
+    break;
   case 44:                     /* 3 */
+    return_value = ho_recognize_font_david_three (array_in);
+    break;
   case 45:                     /* 4 */
+    return_value = ho_recognize_font_david_four (array_in);
+    break;
   case 46:                     /* 5 */
+    return_value = ho_recognize_font_david_five (array_in);
+    break;
   case 47:                     /* 6 */
+    return_value = ho_recognize_font_david_six (array_in);
+    break;
   case 48:                     /* 7 */
+    return_value = ho_recognize_font_david_seven (array_in);
+    break;
   case 49:                     /* 8 */
+    return_value = ho_recognize_font_david_eight (array_in);
+    break;
   case 50:                     /* 9 */
+    return_value = ho_recognize_font_david_nine (array_in);
+    break;
   default:
     return_value = 0.0;
     break;

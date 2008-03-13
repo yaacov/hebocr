@@ -31,6 +31,26 @@
 #ifndef HO_RECOGNIZE_FONT_DAVID_H
 #define HO_RECOGNIZE_FONT_DAVID_H 1
 
+double ho_recognize_font_david_zero (const double *array_in);
+
+double ho_recognize_font_david_one (const double *array_in);
+
+double ho_recognize_font_david_two (const double *array_in);
+
+double ho_recognize_font_david_three (const double *array_in);
+
+double ho_recognize_font_david_four (const double *array_in);
+
+double ho_recognize_font_david_five (const double *array_in);
+
+double ho_recognize_font_david_six (const double *array_in);
+
+double ho_recognize_font_david_seven (const double *array_in);
+
+double ho_recognize_font_david_eight (const double *array_in);
+
+double ho_recognize_font_david_nine (const double *array_in);
+
 double ho_recognize_font_david_dot (const double *array_in);
 
 double ho_recognize_font_david_comma (const double *array_in);

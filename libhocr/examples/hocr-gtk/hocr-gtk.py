@@ -163,7 +163,7 @@ class RunOCR(threading.Thread):
                 gtk.gdk.COLORSPACE_RGB, 0, 8, 
                 pix.width, pix.height, pix.rowstride)
         
-        main_window.on_menuitem_zoom_100_activate(None, None)
+        main_window.on_image_refresh(None, None)
         
         # return original cursor and print idle on the progress bar
         textview.get_parent_window().set_cursor(None)
@@ -463,6 +463,27 @@ class MainWindow:
         window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
     
+    def on_image_refresh(self, obj, event = None):
+        "on_menuitem_best_fit_activate activated"
+        global pixbuf
+        global hocr_pixbuf
+        
+        pix = hocr_pixbuf
+        
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
+            return
+        
+        w = pix.get_width()
+        h = pix.get_height()
+                        
+        factor = self.zoom_factor
+        
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        self.image.set_from_pixbuf(window_pixbuf)
+        
     def on_imagemenuitem_about_activate(self, obj, event = None):
         "on_imagemenuitem_about_activate activated"
         dialog = gtk.AboutDialog()
