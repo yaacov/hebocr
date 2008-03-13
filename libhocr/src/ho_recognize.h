@@ -37,7 +37,7 @@
 #define HO_ARRAY_IN_SIZE 104
 #define HO_ARRAY_OUT_SIZE 51
 
-/* font shapes codes*/
+/* font shapes codes */
 static const char *ho_sign_array[HO_ARRAY_OUT_SIZE] =
   { "*", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ",
   "ך", "ל", "מ", "ם", "נ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",

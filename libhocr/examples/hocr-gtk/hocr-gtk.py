@@ -67,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # program info
-app_version = "0.1.0"
+app_version = "0.1.1"
 copyright = "Copyright (C) Yaacov Zamir <kzamir@walla.co.il>"
 comments = _("Hocr-GTK, Hebrew optical character recognition\ngraphical front end (GTK)\n\n")
 comments += hocr_get_build_string()
@@ -126,11 +126,16 @@ class ProgressSet(threading.Thread):
 class RunOCR(threading.Thread):
     def run(self):
         # importing the ocr object from the global scope
+        global main_window
         global hocr_obj
         global menuitem_clear
         global textbuffer
         global textview
         global progressbar 
+        global image_window_type
+        global hocr_pixbuf
+        global pixbuf
+        global image
         
         ps = ProgressSet()
         
@@ -142,6 +147,23 @@ class RunOCR(threading.Thread):
         ps.start()
         hocr_obj.do_ocr()
         ps.stop()
+        
+        # set the new image in image window
+        if image_window_type == 0:
+            hocr_pixbuf = pixbuf.copy()
+        else:
+            # create an hocr pixbuf
+            if image_window_type == 1:
+                pix = hocr_pixbuf = hocr_obj.get_bitmap_pixbuf ()
+            if image_window_type == 2:
+                pix = self.hocr_pixbuf = hocr_obj.get_layout_pixbuf ()
+            # create a gtk pixbuf
+            hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
+                ho_pixbuf_get_data_string(pix),
+                gtk.gdk.COLORSPACE_RGB, 0, 8, 
+                pix.width, pix.height, pix.rowstride)
+        
+        main_window.on_menuitem_zoom_100_activate(None, None)
         
         # return original cursor and print idle on the progress bar
         textview.get_parent_window().set_cursor(None)
@@ -163,6 +185,9 @@ class MainWindow:
         global menuitem_clear
         global textbuffer
         global textview
+        global pixbuf
+        global hocr_pixbuf
+        global image
         
         # create widget tree ...
         xml = False
@@ -186,8 +211,10 @@ class MainWindow:
         self.textview = xml.get_widget('textview')
         self.progressbar = xml.get_widget('progressbar')
         self.statusbar1 = xml.get_widget('statusbar1')
+        
         progressbar = self.progressbar
         textview = self.textview
+        image = self.image
         
         # init progress bar and hide it
         progressbar.set_text(_("Processing..."))
@@ -197,13 +224,20 @@ class MainWindow:
         self.textbuffer =  self.textview.get_buffer()
         self.clipboard = gtk.Clipboard()
         self.textview.grab_focus()
+        
         textbuffer = self.textbuffer
         
         # image
         self.preview = gtk.Image()
         self.filename = ""
-        self.pixbuf = None
+        pixbuf = None
+        hocr_pixbuf = None
         self.zoom_factor = 1.0
+                
+        # hocr_pixbuf options
+        self.menuitem_orig = xml.get_widget('menuitem_orig')
+        self.menuitem_bw = xml.get_widget('menuitem_bw')
+        self.menuitem_layout = xml.get_widget('menuitem_layout')
         
         # edit
         self.menuitem_clear = xml.get_widget('menuitem_clear')
@@ -211,6 +245,11 @@ class MainWindow:
         self.menuitem_nikud = xml.get_widget('menuitem_nikud')
         self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
         self.menuitem_column_one = xml.get_widget('menuitem_column_one')
+        self.menuitem_font_1 = xml.get_widget('menuitem_font_1')
+        self.menuitem_font_2 = xml.get_widget('menuitem_font_2')
+        self.menuitem_font_3 = xml.get_widget('menuitem_font_3')
+        self.menuitem_font_4 = xml.get_widget('menuitem_font_4')
+        
         menuitem_clear = self.menuitem_clear
         
         # ocr
@@ -225,6 +264,9 @@ class MainWindow:
 
     def on_imagemenuitem_new_activate(self, obj, event = None):
         "on_imagemenuitem_new_activate activated"
+        global pixbuf
+        global hocr_pixbuf
+        
         chooser = gtk.FileChooserDialog(_("Open.."),
             None,
             gtk.FILE_CHOOSER_ACTION_OPEN,
@@ -236,12 +278,15 @@ class MainWindow:
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             self.filename = chooser.get_filename()
-            self.pixbuf = gtk.gdk.pixbuf_new_from_file (self.filename)
+            # get new image
+            pixbuf = gtk.gdk.pixbuf_new_from_file (self.filename)
+            # clean processed image
+            hocr_pixbuf = None
             
             factor = self.zoom_factor
-            w = self.pixbuf.get_width()
-            h = self.pixbuf.get_height()
-            window_pixbuf = self.pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+            w = pixbuf.get_width()
+            h = pixbuf.get_height()
+            window_pixbuf = pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
             self.image.set_from_pixbuf(window_pixbuf)
             self.progressbar.set_fraction(0)
             
@@ -275,15 +320,17 @@ class MainWindow:
         
     def on_menuitem_apply_activate(self, obj, event = None):
         "on_menuitem_apply_activate activated"
-        if not (self.filename and self.pixbuf) :
+        global pixbuf
+        
+        if not (self.filename and pixbuf) :
             return
-           
-        pix = ho_gtk_pixbuf_load(self.filename)
-
-        if not pix:
-            print "ERROR: Can't load image."
-            show_error_message(_("Can't load image."))
-            return
+        
+        # create hocr pixbuf
+        pix = ho_pixbuf_new (pixbuf.get_n_channels(), 
+            pixbuf.get_width(), pixbuf.get_height (),
+            pixbuf.get_rowstride ())
+        
+        ho_pixbuf_set_data (pix, pixbuf.get_pixels())
         
         # set ocr options
         self.hocr_obj.set_pixbuf(pix)
@@ -293,6 +340,14 @@ class MainWindow:
               self.hocr_obj.set_paragraph_setup(0)
         else:
               self.hocr_obj.set_paragraph_setup(1)
+        if self.menuitem_font_1.get_active():
+              self.hocr_obj.set_font (0)
+        if self.menuitem_font_2.get_active():
+              self.hocr_obj.set_font (1)
+        if self.menuitem_font_3.get_active():
+              self.hocr_obj.set_font (2)
+        if self.menuitem_font_4.get_active():
+              self.hocr_obj.set_font (3)
         
         # run ocr
         ro = RunOCR()
@@ -320,52 +375,84 @@ class MainWindow:
 
     def on_menuitem_zoom_in_activate(self, obj, event = None):
         "on_menuitem_zoom_in_activate activated"
+        global pixbuf
+        global hocr_pixbuf
+        
         self.zoom_factor *= 1.2
         
-        if not self.pixbuf:
+        pix = hocr_pixbuf
+        
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
             return
         
         factor = self.zoom_factor
-        w = self.pixbuf.get_width()
-        h = self.pixbuf.get_height()
-        window_pixbuf = self.pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        w = pix.get_width()
+        h = pix.get_height()
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
 
     def on_menuitem_zoom_out_activate(self, obj, event = None):
         "on_menuitem_zoom_out_activate activated"
+        global pixbuf
+        global hocr_pixbuf
+        
         self.zoom_factor *= 0.8
         
-        if not self.pixbuf:
+        pix = hocr_pixbuf
+        
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
             return
         
         factor = self.zoom_factor
-        w = self.pixbuf.get_width()
-        h = self.pixbuf.get_height()
-        window_pixbuf = self.pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        w = pix.get_width()
+        h = pix.get_height()
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
 
     def on_menuitem_zoom_100_activate(self, obj, event = None):
         "on_menuitem_zoom_100_activate activated"
+        global pixbuf
+        global hocr_pixbuf
+        
         self.zoom_factor = 1.0
         
-        if not self.pixbuf:
+        pix = hocr_pixbuf
+        
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
             return
         
         factor = self.zoom_factor
-        w = self.pixbuf.get_width()
-        h = self.pixbuf.get_height()
-        window_pixbuf = self.pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        w = pix.get_width()
+        h = pix.get_height()
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
     
     def on_menuitem_best_fit_activate(self, obj, event = None):
         "on_menuitem_best_fit_activate activated"
+        global pixbuf
+        global hocr_pixbuf
         
-        if not self.pixbuf:
+        pix = hocr_pixbuf
+        
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
             return
         
+        w = pix.get_width()
+        h = pix.get_height()
         width, height = self.window_main.get_size()
-        w = self.pixbuf.get_width()
-        h = self.pixbuf.get_height()
+        
         # give image some leeway
         if width > 100:
             width -= 40;
@@ -373,7 +460,7 @@ class MainWindow:
                 
         factor = self.zoom_factor
         
-        window_pixbuf = self.pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
     
     def on_imagemenuitem_about_activate(self, obj, event = None):
@@ -436,9 +523,120 @@ class MainWindow:
     def on_toolbutton_quit_clicked(self, obj, event = None):
         "on_toolbutton_quit_clicked activated"
         gtk.main_quit()
+    
+    def on_menuitem_orig_toggled(self, obj, event = None):
+        "on_menuitem_orig_toggled activated"
+        global image_window_type
+        global hocr_pixbuf
+        global pixbuf
+        
+        # is this item active ?
+        if not obj.get_active():
+            return 
+            
+        image_window_type = 0
+        
+        # do we have an hocr pixbuf ?
+        if not hocr_pixbuf:
+            return
+        
+        # get the new image 
+        pix = hocr_pixbuf = pixbuf.copy()
+        
+        #
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
+            return
+                        
+        factor = self.zoom_factor
+        w = pix.get_width()
+        h = pix.get_height()
+        
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        self.image.set_from_pixbuf(window_pixbuf)
 
+    def on_menuitem_bw_toggled(self, obj, event = None):
+        "on_menuitem_bw_toggled activated"
+        global image_window_type
+        global hocr_pixbuf
+        global pixbuf
+        
+        if not obj.get_active():
+            return 
+            
+        image_window_type = 1
+               
+        # do we have an hocr pixbuf ?
+        if not hocr_pixbuf:
+            return
+        
+        # get the new image 
+        ho_pix = self.hocr_obj.get_bitmap_pixbuf ()
+        
+        # create a gtk pixbuf
+        pix = hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
+                ho_pixbuf_get_data_string(ho_pix),
+                gtk.gdk.COLORSPACE_RGB, 0, 8, 
+                ho_pix.width, ho_pix.height, ho_pix.rowstride)
+                
+        #
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
+            return
+                        
+        factor = self.zoom_factor
+        w = pix.get_width()
+        h = pix.get_height()
+        
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        self.image.set_from_pixbuf(window_pixbuf)
+
+    def on_menuitem_layout_toggled(self, obj, event = None):
+        "on_menuitem_layout_toggled activated"
+        global image_window_type
+        global hocr_pixbuf
+        global pixbuf
+        
+        if not obj.get_active():
+            return 
+            
+        image_window_type = 2
+        
+        # do we have an hocr pixbuf ?
+        if not hocr_pixbuf:
+            return
+         
+        # get the new image 
+        ho_pix = self.hocr_obj.get_layout_pixbuf ()
+        
+        # create a gtk pixbuf
+        pix = hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
+                ho_pixbuf_get_data_string(ho_pix),
+                gtk.gdk.COLORSPACE_RGB, 0, 8, 
+                ho_pix.width, ho_pix.height, ho_pix.rowstride)
+        
+        #
+        if not pix:
+            pix = pixbuf
+            
+        if not pix:
+            return
+                        
+        factor = self.zoom_factor
+        w = pix.get_width()
+        h = pix.get_height()
+        
+        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        self.image.set_from_pixbuf(window_pixbuf)
+    
 # run main loop
 def main():
+    global main_window
+    
     main_window = MainWindow()
     main_window.window_main.show()
     gtk.main()
@@ -452,6 +650,11 @@ hocr_obj = None
 menuitem_clear = None
 textbuffer = None
 textview = None
+image_window_type = 0
+hocr_pixbuf = None
+pixbuf = None
+image = None
+main_window = None
 
 if __name__ == "__main__":
     main()

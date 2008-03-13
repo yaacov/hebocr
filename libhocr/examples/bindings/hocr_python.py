@@ -28,13 +28,10 @@
 # for user arg
 import sys
 
-# we need gtk for the hocr python bindings,
-# python-hocr is actually a binding of hocr-gtk
-import gtk 
 from hocr import *
 
 # load the picture pointed to by argv[1]
-pix = ho_gtk_pixbuf_load(sys.argv[1])
+pix = ho_pixbuf_pnm_load(sys.argv[1])
 
 # create a new hocr object
 hocr_obj = Hocr(pix)

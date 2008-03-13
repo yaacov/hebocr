@@ -96,6 +96,38 @@ ho_pixbuf_clone (const ho_pixbuf * m)
   return m_out;
 }
 
+int
+ho_pixbuf_set_data (ho_pixbuf * pix, const char *data)
+{
+  /* copy the pixels */
+  memcpy (pix->data, data, (pix->height * pix->rowstride));
+
+  return FALSE;
+};
+
+string_data
+ho_pixbuf_get_data_string (ho_pixbuf * pix)
+{
+  string_data out;
+
+  out.data = (char *) malloc (pix->height * pix->rowstride);
+
+  if (!out.data)
+  {
+    out.data = NULL;
+    out.size = 0;
+  }
+  else
+  {
+    memcpy (out.data, pix->data, (pix->height * pix->rowstride));
+
+    out.data = pix->data;
+    out.size = pix->height * pix->rowstride;
+  }
+
+  return out;
+}
+
 ho_pixbuf *
 ho_pixbuf_new_from_bitmap (const ho_bitmap * bit_in)
 {
@@ -1319,7 +1351,7 @@ ho_pixbuf_pnm_load (const char *filename)
       {
         /* reset mask to 0 on a new line */
         ho_pbm_getbit (0);
-        
+
         /* get line data */
         for (x = 0; x < rowstride; x++)
         {

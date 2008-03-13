@@ -1,3 +1,10 @@
+libhocr (0.11.0)
+
+ * add more font types
+ * python-hocr does not include hocr-gtk
+
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Wednesday, 12 Mar 2008 21:04
+ 
 libhocr (0.10.5)
 
  * fine tune font recognition

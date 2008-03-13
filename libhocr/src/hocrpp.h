@@ -194,13 +194,20 @@ namespace hocr
      */
     ho_pixbuf *get_bitmap_pixbuf ()
     {
+      ho_pixbuf *m_pix_tmp = NULL;
       ho_pixbuf *m_pix_out = NULL;
 
       if (!m_bit_bw)
         return NULL;
 
-      m_pix_out = ho_pixbuf_new_from_bitmap (m_bit_bw);
-
+      m_pix_tmp = ho_pixbuf_new_from_bitmap (m_bit_bw);
+      if (!m_pix_tmp)
+        return NULL;
+      
+      m_pix_out = ho_pixbuf_to_rgb (m_pix_tmp);
+      
+      ho_pixbuf_free (m_pix_tmp);
+      
       return m_pix_out;
     }
 

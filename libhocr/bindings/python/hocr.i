@@ -2,8 +2,11 @@
 %module hocr
 %{
 #include "../../src/hocrpp.h"
-#include "../../src/ho_gtk.h"
 %}
+
+%typemap(out) string_data {
+    $result = PyString_FromStringAndSize($1.data,$1.size);
+}
 
 %include ../../src/ho_pixbuf.h
 %include ../../src/ho_bitmap.h
@@ -16,11 +19,10 @@
 %include ../../src/ho_recognize_nikud.h
 %include ../../src/ho_string.h
 
-%include ../../src/ho_gtk.h
 %include ../../src/hocr.h
 %include ../../src/hocrpp.h
 
 // on linux do:
 // swig -python -c++ hocr.i
-// g++ -fpic -c hocr_wrap.cxx `pkg-config --cflags gtk+-2.0` -I/usr/include/python2.3
-// g++ -shared `pkg-config --libs gtk+-2.0`.../../src/.libs/libhocr.so ../../src/.libs/libhocrgtk.so  hocr_wrap.o -o _hocr.so
+// g++ -fpic -c hocr_wrap.cxx -I/usr/include/python2.3
+// g++ -shared .../../src/.libs/libhocr.so hocr_wrap.o -o _hocr.so

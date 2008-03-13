@@ -49,6 +49,15 @@
 #define ho_pixbuf_get_rowstride(m) ((m)->rowstride)
 #define ho_pixbuf_get_data(m) ((m)->data)
 
+/** @struct string_data
+  @brief helper string struct for non-null-terminated strings
+*/
+typedef struct string_data
+{
+  int size;
+  char *data;
+} string_data;
+
 /** @struct ho_pixbuf
   @brief libhocr pixbuf map struct (copy gtk pixbuf)
 */
@@ -78,6 +87,21 @@ ho_pixbuf *ho_pixbuf_new (const unsigned char n_channels,
  @return newly allocated gray ho_pixbuf
  */
 ho_pixbuf *ho_pixbuf_clone (const ho_pixbuf * m);
+
+/**
+ copy pixel date to a ho_pixbuf
+ @param pix pointer to a ho_pixbuf image
+ @param data the pixel data to copy
+ @return newly allocated gray ho_pixbuf
+ */
+int ho_pixbuf_set_data (ho_pixbuf * pix, const char *data);
+
+/**
+ get pixel date to a ho_pixbuf as a string
+ @param pix pointer to a ho_pixbuf image
+ @param a string data struct of the pixbuf data
+ */
+string_data ho_pixbuf_get_data_string (ho_pixbuf * pix);
 
 /**
  new ho_pixbuf from ho_bitmap
