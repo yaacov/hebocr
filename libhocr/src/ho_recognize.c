@@ -41,7 +41,11 @@
 #include "ho_objmap.h"
 #include "ho_segment.h"
 #include "ho_font.h"
-#include "ho_recognize_font_david.h"
+
+#include "ho_recognize_font_1.h"
+#include "ho_recognize_font_2.h"
+#include "ho_recognize_font_3.h"
+#include "ho_recognize_font_4.h"
 
 #include "ho_recognize.h"
 
@@ -1925,161 +1929,644 @@ ho_recognize_array (const double *array_in, const int sign_index, int font_code)
 {
   double return_value;
 
-  switch (sign_index)
+  if (font_code == 0)
   {
-  case 1:                      /* alef */
-    return_value = ho_recognize_font_david_alef (array_in);
-    break;
-  case 2:                      /* bet */
-    return_value = ho_recognize_font_david_bet (array_in);
-    break;
-  case 3:                      /* gimal */
-    return_value = ho_recognize_font_david_gimal (array_in);
-    break;
-  case 4:                      /* dalet */
-    return_value = ho_recognize_font_david_dalet (array_in);
-    break;
-  case 5:                      /* hey */
-    return_value = ho_recognize_font_david_hey (array_in);
-    break;
-  case 6:                      /* vav */
-    return_value = ho_recognize_font_david_vav (array_in);
-    break;
-  case 7:                      /* zayin */
-    return_value = ho_recognize_font_david_zayin (array_in);
-    break;
-  case 8:                      /* het */
-    return_value = ho_recognize_font_david_het (array_in);
-    break;
-  case 9:                      /* tet */
-    return_value = ho_recognize_font_david_tet (array_in);
-    break;
-  case 10:                     /* yud */
-    return_value = ho_recognize_font_david_yud (array_in);
-    break;
-  case 11:                     /* caf */
-    return_value = ho_recognize_font_david_caf (array_in);
-    break;
-  case 12:                     /* caf sofit */
-    return_value = ho_recognize_font_david_caf_sofit (array_in);
-    break;
-  case 13:                     /* lamed */
-    return_value = ho_recognize_font_david_lamed (array_in);
-    break;
-  case 14:                     /* mem */
-    return_value = ho_recognize_font_david_mem (array_in);
-    break;
-  case 15:                     /* mem sofit */
-    return_value = ho_recognize_font_david_mem_sofit (array_in);
-    break;
-  case 16:                     /* nun */
-    return_value = ho_recognize_font_david_nun (array_in);
-    break;
-  case 17:                     /* nun sofit */
-    return_value = ho_recognize_font_david_nun_sofit (array_in);
-    break;
-  case 18:                     /* samech */
-    return_value = ho_recognize_font_david_samech (array_in);
-    break;
-  case 19:                     /* ayin */
-    return_value = ho_recognize_font_david_ayin (array_in);
-    break;
-  case 20:                     /* pey */
-    return_value = ho_recognize_font_david_pey (array_in);
-    break;
-  case 21:                     /* pey sofit */
-    return_value = ho_recognize_font_david_pey_sofit (array_in);
-    break;
-  case 22:                     /* tzadi */
-    return_value = ho_recognize_font_david_tzadi (array_in);
-    break;
-  case 23:                     /* tzadi sofit */
-    return_value = ho_recognize_font_david_tzadi_sofit (array_in);
-    break;
-  case 24:                     /* kuf */
-    return_value = ho_recognize_font_david_kuf (array_in);
-    break;
-  case 25:                     /* resh */
-    return_value = ho_recognize_font_david_resh (array_in);
-    break;
-  case 26:                     /* shin */
-    return_value = ho_recognize_font_david_shin (array_in);
-    break;
-  case 27:                     /* tav */
-    return_value = ho_recognize_font_david_tav (array_in);
-    break;
-  case 28:                     /* dot */
-    return_value = ho_recognize_font_david_dot (array_in);
-    break;
-  case 29:                     /* comma */
-    return_value = ho_recognize_font_david_comma (array_in);
-    break;
-  case 30:                     /* tag */
-    return_value = ho_recognize_font_david_tag (array_in);
-    break;
-  case 31:                     /* two tags */
-    return_value = ho_recognize_font_david_two_tags (array_in);
-    break;
-  case 32:                     /* ? */
-    return_value = ho_recognize_font_david_question (array_in);
-    break;
-  case 33:                     /* ! */
-    return_value = ho_recognize_font_david_exclem (array_in);
-    break;
-  case 34:                     /* : */
-    return_value = ho_recognize_font_david_dot_dot (array_in);
-    break;
-  case 35:                     /* ; */
-    return_value = ho_recognize_font_david_dot_comma (array_in);
-    break;
-  case 36:                     /* ) */
-    return_value = ho_recognize_font_david_open (array_in);
-    break;
-  case 37:                     /* ( */
-    return_value = ho_recognize_font_david_close (array_in);
-    break;
-  case 38:                     /* minus */
-    return_value = ho_recognize_font_david_minus (array_in);
-    break;
-  case 39:                     /* plus */
-    return_value = ho_recognize_font_david_plus (array_in);
-    break;
-  case 40:                     /* div */
-    return_value = ho_recognize_font_david_div (array_in);
-    break;
-  case 41:                     /* 0 */
-    return_value = ho_recognize_font_david_zero (array_in);
-    break;
-  case 42:                     /* 1 */
-    return_value = ho_recognize_font_david_one (array_in);
-    break;
-  case 43:                     /* 2 */
-    return_value = ho_recognize_font_david_two (array_in);
-    break;
-  case 44:                     /* 3 */
-    return_value = ho_recognize_font_david_three (array_in);
-    break;
-  case 45:                     /* 4 */
-    return_value = ho_recognize_font_david_four (array_in);
-    break;
-  case 46:                     /* 5 */
-    return_value = ho_recognize_font_david_five (array_in);
-    break;
-  case 47:                     /* 6 */
-    return_value = ho_recognize_font_david_six (array_in);
-    break;
-  case 48:                     /* 7 */
-    return_value = ho_recognize_font_david_seven (array_in);
-    break;
-  case 49:                     /* 8 */
-    return_value = ho_recognize_font_david_eight (array_in);
-    break;
-  case 50:                     /* 9 */
-    return_value = ho_recognize_font_david_nine (array_in);
-    break;
-  default:
-    return_value = 0.0;
-    break;
+    switch (sign_index)
+    {
+    case 1:                    /* alef */
+      return_value = ho_recognize_font_1_alef (array_in);
+      break;
+    case 2:                    /* bet */
+      return_value = ho_recognize_font_1_bet (array_in);
+      break;
+    case 3:                    /* gimal */
+      return_value = ho_recognize_font_1_gimal (array_in);
+      break;
+    case 4:                    /* dalet */
+      return_value = ho_recognize_font_1_dalet (array_in);
+      break;
+    case 5:                    /* hey */
+      return_value = ho_recognize_font_1_hey (array_in);
+      break;
+    case 6:                    /* vav */
+      return_value = ho_recognize_font_1_vav (array_in);
+      break;
+    case 7:                    /* zayin */
+      return_value = ho_recognize_font_1_zayin (array_in);
+      break;
+    case 8:                    /* het */
+      return_value = ho_recognize_font_1_het (array_in);
+      break;
+    case 9:                    /* tet */
+      return_value = ho_recognize_font_1_tet (array_in);
+      break;
+    case 10:                   /* yud */
+      return_value = ho_recognize_font_1_yud (array_in);
+      break;
+    case 11:                   /* caf */
+      return_value = ho_recognize_font_1_caf (array_in);
+      break;
+    case 12:                   /* caf sofit */
+      return_value = ho_recognize_font_1_caf_sofit (array_in);
+      break;
+    case 13:                   /* lamed */
+      return_value = ho_recognize_font_1_lamed (array_in);
+      break;
+    case 14:                   /* mem */
+      return_value = ho_recognize_font_1_mem (array_in);
+      break;
+    case 15:                   /* mem sofit */
+      return_value = ho_recognize_font_1_mem_sofit (array_in);
+      break;
+    case 16:                   /* nun */
+      return_value = ho_recognize_font_1_nun (array_in);
+      break;
+    case 17:                   /* nun sofit */
+      return_value = ho_recognize_font_1_nun_sofit (array_in);
+      break;
+    case 18:                   /* samech */
+      return_value = ho_recognize_font_1_samech (array_in);
+      break;
+    case 19:                   /* ayin */
+      return_value = ho_recognize_font_1_ayin (array_in);
+      break;
+    case 20:                   /* pey */
+      return_value = ho_recognize_font_1_pey (array_in);
+      break;
+    case 21:                   /* pey sofit */
+      return_value = ho_recognize_font_1_pey_sofit (array_in);
+      break;
+    case 22:                   /* tzadi */
+      return_value = ho_recognize_font_1_tzadi (array_in);
+      break;
+    case 23:                   /* tzadi sofit */
+      return_value = ho_recognize_font_1_tzadi_sofit (array_in);
+      break;
+    case 24:                   /* kuf */
+      return_value = ho_recognize_font_1_kuf (array_in);
+      break;
+    case 25:                   /* resh */
+      return_value = ho_recognize_font_1_resh (array_in);
+      break;
+    case 26:                   /* shin */
+      return_value = ho_recognize_font_1_shin (array_in);
+      break;
+    case 27:                   /* tav */
+      return_value = ho_recognize_font_1_tav (array_in);
+      break;
+    case 28:                   /* dot */
+      return_value = ho_recognize_font_1_dot (array_in);
+      break;
+    case 29:                   /* comma */
+      return_value = ho_recognize_font_1_comma (array_in);
+      break;
+    case 30:                   /* tag */
+      return_value = ho_recognize_font_1_tag (array_in);
+      break;
+    case 31:                   /* two tags */
+      return_value = ho_recognize_font_1_two_tags (array_in);
+      break;
+    case 32:                   /* ? */
+      return_value = ho_recognize_font_1_question (array_in);
+      break;
+    case 33:                   /* ! */
+      return_value = ho_recognize_font_1_exclem (array_in);
+      break;
+    case 34:                   /* : */
+      return_value = ho_recognize_font_1_dot_dot (array_in);
+      break;
+    case 35:                   /* ; */
+      return_value = ho_recognize_font_1_dot_comma (array_in);
+      break;
+    case 36:                   /* ) */
+      return_value = ho_recognize_font_1_open (array_in);
+      break;
+    case 37:                   /* ( */
+      return_value = ho_recognize_font_1_close (array_in);
+      break;
+    case 38:                   /* minus */
+      return_value = ho_recognize_font_1_minus (array_in);
+      break;
+    case 39:                   /* plus */
+      return_value = ho_recognize_font_1_plus (array_in);
+      break;
+    case 40:                   /* div */
+      return_value = ho_recognize_font_1_div (array_in);
+      break;
+    case 41:                   /* 0 */
+      return_value = ho_recognize_font_1_zero (array_in);
+      break;
+    case 42:                   /* 1 */
+      return_value = ho_recognize_font_1_one (array_in);
+      break;
+    case 43:                   /* 2 */
+      return_value = ho_recognize_font_1_two (array_in);
+      break;
+    case 44:                   /* 3 */
+      return_value = ho_recognize_font_1_three (array_in);
+      break;
+    case 45:                   /* 4 */
+      return_value = ho_recognize_font_1_four (array_in);
+      break;
+    case 46:                   /* 5 */
+      return_value = ho_recognize_font_1_five (array_in);
+      break;
+    case 47:                   /* 6 */
+      return_value = ho_recognize_font_1_six (array_in);
+      break;
+    case 48:                   /* 7 */
+      return_value = ho_recognize_font_1_seven (array_in);
+      break;
+    case 49:                   /* 8 */
+      return_value = ho_recognize_font_1_eight (array_in);
+      break;
+    case 50:                   /* 9 */
+      return_value = ho_recognize_font_1_nine (array_in);
+      break;
+    default:
+      return_value = 0.0;
+      break;
+    }
+  }
+
+  else if (font_code == 1)
+  {
+    switch (sign_index)
+    {
+    case 1:                    /* alef */
+      return_value = ho_recognize_font_2_alef (array_in);
+      break;
+    case 2:                    /* bet */
+      return_value = ho_recognize_font_2_bet (array_in);
+      break;
+    case 3:                    /* gimal */
+      return_value = ho_recognize_font_2_gimal (array_in);
+      break;
+    case 4:                    /* dalet */
+      return_value = ho_recognize_font_2_dalet (array_in);
+      break;
+    case 5:                    /* hey */
+      return_value = ho_recognize_font_2_hey (array_in);
+      break;
+    case 6:                    /* vav */
+      return_value = ho_recognize_font_2_vav (array_in);
+      break;
+    case 7:                    /* zayin */
+      return_value = ho_recognize_font_2_zayin (array_in);
+      break;
+    case 8:                    /* het */
+      return_value = ho_recognize_font_2_het (array_in);
+      break;
+    case 9:                    /* tet */
+      return_value = ho_recognize_font_2_tet (array_in);
+      break;
+    case 10:                   /* yud */
+      return_value = ho_recognize_font_2_yud (array_in);
+      break;
+    case 11:                   /* caf */
+      return_value = ho_recognize_font_2_caf (array_in);
+      break;
+    case 12:                   /* caf sofit */
+      return_value = ho_recognize_font_2_caf_sofit (array_in);
+      break;
+    case 13:                   /* lamed */
+      return_value = ho_recognize_font_2_lamed (array_in);
+      break;
+    case 14:                   /* mem */
+      return_value = ho_recognize_font_2_mem (array_in);
+      break;
+    case 15:                   /* mem sofit */
+      return_value = ho_recognize_font_2_mem_sofit (array_in);
+      break;
+    case 16:                   /* nun */
+      return_value = ho_recognize_font_2_nun (array_in);
+      break;
+    case 17:                   /* nun sofit */
+      return_value = ho_recognize_font_2_nun_sofit (array_in);
+      break;
+    case 18:                   /* samech */
+      return_value = ho_recognize_font_2_samech (array_in);
+      break;
+    case 19:                   /* ayin */
+      return_value = ho_recognize_font_2_ayin (array_in);
+      break;
+    case 20:                   /* pey */
+      return_value = ho_recognize_font_2_pey (array_in);
+      break;
+    case 21:                   /* pey sofit */
+      return_value = ho_recognize_font_2_pey_sofit (array_in);
+      break;
+    case 22:                   /* tzadi */
+      return_value = ho_recognize_font_2_tzadi (array_in);
+      break;
+    case 23:                   /* tzadi sofit */
+      return_value = ho_recognize_font_2_tzadi_sofit (array_in);
+      break;
+    case 24:                   /* kuf */
+      return_value = ho_recognize_font_2_kuf (array_in);
+      break;
+    case 25:                   /* resh */
+      return_value = ho_recognize_font_2_resh (array_in);
+      break;
+    case 26:                   /* shin */
+      return_value = ho_recognize_font_2_shin (array_in);
+      break;
+    case 27:                   /* tav */
+      return_value = ho_recognize_font_2_tav (array_in);
+      break;
+    case 28:                   /* dot */
+      return_value = ho_recognize_font_2_dot (array_in);
+      break;
+    case 29:                   /* comma */
+      return_value = ho_recognize_font_2_comma (array_in);
+      break;
+    case 30:                   /* tag */
+      return_value = ho_recognize_font_2_tag (array_in);
+      break;
+    case 31:                   /* two tags */
+      return_value = ho_recognize_font_2_two_tags (array_in);
+      break;
+    case 32:                   /* ? */
+      return_value = ho_recognize_font_2_question (array_in);
+      break;
+    case 33:                   /* ! */
+      return_value = ho_recognize_font_2_exclem (array_in);
+      break;
+    case 34:                   /* : */
+      return_value = ho_recognize_font_2_dot_dot (array_in);
+      break;
+    case 35:                   /* ; */
+      return_value = ho_recognize_font_2_dot_comma (array_in);
+      break;
+    case 36:                   /* ) */
+      return_value = ho_recognize_font_2_open (array_in);
+      break;
+    case 37:                   /* ( */
+      return_value = ho_recognize_font_2_close (array_in);
+      break;
+    case 38:                   /* minus */
+      return_value = ho_recognize_font_2_minus (array_in);
+      break;
+    case 39:                   /* plus */
+      return_value = ho_recognize_font_2_plus (array_in);
+      break;
+    case 40:                   /* div */
+      return_value = ho_recognize_font_2_div (array_in);
+      break;
+    case 41:                   /* 0 */
+      return_value = ho_recognize_font_2_zero (array_in);
+      break;
+    case 42:                   /* 1 */
+      return_value = ho_recognize_font_2_one (array_in);
+      break;
+    case 43:                   /* 2 */
+      return_value = ho_recognize_font_2_two (array_in);
+      break;
+    case 44:                   /* 3 */
+      return_value = ho_recognize_font_2_three (array_in);
+      break;
+    case 45:                   /* 4 */
+      return_value = ho_recognize_font_2_four (array_in);
+      break;
+    case 46:                   /* 5 */
+      return_value = ho_recognize_font_2_five (array_in);
+      break;
+    case 47:                   /* 6 */
+      return_value = ho_recognize_font_2_six (array_in);
+      break;
+    case 48:                   /* 7 */
+      return_value = ho_recognize_font_2_seven (array_in);
+      break;
+    case 49:                   /* 8 */
+      return_value = ho_recognize_font_2_eight (array_in);
+      break;
+    case 50:                   /* 9 */
+      return_value = ho_recognize_font_2_nine (array_in);
+      break;
+    default:
+      return_value = 0.0;
+      break;
+    }
+  }
+
+  else if (font_code == 2)
+  {
+    switch (sign_index)
+    {
+    case 1:                    /* alef */
+      return_value = ho_recognize_font_3_alef (array_in);
+      break;
+    case 2:                    /* bet */
+      return_value = ho_recognize_font_3_bet (array_in);
+      break;
+    case 3:                    /* gimal */
+      return_value = ho_recognize_font_3_gimal (array_in);
+      break;
+    case 4:                    /* dalet */
+      return_value = ho_recognize_font_3_dalet (array_in);
+      break;
+    case 5:                    /* hey */
+      return_value = ho_recognize_font_3_hey (array_in);
+      break;
+    case 6:                    /* vav */
+      return_value = ho_recognize_font_3_vav (array_in);
+      break;
+    case 7:                    /* zayin */
+      return_value = ho_recognize_font_3_zayin (array_in);
+      break;
+    case 8:                    /* het */
+      return_value = ho_recognize_font_3_het (array_in);
+      break;
+    case 9:                    /* tet */
+      return_value = ho_recognize_font_3_tet (array_in);
+      break;
+    case 10:                   /* yud */
+      return_value = ho_recognize_font_3_yud (array_in);
+      break;
+    case 11:                   /* caf */
+      return_value = ho_recognize_font_3_caf (array_in);
+      break;
+    case 12:                   /* caf sofit */
+      return_value = ho_recognize_font_3_caf_sofit (array_in);
+      break;
+    case 13:                   /* lamed */
+      return_value = ho_recognize_font_3_lamed (array_in);
+      break;
+    case 14:                   /* mem */
+      return_value = ho_recognize_font_3_mem (array_in);
+      break;
+    case 15:                   /* mem sofit */
+      return_value = ho_recognize_font_3_mem_sofit (array_in);
+      break;
+    case 16:                   /* nun */
+      return_value = ho_recognize_font_3_nun (array_in);
+      break;
+    case 17:                   /* nun sofit */
+      return_value = ho_recognize_font_3_nun_sofit (array_in);
+      break;
+    case 18:                   /* samech */
+      return_value = ho_recognize_font_3_samech (array_in);
+      break;
+    case 19:                   /* ayin */
+      return_value = ho_recognize_font_3_ayin (array_in);
+      break;
+    case 20:                   /* pey */
+      return_value = ho_recognize_font_3_pey (array_in);
+      break;
+    case 21:                   /* pey sofit */
+      return_value = ho_recognize_font_3_pey_sofit (array_in);
+      break;
+    case 22:                   /* tzadi */
+      return_value = ho_recognize_font_3_tzadi (array_in);
+      break;
+    case 23:                   /* tzadi sofit */
+      return_value = ho_recognize_font_3_tzadi_sofit (array_in);
+      break;
+    case 24:                   /* kuf */
+      return_value = ho_recognize_font_3_kuf (array_in);
+      break;
+    case 25:                   /* resh */
+      return_value = ho_recognize_font_3_resh (array_in);
+      break;
+    case 26:                   /* shin */
+      return_value = ho_recognize_font_3_shin (array_in);
+      break;
+    case 27:                   /* tav */
+      return_value = ho_recognize_font_3_tav (array_in);
+      break;
+    case 28:                   /* dot */
+      return_value = ho_recognize_font_3_dot (array_in);
+      break;
+    case 29:                   /* comma */
+      return_value = ho_recognize_font_3_comma (array_in);
+      break;
+    case 30:                   /* tag */
+      return_value = ho_recognize_font_3_tag (array_in);
+      break;
+    case 31:                   /* two tags */
+      return_value = ho_recognize_font_3_two_tags (array_in);
+      break;
+    case 32:                   /* ? */
+      return_value = ho_recognize_font_3_question (array_in);
+      break;
+    case 33:                   /* ! */
+      return_value = ho_recognize_font_3_exclem (array_in);
+      break;
+    case 34:                   /* : */
+      return_value = ho_recognize_font_3_dot_dot (array_in);
+      break;
+    case 35:                   /* ; */
+      return_value = ho_recognize_font_3_dot_comma (array_in);
+      break;
+    case 36:                   /* ) */
+      return_value = ho_recognize_font_3_open (array_in);
+      break;
+    case 37:                   /* ( */
+      return_value = ho_recognize_font_3_close (array_in);
+      break;
+    case 38:                   /* minus */
+      return_value = ho_recognize_font_3_minus (array_in);
+      break;
+    case 39:                   /* plus */
+      return_value = ho_recognize_font_3_plus (array_in);
+      break;
+    case 40:                   /* div */
+      return_value = ho_recognize_font_3_div (array_in);
+      break;
+    case 41:                   /* 0 */
+      return_value = ho_recognize_font_3_zero (array_in);
+      break;
+    case 42:                   /* 1 */
+      return_value = ho_recognize_font_3_one (array_in);
+      break;
+    case 43:                   /* 2 */
+      return_value = ho_recognize_font_3_two (array_in);
+      break;
+    case 44:                   /* 3 */
+      return_value = ho_recognize_font_3_three (array_in);
+      break;
+    case 45:                   /* 4 */
+      return_value = ho_recognize_font_3_four (array_in);
+      break;
+    case 46:                   /* 5 */
+      return_value = ho_recognize_font_3_five (array_in);
+      break;
+    case 47:                   /* 6 */
+      return_value = ho_recognize_font_3_six (array_in);
+      break;
+    case 48:                   /* 7 */
+      return_value = ho_recognize_font_3_seven (array_in);
+      break;
+    case 49:                   /* 8 */
+      return_value = ho_recognize_font_3_eight (array_in);
+      break;
+    case 50:                   /* 9 */
+      return_value = ho_recognize_font_3_nine (array_in);
+      break;
+    default:
+      return_value = 0.0;
+      break;
+    }
+  }
+
+  else if (font_code == 3)
+  {
+    switch (sign_index)
+    {
+    case 1:                    /* alef */
+      return_value = ho_recognize_font_4_alef (array_in);
+      break;
+    case 2:                    /* bet */
+      return_value = ho_recognize_font_4_bet (array_in);
+      break;
+    case 3:                    /* gimal */
+      return_value = ho_recognize_font_4_gimal (array_in);
+      break;
+    case 4:                    /* dalet */
+      return_value = ho_recognize_font_4_dalet (array_in);
+      break;
+    case 5:                    /* hey */
+      return_value = ho_recognize_font_4_hey (array_in);
+      break;
+    case 6:                    /* vav */
+      return_value = ho_recognize_font_4_vav (array_in);
+      break;
+    case 7:                    /* zayin */
+      return_value = ho_recognize_font_4_zayin (array_in);
+      break;
+    case 8:                    /* het */
+      return_value = ho_recognize_font_4_het (array_in);
+      break;
+    case 9:                    /* tet */
+      return_value = ho_recognize_font_4_tet (array_in);
+      break;
+    case 10:                   /* yud */
+      return_value = ho_recognize_font_4_yud (array_in);
+      break;
+    case 11:                   /* caf */
+      return_value = ho_recognize_font_4_caf (array_in);
+      break;
+    case 12:                   /* caf sofit */
+      return_value = ho_recognize_font_4_caf_sofit (array_in);
+      break;
+    case 13:                   /* lamed */
+      return_value = ho_recognize_font_4_lamed (array_in);
+      break;
+    case 14:                   /* mem */
+      return_value = ho_recognize_font_4_mem (array_in);
+      break;
+    case 15:                   /* mem sofit */
+      return_value = ho_recognize_font_4_mem_sofit (array_in);
+      break;
+    case 16:                   /* nun */
+      return_value = ho_recognize_font_4_nun (array_in);
+      break;
+    case 17:                   /* nun sofit */
+      return_value = ho_recognize_font_4_nun_sofit (array_in);
+      break;
+    case 18:                   /* samech */
+      return_value = ho_recognize_font_4_samech (array_in);
+      break;
+    case 19:                   /* ayin */
+      return_value = ho_recognize_font_4_ayin (array_in);
+      break;
+    case 20:                   /* pey */
+      return_value = ho_recognize_font_4_pey (array_in);
+      break;
+    case 21:                   /* pey sofit */
+      return_value = ho_recognize_font_4_pey_sofit (array_in);
+      break;
+    case 22:                   /* tzadi */
+      return_value = ho_recognize_font_4_tzadi (array_in);
+      break;
+    case 23:                   /* tzadi sofit */
+      return_value = ho_recognize_font_4_tzadi_sofit (array_in);
+      break;
+    case 24:                   /* kuf */
+      return_value = ho_recognize_font_4_kuf (array_in);
+      break;
+    case 25:                   /* resh */
+      return_value = ho_recognize_font_4_resh (array_in);
+      break;
+    case 26:                   /* shin */
+      return_value = ho_recognize_font_4_shin (array_in);
+      break;
+    case 27:                   /* tav */
+      return_value = ho_recognize_font_4_tav (array_in);
+      break;
+    case 28:                   /* dot */
+      return_value = ho_recognize_font_4_dot (array_in);
+      break;
+    case 29:                   /* comma */
+      return_value = ho_recognize_font_4_comma (array_in);
+      break;
+    case 30:                   /* tag */
+      return_value = ho_recognize_font_4_tag (array_in);
+      break;
+    case 31:                   /* two tags */
+      return_value = ho_recognize_font_4_two_tags (array_in);
+      break;
+    case 32:                   /* ? */
+      return_value = ho_recognize_font_4_question (array_in);
+      break;
+    case 33:                   /* ! */
+      return_value = ho_recognize_font_4_exclem (array_in);
+      break;
+    case 34:                   /* : */
+      return_value = ho_recognize_font_4_dot_dot (array_in);
+      break;
+    case 35:                   /* ; */
+      return_value = ho_recognize_font_4_dot_comma (array_in);
+      break;
+    case 36:                   /* ) */
+      return_value = ho_recognize_font_4_open (array_in);
+      break;
+    case 37:                   /* ( */
+      return_value = ho_recognize_font_4_close (array_in);
+      break;
+    case 38:                   /* minus */
+      return_value = ho_recognize_font_4_minus (array_in);
+      break;
+    case 39:                   /* plus */
+      return_value = ho_recognize_font_4_plus (array_in);
+      break;
+    case 40:                   /* div */
+      return_value = ho_recognize_font_4_div (array_in);
+      break;
+    case 41:                   /* 0 */
+      return_value = ho_recognize_font_4_zero (array_in);
+      break;
+    case 42:                   /* 1 */
+      return_value = ho_recognize_font_4_one (array_in);
+      break;
+    case 43:                   /* 2 */
+      return_value = ho_recognize_font_4_two (array_in);
+      break;
+    case 44:                   /* 3 */
+      return_value = ho_recognize_font_4_three (array_in);
+      break;
+    case 45:                   /* 4 */
+      return_value = ho_recognize_font_4_four (array_in);
+      break;
+    case 46:                   /* 5 */
+      return_value = ho_recognize_font_4_five (array_in);
+      break;
+    case 47:                   /* 6 */
+      return_value = ho_recognize_font_4_six (array_in);
+      break;
+    case 48:                   /* 7 */
+      return_value = ho_recognize_font_4_seven (array_in);
+      break;
+    case 49:                   /* 8 */
+      return_value = ho_recognize_font_4_eight (array_in);
+      break;
+    case 50:                   /* 9 */
+      return_value = ho_recognize_font_4_nine (array_in);
+      break;
+    default:
+      return_value = 0.0;
+      break;
+    }
   }
 
   /* we only use the 0..1 range */

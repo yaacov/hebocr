@@ -1,6 +1,6 @@
 
 /***************************************************************************
- *            ho_recognize_font_david.c
+ *            ho_recognize_font_1.c
  *
  *  Fri Aug 12 20:13:33 2005
  *  Copyright  2005-2008  Yaacov Zamir
@@ -43,149 +43,7 @@
 #include "ho_font.h"
 #include "ho_recognize.h"
 
-#include "ho_recognize_font_david.h"
-
-/* make array_in more readble */
-
-#define HEIGHT (array_in[0])
-#define WIDTH (array_in[1])
-#define WIDTH_BY_HEIGHT (array_in[2])
-
-#define TOP (array_in[3])
-#define BOTTOM (array_in[4])
-
-#define TOP_LEFT (array_in[5])
-#define TOP_MID (array_in[6])
-#define TOP_RIGHT (array_in[7])
-
-#define MID_LEFT (array_in[8])
-#define MID_RIGHT (array_in[9])
-
-#define BOTTOM_LEFT (array_in[10])
-#define BOTTOM_MID (array_in[11])
-#define BOTTOM_RIGHT (array_in[12])
-
-#define TWO_VLINES_UP (array_in[13])
-#define TWO_VLINES_DOWN (array_in[14])
-#define THREE_VLINES_UP (array_in[15])
-#define THREE_VLINES_DOWN (array_in[16])
-
-#define TOP_HBAR (array_in[17])
-#define MID_HBAR (array_in[18])
-#define BOTTOM_HBAR (array_in[19])
-
-#define LEFT_VBAR (array_in[20])
-#define MID_VBAR (array_in[21])
-#define RIGHT_VBAR (array_in[22])
-
-#define DIAGONAL_BAR (array_in[23])
-#define DIAGONAL_LEFT_BAR (array_in[24])
-
-#define TOP_LEFT_EDGE (array_in[25])
-#define MID_LEFT_EDGE (array_in[26])
-#define BOTTOM_LEFT_EDGE (array_in[27])
-
-#define TOP_RIGTH_EDGE (array_in[28])
-#define MID_RIGTH_EDGE (array_in[29])
-#define BOTTOM_RIGTH_EDGE (array_in[30])
-
-#define LEFT_TOP_EDGE (array_in[31])
-#define MID_TOP_EDGE (array_in[32])
-#define RIGHT_TOP_EDGE (array_in[33])
-
-#define LEFT_BOTTOM_EDGE (array_in[34])
-#define MID_BOTTOM_EDGE (array_in[35])
-#define RIGHT_BOTTOM_EDGE (array_in[36])
-
-#define TOP_LEFT_NOTCH (array_in[37])
-#define MID_LEFT_NOTCH (array_in[38])
-#define BOTTOM_LEFT_NOTCH (array_in[39])
-
-#define TOP_RIGHT_NOTCH (array_in[40])
-#define MID_RIGHT_NOTCH (array_in[41])
-#define BOTTOM_RIGHT_NOTCH (array_in[42])
-
-#define LEFT_TOP_NOTCH (array_in[43])
-#define MID_TOP_NOTCH (array_in[44])
-#define RIGHT_TOP_NOTCH (array_in[45])
-
-#define LEFT_BOTTOM_NOTCH (array_in[46])
-#define MID_BOTTOM_NOTCH (array_in[47])
-#define RIGHT_BOTTOM_NOTCH (array_in[48])
-
-#define TOP_LEFT_END (array_in[49])
-#define TOP_MID_END (array_in[50])
-#define TOP_RIGHT_END (array_in[51])
-
-#define MID_LEFT_END (array_in[52])
-#define MID_MID_END (array_in[53])
-#define MID_RIGHT_END (array_in[54])
-
-#define BOTTOM_LEFT_END (array_in[55])
-#define BOTTOM_MID_END (array_in[56])
-#define BOTTOM_RIGHT_END (array_in[57])
-
-#define TOP_LEFT_CROSS (array_in[58])
-#define TOP_MID_CROSS (array_in[59])
-#define TOP_RIGHT_CROSS (array_in[60])
-
-#define MID_LEFT_CROSS (array_in[61])
-#define MID_MID_CROSS (array_in[62])
-#define MID_RIGHT_CROSS (array_in[63])
-
-#define BOTTOM_LEFT_CROSS (array_in[64])
-#define BOTTOM_MID_CROSS (array_in[65])
-#define BOTTOM_RIGHT_CROSS (array_in[66])
-
-#define ONE_HOLE (array_in[67])
-#define TWO_HOLES (array_in[68])
-#define HEY_PART (array_in[69])
-#define DOT_PART (array_in[70])
-#define COMMA_PART (array_in[71])
-
-#define HOLE_TOP_LEFT_EDGE (array_in[72])
-#define HOLE_MID_LEFT_EDGE (array_in[73])
-#define HOLE_BOTTOM_LEFT_EDGE (array_in[74])
-
-#define HOLE_TOP_RIGTH_EDGE (array_in[75])
-#define HOLE_MID_RIGTH_EDGE (array_in[76])
-#define HOLE_BOTTOM_RIGTH_EDGE (array_in[77])
-
-#define HOLE_LEFT_TOP_EDGE (array_in[78])
-#define HOLE_MID_TOP_EDGE (array_in[79])
-#define HOLE_RIGHT_TOP_EDGE (array_in[80])
-
-#define HOLE_LEFT_BOTTOM_EDGE (array_in[81])
-#define HOLE_MID_BOTTOM_EDGE (array_in[82])
-#define HOLE_RIGHT_BOTTOM_EDGE (array_in[83])
-
-#define HOLE_HEIGHT (array_in[84])
-#define HOLE_WIDTH (array_in[85])
-
-#define HOLE_TOP (array_in[86])
-#define HOLE_BOTTOM (array_in[87])
-
-#define HOLE_TOP_LEFT (array_in[88])
-#define HOLE_TOP_RIGHT (array_in[89])
-
-#define HOLE_BOTTOM_LEFT (array_in[90])
-#define HOLE_BOTTOM_RIGHT (array_in[91])
-
-#define BIG_TOP_LEFT_EDGE (array_in[92])
-#define BIG_MID_LEFT_EDGE (array_in[93])
-#define BIG_BOTTOM_LEFT_EDGE (array_in[94])
-
-#define BIG_TOP_RIGTH_EDGE (array_in[95])
-#define BIG_MID_RIGTH_EDGE (array_in[96])
-#define BIG_BOTTOM_RIGTH_EDGE (array_in[97])
-
-#define BIG_LEFT_TOP_EDGE (array_in[98])
-#define BIG_MID_TOP_EDGE (array_in[99])
-#define BIG_RIGHT_TOP_EDGE (array_in[100])
-
-#define BIG_LEFT_BOTTOM_EDGE (array_in[101])
-#define BIG_MID_BOTTOM_EDGE (array_in[102])
-#define BIG_RIGHT_BOTTOM_EDGE (array_in[103])
+#include "ho_recognize_font_1.h"
 
 /* font recognition functions */
 
@@ -193,7 +51,7 @@
  * 0 if this does not look like the font until 1 looks exactly like the font */
 
 double
-ho_recognize_font_david_zero (const double *array_in)
+ho_recognize_font_1_zero (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -201,7 +59,7 @@ ho_recognize_font_david_zero (const double *array_in)
 }
 
 double
-ho_recognize_font_david_one (const double *array_in)
+ho_recognize_font_1_one (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -209,7 +67,7 @@ ho_recognize_font_david_one (const double *array_in)
 }
 
 double
-ho_recognize_font_david_two (const double *array_in)
+ho_recognize_font_1_two (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -217,7 +75,7 @@ ho_recognize_font_david_two (const double *array_in)
 }
 
 double
-ho_recognize_font_david_three (const double *array_in)
+ho_recognize_font_1_three (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -225,7 +83,7 @@ ho_recognize_font_david_three (const double *array_in)
 }
 
 double
-ho_recognize_font_david_four (const double *array_in)
+ho_recognize_font_1_four (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -233,7 +91,7 @@ ho_recognize_font_david_four (const double *array_in)
 }
 
 double
-ho_recognize_font_david_five (const double *array_in)
+ho_recognize_font_1_five (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -241,7 +99,7 @@ ho_recognize_font_david_five (const double *array_in)
 }
 
 double
-ho_recognize_font_david_six (const double *array_in)
+ho_recognize_font_1_six (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -249,7 +107,7 @@ ho_recognize_font_david_six (const double *array_in)
 }
 
 double
-ho_recognize_font_david_seven (const double *array_in)
+ho_recognize_font_1_seven (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -257,7 +115,7 @@ ho_recognize_font_david_seven (const double *array_in)
 }
 
 double
-ho_recognize_font_david_eight (const double *array_in)
+ho_recognize_font_1_eight (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -265,7 +123,7 @@ ho_recognize_font_david_eight (const double *array_in)
 }
 
 double
-ho_recognize_font_david_nine (const double *array_in)
+ho_recognize_font_1_nine (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -273,7 +131,7 @@ ho_recognize_font_david_nine (const double *array_in)
 }
 
 double
-ho_recognize_font_david_dot (const double *array_in)
+ho_recognize_font_1_dot (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -299,7 +157,7 @@ ho_recognize_font_david_dot (const double *array_in)
 }
 
 double
-ho_recognize_font_david_comma (const double *array_in)
+ho_recognize_font_1_comma (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -327,7 +185,7 @@ ho_recognize_font_david_comma (const double *array_in)
 }
 
 double
-ho_recognize_font_david_minus (const double *array_in)
+ho_recognize_font_1_minus (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -351,7 +209,7 @@ ho_recognize_font_david_minus (const double *array_in)
 }
 
 double
-ho_recognize_font_david_plus (const double *array_in)
+ho_recognize_font_1_plus (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -359,7 +217,7 @@ ho_recognize_font_david_plus (const double *array_in)
 }
 
 double
-ho_recognize_font_david_div (const double *array_in)
+ho_recognize_font_1_div (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -389,7 +247,7 @@ ho_recognize_font_david_div (const double *array_in)
 }
 
 double
-ho_recognize_font_david_open (const double *array_in)
+ho_recognize_font_1_open (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -425,7 +283,7 @@ ho_recognize_font_david_open (const double *array_in)
 }
 
 double
-ho_recognize_font_david_close (const double *array_in)
+ho_recognize_font_1_close (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -461,7 +319,7 @@ ho_recognize_font_david_close (const double *array_in)
 }
 
 double
-ho_recognize_font_david_tag (const double *array_in)
+ho_recognize_font_1_tag (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -491,7 +349,7 @@ ho_recognize_font_david_tag (const double *array_in)
 }
 
 double
-ho_recognize_font_david_two_tags (const double *array_in)
+ho_recognize_font_1_two_tags (const double *array_in)
 {
   int count_edges_top;
   int count_edges_bottom;
@@ -536,7 +394,7 @@ ho_recognize_font_david_two_tags (const double *array_in)
 }
 
 double
-ho_recognize_font_david_question (const double *array_in)
+ho_recognize_font_1_question (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -562,7 +420,7 @@ ho_recognize_font_david_question (const double *array_in)
 }
 
 double
-ho_recognize_font_david_exclem (const double *array_in)
+ho_recognize_font_1_exclem (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -588,7 +446,7 @@ ho_recognize_font_david_exclem (const double *array_in)
 }
 
 double
-ho_recognize_font_david_dot_dot (const double *array_in)
+ho_recognize_font_1_dot_dot (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -614,7 +472,7 @@ ho_recognize_font_david_dot_dot (const double *array_in)
 }
 
 double
-ho_recognize_font_david_dot_comma (const double *array_in)
+ho_recognize_font_1_dot_comma (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -622,7 +480,7 @@ ho_recognize_font_david_dot_comma (const double *array_in)
 }
 
 double
-ho_recognize_font_david_alef (const double *array_in)
+ho_recognize_font_1_alef (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -662,7 +520,7 @@ ho_recognize_font_david_alef (const double *array_in)
 }
 
 double
-ho_recognize_font_david_bet (const double *array_in)
+ho_recognize_font_1_bet (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -708,7 +566,7 @@ ho_recognize_font_david_bet (const double *array_in)
 }
 
 double
-ho_recognize_font_david_gimal (const double *array_in)
+ho_recognize_font_1_gimal (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -740,7 +598,7 @@ ho_recognize_font_david_gimal (const double *array_in)
 }
 
 double
-ho_recognize_font_david_dalet (const double *array_in)
+ho_recognize_font_1_dalet (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -788,7 +646,7 @@ ho_recognize_font_david_dalet (const double *array_in)
 }
 
 double
-ho_recognize_font_david_hey (const double *array_in)
+ho_recognize_font_1_hey (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -812,7 +670,7 @@ ho_recognize_font_david_hey (const double *array_in)
 }
 
 double
-ho_recognize_font_david_vav (const double *array_in)
+ho_recognize_font_1_vav (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -870,7 +728,7 @@ ho_recognize_font_david_vav (const double *array_in)
 }
 
 double
-ho_recognize_font_david_zayin (const double *array_in)
+ho_recognize_font_1_zayin (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -909,7 +767,7 @@ ho_recognize_font_david_zayin (const double *array_in)
 }
 
 double
-ho_recognize_font_david_het (const double *array_in)
+ho_recognize_font_1_het (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -959,7 +817,7 @@ ho_recognize_font_david_het (const double *array_in)
 }
 
 double
-ho_recognize_font_david_tet (const double *array_in)
+ho_recognize_font_1_tet (const double *array_in)
 {
   int count_edges;
   int count_notches;
@@ -1022,7 +880,7 @@ ho_recognize_font_david_tet (const double *array_in)
 }
 
 double
-ho_recognize_font_david_yud (const double *array_in)
+ho_recognize_font_1_yud (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1058,7 +916,7 @@ ho_recognize_font_david_yud (const double *array_in)
 }
 
 double
-ho_recognize_font_david_caf (const double *array_in)
+ho_recognize_font_1_caf (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1104,7 +962,7 @@ ho_recognize_font_david_caf (const double *array_in)
 }
 
 double
-ho_recognize_font_david_caf_sofit (const double *array_in)
+ho_recognize_font_1_caf_sofit (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1146,7 +1004,7 @@ ho_recognize_font_david_caf_sofit (const double *array_in)
 }
 
 double
-ho_recognize_font_david_lamed (const double *array_in)
+ho_recognize_font_1_lamed (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1182,7 +1040,7 @@ ho_recognize_font_david_lamed (const double *array_in)
 }
 
 double
-ho_recognize_font_david_mem (const double *array_in)
+ho_recognize_font_1_mem (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1218,7 +1076,7 @@ ho_recognize_font_david_mem (const double *array_in)
 }
 
 double
-ho_recognize_font_david_mem_sofit (const double *array_in)
+ho_recognize_font_1_mem_sofit (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1256,7 +1114,7 @@ ho_recognize_font_david_mem_sofit (const double *array_in)
 }
 
 double
-ho_recognize_font_david_nun (const double *array_in)
+ho_recognize_font_1_nun (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1310,7 +1168,7 @@ ho_recognize_font_david_nun (const double *array_in)
 }
 
 double
-ho_recognize_font_david_nun_sofit (const double *array_in)
+ho_recognize_font_1_nun_sofit (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1356,7 +1214,7 @@ ho_recognize_font_david_nun_sofit (const double *array_in)
 }
 
 double
-ho_recognize_font_david_samech (const double *array_in)
+ho_recognize_font_1_samech (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1410,7 +1268,7 @@ ho_recognize_font_david_samech (const double *array_in)
 }
 
 double
-ho_recognize_font_david_ayin (const double *array_in)
+ho_recognize_font_1_ayin (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1462,7 +1320,7 @@ ho_recognize_font_david_ayin (const double *array_in)
 }
 
 double
-ho_recognize_font_david_pey (const double *array_in)
+ho_recognize_font_1_pey (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1510,7 +1368,7 @@ ho_recognize_font_david_pey (const double *array_in)
 }
 
 double
-ho_recognize_font_david_pey_sofit (const double *array_in)
+ho_recognize_font_1_pey_sofit (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1558,7 +1416,7 @@ ho_recognize_font_david_pey_sofit (const double *array_in)
 }
 
 double
-ho_recognize_font_david_tzadi (const double *array_in)
+ho_recognize_font_1_tzadi (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1596,7 +1454,7 @@ ho_recognize_font_david_tzadi (const double *array_in)
 }
 
 double
-ho_recognize_font_david_tzadi_sofit (const double *array_in)
+ho_recognize_font_1_tzadi_sofit (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1632,7 +1490,7 @@ ho_recognize_font_david_tzadi_sofit (const double *array_in)
 }
 
 double
-ho_recognize_font_david_kuf (const double *array_in)
+ho_recognize_font_1_kuf (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1666,7 +1524,7 @@ ho_recognize_font_david_kuf (const double *array_in)
 }
 
 double
-ho_recognize_font_david_resh (const double *array_in)
+ho_recognize_font_1_resh (const double *array_in)
 {
   double return_value = 0.0;
 
@@ -1716,7 +1574,7 @@ ho_recognize_font_david_resh (const double *array_in)
 }
 
 double
-ho_recognize_font_david_shin (const double *array_in)
+ho_recognize_font_1_shin (const double *array_in)
 {
   int count_edges;
   int count_notches;
@@ -1757,7 +1615,7 @@ ho_recognize_font_david_shin (const double *array_in)
 }
 
 double
-ho_recognize_font_david_tav (const double *array_in)
+ho_recognize_font_1_tav (const double *array_in)
 {
   double return_value = 0.0;
 
