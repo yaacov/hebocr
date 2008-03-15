@@ -75,7 +75,10 @@ extern "C"
 #include <ho_recognize_nikud.h>
 
 /* specific font recognition */
-#include <ho_recognize_font_david.h>
+#include <ho_recognize_font_1.h>
+#include <ho_recognize_font_2.h>
+#include <ho_recognize_font_3.h>
+#include <ho_recognize_font_4.h>
 
 /* string utilities */
 #include <ho_string.h>
