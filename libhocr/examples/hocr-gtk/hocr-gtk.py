@@ -245,10 +245,13 @@ class MainWindow:
         self.menuitem_nikud = xml.get_widget('menuitem_nikud')
         self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
         self.menuitem_column_one = xml.get_widget('menuitem_column_one')
+        
         self.menuitem_font_1 = xml.get_widget('menuitem_font_1')
         self.menuitem_font_2 = xml.get_widget('menuitem_font_2')
         self.menuitem_font_3 = xml.get_widget('menuitem_font_3')
         self.menuitem_font_4 = xml.get_widget('menuitem_font_4')
+        self.menuitem_font_5 = xml.get_widget('menuitem_font_5')
+        self.menuitem_font_6 = xml.get_widget('menuitem_font_6')
         
         menuitem_clear = self.menuitem_clear
         
@@ -348,6 +351,10 @@ class MainWindow:
               self.hocr_obj.set_font (2)
         if self.menuitem_font_4.get_active():
               self.hocr_obj.set_font (3)
+        if self.menuitem_font_5.get_active():
+              self.hocr_obj.set_font (4)
+        if self.menuitem_font_6.get_active():
+              self.hocr_obj.set_font (5)
         
         # run ocr
         ro = RunOCR()

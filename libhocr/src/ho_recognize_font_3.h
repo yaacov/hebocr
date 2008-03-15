@@ -31,104 +31,104 @@
 #ifndef HO_RECOGNIZE_FONT_3_H
 #define HO_RECOGNIZE_FONT_3_H 1
 
-double ho_recognize_font_2_zero (const double *array_in);
+double ho_recognize_font_3_zero (const double *array_in);
 
-double ho_recognize_font_2_one (const double *array_in);
+double ho_recognize_font_3_one (const double *array_in);
 
-double ho_recognize_font_2_two (const double *array_in);
+double ho_recognize_font_3_two (const double *array_in);
 
-double ho_recognize_font_2_three (const double *array_in);
+double ho_recognize_font_3_three (const double *array_in);
 
-double ho_recognize_font_2_four (const double *array_in);
+double ho_recognize_font_3_four (const double *array_in);
 
-double ho_recognize_font_2_five (const double *array_in);
+double ho_recognize_font_3_five (const double *array_in);
 
-double ho_recognize_font_2_six (const double *array_in);
+double ho_recognize_font_3_six (const double *array_in);
 
-double ho_recognize_font_2_seven (const double *array_in);
+double ho_recognize_font_3_seven (const double *array_in);
 
-double ho_recognize_font_2_eight (const double *array_in);
+double ho_recognize_font_3_eight (const double *array_in);
 
-double ho_recognize_font_2_nine (const double *array_in);
+double ho_recognize_font_3_nine (const double *array_in);
 
-double ho_recognize_font_2_dot (const double *array_in);
+double ho_recognize_font_3_dot (const double *array_in);
 
-double ho_recognize_font_2_comma (const double *array_in);
+double ho_recognize_font_3_comma (const double *array_in);
 
-double ho_recognize_font_2_open (const double *array_in);
+double ho_recognize_font_3_open (const double *array_in);
 
-double ho_recognize_font_2_close (const double *array_in);
+double ho_recognize_font_3_close (const double *array_in);
 
-double ho_recognize_font_2_minus (const double *array_in);
+double ho_recognize_font_3_minus (const double *array_in);
 
-double ho_recognize_font_2_plus (const double *array_in);
+double ho_recognize_font_3_plus (const double *array_in);
 
-double ho_recognize_font_2_div (const double *array_in);
+double ho_recognize_font_3_div (const double *array_in);
 
-double ho_recognize_font_2_tag (const double *array_in);
+double ho_recognize_font_3_tag (const double *array_in);
 
-double ho_recognize_font_2_two_tags (const double *array_in);
+double ho_recognize_font_3_two_tags (const double *array_in);
 
-double ho_recognize_font_2_question (const double *array_in);
+double ho_recognize_font_3_question (const double *array_in);
 
-double ho_recognize_font_2_exclem (const double *array_in);
+double ho_recognize_font_3_exclem (const double *array_in);
 
-double ho_recognize_font_2_dot_dot (const double *array_in);
+double ho_recognize_font_3_dot_dot (const double *array_in);
 
-double ho_recognize_font_2_dot_comma (const double *array_in);
+double ho_recognize_font_3_dot_comma (const double *array_in);
 
-double ho_recognize_font_2_alef (const double *array_in);
+double ho_recognize_font_3_alef (const double *array_in);
 
-double ho_recognize_font_2_bet (const double *array_in);
+double ho_recognize_font_3_bet (const double *array_in);
 
-double ho_recognize_font_2_gimal (const double *array_in);
+double ho_recognize_font_3_gimal (const double *array_in);
 
-double ho_recognize_font_2_dalet (const double *array_in);
+double ho_recognize_font_3_dalet (const double *array_in);
 
-double ho_recognize_font_2_hey (const double *array_in);
+double ho_recognize_font_3_hey (const double *array_in);
 
-double ho_recognize_font_2_vav (const double *array_in);
+double ho_recognize_font_3_vav (const double *array_in);
 
-double ho_recognize_font_2_zayin (const double *array_in);
+double ho_recognize_font_3_zayin (const double *array_in);
 
-double ho_recognize_font_2_het (const double *array_in);
+double ho_recognize_font_3_het (const double *array_in);
 
-double ho_recognize_font_2_tet (const double *array_in);
+double ho_recognize_font_3_tet (const double *array_in);
 
-double ho_recognize_font_2_yud (const double *array_in);
+double ho_recognize_font_3_yud (const double *array_in);
 
-double ho_recognize_font_2_caf (const double *array_in);
+double ho_recognize_font_3_caf (const double *array_in);
 
-double ho_recognize_font_2_caf_sofit (const double *array_in);
+double ho_recognize_font_3_caf_sofit (const double *array_in);
 
-double ho_recognize_font_2_lamed (const double *array_in);
+double ho_recognize_font_3_lamed (const double *array_in);
 
-double ho_recognize_font_2_mem (const double *array_in);
+double ho_recognize_font_3_mem (const double *array_in);
 
-double ho_recognize_font_2_mem_sofit (const double *array_in);
+double ho_recognize_font_3_mem_sofit (const double *array_in);
 
-double ho_recognize_font_2_nun (const double *array_in);
+double ho_recognize_font_3_nun (const double *array_in);
 
-double ho_recognize_font_2_nun_sofit (const double *array_in);
+double ho_recognize_font_3_nun_sofit (const double *array_in);
 
-double ho_recognize_font_2_samech (const double *array_in);
+double ho_recognize_font_3_samech (const double *array_in);
 
-double ho_recognize_font_2_ayin (const double *array_in);
+double ho_recognize_font_3_ayin (const double *array_in);
 
-double ho_recognize_font_2_pey (const double *array_in);
+double ho_recognize_font_3_pey (const double *array_in);
 
-double ho_recognize_font_2_pey_sofit (const double *array_in);
+double ho_recognize_font_3_pey_sofit (const double *array_in);
 
-double ho_recognize_font_2_tzadi (const double *array_in);
+double ho_recognize_font_3_tzadi (const double *array_in);
 
-double ho_recognize_font_2_tzadi_sofit (const double *array_in);
+double ho_recognize_font_3_tzadi_sofit (const double *array_in);
 
-double ho_recognize_font_2_kuf (const double *array_in);
+double ho_recognize_font_3_kuf (const double *array_in);
 
-double ho_recognize_font_2_resh (const double *array_in);
+double ho_recognize_font_3_resh (const double *array_in);
 
-double ho_recognize_font_2_shin (const double *array_in);
+double ho_recognize_font_3_shin (const double *array_in);
 
-double ho_recognize_font_2_tav (const double *array_in);
+double ho_recognize_font_3_tav (const double *array_in);
 
 #endif /* HO_RECOGNIZE_FONT_3_H */
