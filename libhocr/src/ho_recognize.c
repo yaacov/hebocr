@@ -42,10 +42,10 @@
 #include "ho_segment.h"
 #include "ho_font.h"
 
-#include "ho_recognize_font_1.h"
-#include "ho_recognize_font_2.h"
-#include "ho_recognize_font_3.h"
-#include "ho_recognize_font_4.h"
+#include "fonts/ho_recognize_font_1.h"
+#include "fonts/ho_recognize_font_2.h"
+#include "fonts/ho_recognize_font_3.h"
+#include "fonts/ho_recognize_font_4.h"
 
 #include "ho_recognize.h"
 
