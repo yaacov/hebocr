@@ -135,6 +135,7 @@ static gchar *html_page_header =
 \"http://www.w3.org/TR/html4/strict.dtd\">\n\
 <html>\n\
 <head>\n\
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n\
 <title></title>\n\
 </head>\n\
 <body dir=\"rtl\">\n\
@@ -159,6 +160,7 @@ static gchar *html_debug_header =
 \"http://www.w3.org/TR/html4/strict.dtd\">\n\
 <html>\n\
 <head>\n\
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n\
 <title></title>\n\
 </head>\n\
 <body>\n\
