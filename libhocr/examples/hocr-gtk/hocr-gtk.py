@@ -34,10 +34,10 @@ from hocr import *
 # set global paths
 # FIXME: this can change from system to system
 app_name = "hocr-gtk"
-locale_dir = '/usr/share/locale'
+locale_dir = sys.prefix + '/share/locale'
 glade_file = 'hocr-gtk.glade'
-glade_dir = '/usr/share/hocr-gtk/glade/'
-logo_filename = '/usr/share/pixmaps/hocr1-128.png'
+glade_dir = sys.prefix + '/share/hocr-gtk/glade/'
+logo_filename = sys.prefix + '/share/pixmaps/hocr1-128.png'
 
 # import the locale system
 try:

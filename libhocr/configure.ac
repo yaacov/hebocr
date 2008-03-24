@@ -13,6 +13,23 @@ AM_PROG_LIBTOOL
 dnl check for pkg-config
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 
+dnl check hosr system
+host_code=1
+case ${host} in
+  *linux*)
+    host_code=1
+  ;;
+  *mingw32*)
+    host_code=2
+  ;;
+  *darwin*)
+    host_code=3
+  ;;
+esac
+AM_CONDITIONAL(LINUX_HOST, test $host_code = 1 )
+AM_CONDITIONAL(MINGW_HOST, test $host_code = 2 )
+AM_CONDITIONAL(DARWIN_HOST, test $host_code = 3 )
+
 dnl gtk: load picture non-pnm file formats in hocr utility program
 
 gtk_pkg_modules="gtk+-2.0"
@@ -102,6 +119,7 @@ dnl print status
 
 echo
 echo $PACKAGE $VERSION - Hebrew Optical Character Recognition library
+echo OS: ${host}
 echo build: $BUILD_STR
 echo prefix: $prefix
 echo compiler: ${CC}
