@@ -75,6 +75,50 @@ msgid "translator-credits"
 msgstr "יעקב זמיר <kzamir@walla.co.il>"
 
 #: hocr-gtk.glade.h:1
+msgid "Black and White"
+msgstr "שחור לבן"
+
+#: hocr-gtk.glade.h:2
+msgid "Font"
+msgstr "גופן"
+
+#: hocr-gtk.glade.h:3
+msgid "Font 1"
+msgstr ""
+
+#: hocr-gtk.glade.h:4
+msgid "Font 2"
+msgstr ""
+
+#: hocr-gtk.glade.h:5
+msgid "Font 3"
+msgstr ""
+
+#: hocr-gtk.glade.h:6
+msgid "Font 4"
+msgstr ""
+
+#: hocr-gtk.glade.h:7
+msgid "Font 5"
+msgstr ""
+
+#: hocr-gtk.glade.h:8
+msgid "Font 6"
+msgstr ""
+
+#: hocr-gtk.glade.h:9
+msgid "Image"
+msgstr "תמונה"
+
+#: hocr-gtk.glade.h:10
+msgid "Layout"
+msgstr "עימוד"
+
+#: hocr-gtk.glade.h:11
+msgid "Original"
+msgstr "מקור"
+
+#: hocr-gtk.glade.h:1
 msgid "_Edit"
 msgstr "עריכה"
 
