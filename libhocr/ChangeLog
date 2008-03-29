@@ -1,7 +1,9 @@
 libhocr (0.11.0)
 
  * add more font types
+ * make hocr-gtk example less path dependent (use sys.prefix)
  * python-hocr does not include hocr-gtk
+ * make build script more none-linux-os friendly
 
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Wednesday, 12 Mar 2008 21:04
  

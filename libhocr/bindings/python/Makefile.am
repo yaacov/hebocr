@@ -11,7 +11,7 @@ all-am: _hocr.so
 	
 if LINUX_HOST
 _hocr.so: hocr_wrap.cxx
-	g++ -fpic -c hocr_wrap.cxx $(PY_CFLAGS) -I$(top_srcdir)/src
+	g++ -fPIC -c hocr_wrap.cxx $(PY_CFLAGS) -I$(top_srcdir)/src
 	g++ -shared ../../src/.libs/libhocr.so hocr_wrap.o -o _hocr.so
 endif
 
