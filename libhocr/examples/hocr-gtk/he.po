@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libhocr 0.10.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-11 10:56+0200\n"
+"POT-Creation-Date: 2008-03-29 09:14+0300\n"
 "PO-Revision-Date: 2008-02-11 10:56+0200\n"
 "Last-Translator: kobi <kzamir@walla.co.il>\n"
 "Language-Team: Hebrew\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: hocr-gtk.py:51
+#: hocr-gtk.py:72
 msgid ""
 "Hocr-GTK, Hebrew optical character recognition\n"
 "graphical front end (GTK)\n"
@@ -26,23 +26,15 @@ msgstr ""
 "מנשק גרפי (GTK)\n"
 "\n"
 
-#: hocr-gtk.py:72
+#: hocr-gtk.py:74
 msgid "Shlomi Israel <sijproject@gmail.com>"
 msgstr "שלומי ישראל <sijproject@gmail.com>"
 
-#: hocr-gtk.py:74
+#: hocr-gtk.py:75
 msgid "Yaacov Zamir <kzamir@walla.co.il>"
 msgstr "יעקב זמיר <kzamir@walla.co.il>"
 
-#: hocr-gtk.py:140
-msgid "Processing..."
-msgstr "מעבד..."
-
-#: hocr-gtk.py:149
-msgid "Done"
-msgstr "בוצע"
-
-#: hocr-gtk.py:86
+#: hocr-gtk.py:202
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"
 "Exit program."
@@ -50,29 +42,29 @@ msgstr ""
 "לא מסוגל למצא את קובץ המנשק הגרפי, בדוק את ההתקנה.\n"
 "יוצא מהתכנית."
 
-#: hocr-gtk.py:127
+#: hocr-gtk.py:220
+msgid "Processing..."
+msgstr "מעבד..."
+
+#: hocr-gtk.py:273
 msgid "Open.."
 msgstr "פתח.."
 
-#: hocr-gtk.py:148 hocr-gtk.py:169
+#: hocr-gtk.py:297 hocr-gtk.py:318
 msgid "Closed, no files selected"
 msgstr "סוגר, לא נבחרו קבצים"
 
-#: hocr-gtk.py:156
+#: hocr-gtk.py:305
 msgid "Save.."
 msgstr "שמור.."
 
-#: hocr-gtk.py:184
-msgid "Can't load image."
-msgstr "לא מסוגל לקרוא קובץ תמונה."
-
-#: hocr-gtk.py:387
-msgid "Set text font"
-msgstr "קבע סוג אות"
-
-#: hocr-gtk.py:374
+#: hocr-gtk.py:504
 msgid "translator-credits"
 msgstr "יעקב זמיר <kzamir@walla.co.il>"
+
+#: hocr-gtk.py:515
+msgid "Set text font"
+msgstr "קבע סוג אות"
 
 #: hocr-gtk.glade.h:1
 msgid "Black and White"
@@ -118,94 +110,104 @@ msgstr "עימוד"
 msgid "Original"
 msgstr "מקור"
 
-#: hocr-gtk.glade.h:1
+#: hocr-gtk.glade.h:12
 msgid "_Edit"
 msgstr "עריכה"
 
-#: hocr-gtk.glade.h:2
+#: hocr-gtk.glade.h:13
 msgid "_File"
 msgstr "קובץ"
 
-#: hocr-gtk.glade.h:3
+#: hocr-gtk.glade.h:14
 msgid "_Help"
 msgstr "עזרה"
 
-#: hocr-gtk.glade.h:4
+#: hocr-gtk.glade.h:15
 msgid "_View"
 msgstr "תצוגה"
 
-#: hocr-gtk.glade.h:5
+#: hocr-gtk.glade.h:16
 msgid "auto"
 msgstr "אוטומטי"
 
-#: hocr-gtk.glade.h:6
+#: hocr-gtk.glade.h:17
 msgid "clear"
 msgstr "נקה"
 
-#: hocr-gtk.glade.h:7
+#: hocr-gtk.glade.h:18
 msgid "column"
 msgstr "עמודות"
 
-#: hocr-gtk.glade.h:8
+#: hocr-gtk.glade.h:19
 msgid "gtk-about"
 msgstr ""
 
-#: hocr-gtk.glade.h:9
+#: hocr-gtk.glade.h:20
 msgid "gtk-apply"
 msgstr ""
 
-#: hocr-gtk.glade.h:10
+#: hocr-gtk.glade.h:21
 msgid "gtk-copy"
 msgstr ""
 
-#: hocr-gtk.glade.h:11
+#: hocr-gtk.glade.h:22
 msgid "gtk-cut"
 msgstr ""
 
-#: hocr-gtk.glade.h:12
+#: hocr-gtk.glade.h:23
 msgid "gtk-delete"
 msgstr ""
 
-#: hocr-gtk.glade.h:13
+#: hocr-gtk.glade.h:24
 msgid "gtk-new"
 msgstr ""
 
-#: hocr-gtk.glade.h:14
+#: hocr-gtk.glade.h:25
 msgid "gtk-paste"
 msgstr ""
 
-#: hocr-gtk.glade.h:15
+#: hocr-gtk.glade.h:26
 msgid "gtk-quit"
 msgstr ""
 
-#: hocr-gtk.glade.h:16
+#: hocr-gtk.glade.h:27
 msgid "gtk-save"
 msgstr ""
 
-#: hocr-gtk.glade.h:17
+#: hocr-gtk.glade.h:28
+msgid "gtk-select-font"
+msgstr ""
+
+#: hocr-gtk.glade.h:29
 msgid "gtk-zoom-100"
 msgstr ""
 
-#: hocr-gtk.glade.h:18
+#: hocr-gtk.glade.h:30
 msgid "gtk-zoom-fit"
 msgstr ""
 
-#: hocr-gtk.glade.h:19
+#: hocr-gtk.glade.h:31
 msgid "gtk-zoom-in"
 msgstr ""
 
-#: hocr-gtk.glade.h:20
+#: hocr-gtk.glade.h:32
 msgid "gtk-zoom-out"
 msgstr ""
 
-#: hocr-gtk.glade.h:21
+#: hocr-gtk.glade.h:33
 msgid "html"
 msgstr ""
 
-#: hocr-gtk.glade.h:22
+#: hocr-gtk.glade.h:34
 msgid "nikud"
 msgstr "ניקוד"
 
-#: hocr-gtk.glade.h:23
+#: hocr-gtk.glade.h:35
 msgid "one column"
 msgstr "עמודה אחת"
+
+#~ msgid "Done"
+#~ msgstr "בוצע"
+
+#~ msgid "Can't load image."
+#~ msgstr "לא מסוגל לקרוא קובץ תמונה."

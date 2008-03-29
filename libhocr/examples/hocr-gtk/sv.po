@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libhocr 0.10.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-12 00:47+0200\n"
+"POT-Creation-Date: 2008-03-29 08:48+0300\n"
 "PO-Revision-Date: 2008-02-12 00:55+0200\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: hocr-gtk.py:70
+#: hocr-gtk.py:72
 msgid ""
 "Hocr-GTK, Hebrew optical character recognition\n"
 "graphical front end (GTK)\n"
@@ -26,132 +26,180 @@ msgstr ""
 "Hocr-GTK - Programvara för att känna igen hebreiska tecken.\n"
 "\n"
 
-#: hocr-gtk.py:140
-msgid "Processing..."
+#: hocr-gtk.py:74
+msgid "Shlomi Israel <sijproject@gmail.com>"
 msgstr ""
 
-#: hocr-gtk.py:149
-msgid "Done"
+#: hocr-gtk.py:75
+msgid "Yaacov Zamir <kzamir@walla.co.il>"
 msgstr ""
 
-#: hocr-gtk.py:166
+#: hocr-gtk.py:202
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"
 "Exit program."
 msgstr ""
 
-#: hocr-gtk.py:213
+#: hocr-gtk.py:220
+msgid "Processing..."
+msgstr ""
+
+#: hocr-gtk.py:273
 msgid "Open.."
 msgstr "Ny.."
 
-#: hocr-gtk.py:234 hocr-gtk.py:255
+#: hocr-gtk.py:297 hocr-gtk.py:318
 msgid "Closed, no files selected"
 msgstr ""
 
-#: hocr-gtk.py:242
+#: hocr-gtk.py:305
 msgid "Save.."
 msgstr "Spara.."
 
-#: hocr-gtk.py:270
-msgid "Can't load image."
-msgstr ""
-
-#: hocr-gtk.py:387
-msgid "Set text font"
-msgstr "Ställ in texttypsnitt"
-
-#: hocr-gtk.py:374
+#: hocr-gtk.py:504
 msgid "translator-credits"
 msgstr "Daniel Nylander <po@danielnylander.se>"
 
+#: hocr-gtk.py:515
+msgid "Set text font"
+msgstr "Ställ in texttypsnitt"
+
 #: hocr-gtk.glade.h:1
-msgid "_Edit"
-msgstr "_Redigera"
+msgid "Black and White"
+msgstr ""
 
 #: hocr-gtk.glade.h:2
-msgid "_File"
-msgstr "_Arkiv"
+msgid "Font"
+msgstr ""
 
 #: hocr-gtk.glade.h:3
-msgid "_Help"
-msgstr "_Hjälp"
+msgid "Font 1"
+msgstr ""
 
 #: hocr-gtk.glade.h:4
-msgid "_View"
-msgstr "_Visa"
+msgid "Font 2"
+msgstr ""
 
 #: hocr-gtk.glade.h:5
-msgid "auto"
-msgstr "auto"
+msgid "Font 3"
+msgstr ""
 
 #: hocr-gtk.glade.h:6
-msgid "clear"
-msgstr "Töm"
+msgid "Font 4"
+msgstr ""
 
 #: hocr-gtk.glade.h:7
-msgid "column"
-msgstr "kolonn"
+msgid "Font 5"
+msgstr ""
 
 #: hocr-gtk.glade.h:8
-msgid "gtk-about"
+msgid "Font 6"
 msgstr ""
 
 #: hocr-gtk.glade.h:9
-msgid "gtk-apply"
+msgid "Image"
 msgstr ""
 
 #: hocr-gtk.glade.h:10
-msgid "gtk-copy"
+msgid "Layout"
 msgstr ""
 
 #: hocr-gtk.glade.h:11
-msgid "gtk-cut"
+msgid "Original"
 msgstr ""
 
 #: hocr-gtk.glade.h:12
-msgid "gtk-delete"
-msgstr ""
+msgid "_Edit"
+msgstr "_Redigera"
 
 #: hocr-gtk.glade.h:13
-msgid "gtk-new"
-msgstr ""
+msgid "_File"
+msgstr "_Arkiv"
 
 #: hocr-gtk.glade.h:14
-msgid "gtk-paste"
-msgstr ""
+msgid "_Help"
+msgstr "_Hjälp"
 
 #: hocr-gtk.glade.h:15
-msgid "gtk-quit"
-msgstr ""
+msgid "_View"
+msgstr "_Visa"
 
 #: hocr-gtk.glade.h:16
-msgid "gtk-save"
-msgstr ""
+msgid "auto"
+msgstr "auto"
 
 #: hocr-gtk.glade.h:17
-msgid "gtk-zoom-100"
-msgstr ""
+msgid "clear"
+msgstr "Töm"
 
 #: hocr-gtk.glade.h:18
-msgid "gtk-zoom-fit"
-msgstr ""
+msgid "column"
+msgstr "kolonn"
 
 #: hocr-gtk.glade.h:19
-msgid "gtk-zoom-in"
+msgid "gtk-about"
 msgstr ""
 
 #: hocr-gtk.glade.h:20
-msgid "gtk-zoom-out"
+msgid "gtk-apply"
 msgstr ""
 
 #: hocr-gtk.glade.h:21
+msgid "gtk-copy"
+msgstr ""
+
+#: hocr-gtk.glade.h:22
+msgid "gtk-cut"
+msgstr ""
+
+#: hocr-gtk.glade.h:23
+msgid "gtk-delete"
+msgstr ""
+
+#: hocr-gtk.glade.h:24
+msgid "gtk-new"
+msgstr ""
+
+#: hocr-gtk.glade.h:25
+msgid "gtk-paste"
+msgstr ""
+
+#: hocr-gtk.glade.h:26
+msgid "gtk-quit"
+msgstr ""
+
+#: hocr-gtk.glade.h:27
+msgid "gtk-save"
+msgstr ""
+
+#: hocr-gtk.glade.h:28
+msgid "gtk-select-font"
+msgstr ""
+
+#: hocr-gtk.glade.h:29
+msgid "gtk-zoom-100"
+msgstr ""
+
+#: hocr-gtk.glade.h:30
+msgid "gtk-zoom-fit"
+msgstr ""
+
+#: hocr-gtk.glade.h:31
+msgid "gtk-zoom-in"
+msgstr ""
+
+#: hocr-gtk.glade.h:32
+msgid "gtk-zoom-out"
+msgstr ""
+
+#: hocr-gtk.glade.h:33
 msgid "html"
 msgstr "html"
 
-#: hocr-gtk.glade.h:22
+#: hocr-gtk.glade.h:34
 msgid "nikud"
 msgstr "Använd nikud"
 
-#: hocr-gtk.glade.h:23
+#: hocr-gtk.glade.h:35
 msgid "one column"
 msgstr "en kolonn"
