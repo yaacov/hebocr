@@ -27,6 +27,9 @@
 #include <stdlib.h>
 #include <math.h>
 
+/* for save tiff function */
+#include <tiffio.h>
+ 
 #ifndef TRUE
 #define TRUE -1
 #endif
@@ -1406,6 +1409,40 @@ ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename)
   fwrite (m->data, 1, m->height * m->rowstride, file);
   fclose (file);
 
+  return FALSE;
+}
+
+int
+ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename)
+{
+  TIFF *image;
+
+  /* Open the TIFF file */
+  if((image = TIFFOpen(filename, "w")) == NULL)
+    return TRUE;
+
+  /* set some values */
+  TIFFSetField(image, TIFFTAG_IMAGEWIDTH, m->rowstride * 8);
+  TIFFSetField(image, TIFFTAG_IMAGELENGTH, m->height);
+  TIFFSetField(image, TIFFTAG_BITSPERSAMPLE, 1);
+  TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL, 1);
+  TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, m->height);
+
+  TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_CCITTFAX4);
+  TIFFSetField(image, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISWHITE);
+  TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
+  TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+
+  TIFFSetField(image, TIFFTAG_XRESOLUTION, 300.0);
+  TIFFSetField(image, TIFFTAG_YRESOLUTION, 300.0);
+  TIFFSetField(image, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
+  
+  /* Write the information to the file */
+  TIFFWriteEncodedStrip(image, 0, m->data, m->rowstride * m->height);
+
+  /* Close the file */
+  TIFFClose(image);
+  
   return FALSE;
 }
 

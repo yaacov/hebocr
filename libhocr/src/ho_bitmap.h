@@ -292,6 +292,15 @@ ho_bitmap_get_fill (const ho_bitmap * m, const int x, const int y,
 int ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename);
 
 /**
+ writes ho_bitmap to tiff file
+ 
+ @param m ho_bitmap 1 bpp
+ @param filename save as file name 
+ @return FALSE
+ */
+int ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename);
+
+/**
  horizontaly link short objects in a bitmap
  
  @param m the bitmap to horizontaly link

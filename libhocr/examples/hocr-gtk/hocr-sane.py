@@ -1,0 +1,674 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+# Generated with glade2py script
+# glade2py script can be found at hocr web site http://hocr.berlios.de
+
+# Copyright (C) 2007 Yaacov Zamir <kzamir_a_walla.co.il>
+
+import pygtk
+pygtk.require('2.0')
+
+import gtk, gtk.glade
+
+import getopt, sys, os
+import types, ConfigParser
+import sane
+
+# set global parmeters
+app_name = "hocr-gtk"
+app_version = "0.1.1"
+author_name = "Yaacov Zamir"
+author_email = "<kzamir@walla.co.il>"
+copyright = author_name + " " + author_email
+comments = "SANE (Scanner Access Now Easy)\npygtk frontend"
+
+# set gettext support
+locale_dir = '/usr/share/locale'
+try:
+    import locale
+    import gettext
+    locale.setlocale(locale.LC_ALL, "")
+    gtk.glade.bindtextdomain(app_name, locale_dir)
+    gettext.install(app_name, locale_dir, unicode=1)
+except (IOError,locale.Error), e:
+    print "WARNING: Can't load locale"
+    _ = lambda x : x
+
+# set global functions
+def get_scanner_option (scanner, name):
+  options = scanner.get_options()
+  
+  for option in options:
+    if option[1] == name:
+       return option
+  return False
+
+def show_error_message(message):
+	dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR
+				,message_format = message
+				,buttons=gtk.BUTTONS_OK)
+	dlg.run()
+	dlg.destroy()
+
+class MainWindow:
+    def __init__(self):
+        # create widget tree ...
+        xml = False
+        if os.path.isfile('hocr-sane.glade'):
+            xml = gtk.glade.XML('hocr-sane.glade', 'window1', app_name)
+        else:
+            if os.path.isfile(sys.prefix + '/share/hocr-gtk/glade/hocr-sane.glade'):
+               xml = gtk.glade.XML(sys.prefix + '/share/hocr-gtk/glade/hocr-sane.glade', 'window1', app_name)
+        
+        if not xml:
+            print "ERROR: Can't load glade GUI file, check your install."
+            show_error_message(_("Can't load sane-pygtk's glade GUI file, check your install.\nExit program."))
+            sys.exit(0)
+        
+        # if user want to scan to one file exit after scan
+        self.exit_after_scan = False
+        
+        # create config object with default values
+        self.config = ConfigParser.ConfigParser()
+        
+        self.config.add_section('settings')
+        self.config.set('settings', 'scanner', '1')
+        self.config.set('settings', 'mode', '0')
+        self.config.set('settings', 'resolution', '300')
+        self.config.set('settings', 'brightness', '0')
+        self.config.set('settings', 'contrast', '0')
+        
+        self.config.add_section('window')
+        self.config.set('window', 'tl_x', '0')
+        self.config.set('window', 'tl_y', '0')
+        self.config.set('window', 'br_x', '215')
+        self.config.set('window', 'br_y', '297')
+        self.config.set('window', 'width', '215')
+        self.config.set('window', 'height', '297')
+        
+        self.config.add_section('zoom')
+        self.config.set('zoom', 'factor', '1')
+        self.config.set('zoom', 'preview_width', '423')
+        self.config.set('zoom', 'preview_height', '584')
+        self.config.set('zoom', 'x1', '0')
+        self.config.set('zoom', 'y1', '0')
+        self.config.set('zoom', 'x2', '423')
+        self.config.set('zoom', 'y2', '584')
+        
+        self.config.add_section('scan')
+        self.config.set('scan', 'filename', 'scan_1.png')
+        
+        self.config.add_section('defaults')
+        self.config.set('defaults', 'mode', '0')
+        self.config.set('defaults', 'resolution', '300')
+        self.config.set('defaults', 'brightness', '0')
+        self.config.set('defaults', 'contrast', '0')
+        
+        # read config file and overwrite default values
+        self.config.read([os.path.expanduser('~/.sane-pygtk.cfg')])
+        
+        # connect handlers
+        xml.signal_autoconnect(self)
+
+        # widgets
+        self.window1 = xml.get_widget('window1')
+        self.label_window = xml.get_widget('label_window')
+        self.menuitem_help = xml.get_widget('menuitem_help')
+        self.spinbutton_contrast = xml.get_widget('spinbutton_contrast')
+        self.spinbutton_brightness = xml.get_widget('spinbutton_brightness')
+        self.spinbutton_resolution = xml.get_widget('spinbutton_resolution')
+        self.combobox_mode = xml.get_widget('combobox_mode')
+        self.combobox_scanner = xml.get_widget('combobox_scanner')
+        self.label_filename = xml.get_widget('label_filename')
+        self.entry_filename = xml.get_widget('entry_filename')
+        self.drawingarea1 = xml.get_widget('drawingarea1')
+        
+        # the pixmap and preview pixmap
+        self.pixmap = None
+        self.preview_pixmap = None
+        
+        # update scan window
+        self.x1 = self.config.getfloat('zoom', 'x1')
+        self.y1 = self.config.getfloat('zoom', 'y1')
+        self.x2 = self.config.getfloat('zoom', 'x2')
+        self.y2 = self.config.getfloat('zoom', 'y2')
+        self.width = self.x2 - self.x1
+        self.height = self.y2 - self.y1
+        
+        # get scanners in system
+        self.sane_devices = sane.get_devices()
+        self.sane_devices_counter = len(self.sane_devices)
+        
+        # set the scanners combobox
+        for device in self.sane_devices:
+            self.combobox_scanner.append_text(device[2])
+        
+        # get the current scanner
+        scanner_number = self.config.getint('settings', 'scanner') - 1
+        self.combobox_scanner.set_active(scanner_number)
+        
+        # if scanner exist the auto call to combobox_scanner_changed will fill in all the settings
+                
+        # fill in file name
+        filename = self.config.get('scan', 'filename')
+        self.entry_filename.set_text(filename)
+        
+    # signal handlers
+    def on_window1_delete_event(self, widget, obj):
+        "on_window1_delete_event activated"
+        # write config file
+        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
+        gtk.main_quit()
+
+    def imagemenuitem_quit_activate_cb(self, obj):
+        "imagemenuitem_quit_activate_cb activated"
+        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
+        gtk.main_quit()
+    
+    def button_quit_clicked_cb(self, obj):
+        "button_quit_clicked_cb activated"
+        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
+        gtk.main_quit()
+    
+    def imagemenuitem_about_activate_cb(self, obj):
+        "imagemenuitem_about_activate_cb activated"
+        dialog = gtk.AboutDialog()
+        dialog.set_name(app_name)
+        dialog.set_version(app_version)
+        dialog.set_copyright(copyright)
+        dialog.set_comments(comments)
+        dialog.run()
+        
+        dialog.destroy()
+        
+    def button_preview_clicked_cb(self, obj):
+        "button_preview_clicked_cb activated"
+        
+        # open scanner
+        scanner_number = self.config.getint('settings', 'scanner') - 1
+        scanner = sane.open(self.sane_devices[scanner_number][0])
+        
+        # options
+        options = get_scanner_option (scanner, 'mode')
+        if options:
+          scanner.mode = options[8][self.combobox_mode.get_active()]
+        options = get_scanner_option (scanner, 'resolution')
+        if options:
+          try:
+              scanner.resolution = int(options[8][0])
+          except AttributeError:
+              print "WARNING: Can't set scan resolution"
+        try:
+            scanner.brightness = int(self.spinbutton_brightness.get_value())
+        except AttributeError:
+              print "WARNING: Can't set scan brightness"
+        try:
+              scanner.contrast = int(self.spinbutton_contrast.get_value())
+        except AttributeError:
+              print "WARNING: Can't set scan contrast"
+        try:
+              scanner.preview = 1
+        except AttributeError:
+              print "WARNING: Can't set scan preview"
+        
+        # geometry
+        try:
+          scanner.tl_x = 0
+          scanner.tl_y = 0
+          options = get_scanner_option (scanner, 'br-x')
+          scanner.br_x = options[8][1]
+          options = get_scanner_option (scanner, 'br-y')
+          scanner.br_y = options[8][1]
+        except AttributeError:
+          print "WARNING: Can't set scan geometry"
+        
+        #scan
+        try:
+            pil_image = scanner.scan()
+            
+            w, h = pil_image.size
+            data = pil_image.tostring()
+        
+            if pil_image.mode == 'L':
+                rgb_data = ''
+                for c in data:
+                        rgb_data += c + c + c
+                data = rgb_data
+        
+            if pil_image.mode == 'RGB' or pil_image.mode == 'L':
+                self.pixmap = gtk.gdk.pixbuf_new_from_data(data, gtk.gdk.COLORSPACE_RGB, False, 8, w, h, w * 3)
+                self.config.set('zoom', 'preview_width', str(w))
+                self.config.set('zoom', 'preview_height', str(h))
+                factor = self.config.getfloat('zoom', 'factor')
+                self.preview_pixmap = self.pixmap.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+                
+            self.drawingarea1.queue_draw()
+            
+        except sane._sane.error, err:
+            print "ERROR: Can't scan"
+            show_error_message(_("Can't scan preview image,\n%s,\nCheck scanner settings") % err)
+        
+        # close scanner
+        scanner.close()
+                
+    def button_scan_clicked_cb(self, obj):
+        "button_scan_clicked_cb activated"
+        # open scanner
+        scanner_number = self.config.getint('settings', 'scanner') - 1
+        scanner = sane.open(self.sane_devices[scanner_number][0])
+        
+        # options
+        options = get_scanner_option (scanner, 'mode')
+        if options:
+            scanner.mode = options[8][self.combobox_mode.get_active()]
+        try:
+            scanner.resolution = int(self.spinbutton_resolution.get_value())
+        except AttributeError:
+            print "WARNING: Can't set scan resolution"
+        try:
+            scanner.brightness = int(self.spinbutton_brightness.get_value())
+        except AttributeError:
+            print "WARNING: Can't set scan brightness"
+        try:
+            scanner.contrast = int(self.spinbutton_contrast.get_value())
+        except AttributeError:
+            print "WARNING: Can't set scan contrast"
+        try:
+              scanner.preview = 0
+        except AttributeError:
+              print "WARNING: Can't set scan preview"
+        
+        # geometry
+        try:
+          scanner.tl_x = self.config.getfloat('window', 'tl_x')
+          scanner.tl_y = self.config.getfloat('window', 'tl_y')
+          scanner.br_x = self.config.getfloat('window', 'br_x')
+          scanner.br_y = self.config.getfloat('window', 'br_y')
+        except AttributeError:
+          print "WARNING: Can't set scan geometry"
+        
+        #scan
+        try:
+            pil_image = scanner.scan()
+            pil_image.save(self.entry_filename.get_text())
+            
+        except sane._sane.error, err:
+            print "ERROR: Can't scan"
+            show_error_message(_("Can't scan,\n%s,\nCheck scanner settings") % err)
+        
+        # close scanner
+        scanner.close()
+        
+        # exit program
+        if self.exit_after_scan:
+          sys.exit(99)
+            
+    def imagemenuitem_zoom_in_activate_cb(self, obj):
+        "imagemenuitem_zoom_in_activate_cb activated"
+        factor = self.config.getfloat('zoom', 'factor')
+        factor = factor * 1.2
+        self.config.set('zoom', 'factor', str(factor))
+        w, h = self.pixmap.get_width(), self.pixmap.get_height() 
+        self.preview_pixmap = self.pixmap.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        
+        self.x1 = self.x1 * 1.2
+        self.y1 = self.y1 * 1.2
+        self.x2 = self.x2 * 1.2
+        self.y2 = self.y2 * 1.2
+        
+        self.config.set('zoom', 'x1', str(self.x1))
+        self.config.set('zoom', 'y1', str(self.y1))
+        self.config.set('zoom', 'x2', str(self.x2))
+        self.config.set('zoom', 'y2', str(self.y2))
+        
+        self.drawingarea1.queue_draw()
+
+    def imagemenuitem_zoom_out_activate_cb(self, obj):
+        "imagemenuitem_zoom_out_activate_cb activated"
+        factor = self.config.getfloat('zoom', 'factor')
+        factor = factor / 1.2
+        self.config.set('zoom', 'factor', str(factor))
+        w, h = self.pixmap.get_width(), self.pixmap.get_height() 
+        self.preview_pixmap = self.pixmap.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        
+        self.x1 = self.x1 / 1.2
+        self.y1 = self.y1 / 1.2
+        self.x2 = self.x2 / 1.2
+        self.y2 = self.y2 / 1.2
+        
+        self.config.set('zoom', 'x1', str(self.x1))
+        self.config.set('zoom', 'y1', str(self.y1))
+        self.config.set('zoom', 'x2', str(self.x2))
+        self.config.set('zoom', 'y2', str(self.y2))
+        
+        self.drawingarea1.queue_draw()
+
+    def imagemenuitem_normal_size_activate_cb(self, obj):
+        "imagemenuitem_normal_size_activate_cb activated"
+        factor = self.config.getfloat('zoom', 'factor')
+        
+        self.x1 = self.x1 / factor
+        self.y1 = self.y1 / factor
+        self.x2 = self.x2 / factor
+        self.y2 = self.y2 / factor
+        
+        self.config.set('zoom', 'x1', str(self.x1))
+        self.config.set('zoom', 'y1', str(self.y1))
+        self.config.set('zoom', 'x2', str(self.x2))
+        self.config.set('zoom', 'y2', str(self.y2))
+        
+        factor = 1
+        self.config.set('zoom', 'factor', str(factor))
+        
+        w, h = self.pixmap.get_width(), self.pixmap.get_height() 
+        self.preview_pixmap = self.pixmap.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        
+        self.drawingarea1.queue_draw()
+    
+    def button_reset_clicked_cb(self, obj):
+        "button_reset_clicked_cb activated"
+        # set values
+        setting = self.config.getfloat('defaults', 'mode')
+        self.combobox_mode.set_active(int(setting))
+        setting = self.config.getfloat('defaults', 'resolution')
+        self.spinbutton_resolution.set_value(setting)
+        setting = self.config.getfloat('defaults', 'brightness')
+        self.spinbutton_brightness.set_value(setting)
+        setting = self.config.getfloat('defaults', 'contrast')
+        self.spinbutton_contrast.set_value(setting)
+    
+    def drawingarea1_expose_event_cb(self, obj, event):
+        "drawingarea1_expose_event_cb activated"
+        
+        # draw preview
+        gc = obj.style.fg_gc[gtk.STATE_NORMAL]
+        obj.window.draw_pixbuf(gc, self.preview_pixmap, 0, 0, 0, 0)
+        
+        if abs(self.x1 - self.x2) < 10 and abs(self.y1 - self.y2) < 10:
+            x, y, width, height = 0, 0, self.preview_pixmap.get_width(), self.pixmap.get_height()
+        else:           
+            if self.x1 > self.x2:
+                x = self.x2
+                width = self.x1 - x
+            else:
+                x = self.x1
+                width = self.x2 - x
+            if self.y1 > self.y2:
+                y = self.y2
+                height = self.y1 - y
+            else:
+                y = self.y1
+                height = self.y2 - y
+        
+        # check validity
+        if x < 0:
+            x = 0
+        if y < 0:
+            y = 0
+        if (x + width) >= self.preview_pixmap.get_width():
+            width = self.preview_pixmap.get_width() - x - 1
+        if (y + height) >= self.preview_pixmap.get_height():
+            height = self.preview_pixmap.get_height() - y - 1
+               
+        rect = (int(x), int(y), int(width), int(height))
+        
+        # draw rect
+        obj.window.draw_rectangle(obj.get_style().black_gc, False,
+                          rect[0], rect[1], rect[2], rect[3])
+        obj.window.draw_rectangle(obj.get_style().white_gc, False,
+                          rect[0] + 1, rect[1] + 1, rect[2] - 2, rect[3] - 2)
+        
+        # get scanner dimentions
+        factor = self.config.getfloat('zoom', 'factor')
+        w = self.config.getfloat('zoom', 'preview_width')
+        h = self.config.getfloat('zoom', 'preview_height')
+        page_width = self.config.getfloat('window', 'width')
+        page_height = self.config.getfloat('window', 'height')
+        x1 = page_width * x / (factor * w)
+        x2 = page_width * (x + width) / (factor * w)
+        y1 = page_height * y / (factor * h)
+        y2 = page_height * (y + height) / (factor * h)
+        
+        # update window lable
+        self.label_window.set_text ("%d,%d : %d,%d" % (x1, y1, x2, y2))
+        
+        # update config
+        self.config.set('window', 'tl_x', str(x1))
+        self.config.set('window', 'tl_y', str(y1))
+        self.config.set('window', 'br_x', str(x2))
+        self.config.set('window', 'br_y', str(y2))
+        
+        width, height = self.preview_pixmap.get_width(), self.preview_pixmap.get_height()               
+        obj.set_size_request(width, height)
+                    
+        return False
+    
+    def drawingarea1_configure_event_cb(self, obj, event):
+        "drawingarea1_configure_event_cb activated"
+                
+        # if no pixmap create one
+        if not self.pixmap: 
+            factor = self.config.getfloat('zoom', 'factor')
+            w = self.config.getfloat('zoom', 'preview_width')
+            h = self.config.getfloat('zoom', 'preview_height')
+            self.pixmap = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, int(w), int(h))
+            self.preview_pixmap = self.pixmap.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+            
+        return True
+            
+    def drawingarea1_button_press_event_cb(self, obj, event):
+        "drawingarea1_button_press_event_cb activated"
+        if event.button == 1 and self.pixmap != None:
+            self.x1, self.y1 = event.x, event.y
+            
+            self.config.set('zoom', 'x1', str(self.x1))
+            self.config.set('zoom', 'y1', str(self.y1))
+        
+        return True
+
+    def drawingarea1_motion_notify_event_cb(self, obj, event):
+        "drawingarea1_motion_notify_event_cb activated"
+        if event.is_hint:
+            x, y, state = event.window.get_pointer()
+        else:
+            x = event.x
+            y = event.y
+            state = event.state
+        
+        if state & gtk.gdk.BUTTON1_MASK and self.pixmap != None:
+            self.x2, self.y2 = x, y
+            self.config.set('zoom', 'x2', str(self.x2))
+            self.config.set('zoom', 'y2', str(self.y2))
+            
+            obj.queue_draw()
+        
+        return True
+    
+    def drawingarea1_scroll_event_cb(self, obj, event):
+        "drawingarea1_scroll_event_cb activated"
+        if event.direction ==  gtk.gdk.SCROLL_UP:
+            self.imagemenuitem_zoom_out_activate_cb(None)
+        else:
+            self.imagemenuitem_zoom_in_activate_cb(None)
+        
+        return False
+    
+    def combobox_scanner_changed_cb(self, obj):
+        "combobox_scanner_changed_cb activated"
+        
+        # set config
+        scanner_number = obj.get_active()
+        self.config.set('settings', 'scanner', str(scanner_number + 1))
+        
+        # reset settings options
+        if scanner_number < len(self.sane_devices):
+            try:
+                scanner = sane.open(self.sane_devices[scanner_number][0])
+                
+                # if scanner exist fill in all the settings
+                
+                # mode
+                options = get_scanner_option (scanner, 'mode')
+                i = 0
+                # clear mode combobox
+                model = self.combobox_mode.get_model()
+                self.combobox_mode.set_model(None)
+                model.clear()
+                # add new entreis
+                for mode in options[8]:
+                    model.append([mode])
+                self.combobox_mode.set_model(model)
+                mode_number = self.config.getfloat('settings', 'mode')
+                self.combobox_mode.set_active(int(mode_number))
+                
+                # resolution
+                options = get_scanner_option (scanner, 'resolution')
+                if options:
+                    if type(options[8]) == types.ListType:
+                        self.spinbutton_resolution.set_range(options[8][0], options[8][-1])
+                    else:
+                        self.spinbutton_resolution.set_range(options[8][0], options[8][1])
+                
+                # brightness
+                options = get_scanner_option (scanner, 'brightness')
+                if options:
+                    if type(options[8]) == types.ListType:
+                        self.spinbutton_brightness.set_range(options[8][0], options[8][-1])
+                    else:
+                        self.spinbutton_brightness.set_range(options[8][0], options[8][1])
+                
+                # contrast
+                options = get_scanner_option (scanner, 'contrast')
+                if options:
+                    if type(options[8]) == types.ListType:
+                        self.spinbutton_contrast.set_range(options[8][0], options[8][-1])
+                    else:
+                        self.spinbutton_contrast.set_range(options[8][0], options[8][1])
+                
+                # scan window dimentions
+                options = get_scanner_option (scanner, 'br-x')
+                self.config.set('window', 'width', str(options[8][1]))
+                options = get_scanner_option (scanner, 'br-y')
+                self.config.set('window', 'height', str(options[8][1]))
+                
+                scanner.close()
+                
+                # set values
+                setting = self.config.getfloat('settings', 'mode')
+                self.combobox_mode.set_active(int(setting))
+                setting = self.config.getfloat('settings', 'resolution')
+                self.spinbutton_resolution.set_value(setting)
+                setting = self.config.getfloat('settings', 'brightness')
+                self.spinbutton_brightness.set_value(setting)
+                setting = self.config.getfloat('settings', 'contrast')
+                self.spinbutton_contrast.set_value(setting)
+        
+            except RuntimeError:
+                print "WARNING: Can't open scanner"
+        else:
+            print "WARNING: Scanner number is out of range"
+                
+    def combobox_mode_changed_cb(self, obj):
+        "combobox_mode_changed_cb activated"
+        mode_number = obj.get_active()
+        self.config.set('settings', 'mode', str(mode_number))
+    
+    def spinbutton_contrast_changed_cb(self, obj):
+        "spinbutton_contrast_changed_cb activated"
+        contrast = obj.get_value()
+        self.config.set('settings', 'contrast', str(contrast))
+
+    def spinbutton_brightness_changed_cb(self, obj):
+        "spinbutton_brightness_changed_cb activated"
+        brightness = obj.get_value()
+        self.config.set('settings', 'brightness', str(brightness))
+
+    def spinbutton_resolution_changed_cb(self, obj):
+        "spinbutton_resolution_changed_cb activated"
+        resolution = obj.get_value()
+        self.config.set('settings', 'resolution', str(resolution))
+    
+    def entry_filename_changed_cb(self, obj):
+        "entry_filename_changed_cb activated"
+        filename = obj.get_text()
+        self.config.set('settings', 'filename', filename)
+    
+    def imagemenuitem_reset_activate_cb(self, obj):
+        "imagemenuitem_reset_activate_cb activated"
+        self.button_reset_clicked_cb(None)
+    
+    def imagemenuitem_scan_activate_cb(self, obj):
+        "imagemenuitem_scan_activate_cb activated"
+        self.button_scan_clicked_cb(None)
+        
+    def imagemenuitem_preview_activate_cb(self, obj):
+        "imagemenuitem_scan_activate_cb activated"
+        self.button_preview_clicked_cb(None)
+        
+    def imagemenuitem_save_defaults_activate_cb(self, obj):
+        "imagemenuitem_save_defaults_activate_cb activated"
+        # set values
+        setting = self.combobox_mode.get_active()
+        self.config.set('defaults', 'mode', str(setting))
+        
+        setting = self.spinbutton_resolution.get_value()
+        self.config.set('defaults', 'resolution', str(setting))
+        
+        setting = self.spinbutton_brightness.get_value()
+        self.config.set('defaults', 'brightness', str(setting))
+                
+        setting = self.spinbutton_contrast.get_value()
+        self.config.set('defaults', 'contrast', str(setting))
+        
+# run main loop
+def main():
+    # init sane
+    sane_version = sane.init()
+    
+    # init gui
+    main_window = MainWindow()
+    
+    # if usage is not currect
+    if len(sys.argv) != 1 and len(sys.argv) != 3:
+      print 'usage: hocr-sane.py [--file IMAGE_OUT_FILENAME]'
+      sys.exit(1)
+    
+    if len(sys.argv) == 3 and not (sys.argv[1] == '-f' or sys.argv[1] == '--file'):
+      print 'usage: hocr-sane.py [--file IMAGE_OUT_FILENAME]'
+      sys.exit(1)
+      
+    # if this is a scan-window for other program
+    if len(sys.argv) == 3 and (sys.argv[1] == '-f' or sys.argv[1] == '--file'):
+      # hide filename edit box
+      main_window.label_filename.hide()
+      main_window.entry_filename.hide()
+      
+      # hide about window
+      main_window.menuitem_help.hide()
+      
+      # set the temporary file name
+      main_window.entry_filename.set_text(sys.argv[2])
+      main_window.exit_after_scan = True
+      
+    # run
+    main_window.window1.show()
+    gtk.main()
+
+if __name__ == "__main__":
+    main()
+

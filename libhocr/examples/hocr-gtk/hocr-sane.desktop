@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=hocr-sane
+Comment=A simple program to work with scanner.
+Exec=hocr-sane.py
+Icon=xsane
+Terminal=false
+Type=Application
+Categories=GTK;Graphics;RasterGraphics;Scanning;OCR;
+StartupNotify=true

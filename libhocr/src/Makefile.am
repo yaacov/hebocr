@@ -3,6 +3,7 @@
 # The libhocr library
 INCLUDES = \
         $(hspell_CFLAGS) \
+        $(tiff_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
 
 lib_LTLIBRARIES = libhocr.la libhocrgtk.la
@@ -28,6 +29,10 @@ libhocr_la_SOURCES = \
      
 libhocr_la_LDFLAGS = -version-info 0:0:0
 
+libhocr_la_LIBADD = \
+        $(hspell_LIBS) \
+        $(tiff_LIBS)
+        
 library_includedir = $(includedir)/libhocr
 library_include_HEADERS = \
          hocr.h \

@@ -8,5 +8,5 @@ Description: A C library for hebrew optical character recognition
 Version: @VERSION@
 
 Requires:
-Libs: -lhocr -lm
+Libs: -lhocr -lm -ltiff
 Cflags: -I${includedir}/libhocr

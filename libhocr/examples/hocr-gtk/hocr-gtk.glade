@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.3 on Sat Mar 15 22:08:35 2008 -->
+<!--Generated with glade3 3.4.3 on Tue Apr 15 10:44:41 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -57,6 +57,19 @@
                       <widget class="GtkSeparatorMenuItem" id="separatormenuitem3">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="imagemenuitem_scan">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Scan</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_imagemenuitem_scan_activate"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem7">
+                        <property name="visible">True</property>
                       </widget>
                     </child>
                     <child>
@@ -260,6 +273,41 @@
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_font_1</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem8">
+                        <property name="visible">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem7">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Engine</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu8">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_engine_hocr">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Hocr</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_engine_tess">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Tesseract</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_engine_hocr</property>
                               </widget>
                             </child>
                           </widget>

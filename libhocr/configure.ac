@@ -87,6 +87,34 @@ fi
 
 AM_CONDITIONAL(WITH_PYTHON, test "$build_python" = "yes")
 
+dnl check for hspell
+
+AC_CHECK_LIB([hspell], [hspell_get_dictionary_path], build_hspell=yes, build_hspell=no, -lz)
+
+if test "$build_hspell" = "yes"; then
+    hspell_CFLAGS=" -DUSE_HSPELL"
+    hspell_LIBS=" -lhspell -lz"
+   
+    AC_SUBST(hspell_CFLAGS)
+    AC_SUBST(hspell_LIBS)
+fi
+
+AM_CONDITIONAL(WITH_HSPELL, test "$build_hspell" = yes)
+
+dnl check for libtiff
+
+AC_CHECK_LIB([tiff], [TIFFOpen], build_tiff=yes, exit)
+
+if test "$build_tiff" = "yes"; then
+    tiff_CFLAGS=" -DUSE_TIFF"
+    tiff_LIBS=" -ltiff"
+   
+    AC_SUBST(tiff_CFLAGS)
+    AC_SUBST(tiff_LIBS)
+fi
+
+AM_CONDITIONAL(WITH_TIFF, test "$build_tiff" = yes)
+
 dnl create a build string
 
 BUILD_DATE=`date +%d%m%Y`
@@ -123,6 +151,9 @@ echo OS: ${host}
 echo build: $BUILD_STR
 echo prefix: $prefix
 echo compiler: ${CC}
+echo
+echo with hspell: ${build_hspell}
+echo with libtiff: ${build_tiff}
 echo
 echo build hocr: yes
 echo build hocr-gtk: yes

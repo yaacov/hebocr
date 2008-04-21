@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libhocr 0.10.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-29 08:48+0300\n"
+"POT-Creation-Date: 2008-04-15 11:20+0300\n"
 "PO-Revision-Date: 2008-02-12 00:55+0200\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -44,162 +44,265 @@ msgstr ""
 msgid "Processing..."
 msgstr ""
 
-#: hocr-gtk.py:273
+#: hocr-gtk.py:276
 msgid "Open.."
 msgstr "Ny.."
 
-#: hocr-gtk.py:297 hocr-gtk.py:318
+#: hocr-gtk.py:300 hocr-gtk.py:321
 msgid "Closed, no files selected"
 msgstr ""
 
-#: hocr-gtk.py:305
+#: hocr-gtk.py:308
 msgid "Save.."
 msgstr "Spara.."
 
-#: hocr-gtk.py:504
+#: hocr-gtk.py:516
 msgid "translator-credits"
 msgstr "Daniel Nylander <po@danielnylander.se>"
 
-#: hocr-gtk.py:515
+#: hocr-gtk.py:527
 msgid "Set text font"
 msgstr "Ställ in texttypsnitt"
+
+#: hocr-sane.py:80
+msgid ""
+"Can't load sane-pygtk's glade GUI file, check your install.\n"
+"Exit program."
+msgstr ""
+
+#: hocr-sane.py:259
+#, python-format
+msgid ""
+"Can't scan preview image,\n"
+"%s,\n"
+"Check scanner settings"
+msgstr ""
+
+#: hocr-sane.py:307
+#, python-format
+msgid ""
+"Can't scan,\n"
+"%s,\n"
+"Check scanner settings"
+msgstr ""
 
 #: hocr-gtk.glade.h:1
 msgid "Black and White"
 msgstr ""
 
 #: hocr-gtk.glade.h:2
-msgid "Font"
+msgid "Engine"
 msgstr ""
 
 #: hocr-gtk.glade.h:3
-msgid "Font 1"
+msgid "Font"
 msgstr ""
 
 #: hocr-gtk.glade.h:4
-msgid "Font 2"
+msgid "Font 1"
 msgstr ""
 
 #: hocr-gtk.glade.h:5
-msgid "Font 3"
+msgid "Font 2"
 msgstr ""
 
 #: hocr-gtk.glade.h:6
-msgid "Font 4"
+msgid "Font 3"
 msgstr ""
 
 #: hocr-gtk.glade.h:7
-msgid "Font 5"
+msgid "Font 4"
 msgstr ""
 
 #: hocr-gtk.glade.h:8
-msgid "Font 6"
+msgid "Font 5"
 msgstr ""
 
 #: hocr-gtk.glade.h:9
-msgid "Image"
+msgid "Font 6"
 msgstr ""
 
 #: hocr-gtk.glade.h:10
-msgid "Layout"
+msgid "Hocr"
 msgstr ""
 
 #: hocr-gtk.glade.h:11
-msgid "Original"
+msgid "Image"
 msgstr ""
 
 #: hocr-gtk.glade.h:12
+msgid "Layout"
+msgstr ""
+
+#: hocr-gtk.glade.h:13
+msgid "Original"
+msgstr ""
+
+#: hocr-gtk.glade.h:14 hocr-sane.glade.h:9
+msgid "Scan"
+msgstr ""
+
+#: hocr-gtk.glade.h:15
+msgid "Tesseract"
+msgstr ""
+
+#: hocr-gtk.glade.h:16 hocr-sane.glade.h:14
 msgid "_Edit"
 msgstr "_Redigera"
 
-#: hocr-gtk.glade.h:13
+#: hocr-gtk.glade.h:17 hocr-sane.glade.h:15
 msgid "_File"
 msgstr "_Arkiv"
 
-#: hocr-gtk.glade.h:14
+#: hocr-gtk.glade.h:18 hocr-sane.glade.h:16
 msgid "_Help"
 msgstr "_Hjälp"
 
-#: hocr-gtk.glade.h:15
+#: hocr-gtk.glade.h:19 hocr-sane.glade.h:21
 msgid "_View"
 msgstr "_Visa"
 
-#: hocr-gtk.glade.h:16
+#: hocr-gtk.glade.h:20
 msgid "auto"
 msgstr "auto"
 
-#: hocr-gtk.glade.h:17
+#: hocr-gtk.glade.h:21
 msgid "clear"
 msgstr "Töm"
 
-#: hocr-gtk.glade.h:18
+#: hocr-gtk.glade.h:22
 msgid "column"
 msgstr "kolonn"
 
-#: hocr-gtk.glade.h:19
+#: hocr-gtk.glade.h:23 hocr-sane.glade.h:22
 msgid "gtk-about"
 msgstr ""
 
-#: hocr-gtk.glade.h:20
+#: hocr-gtk.glade.h:24
 msgid "gtk-apply"
 msgstr ""
 
-#: hocr-gtk.glade.h:21
+#: hocr-gtk.glade.h:25
 msgid "gtk-copy"
 msgstr ""
 
-#: hocr-gtk.glade.h:22
+#: hocr-gtk.glade.h:26
 msgid "gtk-cut"
 msgstr ""
 
-#: hocr-gtk.glade.h:23
+#: hocr-gtk.glade.h:27
 msgid "gtk-delete"
 msgstr ""
 
-#: hocr-gtk.glade.h:24
+#: hocr-gtk.glade.h:28
 msgid "gtk-new"
 msgstr ""
 
-#: hocr-gtk.glade.h:25
+#: hocr-gtk.glade.h:29
 msgid "gtk-paste"
 msgstr ""
 
-#: hocr-gtk.glade.h:26
+#: hocr-gtk.glade.h:30 hocr-sane.glade.h:23
 msgid "gtk-quit"
 msgstr ""
 
-#: hocr-gtk.glade.h:27
+#: hocr-gtk.glade.h:31
 msgid "gtk-save"
 msgstr ""
 
-#: hocr-gtk.glade.h:28
+#: hocr-gtk.glade.h:32
 msgid "gtk-select-font"
 msgstr ""
 
-#: hocr-gtk.glade.h:29
+#: hocr-gtk.glade.h:33 hocr-sane.glade.h:24
 msgid "gtk-zoom-100"
 msgstr ""
 
-#: hocr-gtk.glade.h:30
+#: hocr-gtk.glade.h:34
 msgid "gtk-zoom-fit"
 msgstr ""
 
-#: hocr-gtk.glade.h:31
+#: hocr-gtk.glade.h:35 hocr-sane.glade.h:25
 msgid "gtk-zoom-in"
 msgstr ""
 
-#: hocr-gtk.glade.h:32
+#: hocr-gtk.glade.h:36 hocr-sane.glade.h:26
 msgid "gtk-zoom-out"
 msgstr ""
 
-#: hocr-gtk.glade.h:33
+#: hocr-gtk.glade.h:37
 msgid "html"
 msgstr "html"
 
-#: hocr-gtk.glade.h:34
+#: hocr-gtk.glade.h:38
 msgid "nikud"
 msgstr "Använd nikud"
 
-#: hocr-gtk.glade.h:35
+#: hocr-gtk.glade.h:39
 msgid "one column"
 msgstr "en kolonn"
+
+#: hocr-sane.glade.h:1
+msgid "(0,0) - (100,100)"
+msgstr ""
+
+#: hocr-sane.glade.h:2
+msgid "Brightness:"
+msgstr ""
+
+#: hocr-sane.glade.h:3
+msgid "Contrast:"
+msgstr ""
+
+#: hocr-sane.glade.h:4
+msgid "Mode:"
+msgstr ""
+
+#: hocr-sane.glade.h:5
+msgid "Preview"
+msgstr ""
+
+#: hocr-sane.glade.h:6
+msgid "Reset"
+msgstr ""
+
+#: hocr-sane.glade.h:7
+msgid "Resolution:"
+msgstr ""
+
+#: hocr-sane.glade.h:8
+msgid "Save as:"
+msgstr ""
+
+#: hocr-sane.glade.h:10
+msgid "Scanner:"
+msgstr ""
+
+#: hocr-sane.glade.h:11
+msgid "Settings"
+msgstr ""
+
+#: hocr-sane.glade.h:12
+msgid "Update preview"
+msgstr ""
+
+#: hocr-sane.glade.h:13
+msgid "Window:"
+msgstr ""
+
+#: hocr-sane.glade.h:17
+#, fuzzy
+msgid "_Preview"
+msgstr "_Visa"
+
+#: hocr-sane.glade.h:18
+msgid "_Reset settings to defaults"
+msgstr ""
+
+#: hocr-sane.glade.h:19
+msgid "_Save current settings as defaults"
+msgstr ""
+
+#: hocr-sane.glade.h:20
+msgid "_Scan"
+msgstr ""

@@ -188,6 +188,28 @@ namespace hocr
     }
 
     /**
+     @brief save bitmap as pnm
+    
+     @param filename the the image file name
+     @return the object bitmap
+     */
+    int save_bitmap_as_pnm (const char *filename)
+    {
+      return ho_bitmap_pnm_save (m_bit_bw, filename);
+    }
+    
+    /**
+     @brief save bitmap as tiff
+    
+     @param filename the the image file name
+     @return the object bitmap
+     */
+    int save_bitmap_as_tiff (const char *filename)
+    {
+      return ho_bitmap_tiff_save (m_bit_bw, filename);
+    }
+        
+    /**
      @brief get bitmap pixbuf
     
      @return a pixbuf of the object bitmap

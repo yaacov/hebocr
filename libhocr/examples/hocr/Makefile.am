@@ -8,8 +8,12 @@ bin_PROGRAMS= hocr
 hocr_SOURCES = hocr.c
 hocr_CFLAGS = \
         $(gtk_CFLAGS) \
+        $(hspell_CFLAGS) \
+        $(tiff_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
 hocr_LDADD= \
         $(gtk_LIBS) \
+        $(hspell_LIBS) \
+        $(tiff_LIBS) \
         $(libhocr_la_LIBADD) \
         $(top_builddir)/src/*.o -lm

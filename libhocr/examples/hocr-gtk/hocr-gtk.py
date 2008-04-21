@@ -22,6 +22,7 @@
 import sys, os
 import threading
 import time
+import subprocess
 
 import pygtk
 pygtk.require('2.0')
@@ -38,6 +39,9 @@ locale_dir = sys.prefix + '/share/locale'
 glade_file = 'hocr-gtk.glade'
 glade_dir = sys.prefix + '/share/hocr-gtk/glade/'
 logo_filename = sys.prefix + '/share/pixmaps/hocr1-128.png'
+usr_hocr_gtk_path = os.path.expanduser("~/.hocr_gtk")
+hocr_sane_path = sys.prefix + '/bin/hocr-sane.py'
+hocr_sane_image_path = usr_hocr_gtk_path + "/temp_sane_image.png"
 
 # import the locale system
 try:
@@ -74,6 +78,25 @@ comments += hocr_get_build_string()
 artists = [_("Shlomi Israel <sijproject@gmail.com>")]
 authors = [_("Yaacov Zamir <kzamir@walla.co.il>")]
 
+# search for python-imaging-sane
+# FIXME: find a nicer way to check for sane
+have_sane = True
+try:
+    import sane
+except:
+    have_sane = False
+
+# search for tesseract
+# FIXME: find a nicer way to check for tesseract
+tesseract_path = sys.prefix + "/bin/tesseract"
+tesseract_image_path = usr_hocr_gtk_path + "/temp_tess_image.tiff"
+tesseract_text_path = usr_hocr_gtk_path + "/temp_tess_text"
+have_tesseract = os.path.isfile(tesseract_path)
+
+# try and create a .hocr_gtk directory
+if not os.path.exists(usr_hocr_gtk_path):
+    os.mkdir(usr_hocr_gtk_path)
+
 # set global functions
 def update_preview_cb(file_chooser, preview):
     filename = file_chooser.get_preview_filename()
@@ -94,6 +117,10 @@ def show_error_message(message):
 class ProgressSet(threading.Thread):
     "set the fraction of the progressbar"
     
+    def __init__ (self, pulse = False):
+      threading.Thread.__init__(self)
+      self.pulse = pulse
+      
     # thread event, stops the thread if it is set.
     stopthread = threading.Event()
         
@@ -111,7 +138,10 @@ class ProgressSet(threading.Thread):
             # acquiring the gtk global mutex
             gtk.gdk.threads_enter()
             # set the fraction
-            progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
+            if self.pulse:
+              progressbar.pulse()
+            else:
+              progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
             # releasing the gtk global mutex
             gtk.gdk.threads_leave()
             
@@ -123,7 +153,7 @@ class ProgressSet(threading.Thread):
         progressbar.set_fraction(1.0 * hocr_obj.progress / 100.0)
         self.stopthread.set()
 
-class RunOCR(threading.Thread):
+class RunHocrOCR(threading.Thread):
     def run(self):
         # importing the ocr object from the global scope
         global main_window
@@ -177,6 +207,91 @@ class RunOCR(threading.Thread):
                 textbuffer.insert_at_cursor(hocr_obj.get_text())
             textview.grab_focus()
 
+class RunTessOCR(threading.Thread):
+    def run(self):
+        # importing the ocr object from the global scope
+        global main_window
+        global hocr_obj
+        global menuitem_clear
+        global textbuffer
+        global textview
+        global progressbar 
+        global image_window_type
+        global hocr_pixbuf
+        global pixbuf
+        global image
+        global tesseract_path
+        global tesseract_image_path
+        global tesseract_text_path
+        
+        ps = ProgressSet(True)
+        
+        # set cursor to gtk.gdk.WATCH and print processing on the progress bar
+        textview.get_parent_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        progressbar.show()
+        
+        # do ocr
+        ps.start()
+        
+        # save the b/w image to temp file
+        hocr_obj.do_image_processing ()
+        hocr_obj.save_bitmap_as_tiff (tesseract_image_path)
+            
+        # run tess on the b/w image file
+        # call tesseract command line tool
+        # FIXME: this is ugly 
+        args = [tesseract_path, tesseract_image_path, tesseract_text_path]
+        proc = subprocess.Popen(args)
+        retcode = proc.wait()
+        # FIXME: check retcode
+            
+        # get text
+        f = open(tesseract_text_path + '.txt')
+        try:
+            text = f.read()
+        finally:
+            f.close()
+        
+        if text:
+            if menuitem_clear.get_active():
+                textbuffer.set_text(text)
+            else:
+                textbuffer.insert_at_cursor(text)
+            textview.grab_focus()
+            
+        # clean the temp file
+        os.remove (tesseract_image_path)
+        os.remove (tesseract_text_path + '.txt')
+            
+        ps.stop()
+        
+        # set the new image in image window
+        if image_window_type == 0:
+            hocr_pixbuf = pixbuf.copy()
+        else:
+            # create an hocr pixbuf
+            if image_window_type > 0:
+                pix = hocr_pixbuf = hocr_obj.get_bitmap_pixbuf ()
+            # create a gtk pixbuf
+            hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
+                ho_pixbuf_get_data_string(pix),
+                gtk.gdk.COLORSPACE_RGB, 0, 8, 
+                pix.width, pix.height, pix.rowstride)
+        
+        main_window.on_image_refresh(None, None)
+        
+        # return original cursor and print idle on the progress bar
+        textview.get_parent_window().set_cursor(None)
+        progressbar.hide()
+        
+        # set text
+        if hocr_obj.get_text():
+            if menuitem_clear.get_active():
+                textbuffer.set_text(hocr_obj.get_text())
+            else:
+                textbuffer.insert_at_cursor(hocr_obj.get_text())
+            textview.grab_focus()
+            
 # set main window class
 class MainWindow:
     def __init__(self):
@@ -233,7 +348,11 @@ class MainWindow:
         pixbuf = None
         hocr_pixbuf = None
         self.zoom_factor = 1.0
-                
+        
+        # the sane button
+        self.separatormenuitem3 = xml.get_widget('separatormenuitem3')
+        self.imagemenuitem_scan = xml.get_widget('imagemenuitem_scan')
+        
         # hocr_pixbuf options
         self.menuitem_orig = xml.get_widget('menuitem_orig')
         self.menuitem_bw = xml.get_widget('menuitem_bw')
@@ -252,6 +371,9 @@ class MainWindow:
         self.menuitem_font_4 = xml.get_widget('menuitem_font_4')
         self.menuitem_font_5 = xml.get_widget('menuitem_font_5')
         self.menuitem_font_6 = xml.get_widget('menuitem_font_6')
+        
+        self.menuitem_engine_hocr = xml.get_widget('menuitem_engine_hocr')
+        self.menuitem_engine_tess = xml.get_widget('menuitem_engine_tess')
         
         menuitem_clear = self.menuitem_clear
         
@@ -324,7 +446,7 @@ class MainWindow:
     def on_menuitem_apply_activate(self, obj, event = None):
         "on_menuitem_apply_activate activated"
         global pixbuf
-        
+                
         if not (self.filename and pixbuf) :
             return
         
@@ -335,31 +457,75 @@ class MainWindow:
         
         ho_pixbuf_set_data (pix, pixbuf.get_pixels())
         
-        # set ocr options
-        self.hocr_obj.set_pixbuf(pix)
-        self.hocr_obj.set_html(self.menuitem_html.get_active())
-        self.hocr_obj.set_nikud(self.menuitem_nikud.get_active())
-        if self.menuitem_column_auto.get_active():
-              self.hocr_obj.set_paragraph_setup(0)
-        else:
-              self.hocr_obj.set_paragraph_setup(1)
-        if self.menuitem_font_1.get_active():
-              self.hocr_obj.set_font (0)
-        if self.menuitem_font_2.get_active():
-              self.hocr_obj.set_font (1)
-        if self.menuitem_font_3.get_active():
-              self.hocr_obj.set_font (2)
-        if self.menuitem_font_4.get_active():
-              self.hocr_obj.set_font (3)
-        if self.menuitem_font_5.get_active():
-              self.hocr_obj.set_font (4)
-        if self.menuitem_font_6.get_active():
-              self.hocr_obj.set_font (5)
+        # check ocr engine
+        # use hocr
+        if self.menuitem_engine_hocr.get_active():
+            # set ocr options
+            self.hocr_obj.set_pixbuf(pix)
+            self.hocr_obj.set_html(self.menuitem_html.get_active())
+            self.hocr_obj.set_nikud(self.menuitem_nikud.get_active())
+            if self.menuitem_column_auto.get_active():
+                  self.hocr_obj.set_paragraph_setup(0)
+            else:
+                  self.hocr_obj.set_paragraph_setup(1)
+            if self.menuitem_font_1.get_active():
+                  self.hocr_obj.set_font (0)
+            if self.menuitem_font_2.get_active():
+                  self.hocr_obj.set_font (1)
+            if self.menuitem_font_3.get_active():
+                  self.hocr_obj.set_font (2)
+            if self.menuitem_font_4.get_active():
+                  self.hocr_obj.set_font (3)
+            if self.menuitem_font_5.get_active():
+                  self.hocr_obj.set_font (4)
+            if self.menuitem_font_6.get_active():
+                  self.hocr_obj.set_font (5)
+            
+            # run ocr
+            ro = RunHocrOCR()
+            ro.start()
+            
+        # use tesseract
+        if self.menuitem_engine_tess.get_active():
+            # get the b/w image
+            self.hocr_obj.set_pixbuf (pix)
+            
+            # run ocr
+            ro = RunTessOCR()
+            ro.start()
+            
+    def on_imagemenuitem_scan_activate(self, obj, event = None):
+        "on_imagemenuitem_acuire_activate activated"
+        global pixbuf
+        global hocr_pixbuf
+        global hocr_sane_path
+        global hocr_sane_image_path
         
-        # run ocr
-        ro = RunOCR()
-        ro.start()
-    
+        # run hocr-sane
+        args = [hocr_sane_path, '--file', hocr_sane_image_path]
+        proc = subprocess.Popen(args)
+        retcode = proc.wait()
+       
+        # if retcode is 99 image is saved by hocr-sane
+        if retcode == 99:
+            self.filename = hocr_sane_image_path
+            # get new image
+            pixbuf = gtk.gdk.pixbuf_new_from_file (self.filename)
+            # clean processed image
+            hocr_pixbuf = None
+            
+            factor = self.zoom_factor
+            w = pixbuf.get_width()
+            h = pixbuf.get_height()
+            window_pixbuf = pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+            self.image.set_from_pixbuf(window_pixbuf)
+            self.progressbar.set_fraction(0)
+            
+        else:
+            print _('Closed, no files scaned')
+        
+        self.textview.grab_focus()
+        
     def on_imagemenuitem_quit_activate(self, obj, event = None):
         "on_imagemenuitem_quit_activate activated"
         gtk.main_quit()
@@ -641,13 +807,15 @@ class MainWindow:
         # get the new image 
         ho_pix = self.hocr_obj.get_layout_pixbuf ()
         
+        # if we do not have a layout, try b/w
+        if not ho_pix:
+            ho_pix = self.hocr_obj.get_bitmap_pixbuf ()
+            
         # create a gtk pixbuf
         pix = hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
                 ho_pixbuf_get_data_string(ho_pix),
                 gtk.gdk.COLORSPACE_RGB, 0, 8, 
                 ho_pix.width, ho_pix.height, ho_pix.rowstride)
-        
-        #
         if not pix:
             pix = pixbuf
             
@@ -667,6 +835,15 @@ def main():
     
     main_window = MainWindow()
     main_window.window_main.show()
+    
+    # if no tesseract hide the tesseract option
+    if not have_tesseract:
+      main_window.menuitem_engine_tess.hide()
+    # if no sane hide the sane button
+    if not have_sane:
+      main_window.separatormenuitem3.hide()
+      main_window.imagemenuitem_scan.hide()
+        
     gtk.main()
 
 #Initializing the gtk's thread engine
