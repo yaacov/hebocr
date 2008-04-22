@@ -1,14 +1,13 @@
-libhocr (0.11.0)
+libhocr (0.10.6)
 
  * hocr-gtk example less path dependent (use sys.prefix)
  * hocr-gtk example can use tesseract-ocr if present
  * hocr-gtk example can use python-imaging-sane if present to scan images
    from a scanner
- * add more font types
- * use libtiff for bitmap export in tiff format
+ * use libtiff for hocr-bitmap export using tiff format
  * python-hocr does not include hocr-gtk
 
- -- Yaacov Zamir <kzamir_at_walla.co.il>  Wednesday, 12 Mar 2008 21:04
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Wednesday, 22 Apr 2008 21:04
  
 libhocr (0.10.5)
 

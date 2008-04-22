@@ -1,5 +1,6 @@
 EXTRA_DIST = hocr-gtk.desktop hocr1-48.png hocr1-128.png \
-hocr-gtk.glade hocr-gtk.py \
+hocr-gtk.glade hocr-gtk.py hocr-gtk.desktop \
+hocr-sane.glade hocr-sane.py hocr-sane.desktop \
 gettext-bootstrap.sh  hocr-gtk.pot he.po sv.po he/hocr-gtk.mo sv/hocr-gtk.mo
 
 bin_SCRIPTS = hocr-gtk.py hocr-sane.py

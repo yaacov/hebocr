@@ -32,7 +32,7 @@ import pango
 
 from hocr import *
 
-# set global paths
+# hocr-gtk paths
 # FIXME: this can change from system to system
 app_name = "hocr-gtk"
 locale_dir = sys.prefix + '/share/locale'
@@ -40,6 +40,8 @@ glade_file = 'hocr-gtk.glade'
 glade_dir = sys.prefix + '/share/hocr-gtk/glade/'
 logo_filename = sys.prefix + '/share/pixmaps/hocr1-128.png'
 usr_hocr_gtk_path = os.path.expanduser("~/.hocr_gtk")
+
+# hocr-sane paths
 hocr_sane_path = sys.prefix + '/bin/hocr-sane.py'
 hocr_sane_image_path = usr_hocr_gtk_path + "/temp_sane_image.png"
 
@@ -86,11 +88,12 @@ try:
 except:
     have_sane = False
 
-# search for tesseract
-# FIXME: find a nicer way to check for tesseract
+# tesseract paths
 tesseract_path = sys.prefix + "/bin/tesseract"
 tesseract_image_path = usr_hocr_gtk_path + "/temp_tess_image.tiff"
 tesseract_text_path = usr_hocr_gtk_path + "/temp_tess_text"
+# search for tesseract
+# FIXME: find a nicer way to check for tesseract
 have_tesseract = os.path.isfile(tesseract_path)
 
 # try and create a .hocr_gtk directory
@@ -836,6 +839,10 @@ def main():
     main_window = MainWindow()
     main_window.window_main.show()
     
+    # hide not implemented fonts
+    main_window.menuitem_font_5.hide()
+    main_window.menuitem_font_6.hide()
+        
     # if no tesseract hide the tesseract option
     if not have_tesseract:
       main_window.menuitem_engine_tess.hide()
