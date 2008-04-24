@@ -283,24 +283,6 @@ ho_bitmap_get_fill (const ho_bitmap * m, const int x, const int y,
   const int width, const int height);
 
 /**
- writes ho_bitmap to pnm file
- 
- @param m ho_bitmap 1 bpp
- @param filename save as file name 
- @return FALSE
- */
-int ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename);
-
-/**
- writes ho_bitmap to tiff file
- 
- @param m ho_bitmap 1 bpp
- @param filename save as file name 
- @return FALSE
- */
-int ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename);
-
-/**
  horizontaly link short objects in a bitmap
  
  @param m the bitmap to horizontaly link
@@ -483,5 +465,23 @@ ho_bitmap_delete_hline (ho_bitmap * m, const int x, const int y,
  */
 ho_bitmap *
 ho_bitmap_rotate (const ho_bitmap * m, const double angle);
+
+/**
+ writes ho_bitmap to pnm file
+ 
+ @param m ho_bitmap 1 bpp
+ @param filename save as file name 
+ @return FALSE
+ */
+int ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename);
+
+/**
+ writes ho_bitmap to tiff file
+ 
+ @param m ho_bitmap 1 bpp
+ @param filename save as file name 
+ @return FALSE
+ */
+int ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename);
 
 #endif /* HO_BITMAP_H */

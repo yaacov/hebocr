@@ -1,3 +1,11 @@
+libhocr (0.10.7)
+
+ * hocr-gtk save session parameters
+ * use libtiff for black and white 
+   hocr-pixbuf export and import using tiff format
+
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 24 Apr 2008 09:04
+ 
 libhocr (0.10.6)
 
  * hocr-gtk example less path dependent (use sys.prefix)

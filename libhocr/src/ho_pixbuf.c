@@ -26,7 +26,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-
+#include <tiffio.h>
+ 
 #ifndef TRUE
 #define TRUE -1
 #endif
@@ -617,29 +618,36 @@ ho_pixbuf_linear_filter (const ho_pixbuf * pix)
 ho_bitmap *
 ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold)
 {
+  ho_pixbuf * gray_pix = NULL;
   ho_bitmap *m_out = NULL;
   int x, y;
 
   /* convert threshold from 0..100 to 0..255 */
   threshold = 255 * threshold / 100;
 
-  /* is input gray ? */
-  if (pix->n_channels != 1)
-    return NULL;
+  /* if pix is color convert to gray scale */
+  if (pix->n_channels > 1)
+    gray_pix = ho_pixbuf_color_to_gray (pix);
+  else
+    gray_pix = ho_pixbuf_clone (pix);
+  
   if (!threshold)
     threshold = 153;
 
   /* allocate memory */
-  m_out = ho_bitmap_new (pix->width, pix->height);
+  m_out = ho_bitmap_new (gray_pix->width, gray_pix->height);
   if (!m_out)
     return NULL;
 
   /* copy data */
-  for (x = 0; x < pix->width; x++)
-    for (y = 0; y < pix->height; y++)
-      if ((pix->data)[x + y * pix->rowstride] < threshold)
+  for (x = 0; x < gray_pix->width; x++)
+    for (y = 0; y < gray_pix->height; y++)
+      if ((gray_pix->data)[x + y * gray_pix->rowstride] < threshold)
         ho_bitmap_set (m_out, x, y);
 
+  /* free gray pix */
+  ho_pixbuf_free (gray_pix);
+  
   return m_out;
 }
 
@@ -1413,6 +1421,166 @@ ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename)
   fwrite (pix->data, 1, pix->height * pix->rowstride, file);
   fclose (file);
 
+  return FALSE;
+}
+
+ho_pixbuf *
+ho_pixbuf_bw_tiff_load (const char *filename)
+{
+  /* This function is copied from a web tutorial in:
+    http://www-128.ibm.com/developerworks/linux/library/l-libtiff/
+  */
+  int x, y;
+  ho_pixbuf *pix = NULL;
+    
+  TIFF *image;
+  uint16 photo, bps, spp, fillorder;
+  uint32 width;
+  uint32 height;
+  uint32 rowstride;
+  tsize_t stripSize;
+  unsigned long imageOffset, result;
+  int stripMax, stripCount;
+  char *buffer, tempbyte;
+  unsigned long bufferSize, count;
+
+  /* Open the TIFF image */
+  if((image = TIFFOpen(filename, "r")) == NULL){
+    /* no file */
+    return NULL;
+  }
+
+  /* Check that it is of a type that we support */
+  if((TIFFGetField(image, TIFFTAG_BITSPERSAMPLE, &bps) == 0) || (bps != 1)){
+    /* not a 1 bit image */
+    TIFFClose(image);
+    return NULL;
+  }
+
+  if((TIFFGetField(image, TIFFTAG_SAMPLESPERPIXEL, &spp) == 0) || (spp != 1)){
+    /* not a black and white image */
+    TIFFClose(image);
+    return NULL;
+  }
+
+  /* Read in the possibly multiple strips */
+  stripSize = TIFFStripSize (image);
+  stripMax = TIFFNumberOfStrips (image);
+  imageOffset = 0;
+  
+  bufferSize = TIFFNumberOfStrips (image) * stripSize;
+  if((buffer = (char *) malloc(bufferSize)) == NULL){
+    /* not memory */
+    TIFFClose(image);
+    return NULL;
+  }
+  
+  for (stripCount = 0; stripCount < stripMax; stripCount++){
+    if((result = TIFFReadEncodedStrip (image, stripCount,
+				      buffer + imageOffset,
+				      stripSize)) == -1){
+      /* read error */
+      free (buffer);
+      TIFFClose(image);
+      return NULL;
+    }
+
+    imageOffset += result;
+  }
+
+  /* Deal with photometric interpretations */
+  if(TIFFGetField(image, TIFFTAG_PHOTOMETRIC, &photo) == 0){
+    /* we can't know if black is black or white :-( */
+    free (buffer);
+    TIFFClose(image);
+    return NULL;
+  }
+  
+  if(photo != PHOTOMETRIC_MINISWHITE){
+    /* Flip bits */
+    for(count = 0; count < bufferSize; count++)
+      buffer[count] = ~buffer[count];
+  }
+
+  /* Deal with fillorder */
+  if(TIFFGetField(image, TIFFTAG_FILLORDER, &fillorder) == 0){
+    /* we can't know if bits are msb or lsb ordered :-( */
+    free (buffer);
+    TIFFClose(image);
+    return NULL;
+  }
+  
+  if(fillorder != FILLORDER_MSB2LSB){
+    /* We need to swap bits -- ABCDEFGH becomes HGFEDCBA */
+    for(count = 0; count < bufferSize; count++){
+      tempbyte = 0;
+      if(buffer[count] & 128) tempbyte += 1;
+      if(buffer[count] & 64) tempbyte += 2;
+      if(buffer[count] & 32) tempbyte += 4;
+      if(buffer[count] & 16) tempbyte += 8;
+      if(buffer[count] & 8) tempbyte += 16;
+      if(buffer[count] & 4) tempbyte += 32;
+      if(buffer[count] & 2) tempbyte += 64;
+      if(buffer[count] & 1) tempbyte += 128;
+      buffer[count] = tempbyte;
+    }
+  }
+     
+  /* get image width */
+  if(TIFFGetField(image, TIFFTAG_IMAGEWIDTH, &width) == 0){
+    /* we can't know image width :-( */
+    free (buffer);
+    TIFFClose(image);
+    return NULL;
+  }
+  /* get image height */
+  if(TIFFGetField(image, TIFFTAG_IMAGELENGTH, &height) == 0){
+    /* we can't know image height :-( */
+    free (buffer);
+    TIFFClose(image);
+    return NULL;
+  }
+  rowstride = width / 8;
+    
+  /* create the gray pixbuf */
+  pix = ho_pixbuf_new (1, width, height, 0);
+  if (!pix)
+  {
+    free (buffer);
+    TIFFClose(image);
+    return NULL;
+  }
+
+  /* copy data */
+  for (x = 0; x < width; x++)
+    for (y = 0; y < height; y++)
+      ho_pixbuf_set (pix, x, y, 0, 255 * (1 - 
+          ((((buffer[x / 8 + y * rowstride]) & (0x80 >> (x % 8))) > 0)?1:0)
+        ));
+    
+  /* free buffer and close file */
+  free (buffer);
+  TIFFClose(image);
+  
+  return pix;
+}
+
+int
+ho_pixbuf_bw_tiff_save (const ho_pixbuf * pix, const char *filename)
+{
+  ho_bitmap * m = NULL;
+
+  /* create a bitmap */
+  m = ho_pixbuf_to_bitmap (pix, 0);
+  if (!m)
+    return TRUE;
+  
+  /* save bitmap */
+  ho_bitmap_tiff_save (m, filename);
+  
+  /* free bitmap */
+  ho_bitmap_free (m);
+  
   return FALSE;
 }
 

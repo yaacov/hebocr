@@ -252,10 +252,10 @@ ho_pixbuf_minmax (const ho_pixbuf * pix, unsigned char *min,
 ho_pixbuf *ho_pixbuf_linear_filter (const ho_pixbuf * pix);
 
 /**
- convert a gray pixbuf to bitmap 
+ convert a color or gray pixbuf to bitmap 
  @param pix the input ho_pixbuf
  @param threshold the threshold to use 0..100
- @return newly allocated gray ho_bitmap
+ @return newly allocated b/w ho_bitmap
  */
 ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold);
 
@@ -265,7 +265,7 @@ ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold);
  @param threshold the threshold to use 0..100
  @param size block size for the adaptive steps
  @param adaptive_threshold the threshold to use for adaptive thresholding 0..100
- @return newly allocated gray ho_bitmap
+ @return newly allocated b/w ho_bitmap
  */
 ho_bitmap *ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf * pix,
   unsigned char threshold,
@@ -277,7 +277,7 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf * pix,
  @param threshold the threshold to use 0..100
  @param size block size for the adaptive steps
  @param adaptive_threshold the threshold to use for adaptive thresholding 0..100
- @return newly allocated gray ho_bitmap
+ @return newly allocated b/w ho_bitmap
  */
 ho_bitmap *ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
   pix,
@@ -285,13 +285,13 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
   unsigned char size, unsigned char adaptive_threshold);
 
 /**
- convert a gray pixbuf to bitmap wrapper function
+ convert a color of gray pixbuf to bitmap wrapper function
  @param pix_in the input ho_pixbuf
  @param scale the scale to use
  @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
  @param threshold the threshold to use 0..100
  @param a_threshold the threshold to use for adaptive thresholding 0..100
- @return newly allocated gray ho_bitmap
+ @return newly allocated b/w ho_bitmap
  */
 ho_bitmap *ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
   const unsigned char scale,
@@ -312,6 +312,21 @@ ho_pixbuf *ho_pixbuf_pnm_load (const char *filename);
  @return FALSE
  */
 int ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename);
+
+/**
+ read ho_pixbuf from a b/w tiff file
+ @param filename file name of tiff file 
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_bw_tiff_load (const char *filename);
+
+/**
+ writes ho_pixbuf to a black and white tiff file
+ @param pix ho_pixbuf 8 or 24 bpp
+ @param filename save as file name 
+ @return FALSE
+ */
+int ho_pixbuf_bw_tiff_save (const ho_pixbuf * pix, const char *filename);
 
 /**
  draw a line from x1,y1 to x2,y2

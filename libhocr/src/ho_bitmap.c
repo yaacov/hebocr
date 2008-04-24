@@ -1426,7 +1426,8 @@ ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename)
   TIFFSetField(image, TIFFTAG_IMAGELENGTH, m->height);
   TIFFSetField(image, TIFFTAG_BITSPERSAMPLE, 1);
   TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL, 1);
-  TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, m->height);
+  /* FIXME: strip limit is 65,536 pixels in a single strip ? */
+  TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, 15);
 
   TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_CCITTFAX4);
   TIFFSetField(image, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISWHITE);

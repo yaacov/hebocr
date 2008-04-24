@@ -23,6 +23,7 @@ import sys, os
 import threading
 import time
 import subprocess
+import ConfigParser
 
 import pygtk
 pygtk.require('2.0')
@@ -320,6 +321,23 @@ class MainWindow:
             show_error_message(_("Can't load hocr's glade GUI file, check your install.\nExit program."))
             sys.exit(0)
         
+        # create config object with default values
+        self.config = ConfigParser.ConfigParser()
+        
+        self.config.add_section('edit')
+        self.config.set('edit', 'clear', '1')
+        self.config.set('edit', 'html', '0')
+        self.config.set('edit', 'nikud', '1')
+        self.config.set('edit', 'column', '0')
+        self.config.set('edit', 'font', '1')
+        self.config.set('edit', 'engine', '0')
+        
+        self.config.add_section('view')
+        self.config.set('view', 'font', 'sans 12')
+        
+        # read config file and overwrite default values
+        self.config.read([usr_hocr_gtk_path + "/hocr-gtk.cfg"])
+        
         # connect handlers
         xml.signal_autoconnect(self)
 
@@ -380,6 +398,26 @@ class MainWindow:
         
         menuitem_clear = self.menuitem_clear
         
+        # set options using the config file
+        self.menuitem_clear.set_active(self.config.getint('edit', 'clear'))
+        self.menuitem_html.set_active(self.config.getint('edit', 'html'))
+        self.menuitem_nikud.set_active(self.config.getint('edit', 'nikud'))
+        
+        self.menuitem_column_auto.set_active(self.config.getint('edit', 'column') == 0)
+        self.menuitem_column_one.set_active(self.config.getint('edit', 'column') == 1)
+        
+        self.menuitem_engine_hocr.set_active(self.config.getint('edit', 'engine') == 0)
+        self.menuitem_engine_tess.set_active(self.config.getint('edit', 'engine') == 1)
+        
+        self.menuitem_font_1.set_active(self.config.getint('edit', 'font') == 1)
+        self.menuitem_font_2.set_active(self.config.getint('edit', 'font') == 2)
+        self.menuitem_font_3.set_active(self.config.getint('edit', 'font') == 3)
+        self.menuitem_font_4.set_active(self.config.getint('edit', 'font') == 4)
+        self.menuitem_font_5.set_active(self.config.getint('edit', 'font') == 5)
+        self.menuitem_font_6.set_active(self.config.getint('edit', 'font') == 6)
+        
+        self.textview.modify_font(pango.FontDescription(self.config.get('view', 'font')))
+        
         # ocr
         self.hocr_obj = Hocr()
         
@@ -388,6 +426,49 @@ class MainWindow:
     # signal handlers
     def on_window_main_delete_event(self, widget, obj):
         "on_window_main_delete_event activated"
+        # get config values
+        if self.menuitem_clear.get_active():
+            self.config.set('edit', 'clear', '1')
+        else:
+            self.config.set('edit', 'clear', '0')
+        if self.menuitem_html.get_active():
+            self.config.set('edit', 'html', '1')
+        else:
+            self.config.set('edit', 'html', '0')
+        if self.menuitem_nikud.get_active():
+            self.config.set('edit', 'nikud', '1')
+        else:
+            self.config.set('edit', 'nikud', '0')
+            
+        if self.menuitem_column_auto.get_active():
+            self.config.set('edit', 'column', '0')
+        if self.menuitem_column_one.get_active():
+            self.config.set('edit', 'column', '1')
+        
+        if self.menuitem_engine_hocr.get_active():
+            self.config.set('edit', 'engine', '0')
+        if self.menuitem_engine_tess.get_active():
+            self.config.set('edit', 'engine', '1')
+        
+        if self.menuitem_font_1.get_active():
+            self.config.set('edit', 'font', '1')
+        if self.menuitem_font_2.get_active():
+            self.config.set('edit', 'font', '2')
+        if self.menuitem_font_3.get_active():
+            self.config.set('edit', 'font', '3')
+        if self.menuitem_font_4.get_active():
+            self.config.set('edit', 'font', '4')
+        if self.menuitem_font_5.get_active():
+            self.config.set('edit', 'font', '5')
+        if self.menuitem_font_6.get_active():
+            self.config.set('edit', 'font', '6')
+        
+        view_font = self.textview.get_pango_context().get_font_description().to_string()
+        self.config.set('view', 'font', view_font)
+        
+        # write config file
+        self.config.write(open(usr_hocr_gtk_path + "/hocr-gtk.cfg", 'wb'))
+        
         gtk.main_quit()
 
     def on_imagemenuitem_new_activate(self, obj, event = None):
@@ -531,7 +612,7 @@ class MainWindow:
         
     def on_imagemenuitem_quit_activate(self, obj, event = None):
         "on_imagemenuitem_quit_activate activated"
-        gtk.main_quit()
+        self.on_window_main_delete_event(None, None)
 
     def on_imagemenuitem_cut_activate(self, obj, event = None):
         "on_imagemenuitem_cut_activate activated"
@@ -719,7 +800,7 @@ class MainWindow:
     
     def on_toolbutton_quit_clicked(self, obj, event = None):
         "on_toolbutton_quit_clicked activated"
-        gtk.main_quit()
+        self.on_window_main_delete_event(None, None)
     
     def on_menuitem_orig_toggled(self, obj, event = None):
         "on_menuitem_orig_toggled activated"

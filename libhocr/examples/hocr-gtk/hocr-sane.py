@@ -120,7 +120,7 @@ class MainWindow:
         self.config.set('defaults', 'contrast', '0')
         
         # read config file and overwrite default values
-        self.config.read([os.path.expanduser('~/.sane-pygtk.cfg')])
+        self.config.read([os.path.expanduser('~/.hocr-sane.cfg')])
         
         # connect handlers
         xml.signal_autoconnect(self)
