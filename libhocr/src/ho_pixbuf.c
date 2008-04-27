@@ -1443,26 +1443,26 @@ ho_pixbuf_bw_tiff_load (const char *filename)
   int stripMax, stripCount;
   char *buffer, tempbyte;
   unsigned long bufferSize, count;
-
+  
   /* Open the TIFF image */
   if((image = TIFFOpen(filename, "r")) == NULL){
     /* no file */
     return NULL;
   }
-
+  
   /* Check that it is of a type that we support */
   if((TIFFGetField(image, TIFFTAG_BITSPERSAMPLE, &bps) == 0) || (bps != 1)){
     /* not a 1 bit image */
     TIFFClose(image);
     return NULL;
   }
-
+  
   if((TIFFGetField(image, TIFFTAG_SAMPLESPERPIXEL, &spp) == 0) || (spp != 1)){
     /* not a black and white image */
     TIFFClose(image);
     return NULL;
   }
-
+  
   /* Read in the possibly multiple strips */
   stripSize = TIFFStripSize (image);
   stripMax = TIFFNumberOfStrips (image);
@@ -1487,12 +1487,12 @@ ho_pixbuf_bw_tiff_load (const char *filename)
 
     imageOffset += result;
   }
-
+  
   /* Deal with photometric interpretations */
   if(TIFFGetField(image, TIFFTAG_PHOTOMETRIC, &photo) == 0){
     /* we can't know if black is black or white :-( */
-    free (buffer);
-    TIFFClose(image);
+    /* asume min is white */
+    photo = PHOTOMETRIC_MINISWHITE;
     return NULL;
   }
   
@@ -1501,13 +1501,12 @@ ho_pixbuf_bw_tiff_load (const char *filename)
     for(count = 0; count < bufferSize; count++)
       buffer[count] = ~buffer[count];
   }
-
+  
   /* Deal with fillorder */
   if(TIFFGetField(image, TIFFTAG_FILLORDER, &fillorder) == 0){
     /* we can't know if bits are msb or lsb ordered :-( */
-    free (buffer);
-    TIFFClose(image);
-    return NULL;
+    /* asume msb */
+    fillorder = FILLORDER_MSB2LSB;
   }
   
   if(fillorder != FILLORDER_MSB2LSB){
@@ -1525,7 +1524,7 @@ ho_pixbuf_bw_tiff_load (const char *filename)
       buffer[count] = tempbyte;
     }
   }
-     
+  
   /* get image width */
   if(TIFFGetField(image, TIFFTAG_IMAGEWIDTH, &width) == 0){
     /* we can't know image width :-( */

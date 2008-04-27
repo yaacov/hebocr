@@ -408,7 +408,12 @@ hocr_pixbuf_load_with_debug ()
 
   /* read image from file */
   if (no_gtk)
+  {
     pix = ho_pixbuf_pnm_load (image_in_filename);
+    /* if this is not a pnm image file, try b/w tiff */
+    if (!pix)
+      pix = ho_pixbuf_bw_tiff_load (image_in_filename);
+  }
   else
     pix = ho_gtk_pixbuf_load (image_in_filename);
 
