@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=hocr-gtk
 Name[he]=hocr-gtk
-Exec=hocr-gtk.py
+Exec=hocr-gtk
 Icon=hocr1-48
 Terminal=false
 Type=Application

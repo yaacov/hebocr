@@ -137,7 +137,7 @@ class MainWindow:
         self.label_filename = xml.get_widget('label_filename')
         self.entry_filename = xml.get_widget('entry_filename')
         self.drawingarea1 = xml.get_widget('drawingarea1')
-        
+                
         # the pixmap and preview pixmap
         self.pixmap = None
         self.preview_pixmap = None
@@ -172,17 +172,17 @@ class MainWindow:
     def on_window1_delete_event(self, widget, obj):
         "on_window1_delete_event activated"
         # write config file
-        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
+        self.config.write(open(os.path.expanduser('~/.hocr-sane.cfg'), 'wb'))
         gtk.main_quit()
 
     def imagemenuitem_quit_activate_cb(self, obj):
         "imagemenuitem_quit_activate_cb activated"
-        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
+        self.config.write(open(os.path.expanduser('~/.hocr-sane.cfg'), 'wb'))
         gtk.main_quit()
     
     def button_quit_clicked_cb(self, obj):
         "button_quit_clicked_cb activated"
-        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
+        self.config.write(open(os.path.expanduser('~/.hocr-sane.cfg'), 'wb'))
         gtk.main_quit()
     
     def imagemenuitem_about_activate_cb(self, obj):
@@ -240,7 +240,7 @@ class MainWindow:
         #scan
         try:
             pil_image = scanner.scan()
-            
+                        
             w, h = pil_image.size
             data = pil_image.tostring()
         
@@ -265,7 +265,7 @@ class MainWindow:
         
         # close scanner
         scanner.close()
-                
+        
     def button_scan_clicked_cb(self, obj):
         "button_scan_clicked_cb activated"
         # open scanner
@@ -316,6 +316,8 @@ class MainWindow:
         
         # exit program
         if self.exit_after_scan:
+          # write config file
+          self.config.write(open(os.path.expanduser('~/.hocr-sane.cfg'), 'wb'))
           sys.exit(99)
             
     def imagemenuitem_zoom_in_activate_cb(self, obj):
@@ -635,8 +637,13 @@ class MainWindow:
         setting = self.spinbutton_contrast.get_value()
         self.config.set('defaults', 'contrast', str(setting))
         
+# main window is global
+main_window = None
+
 # run main loop
 def main():
+    global main_window
+    
     # init sane
     sane_version = sane.init()
     

@@ -40,10 +40,10 @@ locale_dir = sys.prefix + '/share/locale'
 glade_file = 'hocr-gtk.glade'
 glade_dir = sys.prefix + '/share/hocr-gtk/glade/'
 logo_filename = sys.prefix + '/share/pixmaps/hocr1-128.png'
-usr_hocr_gtk_path = os.path.expanduser("~/.hocr_gtk")
+usr_hocr_gtk_path = os.path.expanduser("~/.hocr-gtk")
 
 # hocr-sane paths
-hocr_sane_path = sys.prefix + '/bin/hocr-sane.py'
+hocr_sane_path = sys.prefix + '/bin/hocr-sane'
 hocr_sane_image_path = usr_hocr_gtk_path + "/temp_sane_image.png"
 
 # import the locale system
@@ -595,6 +595,9 @@ class MainWindow:
             self.filename = hocr_sane_image_path
             # get new image
             pixbuf = gtk.gdk.pixbuf_new_from_file (self.filename)
+            # remove temporary image
+            os.remove (self.filename)
+            
             # clean processed image
             hocr_pixbuf = None
             

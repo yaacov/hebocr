@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=hocr-sane
 Comment=A simple program to work with scanner.
-Exec=hocr-sane.py
+Exec=hocr-sane
 Icon=xsane
 Terminal=false
 Type=Application
