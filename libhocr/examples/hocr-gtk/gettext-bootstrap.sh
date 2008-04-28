@@ -22,8 +22,8 @@ else
   msginit --input=hocr-gtk.pot --output sv_hocr-gtk.po --locale=sv_SE.utf-8
 fi
 
-msgfmt --output-file=he/hocr-gtk.mo he_hocr_gtk.po
-msgfmt --output-file=sv/hocr-gtk.mo sv_hocr_gtk.po
+msgfmt --output-file=he/hocr-gtk.mo he_hocr-gtk.po
+msgfmt --output-file=sv/hocr-gtk.mo sv_hocr-gtk.po
 
 # sane-pygtk
 
