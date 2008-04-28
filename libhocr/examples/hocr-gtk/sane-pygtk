@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -12,13 +12,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Generated with glade2py script
 # glade2py script can be found at hocr web site http://hocr.berlios.de
 
-# Copyright (C) 2007 Yaacov Zamir <kzamir_a_walla.co.il>
+# Copyright (C) 2008 Yaacov Zamir <kzamir_a_walla.co.il>
 
 import pygtk
 pygtk.require('2.0')
@@ -30,10 +29,11 @@ import types, ConfigParser
 import sane
 
 # set global parmeters
-app_name = "hocr-gtk"
+app_name = "sane-pygtk"
 app_version = "0.1.1"
 author_name = "Yaacov Zamir"
 author_email = "<kzamir@walla.co.il>"
+home_page = "http://sane-pygtk.sourceforge.net"
 copyright = author_name + " " + author_email
 comments = "SANE (Scanner Access Now Easy)\npygtk frontend"
 
@@ -69,11 +69,11 @@ class MainWindow:
     def __init__(self):
         # create widget tree ...
         xml = False
-        if os.path.isfile('hocr-sane.glade'):
-            xml = gtk.glade.XML('hocr-sane.glade', 'window1', app_name)
+        if os.path.isfile('sane-pygtk.glade'):
+            xml = gtk.glade.XML('sane-pygtk.glade', 'window1', app_name)
         else:
-            if os.path.isfile(sys.prefix + '/share/hocr-gtk/glade/hocr-sane.glade'):
-               xml = gtk.glade.XML(sys.prefix + '/share/hocr-gtk/glade/hocr-sane.glade', 'window1', app_name)
+            if os.path.isfile(sys.prefix + '/share/sane-pygtk/glade/sane-pygtk.glade'):
+               xml = gtk.glade.XML(sys.prefix + '/share/sane-pygtk/glade/sane-pygtk.glade', 'window1', app_name)
         
         if not xml:
             print "ERROR: Can't load glade GUI file, check your install."
@@ -120,7 +120,7 @@ class MainWindow:
         self.config.set('defaults', 'contrast', '0')
         
         # read config file and overwrite default values
-        self.config.read([os.path.expanduser('~/.hocr-sane.cfg')])
+        self.config.read([os.path.expanduser('~/.sane-pygtk.cfg')])
         
         # connect handlers
         xml.signal_autoconnect(self)
@@ -163,7 +163,12 @@ class MainWindow:
         self.combobox_scanner.set_active(scanner_number)
         
         # if scanner exist the auto call to combobox_scanner_changed will fill in all the settings
-                
+        
+        # fill in resolution, brightness and contrast
+        self.spinbutton_resolution.set_value(self.config.getfloat('settings', 'resolution'))
+        self.spinbutton_brightness.set_value(self.config.getfloat('settings', 'brightness'))
+        self.spinbutton_contrast.set_value(self.config.getfloat('settings', 'contrast'))
+        
         # fill in file name
         filename = self.config.get('scan', 'filename')
         self.entry_filename.set_text(filename)
@@ -172,17 +177,21 @@ class MainWindow:
     def on_window1_delete_event(self, widget, obj):
         "on_window1_delete_event activated"
         # write config file
-        self.config.write(open(os.path.expanduser('~/.hocr-sane.cfg'), 'wb'))
+        print (self.config.getfloat('settings', 'resolution'))
+        print (self.config.getfloat('settings', 'brightness'))
+        print (self.config.getfloat('settings', 'contrast'))
+
+        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
         gtk.main_quit()
 
     def imagemenuitem_quit_activate_cb(self, obj):
         "imagemenuitem_quit_activate_cb activated"
-        self.config.write(open(os.path.expanduser('~/.hocr-sane.cfg'), 'wb'))
+        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
         gtk.main_quit()
     
     def button_quit_clicked_cb(self, obj):
         "button_quit_clicked_cb activated"
-        self.config.write(open(os.path.expanduser('~/.hocr-sane.cfg'), 'wb'))
+        self.config.write(open(os.path.expanduser('~/.sane-pygtk.cfg'), 'wb'))
         gtk.main_quit()
     
     def imagemenuitem_about_activate_cb(self, obj):
@@ -590,17 +599,17 @@ class MainWindow:
         mode_number = obj.get_active()
         self.config.set('settings', 'mode', str(mode_number))
     
-    def spinbutton_contrast_changed_cb(self, obj):
+    def spinbutton_contrast_changed_cb(self, obj, val = None):
         "spinbutton_contrast_changed_cb activated"
         contrast = obj.get_value()
         self.config.set('settings', 'contrast', str(contrast))
 
-    def spinbutton_brightness_changed_cb(self, obj):
+    def spinbutton_brightness_changed_cb(self, obj, val = None):
         "spinbutton_brightness_changed_cb activated"
         brightness = obj.get_value()
         self.config.set('settings', 'brightness', str(brightness))
 
-    def spinbutton_resolution_changed_cb(self, obj):
+    def spinbutton_resolution_changed_cb(self, obj, val = None):
         "spinbutton_resolution_changed_cb activated"
         resolution = obj.get_value()
         self.config.set('settings', 'resolution', str(resolution))

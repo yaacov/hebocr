@@ -43,7 +43,7 @@ logo_filename = sys.prefix + '/share/pixmaps/hocr1-128.png'
 usr_hocr_gtk_path = os.path.expanduser("~/.hocr-gtk")
 
 # hocr-sane paths
-hocr_sane_path = sys.prefix + '/bin/hocr-sane'
+hocr_sane_path = sys.prefix + '/bin/sane-pygtk'
 hocr_sane_image_path = usr_hocr_gtk_path + "/temp_sane_image.png"
 
 # import the locale system
