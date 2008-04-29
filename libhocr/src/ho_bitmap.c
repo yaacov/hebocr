@@ -27,9 +27,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-/* for save tiff function */
+#ifdef USE_TIFF
 #include <tiffio.h>
- 
+#endif
+
 #ifndef TRUE
 #define TRUE -1
 #endif
@@ -1412,6 +1413,7 @@ ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename)
   return FALSE;
 }
 
+#ifdef USE_TIFF
 int
 ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename)
 {
@@ -1446,6 +1448,7 @@ ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename)
   
   return FALSE;
 }
+#endif /* USE_TIFF */
 
 ho_bitmap *
 ho_bitmap_rotate (const ho_bitmap * m, const double angle)

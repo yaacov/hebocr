@@ -7,6 +7,6 @@ Name: libhocr-gtk
 Description: A C library for hebrew optical character recognition (with GTK support)
 Version: @VERSION@
 
-Requires: @requires@
+Requires: @requires_gtk@
 Libs: -lhocr -lhocrgtk -lm
 Cflags: -I${includedir}/libhocr

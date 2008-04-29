@@ -299,36 +299,6 @@ ho_bitmap *ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
   const unsigned char threshold, const unsigned char a_threshold);
 
 /**
- read ho_pixbuf from pnm file 8 or 24 bpp
- @param filename file name of pnm file 
- @return newly allocated ho_pixbuf
- */
-ho_pixbuf *ho_pixbuf_pnm_load (const char *filename);
-
-/**
- writes ho_pixbuf to pnm file
- @param pix ho_pixbuf 8 or 24 bpp
- @param filename save as file name 
- @return FALSE
- */
-int ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename);
-
-/**
- read ho_pixbuf from a b/w tiff file
- @param filename file name of tiff file 
- @return newly allocated gray ho_pixbuf
- */
-ho_pixbuf *ho_pixbuf_bw_tiff_load (const char *filename);
-
-/**
- writes ho_pixbuf to a black and white tiff file
- @param pix ho_pixbuf 8 or 24 bpp
- @param filename save as file name 
- @return FALSE
- */
-int ho_pixbuf_bw_tiff_save (const ho_pixbuf * pix, const char *filename);
-
-/**
  draw a line from x1,y1 to x2,y2
  @param m a ho_pixbuf 
  @param x1 x cordinate of start point 
@@ -423,7 +393,7 @@ ho_pixbuf_draw_rgb_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in_red,
   const ho_bitmap * bit_in_green, const ho_bitmap * bit_in_blue);
 
 /**
-  draw a bitmap
+ draw a bitmap
  @param m a ho_pixbuf 
  @param bit_in the bitmap to draw on the pixbuf
  @param x1 x of upper right start of drawing
@@ -439,5 +409,35 @@ ho_pixbuf_draw_bitmap_at (ho_pixbuf * m, const ho_bitmap * bit_in,
   const int x1, const int y1,
   const unsigned char red, const unsigned char green,
   const unsigned char blue, const unsigned char alpha);
+
+/**
+ read ho_pixbuf from pnm file 8 or 24 bpp
+ @param filename file name of pnm file 
+ @return newly allocated ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_pnm_load (const char *filename);
+
+/**
+ writes ho_pixbuf to pnm file
+ @param pix ho_pixbuf 8 or 24 bpp
+ @param filename save as file name 
+ @return FALSE
+ */
+int ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename);
+
+/**
+ read ho_pixbuf from a b/w tiff file
+ @param filename file name of tiff file 
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_bw_tiff_load (const char *filename);
+
+/**
+ writes ho_pixbuf to a black and white tiff file
+ @param pix ho_pixbuf 8 or 24 bpp
+ @param filename save as file name 
+ @return FALSE
+ */
+int ho_pixbuf_bw_tiff_save (const ho_pixbuf * pix, const char *filename);
 
 #endif /* HO_PIXBUF_H */

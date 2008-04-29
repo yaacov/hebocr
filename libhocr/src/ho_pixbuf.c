@@ -26,8 +26,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+
+#ifdef USE_TIFF
 #include <tiffio.h>
- 
+#endif
+
 #ifndef TRUE
 #define TRUE -1
 #endif
@@ -1226,6 +1229,38 @@ ho_pixbuf_draw_grid (ho_pixbuf * m, const int size, const int step,
   return FALSE;
 }
 
+int
+ho_pixbuf_draw_rgb_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in_red,
+  const ho_bitmap * bit_in_green, const ho_bitmap * bit_in_blue)
+{
+  int x, y;
+  unsigned char new_red;
+  unsigned char new_green;
+  unsigned char new_blue;
+
+  /* sanity check */
+  if (m->width != bit_in_red->width || m->height != bit_in_red->height)
+    return TRUE;
+
+  /* is pixbuf color ? */
+  if (m->n_channels < 3)
+    return TRUE;
+
+  for (x = 0; x < bit_in_red->width; x++)
+    for (y = 0; y < bit_in_red->height; y++)
+    {
+      new_red = 255 * ho_bitmap_get (bit_in_red, x, y);
+      new_green = 255 * ho_bitmap_get (bit_in_green, x, y);
+      new_blue = 255 * ho_bitmap_get (bit_in_blue, x, y);
+
+      ho_pixbuf_set (m, x, y, 0, new_red);
+      ho_pixbuf_set (m, x, y, 1, new_green);
+      ho_pixbuf_set (m, x, y, 2, new_blue);
+    }
+
+  return FALSE;
+}
+
 unsigned char
 ho_pbm_getc (FILE * file)
 {
@@ -1424,6 +1459,7 @@ ho_pixbuf_pnm_save (const ho_pixbuf * pix, const char *filename)
   return FALSE;
 }
 
+#ifdef USE_TIFF
 ho_pixbuf *
 ho_pixbuf_bw_tiff_load (const char *filename)
 {
@@ -1563,7 +1599,9 @@ ho_pixbuf_bw_tiff_load (const char *filename)
   
   return pix;
 }
+#endif /* USE_TIFF */
 
+#ifdef USE_TIFF
 int
 ho_pixbuf_bw_tiff_save (const ho_pixbuf * pix, const char *filename)
 {
@@ -1582,35 +1620,4 @@ ho_pixbuf_bw_tiff_save (const ho_pixbuf * pix, const char *filename)
   
   return FALSE;
 }
-
-int
-ho_pixbuf_draw_rgb_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in_red,
-  const ho_bitmap * bit_in_green, const ho_bitmap * bit_in_blue)
-{
-  int x, y;
-  unsigned char new_red;
-  unsigned char new_green;
-  unsigned char new_blue;
-
-  /* sanity check */
-  if (m->width != bit_in_red->width || m->height != bit_in_red->height)
-    return TRUE;
-
-  /* is pixbuf color ? */
-  if (m->n_channels < 3)
-    return TRUE;
-
-  for (x = 0; x < bit_in_red->width; x++)
-    for (y = 0; y < bit_in_red->height; y++)
-    {
-      new_red = 255 * ho_bitmap_get (bit_in_red, x, y);
-      new_green = 255 * ho_bitmap_get (bit_in_green, x, y);
-      new_blue = 255 * ho_bitmap_get (bit_in_blue, x, y);
-
-      ho_pixbuf_set (m, x, y, 0, new_red);
-      ho_pixbuf_set (m, x, y, 1, new_green);
-      ho_pixbuf_set (m, x, y, 2, new_blue);
-    }
-
-  return FALSE;
-}
+#endif /* USE_TIFF */

@@ -13,7 +13,9 @@ AM_PROG_LIBTOOL
 dnl check for pkg-config
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 
-dnl check hosr system
+dnl ============================================================================
+dnl check host system
+
 host_code=1
 case ${host} in
   *linux*)
@@ -26,26 +28,72 @@ case ${host} in
     host_code=3
   ;;
 esac
+
 AM_CONDITIONAL(LINUX_HOST, test $host_code = 1 )
 AM_CONDITIONAL(MINGW_HOST, test $host_code = 2 )
 AM_CONDITIONAL(DARWIN_HOST, test $host_code = 3 )
 
-dnl gtk: load picture non-pnm file formats in hocr utility program
-
-gtk_pkg_modules="gtk+-2.0"
-PKG_CHECK_MODULES(gtk, [$gtk_pkg_modules], gtk_PKG="found", exit)
-AC_SUBST(gtk_CFLAGS)
-AC_SUBST(gtk_LIBS)
-
-requires="$gtk_pkg_modules"
-
-dnl export required librarys to pkg-config pc file 
-AC_SUBST(requires)
-
+dnl ============================================================================
 dnl check for swig
 AC_CHECK_PROG(have_swig, "swig", yes, no)
 
+dnl ============================================================================
+dnl check for glib
+
+build_lib=yes
+
+AC_ARG_ENABLE([glib], 
+  [AS_HELP_STRING([--disable-glib],
+  [do not use glib])],
+  [build_glib=no], [build_glib=yes])
+
+dnl check for glib
+
+if test "$build_glib" = "yes"; then
+    glib_pkg_modules="glib-2.0"
+    PKG_CHECK_MODULES(glib, [$glib_pkg_modules], build_glib=yes, build_glib=no)
+    
+    if test "$build_glib" = "yes"; then
+        glib_CFLAGS+=" -DUSE_GLIB"
+        AC_SUBST(glib_CFLAGS)
+        AC_SUBST(glib_LIBS)
+    fi
+fi
+
+AM_CONDITIONAL(WITH_GLIB, test "$build_glib" = yes)
+dnl ============================================================================
+dnl check for gtk
+
+build_gtk=yes
+
+AC_ARG_ENABLE([gtk], 
+  [AS_HELP_STRING([--disable-gtk],
+  [do not use gtk])],
+  [build_gtk=no], [build_gtk=yes])
+
+dnl check for gtk
+
+if test "$build_gtk" = "yes"; then
+    gtk_pkg_modules="gtk+-2.0"
+    PKG_CHECK_MODULES(gtk, [$gtk_pkg_modules], build_gtk=yes, build_gtk=no)
+    
+    if test "$build_gtk" = "yes"; then
+        gtk_CFLAGS+=" -DUSE_GTK"
+        AC_SUBST(gtk_CFLAGS)
+        AC_SUBST(gtk_LIBS)
+    
+        requires_gtk="$gtk_pkg_modules"
+    
+        dnl export required gtk librarys to pkg-config pc file 
+        AC_SUBST(requires_gtk)
+    fi
+fi
+
+AM_CONDITIONAL(WITH_GTK, test "$build_gtk" = yes)
+
+dnl ============================================================================
 dnl check for python
+
 AC_CHECK_PROG(have_python, "python", yes, no)
 
 build_python=$have_python
@@ -87,40 +135,110 @@ fi
 
 AM_CONDITIONAL(WITH_PYTHON, test "$build_python" = "yes")
 
+dnl ============================================================================
+dnl build hspell
+
+build_hspell=yes
+
+AC_ARG_ENABLE([hspell], 
+  [AS_HELP_STRING([--disable-hspell],
+  [do not use hspell])],
+  [build_hspell=no], [build_hspell=yes])
+
 dnl check for hspell
 
-AC_CHECK_LIB([hspell], [hspell_get_dictionary_path], build_hspell=yes, build_hspell=no, -lz)
-
 if test "$build_hspell" = "yes"; then
-    hspell_CFLAGS=" -DUSE_HSPELL"
-    hspell_LIBS=" -lhspell -lz"
-   
-    AC_SUBST(hspell_CFLAGS)
-    AC_SUBST(hspell_LIBS)
+    AC_CHECK_LIB([hspell], [hspell_get_dictionary_path], build_hspell=yes, build_hspell=no, -lz)
+
+    if test "$build_hspell" = "yes"; then
+        hspell_CFLAGS=" -DUSE_HSPELL"
+        hspell_LIBS=" -lhspell -lz"
+       
+        AC_SUBST(hspell_CFLAGS)
+        AC_SUBST(hspell_LIBS)
+        
+        ld_hspell="$hspell_LIBS"
+        
+        dnl export ld_hspell librarys to pkg-config pc file 
+        AC_SUBST(ld_hspell)
+    fi
 fi
 
 AM_CONDITIONAL(WITH_HSPELL, test "$build_hspell" = yes)
 
+dnl ============================================================================
+dnl build tiff
+
+build_tiff=yes
+
+AC_ARG_ENABLE([libtiff], 
+  [AS_HELP_STRING([--disable-libtiff],
+  [do not use libtiff])],
+  [build_tiff=no], [build_tiff=yes])
+
 dnl check for libtiff
 
-AC_CHECK_LIB([tiff], [TIFFOpen], build_tiff=yes, exit)
-
 if test "$build_tiff" = "yes"; then
-    tiff_CFLAGS=" -DUSE_TIFF"
-    tiff_LIBS=" -ltiff"
+    AC_CHECK_LIB([tiff], [TIFFOpen], build_tiff=yes, build_tiff=no)
+
+    if test "$build_tiff" = "yes"; then
+        tiff_CFLAGS=" -DUSE_TIFF"
+        tiff_LIBS=" -ltiff"
    
-    AC_SUBST(tiff_CFLAGS)
-    AC_SUBST(tiff_LIBS)
+        AC_SUBST(tiff_CFLAGS)
+        AC_SUBST(tiff_LIBS)
+        
+        ld_tiff="$tiff_LIBS"
+        
+        dnl export ld_tiff librarys to pkg-config pc file 
+        AC_SUBST(ld_tiff)
+    fi
 fi
 
 AM_CONDITIONAL(WITH_TIFF, test "$build_tiff" = yes)
 
+dnl ============================================================================
+dnl build hocr
+
+build_hocr=yes
+
+AC_ARG_ENABLE([hocr], 
+  [AS_HELP_STRING([--disable-hocr],
+  [do not build hocr utility program])],
+  [build_hocr=no], [build_hocr=yes])
+
+if test "$build_glib" = "no"; then
+  build_hocr=no
+fi
+
+AM_CONDITIONAL(WITH_HOCR, test "$build_hocr" = "yes")
+
+dnl ============================================================================
+dnl build hocr-gtk
+
+build_hocr_gtk=yes
+
+AC_ARG_ENABLE([hocr-gtk], 
+  [AS_HELP_STRING([--disable-hocr-gtk],
+  [do not build hocr-gtk utility program])],
+  [build_hocr_gtk=no], [build_hocr_gtk=yes])
+
+AM_CONDITIONAL(WITH_HOCR_GTK, test "$build_hocr_gtk" = "yes")
+
+dnl ============================================================================
 dnl create a build string
 
 BUILD_DATE=`date +%d%m%Y`
 BUILD_STR="$PACKAGE-$VERSION-$build-$BUILD_DATE"
+if test "$build_tiff" = "yes"; then
+BUILD_STR+="-tiff"
+fi
+if test "$build_hspell" = "yes"; then
+BUILD_STR+="-hspell"
+fi
 AC_SUBST(BUILD_STR)
 
+dnl ============================================================================
 dnl output
 
 AC_CONFIG_FILES([
@@ -151,15 +269,16 @@ echo OS: ${host}
 echo build: $BUILD_STR
 echo prefix: $prefix
 echo compiler: ${CC}
+echo have swig:	${have_swig}
 echo
+echo with glib: ${build_glib}
+echo with gtk: ${build_gtk}
 echo with hspell: ${build_hspell}
 echo with libtiff: ${build_tiff}
 echo
-echo build hocr: yes
-echo build hocr-gtk: yes
+echo build hocr, requires glib: ${build_hocr}
+echo build hocr-gtk: ${build_hocr_gtk}
 echo
-echo have swig:	${have_swig}
 echo build python binding: ${build_python}
-echo
-echo python site lib path: $PY_MODULES_PATH
+echo python site lib path: ${PY_MODULES_PATH}
 echo

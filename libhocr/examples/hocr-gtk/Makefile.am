@@ -7,6 +7,8 @@ he_sane-pygtk.po sv_sane-pygtk.po \
 he/hocr-gtk.mo sv/hocr-gtk.mo \
 he/sane-pygtk.mo sv/sane-pygtk.mo
 
+if WITH_HOCR_GTK
+
 bin_SCRIPTS = hocr-gtk sane-pygtk
 
 Applicationsdir = $(datadir)/applications
@@ -26,3 +28,5 @@ Mohe_DATA = he/hocr-gtk.mo he/sane-pygtk.mo
 
 Mosvdir = $(datadir)/locale/sv/LC_MESSAGES/
 Mosv_DATA = sv/hocr-gtk.mo sv/sane-pygtk.mo
+
+endif

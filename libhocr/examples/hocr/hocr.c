@@ -26,10 +26,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "hocr.h"
+
+#ifdef USE_GTK
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "ho_gtk.h"
+#endif
 
 gchar *image_in_filename = NULL;
 gchar *text_out_filename = NULL;
@@ -38,10 +41,15 @@ gchar *image_out_path = NULL;
 gboolean version = FALSE;
 gboolean debug = FALSE;
 gboolean verbose = FALSE;
-gboolean no_gtk = FALSE;
 gboolean dir_ltr = FALSE;
 gboolean text_out_html = FALSE;
 gboolean text_out_font_numbers = FALSE;
+
+#ifdef USE_GTK
+gboolean no_gtk = FALSE;
+#else
+gboolean no_gtk = TRUE;
+#endif
 
 gint threshold = 0;
 gint adaptive_threshold = 0;
@@ -255,8 +263,10 @@ static GOptionEntry entries[] = {
     "use FILE as output text file name", "FILE"},
   {"html-out", 'h', 0, G_OPTION_ARG_NONE, &text_out_html,
     "output text in html format", NULL},
+#ifdef USE_GTK
   {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
     "do not use gtk for file input and output", NULL},
+#endif
   {"font", 'z', 0, G_OPTION_ARG_INT, &font_code,
     "use font NUM", "NUM"},
   {"no-nikud", 'n', 0, G_OPTION_ARG_NONE, &dont_recognize_nikud,
@@ -410,13 +420,18 @@ hocr_pixbuf_load_with_debug ()
   if (no_gtk)
   {
     pix = ho_pixbuf_pnm_load (image_in_filename);
+#ifdef USE_TIFF
     /* if this is not a pnm image file, try b/w tiff */
     if (!pix)
       pix = ho_pixbuf_bw_tiff_load (image_in_filename);
+#endif /* USE_TIFF */
   }
+  
+#ifdef USE_GTK
   else
     pix = ho_gtk_pixbuf_load (image_in_filename);
-
+#endif /* USE_GTK */
+  
   if (!pix)
   {
     hocr_printerr ("can't read input image\n");
@@ -441,9 +456,10 @@ hocr_pixbuf_load_with_debug ()
     {
       if (no_gtk)
         ho_pixbuf_pnm_save (pix, filename);
+#ifdef USE_GTK
       else
         ho_gtk_pixbuf_save (pix, filename);
-
+#endif /* USE_GTK */
       g_free (filename);
     }
   }
@@ -1034,10 +1050,11 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
             if (no_gtk)
               ho_font_pnm_save (m_font_main_sign,
                 m_font_nikud, m_mask, filename);
+#ifdef USE_GTK
             else
               ho_gtk_font_save (m_font_main_sign,
                 m_font_nikud, m_mask, filename);
-
+#endif /* USE_GTK */
             /* free filename */
             g_free (filename);
           }
@@ -1085,10 +1102,11 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
                   if (no_gtk)
                     ho_font_pnm_save (m_font_main_sign,
                       m_font_test, m_mask, filename);
+#ifdef USE_GTK
                   else
                     ho_gtk_font_save (m_font_main_sign,
                       m_font_test, m_mask, filename);
-
+#endif /* USE_GTK */
                   /* free file name */
                   g_free (filename);
 
@@ -1138,10 +1156,11 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
                   if (no_gtk)
                     ho_font_pnm_save (m_font_main_sign,
                       m_font_test, m_mask, filename);
+#ifdef USE_GTK
                   else
                     ho_gtk_font_save (m_font_main_sign,
                       m_font_test, m_mask, filename);
-
+#endif /* USE_GTK */
                   /* free file name */
                   g_free (filename);
 
@@ -1194,10 +1213,11 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
                     if (no_gtk)
                       ho_font_pnm_save (m_font_main_sign,
                         m_font_test, m_mask, filename);
+#ifdef USE_GTK
                     else
                       ho_gtk_font_save (m_font_main_sign,
                         m_font_test, m_mask, filename);
-
+#endif /* USE_GTK */
                     /* free file name */
                     g_free (filename);
 
@@ -1247,10 +1267,11 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
                     if (no_gtk)
                       ho_font_pnm_save (m_font_main_sign,
                         m_font_test, m_mask, filename);
+#ifdef USE_GTK
                     else
                       ho_gtk_font_save (m_font_main_sign,
                         m_font_test, m_mask, filename);
-
+#endif /* USE_GTK */
                     /* free file name */
                     g_free (filename);
 
@@ -1359,9 +1380,10 @@ main (int argc, char *argv[])
   hocr_cmd_parser (&argc, &argv);
 
   /* init gtk */
+#ifdef USE_GTK
   if (!no_gtk)
     gtk_init (&argc, &argv);
-
+#endif
   /* end of argument analyzing section */
 
   /* start of image proccesing section */
@@ -1428,9 +1450,10 @@ main (int argc, char *argv[])
     {
       if (no_gtk)
         ho_pixbuf_pnm_save (pix_out, filename);
+#ifdef USE_GTK
       else
         ho_gtk_pixbuf_save (pix_out, filename);
-
+#endif /* USE_GTK */
       /* free locale memory */
       ho_pixbuf_free (pix_out);
       g_free (filename);
@@ -1517,9 +1540,10 @@ main (int argc, char *argv[])
     {
       if (no_gtk)
         ho_pixbuf_pnm_save (pix_out, filename);
+#ifdef USE_GTK
       else
         ho_gtk_pixbuf_save (pix_out, filename);
-
+#endif /* USE_GTK */
       ho_pixbuf_free (pix_out);
       g_free (filename);
     }

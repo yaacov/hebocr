@@ -56,6 +56,8 @@ library_include_HEADERS = \
          ho_gtk.h 
 
 # libhocrgtk, helper functions to use hocr in gtk programs
+if WITH_GTK
+
 libhocrgtk_la_SOURCES = \
         ho_gtk.c
 
@@ -68,3 +70,5 @@ libhocrgtk_la_LIBADD = \
         -L. -lhocr
         
 libhocrgtk_la_LDFLAGS = $(libhocr_la_LDFLAGS)
+
+endif
