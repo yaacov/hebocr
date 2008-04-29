@@ -197,11 +197,9 @@ namespace hocr
     {
       return ho_bitmap_pnm_save (m_bit_bw, filename);
     }
-      
-#ifdef USE_TIFF    
+ 
     /**
-     @brief save bitmap as tiff
-     define USE_TIFF to use this function
+     @brief save bitmap as tiff (neads a tiff enabled libhocr)
      
      @param filename the the image file name
      @return the object bitmap
@@ -210,7 +208,6 @@ namespace hocr
     {
       return ho_bitmap_tiff_save (m_bit_bw, filename);
     }
-#endif
       
     /**
      @brief get bitmap pixbuf
