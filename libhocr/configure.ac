@@ -38,6 +38,37 @@ dnl check for swig
 AC_CHECK_PROG(have_swig, "swig", yes, no)
 
 dnl ============================================================================
+dnl build tiff
+
+build_tiff=yes
+
+AC_ARG_ENABLE([tiff], 
+  [AS_HELP_STRING([--disable-tiff],
+  [do not use libtiff])],
+  [build_tiff=no], [build_tiff=yes])
+
+dnl check for libtiff
+
+if test "$build_tiff" = "yes"; then
+    AC_CHECK_LIB([tiff], [TIFFOpen], build_tiff=yes, build_tiff=no)
+
+    if test "$build_tiff" = "yes"; then
+        tiff_CFLAGS=" -DUSE_TIFF"
+        tiff_LIBS=" -ltiff"
+   
+        AC_SUBST(tiff_CFLAGS)
+        AC_SUBST(tiff_LIBS)
+        
+        ld_tiff="$tiff_LIBS"
+        
+        dnl export ld_tiff librarys to pkg-config pc file 
+        AC_SUBST(ld_tiff)
+    fi
+fi
+
+AM_CONDITIONAL(WITH_TIFF, test "$build_tiff" = yes)
+
+dnl ============================================================================
 dnl check for glib
 
 build_lib=yes
@@ -61,6 +92,7 @@ if test "$build_glib" = "yes"; then
 fi
 
 AM_CONDITIONAL(WITH_GLIB, test "$build_glib" = yes)
+
 dnl ============================================================================
 dnl check for gtk
 
@@ -124,13 +156,19 @@ if test "$have_python" = "yes"; then
 		  AC_SUBST([PY_VERSION])
 		  AC_SUBST([PY_CFLAGS])
 		  AC_SUBST([PY_MODULES_PATH])
-		  if test "$have_swig" = "no"; then
-			build_python=no
-		  fi
+		  
 	  else
 		  AC_MSG_RESULT(no)
 		  build_python=no
 	  fi
+fi
+
+if test "$have_swig" = "no"; then
+  build_python=no
+fi
+
+if test "$build_tiff" = "no"; then
+  build_python=no
 fi
 
 AM_CONDITIONAL(WITH_PYTHON, test "$build_python" = "yes")
@@ -165,37 +203,6 @@ if test "$build_hspell" = "yes"; then
 fi
 
 AM_CONDITIONAL(WITH_HSPELL, test "$build_hspell" = yes)
-
-dnl ============================================================================
-dnl build tiff
-
-build_tiff=yes
-
-AC_ARG_ENABLE([libtiff], 
-  [AS_HELP_STRING([--disable-libtiff],
-  [do not use libtiff])],
-  [build_tiff=no], [build_tiff=yes])
-
-dnl check for libtiff
-
-if test "$build_tiff" = "yes"; then
-    AC_CHECK_LIB([tiff], [TIFFOpen], build_tiff=yes, build_tiff=no)
-
-    if test "$build_tiff" = "yes"; then
-        tiff_CFLAGS=" -DUSE_TIFF"
-        tiff_LIBS=" -ltiff"
-   
-        AC_SUBST(tiff_CFLAGS)
-        AC_SUBST(tiff_LIBS)
-        
-        ld_tiff="$tiff_LIBS"
-        
-        dnl export ld_tiff librarys to pkg-config pc file 
-        AC_SUBST(ld_tiff)
-    fi
-fi
-
-AM_CONDITIONAL(WITH_TIFF, test "$build_tiff" = yes)
 
 dnl ============================================================================
 dnl build hocr
@@ -235,6 +242,9 @@ BUILD_STR+="-tiff"
 fi
 if test "$build_hspell" = "yes"; then
 BUILD_STR+="-hspell"
+fi
+if test "$build_gtk" = "yes"; then
+BUILD_STR+="-gtk"
 fi
 AC_SUBST(BUILD_STR)
 
@@ -277,8 +287,8 @@ echo with hspell: ${build_hspell}
 echo with libtiff: ${build_tiff}
 echo
 echo build hocr, requires glib: ${build_hocr}
-echo build hocr-gtk: ${build_hocr_gtk}
+echo build hocr-gtk, suggests python bindings: ${build_hocr_gtk}
 echo
-echo build python binding: ${build_python}
+echo build python binding, requires swig, libtiff: ${build_python}
 echo python site lib path: ${PY_MODULES_PATH}
 echo

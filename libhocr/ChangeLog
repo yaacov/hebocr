@@ -6,6 +6,8 @@ libhocr (0.10.7)
    hocr-pixbuf export and import using tiff format
  * hocr example can read black and white tiff image files
    without using gtk
+ * use sane-pygtk as the scanner utility
+ * make the configure script more flexible
 
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 24 Apr 2008 09:04
  

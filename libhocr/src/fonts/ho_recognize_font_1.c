@@ -400,7 +400,7 @@ ho_recognize_font_1_question (const double *array_in)
 
   if (MID_LEFT_END || TOP_LEFT_END)
     return_value += 0.1;
-  if (WIDTH < 0.2)
+  if (WIDTH < 0.3)
     return_value += 0.1;
   if (DOT_PART)
     return_value += 0.1;
@@ -411,9 +411,9 @@ ho_recognize_font_1_question (const double *array_in)
     return_value -= 0.2;
   if (!DOT_PART)
     return_value -= 0.1;
-  if (BOTTOM < 0.45 || BOTTOM > 0.55)
+  if (BOTTOM < 0.45 || BOTTOM > 0.60)
     return_value -= 0.2;
-  if (TOP < 0.45 || TOP > 0.55)
+  if (TOP < 0.45 || TOP > 0.58)
     return_value -= 0.2;
 
   return return_value;
@@ -682,7 +682,7 @@ ho_recognize_font_1_vav (const double *array_in)
     return_value += 0.1;
   if (RIGHT_VBAR || MID_VBAR)
     return_value += 0.1;
-  if (BOTTOM < 0.55)
+  if (BOTTOM < 0.58 && BOTTOM > 0.42)
     return_value += 0.1;
   if (TOP_RIGHT > (MID_RIGHT + 0.1))
     return_value += 0.1;
@@ -947,7 +947,7 @@ ho_recognize_font_1_caf (const double *array_in)
     return_value -= 0.3;
   if (MID_LEFT < 0.8)
     return_value -= 0.2;
-  if (!BOTTOM_LEFT_END)
+  if (!BOTTOM_LEFT_END && BOTTOM_LEFT > 0.2)
     return_value -= 0.2;
   if (WIDTH < 0.3)
     return_value -= 0.3;
@@ -1174,7 +1174,7 @@ ho_recognize_font_1_nun_sofit (const double *array_in)
 
   if (WIDTH < 0.3)
     return_value += 0.2;
-  if (WIDTH_BY_HEIGHT < 0.3)
+  if (WIDTH_BY_HEIGHT < 0.4)
     return_value += 0.2;
   if (RIGHT_VBAR)
     return_value += 0.1;
@@ -1199,7 +1199,7 @@ ho_recognize_font_1_nun_sofit (const double *array_in)
     return_value -= 0.3;
   if (BOTTOM > 0.0)
     return_value -= 0.2;
-  if (WIDTH_BY_HEIGHT > 0.35)
+  if (WIDTH_BY_HEIGHT > 0.38)
     return_value -= 0.3;
   if (BOTTOM_LEFT < 0.15)
     return_value -= 0.1;
@@ -1557,7 +1557,7 @@ ho_recognize_font_1_resh (const double *array_in)
     return_value -= 0.3;
   if (TOP_RIGTH_EDGE)
     return_value -= 0.1;
-  if (WIDTH_BY_HEIGHT < 0.30)
+  if (WIDTH_BY_HEIGHT < 0.35)
     return_value -= 0.3;
   if (TWO_VLINES_DOWN)
     return_value -= 0.3;
@@ -1644,7 +1644,7 @@ ho_recognize_font_1_tav (const double *array_in)
     return_value -= 0.1;
   if (WIDTH_BY_HEIGHT < 0.3)
     return_value -= 0.3;
-  if (BOTTOM_LEFT > 0.5)
+  if (BOTTOM_LEFT > 0.8)
     return_value -= 0.3;
   if (BOTTOM_LEFT < (MID_LEFT + 0.1))
     return_value -= 0.2;

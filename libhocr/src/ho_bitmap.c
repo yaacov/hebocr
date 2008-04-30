@@ -1393,63 +1393,6 @@ ho_bitmap_filter_count_objects (const ho_bitmap * m)
   return count;
 }
 
-int
-ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename)
-{
-  FILE *file = NULL;
-
-  file = fopen (filename, "wb");
-
-  if (!file)
-    return TRUE;
-
-  /* print header */
-  fprintf (file, "P4 %d %d\n", m->width, m->height);
-
-  /* this might be a huge write... */
-  fwrite (m->data, 1, m->height * m->rowstride, file);
-  fclose (file);
-
-  return FALSE;
-}
-
-#ifdef USE_TIFF
-int
-ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename)
-{
-  TIFF *image;
-
-  /* Open the TIFF file */
-  if((image = TIFFOpen(filename, "w")) == NULL)
-    return TRUE;
-
-  /* set some values */
-  TIFFSetField(image, TIFFTAG_IMAGEWIDTH, m->rowstride * 8);
-  TIFFSetField(image, TIFFTAG_IMAGELENGTH, m->height);
-  TIFFSetField(image, TIFFTAG_BITSPERSAMPLE, 1);
-  TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL, 1);
-  /* FIXME: strip limit is 65,536 pixels in a single strip ? */
-  TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, m->height);
-
-  TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_CCITTFAX4);
-  TIFFSetField(image, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISWHITE);
-  TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
-  TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-
-  TIFFSetField(image, TIFFTAG_XRESOLUTION, 300.0);
-  TIFFSetField(image, TIFFTAG_YRESOLUTION, 300.0);
-  TIFFSetField(image, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
-  
-  /* Write the information to the file */
-  TIFFWriteEncodedStrip(image, 0, m->data, m->rowstride * m->height);
-
-  /* Close the file */
-  TIFFClose(image);
-  
-  return FALSE;
-}
-#endif /* USE_TIFF */
-
 ho_bitmap *
 ho_bitmap_rotate (const ho_bitmap * m, const double angle)
 {
@@ -1529,3 +1472,60 @@ ho_bitmap_rotate (const ho_bitmap * m, const double angle)
 
   return m_out;
 }
+
+int
+ho_bitmap_pnm_save (const ho_bitmap * m, const char *filename)
+{
+  FILE *file = NULL;
+
+  file = fopen (filename, "wb");
+
+  if (!file)
+    return TRUE;
+
+  /* print header */
+  fprintf (file, "P4 %d %d\n", m->width, m->height);
+
+  /* this might be a huge write... */
+  fwrite (m->data, 1, m->height * m->rowstride, file);
+  fclose (file);
+
+  return FALSE;
+}
+
+#ifdef USE_TIFF
+int
+ho_bitmap_tiff_save (const ho_bitmap * m, const char *filename)
+{
+  TIFF *image;
+
+  /* Open the TIFF file */
+  if((image = TIFFOpen(filename, "w")) == NULL)
+    return TRUE;
+
+  /* set some values */
+  TIFFSetField(image, TIFFTAG_IMAGEWIDTH, m->rowstride * 8);
+  TIFFSetField(image, TIFFTAG_IMAGELENGTH, m->height);
+  TIFFSetField(image, TIFFTAG_BITSPERSAMPLE, 1);
+  TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL, 1);
+  /* FIXME: strip limit is 65,536 pixels in a single strip ? */
+  TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, m->height);
+
+  TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_CCITTFAX4);
+  TIFFSetField(image, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISWHITE);
+  TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
+  TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+
+  TIFFSetField(image, TIFFTAG_XRESOLUTION, 300.0);
+  TIFFSetField(image, TIFFTAG_YRESOLUTION, 300.0);
+  TIFFSetField(image, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
+  
+  /* Write the information to the file */
+  TIFFWriteEncodedStrip(image, 0, m->data, m->rowstride * m->height);
+
+  /* Close the file */
+  TIFFClose(image);
+  
+  return FALSE;
+}
+#endif /* USE_TIFF */
