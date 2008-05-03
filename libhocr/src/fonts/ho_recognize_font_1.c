@@ -534,6 +534,8 @@ ho_recognize_font_1_bet (const double *array_in)
     return_value += 0.1;
   if (MID_LEFT > 0.9)
     return_value += 0.1;
+  if (WIDTH_BY_HEIGHT > 0.8)
+    return_value += 0.1;
   if (BOTTOM_RIGTH_EDGE)
     return_value += 0.1;
   if (BOTTOM_LEFT_END && TOP_LEFT_END && !TOP_RIGHT_END)
@@ -552,8 +554,8 @@ ho_recognize_font_1_bet (const double *array_in)
   if (TOP_LEFT > (BOTTOM_LEFT + 0.25))
     return_value -= 0.3;
   if (MID_LEFT < 0.3)
-    return_value -= 0.1;
-  if (MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH)
+    return_value -= 0.3;
+  if ((MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH) && WIDTH_BY_HEIGHT < 0.6)
     return_value -= 0.2;
   if (BOTTOM > 0.57 || BOTTOM < 43)
     return_value -= 0.20;
@@ -561,7 +563,9 @@ ho_recognize_font_1_bet (const double *array_in)
     return_value -= 0.3;
   if (BOTTOM_RIGHT > 0.33)
     return_value -= 0.3;
-
+  if (HEY_PART)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -592,6 +596,8 @@ ho_recognize_font_1_gimal (const double *array_in)
   if (LEFT_VBAR)
     return_value -= 0.3;
   if (WIDTH > 0.4 && MID_LEFT < 0.4)
+    return_value -= 0.2;
+  if (WIDTH_BY_HEIGHT > 0.8)
     return_value -= 0.2;
 
   return return_value;
@@ -641,7 +647,9 @@ ho_recognize_font_1_dalet (const double *array_in)
     return_value -= 0.3;
   if (TOP_RIGHT > BOTTOM_RIGHT)
     return_value -= 0.3;
-
+  if (TOP_RIGHT > MID_RIGHT)
+    return_value -= 0.3;
+  
   return return_value;
 }
 
@@ -674,9 +682,9 @@ ho_recognize_font_1_vav (const double *array_in)
 {
   double return_value = 0.0;
 
-  if (WIDTH < 0.3)
+  if (WIDTH < 0.4)
     return_value += 0.2;
-  if (WIDTH < 0.25 || HEIGHT > 0.40)
+  if (WIDTH < 0.27 || HEIGHT > 0.40)
     return_value += 0.2;
   if (WIDTH_BY_HEIGHT < 0.53)
     return_value += 0.1;
@@ -717,9 +725,9 @@ ho_recognize_font_1_vav (const double *array_in)
     return_value -= 0.2;
   if (!BOTTOM_MID_END && !BOTTOM_RIGHT_END)
     return_value -= 0.2;
-  if (HEIGHT < 0.5)
+  if (HEIGHT < 0.35)
     return_value -= 0.2;
-  if (WIDTH_BY_HEIGHT > 0.45)
+  if (WIDTH_BY_HEIGHT > 0.55)
     return_value -= 0.2;
   if (ONE_HOLE)
     return_value -= 0.2;
@@ -734,27 +742,34 @@ ho_recognize_font_1_zayin (const double *array_in)
 
   if (WIDTH < 0.3)
     return_value += 0.2;
-  if (WIDTH_BY_HEIGHT < 0.3)
+  if (WIDTH_BY_HEIGHT < 0.53)
     return_value += 0.1;
   if (RIGHT_VBAR)
     return_value += 0.1;
   if (MID_VBAR)
-    return_value += 0.1;
+    return_value += 0.2;
   if (TOP_RIGTH_EDGE)
     return_value += 0.2;
-
+  if (TOP_MID_CROSS || TOP_RIGHT_CROSS)
+    return_value += 0.1;
+  if (MID_RIGHT > MID_LEFT)
+    return_value += 0.1;
+  
   if (BOTTOM > 0.60)
     return_value -= 0.2;
   if (BOTTOM > 0.57 || BOTTOM < 47)
     return_value -= 0.10;
   if (BOTTOM < 0.43)
     return_value -= 0.3;
-
+  if (BOTTOM_HBAR)
+    return_value -= 0.3;
   if (LEFT_BOTTOM_EDGE)
     return_value -= 0.1;
   if (MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH)
     return_value -= 0.2;
   if (BOTTOM_HBAR)
+    return_value -= 0.2;
+  if (BOTTOM_LEFT < 0.2)
     return_value -= 0.2;
   if (MID_LEFT > 0.9)
     return_value -= 0.2;
@@ -762,7 +777,11 @@ ho_recognize_font_1_zayin (const double *array_in)
     return_value -= 0.2;
   if (DOT_PART)
     return_value -= 0.2;
-
+  if (ONE_HOLE || TWO_HOLES)
+    return_value -= 0.3;
+  if (WIDTH_BY_HEIGHT > 0.63)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -843,7 +862,7 @@ ho_recognize_font_1_tet (const double *array_in)
   if (count_edges == 2)
     return_value += 0.1;
 
-  if (TOP_HBAR)
+  if (TOP_HBAR && !MID_TOP_NOTCH)
     return_value -= 0.1;
   if (BOTTOM_LEFT_EDGE)
     return_value -= 0.2;
@@ -872,6 +891,10 @@ ho_recognize_font_1_tet (const double *array_in)
   if (TWO_HOLES)
     return_value -= 0.2;
   if (ONE_HOLE && !HOLE_RIGHT_TOP_EDGE)
+    return_value -= 0.2;
+  if (ONE_HOLE && HOLE_WIDTH < 0.3)
+    return_value -= 0.2;
+  if (ONE_HOLE && HOLE_BOTTOM_LEFT_EDGE)
     return_value -= 0.2;
   if (BOTTOM_LEFT_CROSS || BOTTOM_MID_CROSS)
     return_value -= 0.2;
@@ -926,6 +949,8 @@ ho_recognize_font_1_caf (const double *array_in)
     return_value += 0.1;
   if (RIGHT_VBAR)
     return_value += 0.1;
+  if (MID_LEFT == 1 && MID_RIGHT < 0.2)
+    return_value += 0.1;
   if (MID_LEFT_NOTCH)
     return_value += 0.1;
   if (!BOTTOM_RIGTH_EDGE)
@@ -935,8 +960,9 @@ ho_recognize_font_1_caf (const double *array_in)
 
   if (BOTTOM_RIGTH_EDGE)
     return_value -= 0.3;
-  if (MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH)
-    return_value -= 0.3;
+  if ((MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH) && 
+      (BOTTOM_RIGHT < 0.25))
+    return_value -= 0.2;
   if (BOTTOM_HBAR < 0.5)
     return_value -= 0.2;
   if (LEFT_VBAR)
@@ -1035,7 +1061,9 @@ ho_recognize_font_1_lamed (const double *array_in)
     return_value -= 0.2;
   if (DOT_PART)
     return_value -= 0.2;
-
+  if (HEY_PART)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -1054,6 +1082,12 @@ ho_recognize_font_1_mem (const double *array_in)
     return_value += 0.1;
   if (TOP_LEFT_END)
     return_value += 0.1;
+  if (BOTTOM_LEFT_END)
+    return_value += 0.1;
+  if (BOTTOM_MID_END)
+    return_value += 0.1;
+  if (TOP_MID_CROSS)
+    return_value += 0.1;
   if ((MID_LEFT_END || BOTTOM_LEFT_END) && BOTTOM_MID_END)
     return_value += 0.1;
 
@@ -1068,6 +1102,8 @@ ho_recognize_font_1_mem (const double *array_in)
   if (BOTTOM > 0.60)
     return_value -= 0.2;
   if (BOTTOM_RIGHT > 0.35)
+    return_value -= 0.3;
+  if (BOTTOM_MID == 1)
     return_value -= 0.1;
   if (MID_LEFT > 0.9)
     return_value -= 0.2;
@@ -1092,6 +1128,8 @@ ho_recognize_font_1_mem_sofit (const double *array_in)
     return_value += 0.1;
   if ((BOTTOM_LEFT) > (BOTTOM_RIGHT + 0.2))
     return_value += 0.1;
+  if (BOTTOM_LEFT < 0.3 && BOTTOM_RIGHT < 0.3)
+    return_value += 0.2;
   if (ONE_HOLE)
     return_value += 0.2;
 
@@ -1099,6 +1137,8 @@ ho_recognize_font_1_mem_sofit (const double *array_in)
     return_value -= 0.3;
   if (!ONE_HOLE)
     return_value -= 0.2;
+  if (BOTTOM_LEFT > 0.30 && BOTTOM_RIGHT > 0.30)
+    return_value -= 0.1;
   if (BOTTOM_LEFT > 0.45 || BOTTOM_RIGHT > 0.45)
     return_value -= 0.2;
   if (BOTTOM > 0.57 || BOTTOM < 43)
@@ -1126,17 +1166,17 @@ ho_recognize_font_1_nun (const double *array_in)
     return_value += 0.1;
   if (MID_LEFT_NOTCH)
     return_value += 0.1;
+  if (MID_LEFT == 1 && WIDTH < 0.3)
+    return_value += 0.1;
   if (!BOTTOM_RIGTH_EDGE)
     return_value += 0.1;
   if (TOP_LEFT > (BOTTOM_LEFT + 0.25))
     return_value += 0.2;
   if (WIDTH < 0.3)
-    return_value += 0.1;
+    return_value += 0.2;
   if (WIDTH < 0.3 && BOTTOM_HBAR)
     return_value += 0.2;
 
-  if (BOTTOM_RIGTH_EDGE && TOP_HBAR)
-    return_value -= 0.1;
   if (MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH)
     return_value -= 0.3;
   if (BOTTOM_HBAR < 0.5)
@@ -1145,11 +1185,11 @@ ho_recognize_font_1_nun (const double *array_in)
     return_value -= 0.2;
   if (MID_LEFT_EDGE)
     return_value -= 0.2;
-  if (WIDTH > 0.3 && TOP_LEFT < (BOTTOM_LEFT + 0.25))
+  if (WIDTH > 0.33 && (TOP_LEFT < (BOTTOM_LEFT + 0.2)))
     return_value -= 0.35;
   if (TOP_LEFT < (BOTTOM_LEFT))
     return_value -= 0.2;
-  if (TOP_LEFT < (BOTTOM_LEFT + 0.25))
+  if (TOP_LEFT < (BOTTOM_LEFT + 0.2))
     return_value -= 0.2;
   if (MID_LEFT < 0.6)
     return_value -= 0.3;
@@ -1230,6 +1270,8 @@ ho_recognize_font_1_samech (const double *array_in)
     return_value += 0.1;
   if ((BOTTOM_LEFT + 0.2) < (BOTTOM_RIGHT))
     return_value += 0.1;
+  if (BOTTOM_LEFT > 0.30 && BOTTOM_RIGHT > 0.30)
+    return_value += 0.1;
   if (ONE_HOLE)
     return_value += 0.2;
 
@@ -1256,6 +1298,8 @@ ho_recognize_font_1_samech (const double *array_in)
   if (TOP_LEFT > 0.4)
     return_value -= 0.2;
   if (MID_LEFT_NOTCH)
+    return_value -= 0.1;
+  if (MID_TOP_NOTCH)
     return_value -= 0.1;
   if (BOTTOM_LEFT_NOTCH)
     return_value -= 0.1;
@@ -1336,9 +1380,15 @@ ho_recognize_font_1_pey (const double *array_in)
     return_value += 0.15;
   if (MID_LEFT_END || MID_MID_END)
     return_value += 0.2;
+  if (MID_LEFT_CROSS && MID_MID_END)
+    return_value += 0.2;
   if (BOTTOM_LEFT_END)
     return_value += 0.1;
-
+  if (ONE_HOLE && HOLE_BOTTOM_LEFT_EDGE)
+    return_value += 0.1;
+      
+  if (HEIGHT < 0.3)
+    return_value -= 0.3;
   if (LEFT_VBAR)
     return_value -= 0.1;
   if (BOTTOM_RIGTH_EDGE)
@@ -1359,7 +1409,7 @@ ho_recognize_font_1_pey (const double *array_in)
     return_value -= 0.2;
   if (ONE_HOLE && HOLE_TOP_LEFT > (HOLE_BOTTOM_LEFT + 0.1))
     return_value -= 0.2;
-  if (ONE_HOLE && !HOLE_TOP_LEFT_EDGE)
+  if (ONE_HOLE && (!HOLE_TOP_LEFT_EDGE && !HOLE_BOTTOM_LEFT_EDGE))
     return_value -= 0.2;
   if (!MID_LEFT_END && !MID_MID_END && !MID_RIGHT_CROSS)
     return_value -= 0.2;
@@ -1381,7 +1431,7 @@ ho_recognize_font_1_pey_sofit (const double *array_in)
   if (BOTTOM < 0.47)
     return_value += 0.2;
   if ((!TOP_LEFT_END && !TOP_MID_END) || TOP_LEFT_CROSS)
-    return_value += 0.3;
+    return_value += 0.2;
   if (HEIGHT > 0.51)
     return_value += 0.1;
 
@@ -1391,6 +1441,8 @@ ho_recognize_font_1_pey_sofit (const double *array_in)
     return_value -= 0.3;
   if (MID_VBAR)
     return_value -= 0.1;
+  if (MID_LEFT == 1.0)
+    return_value -= 0.2;
   if (HEY_PART)
     return_value -= 0.3;
   if (BOTTOM > 0.50)
@@ -1449,7 +1501,13 @@ ho_recognize_font_1_tzadi (const double *array_in)
     return_value -= 0.2;
   if (!MID_MID_CROSS && !BOTTOM_RIGHT_CROSS)
     return_value -= 0.2;
-
+  if (WIDTH < 0.3)
+    return_value -= 0.2;
+  if (!TOP_RIGHT_END)
+    return_value -= 0.2;
+  if (MID_LEFT_END)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -1519,7 +1577,9 @@ ho_recognize_font_1_kuf (const double *array_in)
     return_value -= 0.1;
   if (BOTTOM_HBAR)
     return_value -= 0.1;
-
+  if (!TOP_HBAR)
+    return_value -= 0.15;
+  
   return return_value;
 }
 
@@ -1557,7 +1617,9 @@ ho_recognize_font_1_resh (const double *array_in)
     return_value -= 0.3;
   if (TOP_RIGTH_EDGE)
     return_value -= 0.1;
-  if (WIDTH_BY_HEIGHT < 0.35)
+  if (WIDTH < 0.3)
+    return_value -= 0.3;
+  if (WIDTH_BY_HEIGHT < 0.6)
     return_value -= 0.3;
   if (TWO_VLINES_DOWN)
     return_value -= 0.3;
@@ -1586,7 +1648,7 @@ ho_recognize_font_1_shin (const double *array_in)
     LEFT_TOP_NOTCH * 10;
 
   if (TWO_HOLES)
-    return_value += 0.2;
+    return_value += 0.3;
   if (THREE_VLINES_UP)
     return_value += 0.3;
   if (LEFT_TOP_NOTCH)
@@ -1603,7 +1665,9 @@ ho_recognize_font_1_shin (const double *array_in)
     return_value += 0.2;
   if (BOTTOM_MID_CROSS)
     return_value += 0.2;
-
+  if (BOTTOM_LEFT_CROSS)
+    return_value += 0.2;
+  
   if (MID_BOTTOM_NOTCH)
     return_value -= 0.2;
   if (!RIGHT_TOP_NOTCH && !MID_TOP_NOTCH)
@@ -1628,14 +1692,14 @@ ho_recognize_font_1_tav (const double *array_in)
   if (BIG_BOTTOM_LEFT_EDGE)
     return_value += 0.2;
   if (BOTTOM_LEFT_EDGE)
-    return_value += 0.1;
+    return_value += 0.2;
   if (TOP_LEFT > (BOTTOM_LEFT + 0.15))
     return_value += 0.1;
 
   if (BOTTOM_HBAR)
     return_value -= 0.2;
   if (!BOTTOM_LEFT_EDGE)
-    return_value -= 0.2;
+    return_value -= 0.3;
   if (BOTTOM_MID < 0.9)
     return_value -= 0.2;
   if (MID_TOP_NOTCH || RIGHT_TOP_NOTCH)
@@ -1648,6 +1712,8 @@ ho_recognize_font_1_tav (const double *array_in)
     return_value -= 0.3;
   if (BOTTOM_LEFT < (MID_LEFT + 0.1))
     return_value -= 0.2;
-
+  if (HEY_PART)
+    return_value -= 0.1;
+  
   return return_value;
 }
