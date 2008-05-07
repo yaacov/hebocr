@@ -534,6 +534,7 @@ ho_pixbuf_scale3 (const ho_pixbuf * pix)
 ho_pixbuf *
 ho_pixbuf_scale4 (const ho_pixbuf * pix)
 {
+  /* FIXME: find a better way to scale by 4 and 8 */
   ho_pixbuf *pix_scaled2 = NULL;
   ho_pixbuf *pix_scaled4 = NULL;
 
@@ -542,9 +543,25 @@ ho_pixbuf_scale4 (const ho_pixbuf * pix)
     return NULL;
 
   pix_scaled4 = ho_pixbuf_scale2 (pix_scaled2);
-  ho_pixbuf_free (pix_scaled2);
+  ho_pixbuf_free (pix_scaled4);
 
   return pix_scaled4;
+}
+
+ho_pixbuf *
+ho_pixbuf_scale8 (const ho_pixbuf * pix)
+{
+  ho_pixbuf *pix_scaled4 = NULL;
+  ho_pixbuf *pix_scaled8 = NULL;
+
+  pix_scaled4 = ho_pixbuf_scale4 (pix);
+  if (!pix_scaled4)
+    return NULL;
+
+  pix_scaled8 = ho_pixbuf_scale2 (pix_scaled4);
+  ho_pixbuf_free (pix_scaled8);
+
+  return pix_scaled8;
 }
 
 ho_pixbuf *
@@ -560,10 +577,13 @@ ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale)
   if (scale == 3)
     return ho_pixbuf_scale3 (pix);
 
-  /* FIXME: scale more them 4 ? */
-  if (scale >= 4)
+  if (scale == 4)
     return ho_pixbuf_scale4 (pix);
 
+  /* FIXME: scale more them 8 ? */
+  if (scale > 4)
+    return ho_pixbuf_scale8 (pix);
+  
   return NULL;
 }
 

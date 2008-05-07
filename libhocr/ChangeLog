@@ -1,3 +1,10 @@
+libhocr (0.10.8)
+
+ * Fix auto scaling bug
+ * Refine david font 
+
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 8 May 2008 09:04
+ 
 libhocr (0.10.7)
 
  * hocr-gtk save session parameters

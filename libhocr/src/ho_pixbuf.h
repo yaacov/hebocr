@@ -226,6 +226,12 @@ ho_pixbuf *ho_pixbuf_scale3 (const ho_pixbuf * pix);
 ho_pixbuf *ho_pixbuf_scale4 (const ho_pixbuf * pix);
 
 /**
+ scale a gray pixbuf to by 8
+ @param pix the input ho_pixbuf
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_scale8 (const ho_pixbuf * pix);
+/**
  scale a gray pixbuf
  @param pix the input ho_pixbuf
  @param scale scale by this factor

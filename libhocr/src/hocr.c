@@ -87,18 +87,18 @@ hocr_image_processing (const ho_pixbuf * pix_in,
 
     /* if fonts are too small, re-scale image */
     if (bitmap_temp->font_height < 10)
-      scale_by = 4;
+      scale_by = 8;
     else if (bitmap_temp->font_height < 25)
-      scale_by = 2;
+      scale_by = 4;
     else
-      scale_by = 1;
+      scale_by = 2;
 
     if (scale_by > 1)
     {
       /* re-create bitmap */
       ho_bitmap_free (bitmap_temp);
       bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
-        scale, adaptive, threshold, a_threshold);
+        scale_by, adaptive, threshold, a_threshold);
       if (!bitmap_temp)
         return NULL;
     }

@@ -595,7 +595,7 @@ ho_recognize_font_1_gimal (const double *array_in)
     return_value -= 0.2;
   if (LEFT_VBAR)
     return_value -= 0.3;
-  if (WIDTH > 0.4 && MID_LEFT < 0.4)
+  if (WIDTH > 0.34)
     return_value -= 0.2;
   if (WIDTH_BY_HEIGHT > 0.8)
     return_value -= 0.2;
@@ -660,20 +660,22 @@ ho_recognize_font_1_hey (const double *array_in)
 
   if (HEY_PART)
     return_value += 0.2;
-  if (TOP_LEFT_NOTCH)
+  if (TOP_LEFT_NOTCH || MID_LEFT_NOTCH)
     return_value += 0.15;
   if (TOP_HBAR)
     return_value += 0.1;
   if (RIGHT_VBAR)
     return_value += 0.1;
 
-  if (BOTTOM < 0.48)
+  if (BOTTOM < 0.45)
     return_value -= 0.3;
-  if (BOTTOM > 0.57 || BOTTOM < 43)
+  if (BOTTOM > 0.6 || BOTTOM < 40)
     return_value -= 0.10;
   if (BOTTOM_HBAR)
     return_value -= 0.2;
-
+  if (!HEY_PART)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -1005,6 +1007,10 @@ ho_recognize_font_1_caf_sofit (const double *array_in)
 
   if (BOTTOM_HBAR)
     return_value -= 0.3;
+  if (MID_HBAR)
+    return_value -= 0.3;
+  if (MID_MID_CROSS)
+    return_value -= 0.3;
   if (LEFT_VBAR)
     return_value -= 0.3;
   if (MID_VBAR)
@@ -1137,6 +1143,8 @@ ho_recognize_font_1_mem_sofit (const double *array_in)
     return_value -= 0.3;
   if (!ONE_HOLE)
     return_value -= 0.2;
+  if (MID_LEFT > 0.7)
+    return_value -= 0.3;
   if (BOTTOM_LEFT > 0.30 && BOTTOM_RIGHT > 0.30)
     return_value -= 0.1;
   if (BOTTOM_LEFT > 0.45 || BOTTOM_RIGHT > 0.45)
@@ -1338,7 +1346,7 @@ ho_recognize_font_1_ayin (const double *array_in)
   if (MID_RIGHT_NOTCH || BOTTOM_RIGHT_NOTCH)
     return_value -= 0.2;
   if (TOP_HBAR)
-    return_value -= 0.2;
+    return_value -= 0.3;
   if (LEFT_BOTTOM_NOTCH)
     return_value -= 0.2;
   if (!BOTTOM_LEFT_END)
@@ -1353,6 +1361,8 @@ ho_recognize_font_1_ayin (const double *array_in)
     return_value -= 0.2;
   if (BOTTOM_LEFT > 0.3)
     return_value -= 0.2;
+  if (BOTTOM_RIGHT < 0.3)
+    return_value -= 0.1;
   if (BOTTOM_MID > 0.85)
     return_value -= 0.1;
   if (TOP > 0.56)
@@ -1387,7 +1397,7 @@ ho_recognize_font_1_pey (const double *array_in)
   if (ONE_HOLE && HOLE_BOTTOM_LEFT_EDGE)
     return_value += 0.1;
       
-  if (HEIGHT < 0.3)
+  if (HEIGHT < 0.45)
     return_value -= 0.3;
   if (LEFT_VBAR)
     return_value -= 0.1;
@@ -1564,6 +1574,8 @@ ho_recognize_font_1_kuf (const double *array_in)
     return_value += 0.1;
 
   if (BOTTOM_LEFT > (BOTTOM_RIGHT - 0.2))
+    return_value -= 0.2;
+  if (BOTTOM_RIGHT < 0.3)
     return_value -= 0.2;
   if (HEIGHT < 0.53)
     return_value -= 0.2;
