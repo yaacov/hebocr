@@ -481,6 +481,7 @@ class MainWindow:
             gtk.FILE_CHOOSER_ACTION_OPEN,
             (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
             gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        chooser.set_filename(self.filename)   
         chooser.set_preview_widget(self.preview)
         chooser.connect("update-preview", update_preview_cb, self.preview)
         

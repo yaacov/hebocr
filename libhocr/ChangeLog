@@ -1,3 +1,9 @@
+libhocr (0.10.9)
+
+ * Re-Fix auto scaling bug
+
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 8 May 2008 09:04
+ 
 libhocr (0.10.8)
 
  * Fix auto scaling bug

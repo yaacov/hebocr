@@ -278,7 +278,11 @@ ho_recognize_font_1_open (const double *array_in)
     return_value -= 0.2;
   if (LEFT_BOTTOM_EDGE)
     return_value -= 0.2;
-
+  if (DOT_PART)
+    return_value -= 0.2;
+  if (COMMA_PART)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -314,7 +318,11 @@ ho_recognize_font_1_close (const double *array_in)
     return_value -= 0.2;
   if (RIGHT_BOTTOM_EDGE)
     return_value -= 0.2;
-
+  if (DOT_PART)
+    return_value -= 0.2;
+  if (COMMA_PART)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -675,6 +683,8 @@ ho_recognize_font_1_hey (const double *array_in)
     return_value -= 0.2;
   if (!HEY_PART)
     return_value -= 0.2;
+  if (!TOP_HBAR)
+    return_value -= 0.1;
   
   return return_value;
 }
@@ -716,6 +726,8 @@ ho_recognize_font_1_vav (const double *array_in)
   if (BOTTOM < 0.43)
     return_value -= 0.3;
   if (TOP < 0.35)
+    return_value -= 0.3;
+  if (TOP > 0.65)
     return_value -= 0.3;
   if (WIDTH > 0.25 && (MID_LEFT > (BOTTOM_LEFT + 0.2)))
     return_value -= 0.2;
@@ -759,6 +771,8 @@ ho_recognize_font_1_zayin (const double *array_in)
   
   if (BOTTOM > 0.60)
     return_value -= 0.2;
+  if (TOP < 0.35)
+    return_value -= 0.3;
   if (BOTTOM > 0.57 || BOTTOM < 47)
     return_value -= 0.10;
   if (BOTTOM < 0.43)

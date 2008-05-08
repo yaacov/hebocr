@@ -543,7 +543,7 @@ ho_pixbuf_scale4 (const ho_pixbuf * pix)
     return NULL;
 
   pix_scaled4 = ho_pixbuf_scale2 (pix_scaled2);
-  ho_pixbuf_free (pix_scaled4);
+  ho_pixbuf_free (pix_scaled2);
 
   return pix_scaled4;
 }
@@ -559,7 +559,7 @@ ho_pixbuf_scale8 (const ho_pixbuf * pix)
     return NULL;
 
   pix_scaled8 = ho_pixbuf_scale2 (pix_scaled4);
-  ho_pixbuf_free (pix_scaled8);
+  ho_pixbuf_free (pix_scaled4);
 
   return pix_scaled8;
 }
