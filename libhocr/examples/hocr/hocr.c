@@ -504,7 +504,7 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
     /* if fonts are too small and user wants auto scale, re-scale image */
     if (m_bw->font_height < 10)
       scale_by = 4;
-    else if (m_bw->font_height < 25)
+    else if (m_bw->font_height < 20)
       scale_by = 2;
     else
       scale_by = 1;
