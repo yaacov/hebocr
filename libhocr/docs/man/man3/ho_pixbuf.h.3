@@ -1,4 +1,4 @@
-.TH "src/ho_pixbuf.h" 3 "8 Mar 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_pixbuf.h" 3 "15 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,6 +16,10 @@ src/ho_pixbuf.h \- libhocr C language header.
 .SS "Data Structures"
 
 .in +1c
+.ti -1c
+.RI "struct \fBstring_data\fP"
+.br
+.RI "\fIhelper string struct for non-null-terminated strings \fP"
 .ti -1c
 .RI "struct \fBho_pixbuf\fP"
 .br
@@ -65,6 +69,12 @@ src/ho_pixbuf.h \- libhocr C language header.
 .RI "\fBho_pixbuf\fP * \fBho_pixbuf_clone\fP (const \fBho_pixbuf\fP *m)"
 .br
 .ti -1c
+.RI "int \fBho_pixbuf_set_data\fP (\fBho_pixbuf\fP *pix, const char *data)"
+.br
+.ti -1c
+.RI "\fBstring_data\fP \fBho_pixbuf_get_data_string\fP (\fBho_pixbuf\fP *pix)"
+.br
+.ti -1c
 .RI "\fBho_pixbuf\fP * \fBho_pixbuf_new_from_bitmap\fP (const \fBho_bitmap\fP *bit_in)"
 .br
 .ti -1c
@@ -101,6 +111,9 @@ src/ho_pixbuf.h \- libhocr C language header.
 .RI "\fBho_pixbuf\fP * \fBho_pixbuf_scale4\fP (const \fBho_pixbuf\fP *pix)"
 .br
 .ti -1c
+.RI "\fBho_pixbuf\fP * \fBho_pixbuf_scale8\fP (const \fBho_pixbuf\fP *pix)"
+.br
+.ti -1c
 .RI "\fBho_pixbuf\fP * \fBho_pixbuf_scale\fP (const \fBho_pixbuf\fP *pix, const unsigned char scale)"
 .br
 .ti -1c
@@ -122,12 +135,6 @@ src/ho_pixbuf.h \- libhocr C language header.
 .RI "\fBho_bitmap\fP * \fBho_pixbuf_to_bitmap_wrapper\fP (const \fBho_pixbuf\fP *pix_in, const unsigned char scale, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
 .br
 .ti -1c
-.RI "\fBho_pixbuf\fP * \fBho_pixbuf_pnm_load\fP (const char *filename)"
-.br
-.ti -1c
-.RI "int \fBho_pixbuf_pnm_save\fP (const \fBho_pixbuf\fP *pix, const char *filename)"
-.br
-.ti -1c
 .RI "int \fBho_pixbuf_draw_line\fP (\fBho_pixbuf\fP *m, const int x1, const int y1, const int x2, const int y2, const unsigned char red, const unsigned char green, const unsigned char blue)"
 .br
 .ti -1c
@@ -147,6 +154,18 @@ src/ho_pixbuf.h \- libhocr C language header.
 .br
 .ti -1c
 .RI "int \fBho_pixbuf_draw_bitmap_at\fP (\fBho_pixbuf\fP *m, const \fBho_bitmap\fP *bit_in, const int x1, const int y1, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
+.br
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBho_pixbuf_pnm_load\fP (const char *filename)"
+.br
+.ti -1c
+.RI "int \fBho_pixbuf_pnm_save\fP (const \fBho_pixbuf\fP *pix, const char *filename)"
+.br
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBho_pixbuf_bw_tiff_load\fP (const char *filename)"
+.br
+.ti -1c
+.RI "int \fBho_pixbuf_bw_tiff_save\fP (const \fBho_pixbuf\fP *pix, const char *filename)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -211,6 +230,35 @@ clone \fBho_pixbuf\fP
 \fBReturns:\fP
 .RS 4
 newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "int ho_pixbuf_set_data (\fBho_pixbuf\fP * pix, const char * data)"
+.PP
+copy pixel date to a \fBho_pixbuf\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to a \fBho_pixbuf\fP image 
+.br
+\fIdata\fP the pixel data to copy 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBstring_data\fP ho_pixbuf_get_data_string (\fBho_pixbuf\fP * pix)"
+.PP
+get pixel date to a \fBho_pixbuf\fP as a string 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to a \fBho_pixbuf\fP image 
+.br
+\fIa\fP string data struct of the pixbuf data 
 .RE
 .PP
 
@@ -326,6 +374,8 @@ newly allocated rgb color \fBho_pixbuf\fP
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::get_bitmap_pixbuf().
 .SS "int ho_pixbuf_free (\fBho_pixbuf\fP * pix)"
 .PP
 free an \fBho_pixbuf\fP 
@@ -342,7 +392,7 @@ FALSE
 .PP
 
 .PP
-Referenced by hocr::Hocr::set_bitmap(), hocr::Hocr::set_pixbuf(), and hocr::Hocr::~Hocr().
+Referenced by hocr::Hocr::get_bitmap_pixbuf(), hocr::Hocr::set_bitmap(), hocr::Hocr::set_pixbuf(), and hocr::Hocr::~Hocr().
 .SS "\fBho_pixbuf\fP* ho_pixbuf_color_to_gray (const \fBho_pixbuf\fP * pix)"
 .PP
 converts a color pixbuf to gray one 
@@ -448,6 +498,21 @@ newly allocated gray \fBho_pixbuf\fP
 .RE
 .PP
 
+.SS "\fBho_pixbuf\fP* ho_pixbuf_scale8 (const \fBho_pixbuf\fP * pix)"
+.PP
+scale a gray pixbuf to by 8 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP the input \fBho_pixbuf\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
 .SS "\fBho_pixbuf\fP* ho_pixbuf_scale (const \fBho_pixbuf\fP * pix, const unsigned char scale)"
 .PP
 scale a gray pixbuf 
@@ -501,7 +566,7 @@ newly allocated gray \fBho_pixbuf\fP
 
 .SS "\fBho_bitmap\fP* ho_pixbuf_to_bitmap (const \fBho_pixbuf\fP * pix, unsigned char threshold)"
 .PP
-convert a gray pixbuf to bitmap 
+convert a color or gray pixbuf to bitmap 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -512,7 +577,7 @@ convert a gray pixbuf to bitmap
 .PP
 \fBReturns:\fP
 .RS 4
-newly allocated gray \fBho_bitmap\fP 
+newly allocated b/w \fBho_bitmap\fP 
 .RE
 .PP
 
@@ -533,7 +598,7 @@ convert a gray pixbuf to bitmap using adaptive thresholding
 .PP
 \fBReturns:\fP
 .RS 4
-newly allocated gray \fBho_bitmap\fP 
+newly allocated b/w \fBho_bitmap\fP 
 .RE
 .PP
 
@@ -554,13 +619,13 @@ convert a gray pixbuf to bitmap using better adaptive thresholding
 .PP
 \fBReturns:\fP
 .RS 4
-newly allocated gray \fBho_bitmap\fP 
+newly allocated b/w \fBho_bitmap\fP 
 .RE
 .PP
 
 .SS "\fBho_bitmap\fP* ho_pixbuf_to_bitmap_wrapper (const \fBho_pixbuf\fP * pix_in, const unsigned char scale, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
 .PP
-convert a gray pixbuf to bitmap wrapper function 
+convert a color of gray pixbuf to bitmap wrapper function 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -577,39 +642,7 @@ convert a gray pixbuf to bitmap wrapper function
 .PP
 \fBReturns:\fP
 .RS 4
-newly allocated gray \fBho_bitmap\fP 
-.RE
-.PP
-
-.SS "\fBho_pixbuf\fP* ho_pixbuf_pnm_load (const char * filename)"
-.PP
-read \fBho_pixbuf\fP from pnm file 8 or 24 bpp 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIfilename\fP file name of pnm file 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-newly allocated \fBho_pixbuf\fP 
-.RE
-.PP
-
-.SS "int ho_pixbuf_pnm_save (const \fBho_pixbuf\fP * pix, const char * filename)"
-.PP
-writes \fBho_pixbuf\fP to pnm file 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpix\fP \fBho_pixbuf\fP 8 or 24 bpp 
-.br
-\fIfilename\fP save as file name 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
+newly allocated b/w \fBho_bitmap\fP 
 .RE
 .PP
 
@@ -792,6 +825,70 @@ draw a bitmap
 \fIblue\fP value of blue channel 
 .br
 \fIalpha\fP value of alpha channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_pnm_load (const char * filename)"
+.PP
+read \fBho_pixbuf\fP from pnm file 8 or 24 bpp 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP file name of pnm file 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "int ho_pixbuf_pnm_save (const \fBho_pixbuf\fP * pix, const char * filename)"
+.PP
+writes \fBho_pixbuf\fP to pnm file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP \fBho_pixbuf\fP 8 or 24 bpp 
+.br
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_bw_tiff_load (const char * filename)"
+.PP
+read \fBho_pixbuf\fP from a b/w tiff file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP file name of tiff file 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "int ho_pixbuf_bw_tiff_save (const \fBho_pixbuf\fP * pix, const char * filename)"
+.PP
+writes \fBho_pixbuf\fP to a black and white tiff file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP \fBho_pixbuf\fP 8 or 24 bpp 
+.br
+\fIfilename\fP save as file name 
 .RE
 .PP
 \fBReturns:\fP

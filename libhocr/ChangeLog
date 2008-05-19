@@ -1,3 +1,12 @@
+libhocr (0.10.10)
+
+ * Fix hocr-gtk example remember window size
+ * Fix hocr-gtk example show image filename in title
+ * hocr-gtk example requires python bindings 
+ * add an ho_array object for arithmetic based operations
+ 
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Sunday, 10 May 2008 09:04
+ 
 libhocr (0.10.9)
 
  * Re-Fix auto scaling bug

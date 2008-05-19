@@ -4,6 +4,7 @@
 INCLUDES = \
         $(hspell_CFLAGS) \
         $(tiff_CFLAGS) \
+        $(fftw_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
 
 lib_LTLIBRARIES = libhocr.la libhocrgtk.la
@@ -11,6 +12,7 @@ lib_LTLIBRARIES = libhocr.la libhocrgtk.la
 libhocr_la_SOURCES = \
         hocr.c \
         ho_pixbuf.c \
+        ho_array.c \
         ho_bitmap.c \
         ho_objmap.c \
         ho_dimentions.c \
@@ -31,13 +33,15 @@ libhocr_la_LDFLAGS = -version-info 0:0:0
 
 libhocr_la_LIBADD = \
         $(hspell_LIBS) \
-        $(tiff_LIBS)
+        $(tiff_LIBS) \
+        $(fftw_LIBS)
         
 library_includedir = $(includedir)/libhocr
 library_include_HEADERS = \
          hocr.h \
          hocrpp.h \
          ho_pixbuf.h \
+         ho_array.h \
          ho_bitmap.h \
          ho_objmap.h \
          ho_dimentions.h \

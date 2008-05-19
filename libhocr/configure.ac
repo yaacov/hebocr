@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([libhocr], [0.10.9], [Yaacov Zamir <kzamir@walla.co.il>])
+AC_INIT([libhocr], [0.10.10], [Yaacov Zamir <kzamir@walla.co.il>])
 AC_CONFIG_AUX_DIR([config])
 
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -67,6 +67,31 @@ if test "$build_tiff" = "yes"; then
 fi
 
 AM_CONDITIONAL(WITH_TIFF, test "$build_tiff" = yes)
+
+dnl ============================================================================
+dnl build fftw3
+
+build_fftw=yes
+
+AC_ARG_ENABLE([fftw], 
+  [AS_HELP_STRING([--disable-fftw],
+  [do not use fftw])],
+  [build_fftw=no], [build_fftw=yes])
+
+dnl check for fftw3
+
+if test "$build_fftw" = "yes"; then
+    fftw_pkg_modules="fftw3"
+    PKG_CHECK_MODULES(fftw, [$fftw_pkg_modules], build_fftw=yes, build_fftw=no)
+    
+    if test "$build_fftw" = "yes"; then
+        fftw_CFLAGS+=" -DUSE_FFTW"
+        AC_SUBST(fftw_CFLAGS)
+        AC_SUBST(fftw_LIBS)
+    fi
+fi
+
+AM_CONDITIONAL(WITH_FFTW, test "$build_fftw" = yes)
 
 dnl ============================================================================
 dnl check for glib
@@ -230,6 +255,10 @@ AC_ARG_ENABLE([hocr-gtk],
   [do not build hocr-gtk utility program])],
   [build_hocr_gtk=no], [build_hocr_gtk=yes])
 
+if test "$build_python" = "no"; then
+  build_hocr_gtk=no
+fi
+
 AM_CONDITIONAL(WITH_HOCR_GTK, test "$build_hocr_gtk" = "yes")
 
 dnl ============================================================================
@@ -285,10 +314,11 @@ echo with glib: ${build_glib}
 echo with gtk: ${build_gtk}
 echo with hspell: ${build_hspell}
 echo with libtiff: ${build_tiff}
-echo
-echo build hocr, requires glib: ${build_hocr}
-echo build hocr-gtk, suggests python bindings: ${build_hocr_gtk}
+echo with fftw: ${build_fftw}
 echo
 echo build python binding, requires swig, libtiff: ${build_python}
 echo python site lib path: ${PY_MODULES_PATH}
+echo
+echo build hocr, requires glib: ${build_hocr}
+echo build hocr-gtk, requires python bindings: ${build_hocr_gtk}
 echo

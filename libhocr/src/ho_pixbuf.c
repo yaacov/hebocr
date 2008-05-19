@@ -74,13 +74,14 @@ ho_pixbuf_new (const unsigned char n_channels,
    * allocate memory for data (and set to white)
    */
   pix->data = malloc (pix->height * pix->rowstride);
-  memset ((void *) (pix->data), 255, pix->height * pix->rowstride);
   if (!(pix->data))
   {
     free (pix);
     return NULL;
   }
 
+  memset ((void *) (pix->data), 255, pix->height * pix->rowstride);
+    
   return pix;
 }
 

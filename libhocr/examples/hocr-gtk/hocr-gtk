@@ -510,6 +510,9 @@ class MainWindow:
             self.image.set_from_pixbuf(window_pixbuf)
             self.progressbar.set_fraction(0)
             
+            # set window title
+            self.window_main.set_title("hocr-gtk - " + self.filename)
+            
         elif response == gtk.RESPONSE_CANCEL:
             print _('Closed, no files selected')
         

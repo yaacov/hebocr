@@ -1,4 +1,4 @@
-.TH "hocr::Hocr" 3 "8 Mar 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "hocr::Hocr" 3 "15 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -37,6 +37,14 @@ hocr::Hocr \- \fBHocr\fP class.
 .RI "\fBho_bitmap\fP * \fBget_bitmap\fP ()"
 .br
 .RI "\fIget bitmap \fP"
+.ti -1c
+.RI "int \fBsave_bitmap_as_pnm\fP (const char *filename)"
+.br
+.RI "\fIsave bitmap as pnm \fP"
+.ti -1c
+.RI "int \fBsave_bitmap_as_tiff\fP (const char *filename)"
+.br
+.RI "\fIsave bitmap as tiff (neads a tiff enabled libhocr) \fP"
 .ti -1c
 .RI "\fBho_pixbuf\fP * \fBget_bitmap_pixbuf\fP ()"
 .br
@@ -186,6 +194,40 @@ the object bitmap
 .RE
 .PP
 
+.SS "int hocr::Hocr::save_bitmap_as_pnm (const char * filename)\fC [inline]\fP"
+.PP
+save bitmap as pnm 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP the the image file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the object bitmap 
+.RE
+.PP
+
+.PP
+References ho_bitmap_pnm_save().
+.SS "int hocr::Hocr::save_bitmap_as_tiff (const char * filename)\fC [inline]\fP"
+.PP
+save bitmap as tiff (neads a tiff enabled libhocr) 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP the the image file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the object bitmap 
+.RE
+.PP
+
+.PP
+References ho_bitmap_tiff_save().
 .SS "\fBho_pixbuf\fP* hocr::Hocr::get_bitmap_pixbuf ()\fC [inline]\fP"
 .PP
 get bitmap pixbuf 
@@ -197,7 +239,7 @@ a pixbuf of the object bitmap
 .PP
 
 .PP
-References ho_pixbuf_new_from_bitmap().
+References ho_pixbuf_free(), ho_pixbuf_new_from_bitmap(), and ho_pixbuf_to_rgb().
 .SS "\fBho_pixbuf\fP* hocr::Hocr::get_layout_pixbuf ()\fC [inline]\fP"
 .PP
 get layout pixbuf 

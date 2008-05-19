@@ -58,6 +58,9 @@ extern "C"
 /* color image map */
 #include <ho_pixbuf.h>
 
+/* color array (double) */
+#include <ho_array.h>
+    
 /* binary image map */
 #include <ho_bitmap.h>
 

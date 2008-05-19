@@ -1,4 +1,4 @@
-.TH "src/ho_bitmap.h" 3 "8 Mar 2008" "Version 0.10.5" "libhocr" \" -*- nroff -*-
+.TH "src/ho_bitmap.h" 3 "15 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -121,9 +121,6 @@ src/ho_bitmap.h \- libhocr C language header.
 .RI "double \fBho_bitmap_get_fill\fP (const \fBho_bitmap\fP *m, const int x, const int y, const int width, const int height)"
 .br
 .ti -1c
-.RI "int \fBho_bitmap_pnm_save\fP (const \fBho_bitmap\fP *m, const char *filename)"
-.br
-.ti -1c
 .RI "\fBho_bitmap\fP * \fBho_bitmap_filter_hlink\fP (\fBho_bitmap\fP *m, int size, int max_height)"
 .br
 .ti -1c
@@ -170,6 +167,12 @@ src/ho_bitmap.h \- libhocr C language header.
 .br
 .ti -1c
 .RI "\fBho_bitmap\fP * \fBho_bitmap_rotate\fP (const \fBho_bitmap\fP *m, const double angle)"
+.br
+.ti -1c
+.RI "int \fBho_bitmap_pnm_save\fP (const \fBho_bitmap\fP *m, const char *filename)"
+.br
+.ti -1c
+.RI "int \fBho_bitmap_tiff_save\fP (const \fBho_bitmap\fP *m, const char *filename)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -600,23 +603,6 @@ the ratio value
 .RE
 .PP
 
-.SS "int ho_bitmap_pnm_save (const \fBho_bitmap\fP * m, const char * filename)"
-.PP
-writes \fBho_bitmap\fP to pnm file
-.PP
-\fBParameters:\fP
-.RS 4
-\fIm\fP \fBho_bitmap\fP 1 bpp 
-.br
-\fIfilename\fP save as file name 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-FALSE 
-.RE
-.PP
-
 .SS "\fBho_bitmap\fP* ho_bitmap_filter_hlink (\fBho_bitmap\fP * m, int size, int max_height)"
 .PP
 horizontaly link short objects in a bitmap
@@ -933,6 +919,44 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
+.SS "int ho_bitmap_pnm_save (const \fBho_bitmap\fP * m, const char * filename)"
+.PP
+writes \fBho_bitmap\fP to pnm file
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP \fBho_bitmap\fP 1 bpp 
+.br
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.PP
+Referenced by hocr::Hocr::save_bitmap_as_pnm().
+.SS "int ho_bitmap_tiff_save (const \fBho_bitmap\fP * m, const char * filename)"
+.PP
+writes \fBho_bitmap\fP to tiff file
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP \fBho_bitmap\fP 1 bpp 
+.br
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.PP
+Referenced by hocr::Hocr::save_bitmap_as_tiff().
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for libhocr from the source code.
