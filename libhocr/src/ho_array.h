@@ -105,6 +105,22 @@ int ho_array_free (ho_array * pix);
 unsigned char ho_array_minmax (const ho_array * pix, double *min, double *max);
 
 /**
+ get the min value in a array
+ @param pix ho_array
+ @return min value
+ */
+double 
+ho_array_get_min(const ho_array * pix);
+
+/**
+ get the max value in a array
+ @param pix ho_array
+ @return max value
+ */
+double 
+ho_array_get_max(const ho_array * pix);
+
+/**
  add two ho arrays
  @param ar1 left side ho_array
  @param ar2 right side ho_array

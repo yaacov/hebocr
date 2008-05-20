@@ -237,6 +237,38 @@ ho_array_minmax (const ho_array * pix, double *min, double *max)
 }
 
 /**
+ get the min value in a array
+ @param pix ho_array
+ @return min value
+ */
+double 
+ho_array_get_min(const ho_array * ar)
+{
+  double min, max;
+
+  /* get min max values */
+  ho_array_minmax (ar, &min, &max);
+  
+  return min;
+}
+
+/**
+ get the max value in a array
+ @param pix ho_array
+ @return max value
+ */
+double 
+ho_array_get_max(const ho_array * ar)
+{
+  double min, max;
+
+  /* get min max values */
+  ho_array_minmax (ar, &min, &max);
+  
+  return max;
+}
+
+/**
  add two ho arrays
  @param ar1 left side ho_array
  @param ar2 right side ho_array
