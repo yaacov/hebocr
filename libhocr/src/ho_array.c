@@ -132,6 +132,35 @@ ho_array_set_data (ho_array * pix, double data)
 }
 
 /**
+ copy pixel data to a ho_array
+ @param pix pointer to a ho_array image
+ @param data the pixel data to copy
+ @param x the pixel x
+ @param y the pixel y
+ @return false
+ */
+int
+ho_array_set_data_at (ho_array * pix, double data, int x, int y)
+{
+  ho_array_set (pix, x, y, data);
+
+  return FALSE;
+}
+
+/**
+ get pixel data from a ho_array
+ @param pix pointer to a ho_array image
+ @param x the pixel x
+ @param y the pixel y
+ @return false
+ */
+double
+ho_array_get_data_at (ho_array * pix, int x, int y)
+{
+  return ho_array_get (pix, x, y);
+}
+
+/**
  new ho_array from gray ho_pixbuf
  @param pix pointer to an ho_array image
  @return newly allocated gray ho_array
@@ -241,14 +270,14 @@ ho_array_minmax (const ho_array * pix, double *min, double *max)
  @param pix ho_array
  @return min value
  */
-double 
-ho_array_get_min(const ho_array * ar)
+double
+ho_array_get_min (const ho_array * ar)
 {
   double min, max;
 
   /* get min max values */
   ho_array_minmax (ar, &min, &max);
-  
+
   return min;
 }
 
@@ -257,14 +286,14 @@ ho_array_get_min(const ho_array * ar)
  @param pix ho_array
  @return max value
  */
-double 
-ho_array_get_max(const ho_array * ar)
+double
+ho_array_get_max (const ho_array * ar)
 {
   double min, max;
 
   /* get min max values */
   ho_array_minmax (ar, &min, &max);
-  
+
   return max;
 }
 
