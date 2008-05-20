@@ -273,6 +273,9 @@ BUILD_STR="$PACKAGE-$VERSION-$build-$BUILD_DATE"
 if test "$build_tiff" = "yes"; then
 BUILD_STR+="-tiff"
 fi
+if test "$build_fftw" = "yes"; then
+BUILD_STR+="-fftw3"
+fi
 if test "$build_hspell" = "yes"; then
 BUILD_STR+="-hspell"
 fi

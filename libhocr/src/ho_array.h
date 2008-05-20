@@ -82,7 +82,7 @@ int ho_array_set_data (ho_array * pix, double data);
  @param y the pixel y
  @return false
  */
-int ho_array_set_data_at (ho_array * pix, double data, int x, int y);
+int ho_array_set_at (ho_array * pix, double data, int x, int y);
 
 /**
  get pixel data from a ho_array
@@ -91,7 +91,7 @@ int ho_array_set_data_at (ho_array * pix, double data, int x, int y);
  @param y the pixel y
  @return false
  */
-double ho_array_get_data_at (ho_array * pix, int x, int y);
+double ho_array_get_at (ho_array * pix, int x, int y);
 
 /**
  new ho_array from gray ho_pixbuf
@@ -204,6 +204,14 @@ unsigned char ho_array_equl (ho_array * ar);
  @return newly allocated ho array
  */
 ho_array *ho_array_conv (const ho_array * ar, const ho_array * kernel);
+
+/**
+ median
+ @param ar the ho_array to us for median filter
+ @param kerne a 3x3 kernel ho_array
+ @return newly allocated ho array
+ */
+ho_array *ho_array_median (const ho_array * ar);
 
 /**
  absulute value 

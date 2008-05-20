@@ -140,7 +140,7 @@ ho_array_set_data (ho_array * pix, double data)
  @return false
  */
 int
-ho_array_set_data_at (ho_array * pix, double data, int x, int y)
+ho_array_set_at (ho_array * pix, double data, int x, int y)
 {
   ho_array_set (pix, x, y, data);
 
@@ -155,7 +155,7 @@ ho_array_set_data_at (ho_array * pix, double data, int x, int y)
  @return false
  */
 double
-ho_array_get_data_at (ho_array * pix, int x, int y)
+ho_array_get_at (ho_array * pix, int x, int y)
 {
   return ho_array_get (pix, x, y);
 }
@@ -518,6 +518,20 @@ ho_array_conv (const ho_array * ar, const ho_array * kernel)
     return NULL;
 
   /* copy data */
+  for (x = 0; x < ar->width; x++)
+  {
+    (ar_out->data)[x] = (ar->data)[x];
+    (ar_out->data)[x + (ar_out->height - 1) * ar_out->width] =
+      (ar->data)[x + (ar->height - 1) * ar->width];
+  }
+  for (y = 0; y < ar->height; y++)
+  {
+    (ar_out->data)[y * ar_out->width] = (ar->data)[y * ar->width];
+    (ar_out->data)[ar_out->width - 1 + y * ar_out->width] =
+      (ar->data)[ar->width - 1 + y * ar->width];
+  }
+
+  /* copy data */
   for (x = 1; x < ar->width - 1; x++)
     for (y = 1; y < ar->height - 1; y++)
     {
@@ -549,6 +563,83 @@ ho_array_conv (const ho_array * ar, const ho_array * kernel)
 }
 
 /**
+ median
+ @param ar the ho_array to us for median filter
+ @param kerne a 3x3 kernel ho_array
+ @return newly allocated ho array
+ */
+ho_array *
+ho_array_median (const ho_array * ar)
+{
+  int i, j, x, y;
+  int i_min;
+  double median, max;
+  double neigbours[9];
+  ho_array *ar_out = NULL;
+
+  /* allocate memory */
+  ar_out = ho_array_new (ar->width, ar->height);
+  if (!ar_out)
+    return NULL;
+
+  /* copy data */
+  for (x = 0; x < ar->width; x++)
+  {
+    (ar_out->data)[x] = (ar->data)[x];
+    (ar_out->data)[x + (ar_out->height - 1) * ar_out->width] =
+      (ar->data)[x + (ar->height - 1) * ar->width];
+  }
+  for (y = 0; y < ar->height; y++)
+  {
+    (ar_out->data)[y * ar_out->width] = (ar->data)[y * ar->width];
+    (ar_out->data)[ar_out->width - 1 + y * ar_out->width] =
+      (ar->data)[ar->width - 1 + y * ar->width];
+  }
+
+  /* copy data */
+  for (x = 1; x < ar->width - 1; x++)
+    for (y = 1; y < ar->height - 1; y++)
+    {
+      neigbours[0] = (ar->data)[(x - 1) + (y - 1) * ar->width];
+      neigbours[1] = (ar->data)[(x) + (y - 1) * ar->width];
+      neigbours[2] = (ar->data)[(x + 1) + (y - 1) * ar->width];
+
+      neigbours[3] = (ar->data)[(x - 1) + (y) * ar->width];
+      neigbours[4] = (ar->data)[(x) + (y) * ar->width];
+      neigbours[5] = (ar->data)[(x + 1) + (y) * ar->width];
+
+      neigbours[6] = (ar->data)[(x - 1) + (y + 1) * ar->width];
+      neigbours[7] = (ar->data)[(x) + (y + 1) * ar->width];
+      neigbours[8] = (ar->data)[(x + 1) + (y + 1) * ar->width];
+
+      /* get max value */
+      max = neigbours[0];
+      for (i = 0; i < 9; i++)
+        if (max < neigbours[i])
+          max = neigbours[i];
+
+      /* get median */
+      for (j = 0; j < 4; j++)
+      {
+        i_min = 0;
+        for (i = 0; i < 9; i++)
+          if (neigbours[i_min] > neigbours[i])
+            i_min = i;
+        neigbours[i_min] = max;
+      }
+
+      median = max;
+      for (i = 0; i < 9; i++)
+        if (median > neigbours[i])
+          median = neigbours[i];
+
+      (ar_out->data)[x + y * ar_out->width] = median;
+    }
+
+  return ar_out;
+}
+
+/**
  absulute value 
  @param ar1 left side ho_array
  @param ar2 right side ho_array
@@ -566,8 +657,8 @@ ho_array_abs (const ho_array * ar1, const ho_array * ar2)
     return NULL;
 
   /* copy data */
-  for (x = 1; x < ar1->width - 1; x++)
-    for (y = 1; y < ar1->height - 1; y++)
+  for (x = 0; x < ar1->width; x++)
+    for (y = 0; y < ar1->height; y++)
     {
       (ar_out->data)[x + y * ar_out->width] =
         sqrt ((ar1->data)[x + y * ar1->width] * (ar1->data)[x +
@@ -596,8 +687,8 @@ ho_array_atan2 (const ho_array * ar1, const ho_array * ar2)
     return NULL;
 
   /* copy data */
-  for (x = 1; x < ar1->width - 1; x++)
-    for (y = 1; y < ar1->height - 1; y++)
+  for (x = 0; x < ar1->width; x++)
+    for (y = 0; y < ar1->height; y++)
     {
       (ar_out->data)[x + y * ar_out->width] =
         atan2 ((ar1->data)[x + y * ar1->width],
