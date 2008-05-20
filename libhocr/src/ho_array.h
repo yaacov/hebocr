@@ -82,7 +82,7 @@ int ho_array_set_data (ho_array * pix, double data);
  @param y the pixel y
  @return false
  */
-int ho_array_set_at (ho_array * pix, double data, int x, int y);
+int ho_array_set_at (ho_array * pix, int x, int y, double data);
 
 /**
  get pixel data from a ho_array
@@ -146,6 +146,14 @@ double ho_array_get_max (const ho_array * pix);
 unsigned char ho_array_add (ho_array * ar1, const ho_array * ar2);
 
 /**
+ add const to ho arrays
+ @param ar left side ho_array
+ @param num a number to add to array
+ @return FALSE
+ */
+unsigned char ho_array_add_const (ho_array * ar, const double num);
+
+/**
  subtruct two ho arrays
  @param ar1 left side ho_array
  @param ar2 right side ho_array
@@ -160,6 +168,14 @@ unsigned char ho_array_sub (ho_array * ar1, const ho_array * ar2);
  @return FALSE
  */
 unsigned char ho_array_mul (ho_array * ar1, const ho_array * ar2);
+
+/**
+ multiply const to ho arrays
+ @param ar left side ho_array
+ @param num a number to multiply to array
+ @return FALSE
+ */
+unsigned char ho_array_mul_const (ho_array * ar, const double num);
 
 /**
  divide two ho arrays

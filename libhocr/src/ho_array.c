@@ -140,7 +140,7 @@ ho_array_set_data (ho_array * pix, double data)
  @return false
  */
 int
-ho_array_set_at (ho_array * pix, double data, int x, int y)
+ho_array_set_at (ho_array * pix, int x, int y, double data)
 {
   ho_array_set (pix, x, y, data);
 
@@ -318,6 +318,26 @@ ho_array_add (ho_array * ar1, const ho_array * ar2)
 }
 
 /**
+ add const to ho arrays
+ @param ar left side ho_array
+ @param num a number to add to array
+ @return FALSE
+ */
+unsigned char
+ho_array_add_const (ho_array * ar, const double num)
+{
+  int x, y;
+
+  for (x = 0; x < ar->width; x++)
+    for (y = 0; y < ar->height; y++)
+    {
+      (ar->data)[x + y * ar->width] += num;
+    }
+
+  return FALSE;
+}
+
+/**
  subtruct two ho arrays
  @param ar1 left side ho_array
  @param ar2 right side ho_array
@@ -352,6 +372,26 @@ ho_array_mul (ho_array * ar1, const ho_array * ar2)
     for (y = 0; y < ar1->height; y++)
     {
       (ar1->data)[x + y * ar1->width] *= (ar2->data)[x + y * ar2->width];
+    }
+
+  return FALSE;
+}
+
+/**
+ multiply const to ho arrays
+ @param ar left side ho_array
+ @param num a number to multiply to array
+ @return FALSE
+ */
+unsigned char
+ho_array_mul_const (ho_array * ar, const double num)
+{
+  int x, y;
+
+  for (x = 0; x < ar->width; x++)
+    for (y = 0; y < ar->height; y++)
+    {
+      (ar->data)[x + y * ar->width] *= num;
     }
 
   return FALSE;
