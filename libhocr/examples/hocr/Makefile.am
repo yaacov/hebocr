@@ -15,12 +15,14 @@ hocr_CFLAGS = \
         $(gtk_CFLAGS) \
         $(hspell_CFLAGS) \
         $(tiff_CFLAGS) \
+        $(fftw_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
 hocr_LDADD= \
         $(glib_LIBS) \
         $(gtk_LIBS) \
         $(hspell_LIBS) \
         $(tiff_LIBS) \
+        $(fftw_LIBS) \
         $(libhocr_la_LIBADD) \
         $(top_builddir)/src/*.o -lm
 

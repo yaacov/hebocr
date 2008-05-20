@@ -102,8 +102,140 @@ int ho_array_free (ho_array * pix);
  @param max a pointer to return the max 
  @return FALSE
  */
+unsigned char ho_array_minmax (const ho_array * pix, double *min, double *max);
+
+/**
+ add two ho arrays
+ @param ar1 left side ho_array
+ @param ar2 right side ho_array
+ @return FALSE
+ */
+unsigned char ho_array_add (ho_array * ar1, const ho_array * ar2);
+
+/**
+ subtruct two ho arrays
+ @param ar1 left side ho_array
+ @param ar2 right side ho_array
+ @return FALSE
+ */
+unsigned char ho_array_sub (ho_array * ar1, const ho_array * ar2);
+
+/**
+ multiply two ho arrays
+ @param ar1 left side ho_array
+ @param ar2 right side ho_array
+ @return FALSE
+ */
+unsigned char ho_array_mul (ho_array * ar1, const ho_array * ar2);
+
+/**
+ divide two ho arrays
+ @param ar1 left side ho_array
+ @param ar2 right side ho_array
+ @return FALSE
+ */
+unsigned char ho_array_div (ho_array * ar1, const ho_array * ar2);
+
+/**
+ inverse ho array
+ @param ar ho_array
+ @return FALSE
+ */
+unsigned char ho_array_inv (ho_array * ar);
+
+/**
+ do log (ho array + 1)
+ @param ar ho_array
+ @return FALSE
+ */
+unsigned char ho_array_log (ho_array * ar);
+
+/**
+ streach 0..1
+ @param ar ho_array
+ @return FALSE
+ */
+unsigned char ho_array_streach (ho_array * ar);
+
+/**
+ histogram equalization 0..1
+ @param ar ho_array
+ @return FALSE
+ */
+unsigned char ho_array_equl (ho_array * ar);
+
+/**
+ convolution 
+ @param ar the ho_array to us for the convolution
+ @param kerne a 3x3 kernel ho_array
+ @return newly allocated ho array
+ */
+ho_array *ho_array_conv (const ho_array * ar, const ho_array * kernel);
+
+/**
+ absulute value 
+ @param ar1 left side ho_array
+ @param ar2 right side ho_array
+ @return newly allocated ho array
+ */
+ho_array *ho_array_abs (const ho_array * ar1, const ho_array * ar2);
+
+/**
+ atan2
+ @param ar1 left side ho_array
+ @param ar2 right side ho_array
+ @return newly allocated ho array
+ */
+ho_array *ho_array_atan2 (const ho_array * ar1, const ho_array * ar2);
+
+/**
+ gradient 
+ @param ar the ho_array to us for gradient detection
+ @param ar_r return the r value of the gradient
+ @param ar_theta return the theta value of the gradient
+ @return FALSE
+ */
+unsigned char ho_array_gradient (const ho_array * ar, ho_array * ar_r,
+  ho_array * ar_theta);
+
+/**
+ fft_forword 
+ @param ar the ho_array to us for fft
+ @param ar_re the output real values
+ @param ar_im the output imaginary values
+ @return FALSE
+ */
+unsigned char ho_array_fft_forword (const ho_array * ar, ho_array * ar_r,
+  ho_array * ar_im);
+
+/**
+ fft_backword
+ @param ar_re input array of the real values
+ @param ar_im input array of the imaginary values
+ @param ar the output ho_array
+ @return FALSE
+ */
+unsigned char ho_array_fft_backword (const ho_array * ar_r,
+  const ho_array * ar_im, ho_array * ar);
+
+/**
+ fft_shift
+ @param ar_re input array of the real values
+ @param ar_im input array of the imaginary values
+ @param shift_ar_re output array of the real values
+ @param shift_ar_im output array of the imaginary values
+ @return FALSE
+ */
 unsigned char
-ho_array_minmax (const ho_array * pix, double *min,
-  double *max);
+ho_array_fft_shift (const ho_array * ar_r, const ho_array * ar_im,
+  ho_array * shift_ar_r, ho_array * shift_ar_im);
+
+/**
+ writes ho_array to pnm file
+ @param ar ho_array to save as gray image
+ @param filename save as file name 
+ @return FALSE
+ */
+int ho_array_pnm_save (const ho_array * ar, const char *filename);
 
 #endif /* HO_ARRAY_H */

@@ -1,4 +1,4 @@
-.TH "src/ho_pixbuf.h" 3 "15 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
+.TH "src/ho_pixbuf.h" 3 "20 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -151,6 +151,9 @@ src/ho_pixbuf.h \- libhocr C language header.
 .br
 .ti -1c
 .RI "int \fBho_pixbuf_draw_rgb_bitmap\fP (\fBho_pixbuf\fP *m, const \fBho_bitmap\fP *bit_in_red, const \fBho_bitmap\fP *bit_in_green, const \fBho_bitmap\fP *bit_in_blue)"
+.br
+.ti -1c
+.RI "int \fBho_pixbuf_draw_rgb_pixbufs\fP (\fBho_pixbuf\fP *m, const \fBho_pixbuf\fP *bit_in_red, const \fBho_pixbuf\fP *bit_in_green, const \fBho_pixbuf\fP *bit_in_blue)"
 .br
 .ti -1c
 .RI "int \fBho_pixbuf_draw_bitmap_at\fP (\fBho_pixbuf\fP *m, const \fBho_bitmap\fP *bit_in, const int x1, const int y1, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
@@ -796,6 +799,27 @@ draw RGB bitmap
 \fIbit_in_green\fP the bitmap to draw on the pixbuf green channel 
 .br
 \fIbit_in_blue\fP the bitmap to draw on the pixbuf blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_rgb_pixbufs (\fBho_pixbuf\fP * m, const \fBho_pixbuf\fP * bit_in_red, const \fBho_pixbuf\fP * bit_in_green, const \fBho_pixbuf\fP * bit_in_blue)"
+.PP
+draw RGB pixbufs 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP a \fBho_pixbuf\fP 
+.br
+\fIbit_in_red\fP the grey pixbuf to draw on the pixbuf red channel 
+.br
+\fIbit_in_green\fP the grey pixbuf to draw on the pixbuf green channel 
+.br
+\fIbit_in_blue\fP the grey pixbuf to draw on the pixbuf blue channel 
 .RE
 .PP
 \fBReturns:\fP

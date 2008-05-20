@@ -1282,6 +1282,38 @@ ho_pixbuf_draw_rgb_bitmap (ho_pixbuf * m, const ho_bitmap * bit_in_red,
   return FALSE;
 }
 
+int
+ho_pixbuf_draw_rgb_pixbufs (ho_pixbuf * m, const ho_pixbuf * bit_in_red,
+  const ho_pixbuf * bit_in_green, const ho_pixbuf * bit_in_blue)
+{
+  int x, y;
+  unsigned char new_red;
+  unsigned char new_green;
+  unsigned char new_blue;
+
+  /* sanity check */
+  if (m->width != bit_in_red->width || m->height != bit_in_red->height)
+    return TRUE;
+
+  /* is pixbuf color ? */
+  if (m->n_channels < 3 || bit_in_red->n_channels > 1)
+    return TRUE;
+
+  for (x = 0; x < bit_in_red->width; x++)
+    for (y = 0; y < bit_in_red->height; y++)
+    {
+      new_red = ho_pixbuf_get (bit_in_red, x, y, 0);
+      new_green = ho_pixbuf_get (bit_in_green, x, y, 0);
+      new_blue = ho_pixbuf_get (bit_in_blue, x, y , 0);
+
+      ho_pixbuf_set (m, x, y, 0, new_red);
+      ho_pixbuf_set (m, x, y, 1, new_green);
+      ho_pixbuf_set (m, x, y, 2, new_blue);
+    }
+
+  return FALSE;
+}
+
 unsigned char
 ho_pbm_getc (FILE * file)
 {

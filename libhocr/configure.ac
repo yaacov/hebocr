@@ -196,6 +196,10 @@ if test "$build_tiff" = "no"; then
   build_python=no
 fi
 
+if test "$build_fftw" = "no"; then
+  build_python=no
+fi
+
 AM_CONDITIONAL(WITH_PYTHON, test "$build_python" = "yes")
 
 dnl ============================================================================
@@ -316,7 +320,7 @@ echo with hspell: ${build_hspell}
 echo with libtiff: ${build_tiff}
 echo with fftw: ${build_fftw}
 echo
-echo build python binding, requires swig, libtiff: ${build_python}
+echo build python binding, requires swig, libtiff, fftw: ${build_python}
 echo python site lib path: ${PY_MODULES_PATH}
 echo
 echo build hocr, requires glib: ${build_hocr}
