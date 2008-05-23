@@ -81,7 +81,7 @@ ho_pixbuf_new (const unsigned char n_channels,
   }
 
   memset ((void *) (pix->data), 255, pix->height * pix->rowstride);
-    
+
   return pix;
 }
 
@@ -97,6 +97,52 @@ ho_pixbuf_clone (const ho_pixbuf * m)
 
   /* copy data */
   memcpy (m_out->data, m->data, m_out->height * m_out->rowstride);
+
+  return m_out;
+}
+
+ho_pixbuf *
+ho_pixbuf_clone_window (const ho_pixbuf * m, const int x, const int y,
+  const int width, const int height)
+{
+  ho_pixbuf *m_out;
+  int i, x1, y1;
+  unsigned char val;
+
+  /* allocate memory */
+  m_out = ho_pixbuf_new (m->n_channels, width, height, 0);
+  if (!m_out)
+    return NULL;
+
+  /* 
+   * copy data 
+   */
+
+  /* color */
+  if (m->n_channels > 1)
+  {
+    for (x1 = 0; x1 < width && x1 < m->width; x1++)
+      for (y1 = 0; y1 < height && y1 < m->height; y1++)
+      {
+        /* FIXME: color always 3 channels ? */
+        val = ho_pixbuf_get (m, x + x1, y + y1, 0);
+        ho_pixbuf_set (m_out, x1, y1, 0, val);
+        val = ho_pixbuf_get (m, x + x1, y + y1, 1);
+        ho_pixbuf_set (m_out, x1, y1, 1, val);
+        val = ho_pixbuf_get (m, x + x1, y + y1, 2);
+        ho_pixbuf_set (m_out, x1, y1, 2, val);
+      }
+  }
+  /* gray */
+  else
+  {
+    for (x1 = 0; x1 < width && x1 < m->width; x1++)
+      for (y1 = 0; y1 < height && y1 < m->height; y1++)
+      {
+        val = ho_pixbuf_get (m, x + x1, y + y1, 0);
+        ho_pixbuf_set (m_out, x1, y1, 0, val);
+      }
+  }
 
   return m_out;
 }
@@ -584,7 +630,7 @@ ho_pixbuf_scale (const ho_pixbuf * pix, const unsigned char scale)
   /* FIXME: scale more them 8 ? */
   if (scale > 4)
     return ho_pixbuf_scale8 (pix);
-  
+
   return NULL;
 }
 
@@ -642,7 +688,7 @@ ho_pixbuf_linear_filter (const ho_pixbuf * pix)
 ho_bitmap *
 ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold)
 {
-  ho_pixbuf * gray_pix = NULL;
+  ho_pixbuf *gray_pix = NULL;
   ho_bitmap *m_out = NULL;
   int x, y;
 
@@ -654,7 +700,7 @@ ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold)
     gray_pix = ho_pixbuf_color_to_gray (pix);
   else
     gray_pix = ho_pixbuf_clone (pix);
-  
+
   if (!threshold)
     threshold = 153;
 
@@ -671,7 +717,42 @@ ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold)
 
   /* free gray pix */
   ho_pixbuf_free (gray_pix);
-  
+
+  return m_out;
+}
+
+ho_bitmap *
+ho_pixbuf_to_bitmap_by_color (const ho_pixbuf * pix, unsigned char min_red,
+  unsigned char max_red,
+  unsigned char min_green,
+  unsigned char max_green, unsigned char min_blue, unsigned char max_blue)
+{
+  ho_bitmap *m_out = NULL;
+  int x, y;
+
+  /* if pix is not color exit */
+  if (pix->n_channels < 3)
+    return NULL;
+
+  /* allocate memory */
+  m_out = ho_bitmap_new (pix->width, pix->height);
+  if (!m_out)
+    return NULL;
+
+  /* copy data */
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+    {
+      if (
+        ((pix->data)[x + y * pix->rowstride] >= min_red) &&
+        ((pix->data)[x + y * pix->rowstride] < max_red) &&
+        ((pix->data)[x + y * pix->rowstride + 1] >= min_green) &&
+        ((pix->data)[x + y * pix->rowstride + 1] < max_green) &&
+        ((pix->data)[x + y * pix->rowstride + 2] >= min_blue) &&
+        ((pix->data)[x + y * pix->rowstride + 2] < max_blue))
+        ho_bitmap_set (m_out, x, y);
+    }
+
   return m_out;
 }
 
@@ -759,8 +840,7 @@ ho_pixbuf_to_bitmap_adaptive (const ho_pixbuf *
 }
 
 ho_bitmap *
-ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
-  pix,
+ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf * pix,
   unsigned char threshold, unsigned char size, unsigned char adaptive_threshold)
 {
   ho_pixbuf *m_thresholds = NULL;
@@ -893,7 +973,8 @@ ho_bitmap *
 ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
   const unsigned char scale,
   const unsigned char adaptive,
-  const unsigned char threshold, const unsigned char a_threshold)
+  const unsigned char threshold,
+  const unsigned char a_threshold, const unsigned char size)
 {
   ho_pixbuf *pix = NULL;
   ho_pixbuf *pix_temp = NULL;
@@ -930,16 +1011,17 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
   switch (adaptive)
   {
   case 0:
-    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, 0, a_threshold);
+    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, size, a_threshold);
     break;
   case 1:
     m_bw = ho_pixbuf_to_bitmap (pix, threshold);
     break;
   case 2:
-    m_bw = ho_pixbuf_to_bitmap_adaptive_fine (pix, threshold, 0, a_threshold);
+    m_bw =
+      ho_pixbuf_to_bitmap_adaptive_fine (pix, threshold, size, a_threshold);
     break;
   default:
-    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, 0, a_threshold);
+    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, size, a_threshold);
     break;
   }
 
@@ -1129,6 +1211,68 @@ ho_pixbuf_draw_line (ho_pixbuf * m, const int x1, const int y1,
 }
 
 int
+ho_pixbuf_draw_box (ho_pixbuf * m, const int x, const int y,
+  const int width, const int height, const unsigned char red,
+  const unsigned char green, const unsigned char blue,
+  const unsigned char alpha)
+{
+  int x1, y1;
+  int r, g, b;
+
+  /* draw */
+  for (x1 = x; x1 < (x + width) && x1 < m->width; x1++)
+    for (y1 = y; y1 < (y + height) && y1 < m->height; y1++)
+    {
+      r = ((int) ho_pixbuf_get (m, x1, y1, 0) * (255 - (int) alpha) +
+        (int) red * (int) alpha) / 255;
+      g = ((int) ho_pixbuf_get (m, x1, y1, 1) * (255 - (int) alpha) +
+        (int) green * (int) alpha) / 255;
+      b = ((int) ho_pixbuf_get (m, x1, y1, 2) * (255 - (int) alpha) +
+        (int) blue * (int) alpha) / 255;
+
+      ho_pixbuf_set (m, x1, y1, 0, r);
+      ho_pixbuf_set (m, x1, y1, 1, g);
+      ho_pixbuf_set (m, x1, y1, 2, b);
+    }
+
+  return FALSE;
+}
+
+int
+ho_pixbuf_draw_box_empty (ho_pixbuf * m, const int x, const int y,
+  const int width, const int height, const unsigned char red,
+  const unsigned char green, const unsigned char blue)
+{
+  int x1, y1;
+
+  /* draw */
+  /* horizontal lines */
+  for (x1 = x; x1 < (x + width) && x1 < m->width; x1++)
+  {
+    ho_pixbuf_set (m, x1, y, 0, red);
+    ho_pixbuf_set (m, x1, y, 1, green);
+    ho_pixbuf_set (m, x1, y, 2, blue);
+
+    ho_pixbuf_set (m, x1, y + height - 1, 0, red);
+    ho_pixbuf_set (m, x1, y + height - 1, 1, green);
+    ho_pixbuf_set (m, x1, y + height - 1, 2, blue);
+  }
+  /* vertical lines */
+  for (y1 = y; y1 < (y + height) && y1 < m->height; y1++)
+  {
+    ho_pixbuf_set (m, x, y1, 0, red);
+    ho_pixbuf_set (m, x, y1, 1, green);
+    ho_pixbuf_set (m, x, y1, 2, blue);
+
+    ho_pixbuf_set (m, x + width - 1, y1, 0, red);
+    ho_pixbuf_set (m, x + width - 1, y1, 1, green);
+    ho_pixbuf_set (m, x + width - 1, y1, 2, blue);
+  }
+
+  return FALSE;
+}
+
+int
 ho_pixbuf_draw_horizontal_scale (ho_pixbuf * m, const int x1,
   const int y1, const int length,
   const int step, const unsigned char red,
@@ -1304,7 +1448,7 @@ ho_pixbuf_draw_rgb_pixbufs (ho_pixbuf * m, const ho_pixbuf * bit_in_red,
     {
       new_red = ho_pixbuf_get (bit_in_red, x, y, 0);
       new_green = ho_pixbuf_get (bit_in_green, x, y, 0);
-      new_blue = ho_pixbuf_get (bit_in_blue, x, y , 0);
+      new_blue = ho_pixbuf_get (bit_in_blue, x, y, 0);
 
       ho_pixbuf_set (m, x, y, 0, new_red);
       ho_pixbuf_set (m, x, y, 1, new_green);
@@ -1517,11 +1661,10 @@ ho_pixbuf *
 ho_pixbuf_bw_tiff_load (const char *filename)
 {
   /* This function is copied from a web tutorial in:
-    http://www-128.ibm.com/developerworks/linux/library/l-libtiff/
-  */
+   * http://www-128.ibm.com/developerworks/linux/library/l-libtiff/ */
   int x, y;
   ho_pixbuf *pix = NULL;
-    
+
   TIFF *image;
   uint16 photo, bps, spp, fillorder;
   uint32 width;
@@ -1532,124 +1675,144 @@ ho_pixbuf_bw_tiff_load (const char *filename)
   int stripMax, stripCount;
   char *buffer, tempbyte;
   unsigned long bufferSize, count;
-  
+
   /* Open the TIFF image */
-  if((image = TIFFOpen(filename, "r")) == NULL){
+  if ((image = TIFFOpen (filename, "r")) == NULL)
+  {
     /* no file */
     return NULL;
   }
-  
+
   /* Check that it is of a type that we support */
-  if((TIFFGetField(image, TIFFTAG_BITSPERSAMPLE, &bps) == 0) || (bps != 1)){
+  if ((TIFFGetField (image, TIFFTAG_BITSPERSAMPLE, &bps) == 0) || (bps != 1))
+  {
     /* not a 1 bit image */
-    TIFFClose(image);
+    TIFFClose (image);
     return NULL;
   }
-  
-  if((TIFFGetField(image, TIFFTAG_SAMPLESPERPIXEL, &spp) == 0) || (spp != 1)){
+
+  if ((TIFFGetField (image, TIFFTAG_SAMPLESPERPIXEL, &spp) == 0) || (spp != 1))
+  {
     /* not a black and white image */
-    TIFFClose(image);
+    TIFFClose (image);
     return NULL;
   }
-  
+
   /* Read in the possibly multiple strips */
   stripSize = TIFFStripSize (image);
   stripMax = TIFFNumberOfStrips (image);
   imageOffset = 0;
-  
+
   bufferSize = TIFFNumberOfStrips (image) * stripSize;
-  if((buffer = (char *) malloc(bufferSize)) == NULL){
+  if ((buffer = (char *) malloc (bufferSize)) == NULL)
+  {
     /* not memory */
-    TIFFClose(image);
+    TIFFClose (image);
     return NULL;
   }
-  
-  for (stripCount = 0; stripCount < stripMax; stripCount++){
-    if((result = TIFFReadEncodedStrip (image, stripCount,
-				      buffer + imageOffset,
-				      stripSize)) == -1){
+
+  for (stripCount = 0; stripCount < stripMax; stripCount++)
+  {
+    if ((result = TIFFReadEncodedStrip (image, stripCount,
+          buffer + imageOffset, stripSize)) == -1)
+    {
       /* read error */
       free (buffer);
-      TIFFClose(image);
+      TIFFClose (image);
       return NULL;
     }
 
     imageOffset += result;
   }
-  
+
   /* Deal with photometric interpretations */
-  if(TIFFGetField(image, TIFFTAG_PHOTOMETRIC, &photo) == 0){
+  if (TIFFGetField (image, TIFFTAG_PHOTOMETRIC, &photo) == 0)
+  {
     /* we can't know if black is black or white :-( */
     /* asume min is white */
     photo = PHOTOMETRIC_MINISWHITE;
     return NULL;
   }
-  
-  if(photo != PHOTOMETRIC_MINISWHITE){
+
+  if (photo != PHOTOMETRIC_MINISWHITE)
+  {
     /* Flip bits */
-    for(count = 0; count < bufferSize; count++)
+    for (count = 0; count < bufferSize; count++)
       buffer[count] = ~buffer[count];
   }
-  
+
   /* Deal with fillorder */
-  if(TIFFGetField(image, TIFFTAG_FILLORDER, &fillorder) == 0){
+  if (TIFFGetField (image, TIFFTAG_FILLORDER, &fillorder) == 0)
+  {
     /* we can't know if bits are msb or lsb ordered :-( */
     /* asume msb */
     fillorder = FILLORDER_MSB2LSB;
   }
-  
-  if(fillorder != FILLORDER_MSB2LSB){
+
+  if (fillorder != FILLORDER_MSB2LSB)
+  {
     /* We need to swap bits -- ABCDEFGH becomes HGFEDCBA */
-    for(count = 0; count < bufferSize; count++){
+    for (count = 0; count < bufferSize; count++)
+    {
       tempbyte = 0;
-      if(buffer[count] & 128) tempbyte += 1;
-      if(buffer[count] & 64) tempbyte += 2;
-      if(buffer[count] & 32) tempbyte += 4;
-      if(buffer[count] & 16) tempbyte += 8;
-      if(buffer[count] & 8) tempbyte += 16;
-      if(buffer[count] & 4) tempbyte += 32;
-      if(buffer[count] & 2) tempbyte += 64;
-      if(buffer[count] & 1) tempbyte += 128;
+      if (buffer[count] & 128)
+        tempbyte += 1;
+      if (buffer[count] & 64)
+        tempbyte += 2;
+      if (buffer[count] & 32)
+        tempbyte += 4;
+      if (buffer[count] & 16)
+        tempbyte += 8;
+      if (buffer[count] & 8)
+        tempbyte += 16;
+      if (buffer[count] & 4)
+        tempbyte += 32;
+      if (buffer[count] & 2)
+        tempbyte += 64;
+      if (buffer[count] & 1)
+        tempbyte += 128;
       buffer[count] = tempbyte;
     }
   }
-  
+
   /* get image width */
-  if(TIFFGetField(image, TIFFTAG_IMAGEWIDTH, &width) == 0){
+  if (TIFFGetField (image, TIFFTAG_IMAGEWIDTH, &width) == 0)
+  {
     /* we can't know image width :-( */
     free (buffer);
-    TIFFClose(image);
+    TIFFClose (image);
     return NULL;
   }
   /* get image height */
-  if(TIFFGetField(image, TIFFTAG_IMAGELENGTH, &height) == 0){
+  if (TIFFGetField (image, TIFFTAG_IMAGELENGTH, &height) == 0)
+  {
     /* we can't know image height :-( */
     free (buffer);
-    TIFFClose(image);
+    TIFFClose (image);
     return NULL;
   }
   rowstride = width / 8;
-    
+
   /* create the gray pixbuf */
   pix = ho_pixbuf_new (1, width, height, 0);
   if (!pix)
   {
     free (buffer);
-    TIFFClose(image);
+    TIFFClose (image);
     return NULL;
   }
 
   /* copy data */
   for (x = 0; x < width; x++)
     for (y = 0; y < height; y++)
-      ho_pixbuf_set (pix, x, y, 0, 255 * (1 - 
-          ((((buffer[x / 8 + y * rowstride]) & (0x80 >> (x % 8))) > 0)?1:0)
-        ));
-    
+      ho_pixbuf_set (pix, x, y, 0, 255 * (1 -
+          ((((buffer[x / 8 + y * rowstride]) & (0x80 >> (x % 8))) >
+              0) ? 1 : 0)));
+
   /* free buffer and close file */
   free (buffer);
-  TIFFClose(image);
-  
+  TIFFClose (image);
+
   return pix;
 }
 #endif /* USE_TIFF */
@@ -1658,19 +1821,19 @@ ho_pixbuf_bw_tiff_load (const char *filename)
 int
 ho_pixbuf_bw_tiff_save (const ho_pixbuf * pix, const char *filename)
 {
-  ho_bitmap * m = NULL;
+  ho_bitmap *m = NULL;
 
   /* create a bitmap */
   m = ho_pixbuf_to_bitmap (pix, 0);
   if (!m)
     return TRUE;
-  
+
   /* save bitmap */
   ho_bitmap_tiff_save (m, filename);
-  
+
   /* free bitmap */
   ho_bitmap_free (m);
-  
+
   return FALSE;
 }
 #endif /* USE_TIFF */

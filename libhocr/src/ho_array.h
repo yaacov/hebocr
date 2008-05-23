@@ -94,7 +94,7 @@ int ho_array_set_at (ho_array * pix, int x, int y, double data);
 double ho_array_get_at (ho_array * pix, int x, int y);
 
 /**
- new ho_array from gray ho_pixbuf
+ new ho_array from ho_pixbuf
  @param pix pointer to an ho_array image
  @return newly allocated gray ho_array
  */
@@ -106,6 +106,13 @@ ho_array *ho_array_new_from_pixbuf (const ho_pixbuf * pix);
  @return newly allocated gray ho_pixbuf
  */
 ho_pixbuf *ho_array_to_pixbuf (const ho_array * pix_in);
+
+/**
+ new rgb ho_pixbuf from ho_array
+ @param pix_in pointer the original array
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_array_to_rgb_pixbuf (const ho_array * pix_in);
 
 /**
  free an ho_array
@@ -122,6 +129,14 @@ int ho_array_free (ho_array * pix);
  @return FALSE
  */
 unsigned char ho_array_minmax (const ho_array * pix, double *min, double *max);
+
+/**
+ get the mean value in a array
+ @param pix ho_array
+ @return min value
+ */
+double
+ho_array_mean (const ho_array * pix);
 
 /**
  get the min value in a array
@@ -170,6 +185,18 @@ unsigned char ho_array_sub (ho_array * ar1, const ho_array * ar2);
 unsigned char ho_array_mul (ho_array * ar1, const ho_array * ar2);
 
 /**
+ multiply two ho real and imagenary ho_arrays pairs
+ @param ar1_r left side ho_array real part
+ @param ar1_i left side ho_array imagenaryl part
+ @param ar2_r right side ho_array real part
+ @param ar2_i right side ho_array imagenary part
+ @return FALSE
+ */
+unsigned char
+ho_array_compex_mul (ho_array * ar1_r, ho_array * ar1_i, const ho_array * ar2_r,
+  const ho_array * ar2_i);
+
+/**
  multiply const to ho arrays
  @param ar left side ho_array
  @param num a number to multiply to array
@@ -191,6 +218,13 @@ unsigned char ho_array_div (ho_array * ar1, const ho_array * ar2);
  @return FALSE
  */
 unsigned char ho_array_inv (ho_array * ar);
+
+/**
+ polerize ho array
+ @param ar ho_array
+ @return FALSE
+ */
+unsigned char ho_array_polerize (ho_array * ar, const double treshold);
 
 /**
  do log (ho array + 1)
@@ -216,7 +250,7 @@ unsigned char ho_array_equl (ho_array * ar);
 /**
  convolution 
  @param ar the ho_array to us for the convolution
- @param kerne a 3x3 kernel ho_array
+ @param kernel a 3x3 kernel ho_array
  @return newly allocated ho array
  */
 ho_array *ho_array_conv (const ho_array * ar, const ho_array * kernel);
@@ -224,10 +258,23 @@ ho_array *ho_array_conv (const ho_array * ar, const ho_array * kernel);
 /**
  median
  @param ar the ho_array to us for median filter
- @param kerne a 3x3 kernel ho_array
  @return newly allocated ho array
  */
 ho_array *ho_array_median (const ho_array * ar);
+
+/**
+ max filter
+ @param ar the ho_array to us for max filter
+ @return newly allocated ho array
+ */
+ho_array *ho_array_max_filter (const ho_array * ar);
+
+/**
+ min filter
+ @param ar the ho_array to us for max filter
+ @return newly allocated ho array
+ */
+ho_array *ho_array_min_filter (const ho_array * ar);
 
 /**
  absulute value 
@@ -254,6 +301,16 @@ ho_array *ho_array_atan2 (const ho_array * ar1, const ho_array * ar2);
  */
 unsigned char ho_array_gradient (const ho_array * ar, ho_array * ar_r,
   ho_array * ar_theta);
+
+/**
+ hough trasform for circles
+ @param ar the ho_array to us for gradient detection
+ @param min_radius the circles min radius
+ @param max_radius the circles max radius
+ @return FALSE
+ */
+ho_array *ho_array_hough_circles (const ho_array * ar, const int min_radius,
+  const int max_radius);
 
 /**
  fft_forword 
@@ -294,5 +351,29 @@ ho_array_fft_shift (const ho_array * ar_r, const ho_array * ar_im,
  @return FALSE
  */
 int ho_array_pnm_save (const ho_array * ar, const char *filename);
+
+/**
+ load ho_array from pnm file
+ @param filename save as file name 
+ @return new ho_array
+ */
+const ho_array *ho_array_pnm_load (const char *filename);
+
+/**
+ writes ho_array to tiff file
+ @param ar ho_array to save as gray image
+ @param filename save as file name 
+ @return FALSE
+ */
+int
+ho_array_tiff_save (const ho_array * ar, const char *filename);
+
+/**
+ load ho_array from tiff file
+ @param filename save as file name 
+ @return new ho_array
+ */
+const ho_array *
+ho_array_tiff_load (const char *filename);
 
 #endif /* HO_ARRAY_H */

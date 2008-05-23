@@ -90,6 +90,8 @@ ho_objlist_add (ho_objlist * object_list, double weight,
 
 int ho_objlist_get_index (ho_objlist * object_list, int index);
 
+ho_obj *ho_objlist_get_object (ho_objlist * object_list, int index);
+
 int ho_objlist_add_pixel (ho_objlist * object_list, int index, int x, int y);
 
 int ho_objlist_link (ho_objlist * object_list, int index1, int index2);
@@ -214,5 +216,13 @@ ho_bitmap *ho_objmap_to_bitmap_by_index_window (const ho_objmap * m,
  */
 int ho_objmap_update_reading_index (ho_objmap * m,
   const unsigned char n_columns, const unsigned char dir_ltr);
+
+/**
+ get an object by index
+ @param m pointer to an ho_objmap
+ @param index the object index
+ @return the object
+ */
+ho_obj *ho_objmap_get_object_by_index (ho_objmap * m, int index);
 
 #endif /* HO_OBJMAP_H */

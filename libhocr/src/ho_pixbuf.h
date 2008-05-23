@@ -89,6 +89,18 @@ ho_pixbuf *ho_pixbuf_new (const unsigned char n_channels,
 ho_pixbuf *ho_pixbuf_clone (const ho_pixbuf * m);
 
 /**
+ clone ho_pixbuf window
+ @param m pointer to a ho_pixbuf image
+ @param x x-start of window
+ @param y y-start of window
+ @param width width of window
+ @param height height of window
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *ho_pixbuf_clone_window (const ho_pixbuf * m, const int x,
+  const int y, const int width, const int height);
+
+/**
  copy pixel date to a ho_pixbuf
  @param pix pointer to a ho_pixbuf image
  @param data the pixel data to copy
@@ -231,6 +243,7 @@ ho_pixbuf *ho_pixbuf_scale4 (const ho_pixbuf * pix);
  @return newly allocated gray ho_pixbuf
  */
 ho_pixbuf *ho_pixbuf_scale8 (const ho_pixbuf * pix);
+
 /**
  scale a gray pixbuf
  @param pix the input ho_pixbuf
@@ -266,6 +279,21 @@ ho_pixbuf *ho_pixbuf_linear_filter (const ho_pixbuf * pix);
 ho_bitmap *ho_pixbuf_to_bitmap (const ho_pixbuf * pix, unsigned char threshold);
 
 /**
+ convert a color or gray pixbuf to bitmap 
+ @param pix the input ho_pixbuf
+ @param min_red the min threshold for red channel
+ @param max_red the max threshold for red channel
+ @param min_green the min threshold for green channel
+ @param max_gren the max threshold for green channel
+ @param min_blue the min threshold for blue channel
+ @param max_blue the max threshold for blue channel
+ @return newly allocated b/w ho_bitmap
+ */
+ho_bitmap *ho_pixbuf_to_bitmap_by_color (const ho_pixbuf * pix,
+  unsigned char min_red, unsigned char max_red, unsigned char min_green,
+  unsigned char max_green, unsigned char min_blue, unsigned char max_blue);
+
+/**
  convert a gray pixbuf to bitmap using adaptive thresholding
  @param pix the input ho_pixbuf
  @param threshold the threshold to use 0..100
@@ -297,12 +325,15 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
  @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
  @param threshold the threshold to use 0..100
  @param a_threshold the threshold to use for adaptive thresholding 0..100
+ @param size kernel size to use for adaptive thresholding 
  @return newly allocated b/w ho_bitmap
  */
-ho_bitmap *ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
+ho_bitmap *
+ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
   const unsigned char scale,
   const unsigned char adaptive,
-  const unsigned char threshold, const unsigned char a_threshold);
+  const unsigned char threshold, const unsigned char a_threshold,
+  const unsigned char size);
 
 /**
  draw a line from x1,y1 to x2,y2
@@ -319,6 +350,44 @@ ho_bitmap *ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
 int
 ho_pixbuf_draw_line (ho_pixbuf * m, const int x1, const int y1,
   const int x2, const int y2, const unsigned char red,
+  const unsigned char green, const unsigned char blue);
+
+/**
+ draw a box on pixbuf
+ 
+ @param m the pixbuf to draw on
+ @param x x-start of box
+ @param y y-start of box
+ @param width width of box
+ @param height height of box
+ @param red value of red channel 
+ @param green value of green channel 
+ @param blue value of blue channel 
+ @param alpha value of alpha channel 
+ @return FALSE
+ */
+int
+ho_pixbuf_draw_box (ho_pixbuf * m, const int x, const int y,
+  const int width, const int height, const unsigned char red,
+  const unsigned char green, const unsigned char blue,
+  const unsigned char alpha);
+
+/**
+ draw an empty box on pixbuf
+ 
+ @param m the pixbuf to draw on
+ @param x x-start of box
+ @param y y-start of box
+ @param width width of box
+ @param height height of box
+ @param red value of red channel 
+ @param green value of green channel 
+ @param blue value of blue channel
+ @return FALSE
+ */
+int
+ho_pixbuf_draw_box_empty (ho_pixbuf * m, const int x, const int y,
+  const int width, const int height, const unsigned char red,
   const unsigned char green, const unsigned char blue);
 
 /**

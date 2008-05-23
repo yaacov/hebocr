@@ -65,13 +65,14 @@ hocr_image_processing (const ho_pixbuf * pix_in,
   ho_bitmap *bitmap_temp = NULL;
   double angle = 0.0;
   int scale_by = 0;
-
+  unsigned char size = 0;
+  
   /* init progress */
   *progress = 0;
 
   /* get the raw b/w bitmap from the pixbuf */
   bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
-    scale, adaptive, threshold, a_threshold);
+    scale, adaptive, threshold, a_threshold, size);
   if (!bitmap_temp)
     return NULL;
 
@@ -98,7 +99,7 @@ hocr_image_processing (const ho_pixbuf * pix_in,
       /* re-create bitmap */
       ho_bitmap_free (bitmap_temp);
       bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
-        scale_by, adaptive, threshold, a_threshold);
+        scale_by, adaptive, threshold, a_threshold, size);
       if (!bitmap_temp)
         return NULL;
     }

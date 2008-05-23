@@ -1,4 +1,4 @@
-.TH "src/ho_objmap.h" 3 "20 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
+.TH "src/ho_objmap.h" 3 "23 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -66,6 +66,9 @@ src/ho_objmap.h \- libhocr C language header.
 .RI "int \fBho_objlist_get_index\fP (\fBho_objlist\fP *object_list, int index)"
 .br
 .ti -1c
+.RI "\fBho_obj\fP * \fBho_objlist_get_object\fP (\fBho_objlist\fP *object_list, int index)"
+.br
+.ti -1c
 .RI "int \fBho_objlist_add_pixel\fP (\fBho_objlist\fP *object_list, int index, int x, int y)"
 .br
 .ti -1c
@@ -116,6 +119,9 @@ src/ho_objmap.h \- libhocr C language header.
 .ti -1c
 .RI "int \fBho_objmap_update_reading_index\fP (\fBho_objmap\fP *m, const unsigned char n_columns, const unsigned char dir_ltr)"
 .br
+.ti -1c
+.RI "\fBho_obj\fP * \fBho_objmap_get_object_by_index\fP (\fBho_objmap\fP *m, int index)"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -147,6 +153,8 @@ libhocr - LIBrary for Hebrew Optical Character Recognition
 .SS "int ho_objlist_add (\fBho_objlist\fP * object_list, double weight, int x, int y, int width, int height)"
 .PP
 .SS "int ho_objlist_get_index (\fBho_objlist\fP * object_list, int index)"
+.PP
+.SS "\fBho_obj\fP* ho_objlist_get_object (\fBho_objlist\fP * object_list, int index)"
 .PP
 .SS "int ho_objlist_add_pixel (\fBho_objlist\fP * object_list, int index, int x, int y)"
 .PP
@@ -360,6 +368,23 @@ guess reading_index
 \fBReturns:\fP
 .RS 4
 FALSE 
+.RE
+.PP
+
+.SS "\fBho_obj\fP* ho_objmap_get_object_by_index (\fBho_objmap\fP * m, int index)"
+.PP
+get an object by index 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to an \fBho_objmap\fP 
+.br
+\fIindex\fP the object index 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the object 
 .RE
 .PP
 

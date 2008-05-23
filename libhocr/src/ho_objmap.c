@@ -136,6 +136,12 @@ ho_objlist_get_index (ho_objlist * object_list, int index)
   return index;
 }
 
+ho_obj *
+ho_objlist_get_object (ho_objlist * object_list, int index)
+{
+  return &((object_list->objects)[index]);
+}
+
 int
 ho_objlist_add_pixel (ho_objlist * object_list, int index, int x, int y)
 {
@@ -795,7 +801,6 @@ ho_objmap_font_metrix (const ho_objmap * m, const int min_height,
   return FALSE;
 }
 
-
 ho_bitmap *
 ho_objmap_to_bitmap (const ho_objmap * obj_in)
 {
@@ -804,7 +809,7 @@ ho_objmap_to_bitmap (const ho_objmap * obj_in)
   int index = 0;
 
   /* allocate memory */
-  pix = ho_bitmap_new(obj_in->width, obj_in->height);
+  pix = ho_bitmap_new (obj_in->width, obj_in->height);
   if (!pix)
     return NULL;
 
@@ -817,7 +822,7 @@ ho_objmap_to_bitmap (const ho_objmap * obj_in)
       if (index)
       {
         /* set autput colors */
-        ho_bitmap_set (pix, x, y); 
+        ho_bitmap_set (pix, x, y);
       }
     }
 
@@ -1113,4 +1118,10 @@ ho_objmap_update_reading_index (ho_objmap * m,
   return ho_objmap_update_reading_index_multi_columns (m, n_columns, dir_ltr);
 
   return FALSE;
+}
+
+ho_obj *
+ho_objmap_get_object_by_index (ho_objmap * m, int index)
+{
+  return &((m->obj_list->objects)[index]);
 }

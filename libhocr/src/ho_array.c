@@ -161,7 +161,7 @@ ho_array_get_at (ho_array * pix, int x, int y)
 }
 
 /**
- new ho_array from gray ho_pixbuf
+ new ho_array from ho_pixbuf
  @param pix pointer to an ho_array image
  @return newly allocated gray ho_array
  */
@@ -171,6 +171,13 @@ ho_array_new_from_pixbuf (const ho_pixbuf * pix)
   int x, y;
   double pixel_val;
   ho_array *m_out = NULL;
+  ho_pixbuf *gray_pix = NULL;
+
+  /* if pix is color convert to gray scale */
+  if (pix->n_channels > 1)
+    gray_pix = ho_pixbuf_color_to_gray (pix);
+  else
+    gray_pix = ho_pixbuf_clone (pix);
 
   /* allocate memory */
   m_out = ho_array_new (pix->width, pix->height);
@@ -181,9 +188,12 @@ ho_array_new_from_pixbuf (const ho_pixbuf * pix)
   for (x = 0; x < pix->width; x++)
     for (y = 0; y < pix->height; y++)
     {
-      pixel_val = (double) ho_pixbuf_get (pix, x, y, 0) / 255.0;
+      pixel_val = (double) ho_pixbuf_get (gray_pix, x, y, 0) / 255.0;
       ho_array_set (m_out, x, y, pixel_val);
     }
+
+  /* free gray pix */
+  ho_pixbuf_free (gray_pix);
 
   return m_out;
 }
@@ -214,6 +224,39 @@ ho_array_to_pixbuf (const ho_array * pix_in)
       pixel_val = (unsigned char) (255.0 *
         (ho_array_get (pix_in, x, y) - min) / range);
       ho_pixbuf_set (pix, x, y, 0, pixel_val);
+    }
+
+  return pix;
+}
+
+/**
+ new rgb ho_pixbuf from ho_array
+ @param pix_in pointer the original array
+ @return newly allocated gray ho_pixbuf
+ */
+ho_pixbuf *
+ho_array_to_rgb_pixbuf (const ho_array * pix_in)
+{
+  int x, y;
+  unsigned char pixel_val;
+  ho_pixbuf *pix = NULL;
+  double min, max, range;
+
+  ho_array_minmax (pix_in, &min, &max);
+  range = max - min;
+
+  pix = ho_pixbuf_new (3, pix_in->width, pix_in->height, 0);
+  if (!pix)
+    return NULL;
+
+  for (x = 0; x < pix_in->width; x++)
+    for (y = 0; y < pix_in->height; y++)
+    {
+      pixel_val = (unsigned char) (255.0 *
+        (ho_array_get (pix_in, x, y) - min) / range);
+      ho_pixbuf_set (pix, x, y, 0, pixel_val);
+      ho_pixbuf_set (pix, x, y, 1, pixel_val);
+      ho_pixbuf_set (pix, x, y, 2, pixel_val);
     }
 
   return pix;
@@ -262,6 +305,25 @@ ho_array_minmax (const ho_array * pix, double *min, double *max)
         *max = (pix->data)[x + y * pix->width];
     }
 
+  return FALSE;
+}
+
+double
+ho_array_mean (const ho_array * pix)
+{
+  double mean;
+  int x, y;
+
+  mean = 0;
+
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+    {
+      mean += (pix->data)[x + y * pix->width];
+    }
+
+  mean /= ((double)x * (double)y);
+    
   return FALSE;
 }
 
@@ -378,6 +440,36 @@ ho_array_mul (ho_array * ar1, const ho_array * ar2)
 }
 
 /**
+ multiply two ho real and imagenary ho_arrays pairs
+ @param ar1_r left side ho_array real part
+ @param ar1_i left side ho_array imagenaryl part
+ @param ar2_r right side ho_array real part
+ @param ar2_i right side ho_array imagenary part
+ @return FALSE
+ */
+unsigned char
+ho_array_compex_mul (ho_array * ar1_r, ho_array * ar1_i, const ho_array * ar2_r,
+  const ho_array * ar2_i)
+{
+  int x, y;
+  double a, b, c, d;
+
+  for (x = 0; x < ar1_r->width; x++)
+    for (y = 0; y < ar1_r->height; y++)
+    {
+      a = (ar1_r->data)[x + y * ar1_r->width];
+      b = (ar1_i->data)[x + y * ar1_i->width];
+      c = (ar2_r->data)[x + y * ar2_r->width];
+      d = (ar2_i->data)[x + y * ar2_i->width];
+
+      (ar1_r->data)[x + y * ar1_r->width] = a * c - b * d;
+      (ar1_i->data)[x + y * ar1_i->width] = b * c + a * d;
+    }
+
+  return FALSE;
+}
+
+/**
  multiply const to ho arrays
  @param ar left side ho_array
  @param num a number to multiply to array
@@ -431,6 +523,28 @@ ho_array_inv (ho_array * ar)
     for (y = 0; y < ar->height; y++)
     {
       (ar->data)[x + y * ar->width] = 1.0 / (ar->data)[x + y * ar->width];
+    }
+
+  return FALSE;
+}
+
+/**
+ polerize ho array
+ @param ar ho_array
+ @return FALSE
+ */
+unsigned char
+ho_array_polerize (ho_array * ar, const double treshold)
+{
+  int x, y;
+
+  for (x = 0; x < ar->width; x++)
+    for (y = 0; y < ar->height; y++)
+    {
+      if ((ar->data)[x + y * ar->width] < treshold)
+        (ar->data)[x + y * ar->width] = 0.0;
+      else
+        (ar->data)[x + y * ar->width] = 1.0;
     }
 
   return FALSE;
@@ -605,7 +719,6 @@ ho_array_conv (const ho_array * ar, const ho_array * kernel)
 /**
  median
  @param ar the ho_array to us for median filter
- @param kerne a 3x3 kernel ho_array
  @return newly allocated ho array
  */
 ho_array *
@@ -674,6 +787,126 @@ ho_array_median (const ho_array * ar)
           median = neigbours[i];
 
       (ar_out->data)[x + y * ar_out->width] = median;
+    }
+
+  return ar_out;
+}
+
+/**
+ max filter
+ @param ar the ho_array to us for max filter
+ @return newly allocated ho array
+ */
+ho_array *
+ho_array_max_filter (const ho_array * ar)
+{
+  int i, j, x, y;
+  double max;
+  double neigbours[9];
+  ho_array *ar_out = NULL;
+
+  /* allocate memory */
+  ar_out = ho_array_new (ar->width, ar->height);
+  if (!ar_out)
+    return NULL;
+
+  /* copy data */
+  for (x = 0; x < ar->width; x++)
+  {
+    (ar_out->data)[x] = (ar->data)[x];
+    (ar_out->data)[x + (ar_out->height - 1) * ar_out->width] =
+      (ar->data)[x + (ar->height - 1) * ar->width];
+  }
+  for (y = 0; y < ar->height; y++)
+  {
+    (ar_out->data)[y * ar_out->width] = (ar->data)[y * ar->width];
+    (ar_out->data)[ar_out->width - 1 + y * ar_out->width] =
+      (ar->data)[ar->width - 1 + y * ar->width];
+  }
+
+  /* copy data */
+  for (x = 1; x < ar->width - 1; x++)
+    for (y = 1; y < ar->height - 1; y++)
+    {
+      neigbours[0] = (ar->data)[(x - 1) + (y - 1) * ar->width];
+      neigbours[1] = (ar->data)[(x) + (y - 1) * ar->width];
+      neigbours[2] = (ar->data)[(x + 1) + (y - 1) * ar->width];
+
+      neigbours[3] = (ar->data)[(x - 1) + (y) * ar->width];
+      neigbours[4] = (ar->data)[(x) + (y) * ar->width];
+      neigbours[5] = (ar->data)[(x + 1) + (y) * ar->width];
+
+      neigbours[6] = (ar->data)[(x - 1) + (y + 1) * ar->width];
+      neigbours[7] = (ar->data)[(x) + (y + 1) * ar->width];
+      neigbours[8] = (ar->data)[(x + 1) + (y + 1) * ar->width];
+
+      /* get max value */
+      max = neigbours[0];
+      for (i = 1; i < 9; i++)
+        if (max < neigbours[i])
+          max = neigbours[i];
+
+      (ar_out->data)[x + y * ar_out->width] = max;
+    }
+
+  return ar_out;
+}
+
+/**
+ min filter
+ @param ar the ho_array to us for min filter
+ @return newly allocated ho array
+ */
+ho_array *
+ho_array_min_filter (const ho_array * ar)
+{
+  int i, j, x, y;
+  double min;
+  double neigbours[9];
+  ho_array *ar_out = NULL;
+
+  /* allocate memory */
+  ar_out = ho_array_new (ar->width, ar->height);
+  if (!ar_out)
+    return NULL;
+
+  /* copy data */
+  for (x = 0; x < ar->width; x++)
+  {
+    (ar_out->data)[x] = (ar->data)[x];
+    (ar_out->data)[x + (ar_out->height - 1) * ar_out->width] =
+      (ar->data)[x + (ar->height - 1) * ar->width];
+  }
+  for (y = 0; y < ar->height; y++)
+  {
+    (ar_out->data)[y * ar_out->width] = (ar->data)[y * ar->width];
+    (ar_out->data)[ar_out->width - 1 + y * ar_out->width] =
+      (ar->data)[ar->width - 1 + y * ar->width];
+  }
+
+  /* copy data */
+  for (x = 1; x < ar->width - 1; x++)
+    for (y = 1; y < ar->height - 1; y++)
+    {
+      neigbours[0] = (ar->data)[(x - 1) + (y - 1) * ar->width];
+      neigbours[1] = (ar->data)[(x) + (y - 1) * ar->width];
+      neigbours[2] = (ar->data)[(x + 1) + (y - 1) * ar->width];
+
+      neigbours[3] = (ar->data)[(x - 1) + (y) * ar->width];
+      neigbours[4] = (ar->data)[(x) + (y) * ar->width];
+      neigbours[5] = (ar->data)[(x + 1) + (y) * ar->width];
+
+      neigbours[6] = (ar->data)[(x - 1) + (y + 1) * ar->width];
+      neigbours[7] = (ar->data)[(x) + (y + 1) * ar->width];
+      neigbours[8] = (ar->data)[(x + 1) + (y + 1) * ar->width];
+
+      /* get max value */
+      min = neigbours[0];
+      for (i = 1; i < 9; i++)
+        if (min > neigbours[i])
+          min = neigbours[i];
+
+      (ar_out->data)[x + y * ar_out->width] = min;
     }
 
   return ar_out;
@@ -779,7 +1012,7 @@ ho_array_gradient (const ho_array * ar, ho_array * ar_r, ho_array * ar_theta)
         neigbours[6] * sobol_x[6] +
         neigbours[7] * sobol_x[7] + neigbours[8] * sobol_x[8];
 
-      sum_x = neigbours[0] * sobol_y[0] +
+      sum_y = neigbours[0] * sobol_y[0] +
         neigbours[1] * sobol_y[1] +
         neigbours[2] * sobol_y[2] +
         neigbours[3] * sobol_y[3] +
@@ -791,11 +1024,160 @@ ho_array_gradient (const ho_array * ar, ho_array * ar_r, ho_array * ar_theta)
       /* calculate r and theta vlaues */
       (ar_r->data)[x + y * ar_r->width] =
         sqrt ((sum_x * sum_x) + (sum_y * sum_y));
-      (ar_theta->data)[x + y * ar_theta->width] = -atan2 (sum_x, sum_y);
+      (ar_theta->data)[x + y * ar_theta->width] = atan2 (sum_y, sum_x);
     }
 
   return FALSE;
 }
+
+/**
+ hough trasform for circles
+ @param ar the ho_array to us for gradient detection
+ @param min_radius the circles min radius
+ @param max_radius the circles max radius
+ @return FALSE
+ */
+ho_array *
+ho_array_hough_circles (const ho_array * ar, const int min_radius,
+  const int max_radius)
+{
+  int radius;
+  double r, theta;
+  double min, max;
+  double threshold;
+  int x, y;
+  int xtag, ytag;
+  ho_array *ar_out = NULL;
+  ho_array *ar_r = NULL;
+  ho_array *ar_theta = NULL;
+
+  /* allocate memory */
+  ar_out = ho_array_new (ar->width, ar->height);
+  if (!ar_out)
+    return NULL;
+
+  ar_r = ho_array_new (ar->width, ar->height);
+  if (!ar_r)
+  {
+    ho_array_free (ar_out);
+    return NULL;
+  }
+
+  ar_theta = ho_array_new (ar->width, ar->height);
+  if (!ar_theta)
+  {
+    ho_array_free (ar_out);
+    ho_array_free (ar_r);
+    return NULL;
+  }
+
+  /* get image gradient */
+  ho_array_gradient (ar, ar_r, ar_theta);
+
+  /* get threshold values of ar_r */
+  ho_array_minmax ( ar_r, &min, &max);
+  threshold = min + 1.0 * (max - min) / 3.0;
+
+  /* transform data */
+  for (x = 0; x < ar->width; x++)
+    for (y = 0; y < ar->height; y++)
+    {
+      r = ho_array_get (ar_r, x, y);
+      theta = ho_array_get (ar_theta, x, y);
+
+      /* if pixel is on in xy plane */
+      if (r > threshold)
+        for (radius = min_radius; radius < max_radius; radius++)
+        {
+          xtag = x - (int) ((double) radius * cos (theta));
+          ytag = y + (int) ((double) radius * sin (theta));
+
+          /* check if xytag is in image */
+          if (ytag >= 0 && ytag < ar_r->height &&
+            xtag >= 0 && xtag < ar_r->width)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] = 
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+    }
+
+  /* free mem */
+  ho_array_free (ar_theta);
+  ho_array_free (ar_r);
+
+  return ar_out;
+}
+
+const ho_array *
+ho_array_pnm_load (const char *filename)
+{
+  ho_pixbuf *pix;
+  ho_array *ar;
+
+  pix = ho_pixbuf_pnm_load (filename);
+  if (!pix)
+    return NULL;
+
+  ar = ho_array_new_from_pixbuf (pix);
+
+  ho_pixbuf_free (pix);
+
+  return ar;
+}
+
+int
+ho_array_pnm_save (const ho_array * ar, const char *filename)
+{
+  ho_pixbuf *pix;
+
+  pix = ho_array_to_pixbuf (ar);
+  if (!pix)
+    return TRUE;
+
+  ho_pixbuf_pnm_save (pix, filename);
+
+  ho_pixbuf_free (pix);
+
+  return FALSE;
+}
+
+#ifdef USE_TIFF
+
+const ho_array *
+ho_array_tiff_load (const char *filename)
+{
+  ho_pixbuf *pix;
+  ho_array *ar;
+
+  pix = ho_pixbuf_bw_tiff_load (filename);
+  if (!pix)
+    return NULL;
+
+  ar = ho_array_new_from_pixbuf (pix);
+
+  ho_pixbuf_free (pix);
+
+  return ar;
+}
+
+int
+ho_array_tiff_save (const ho_array * ar, const char *filename)
+{
+  ho_pixbuf *pix;
+
+  pix = ho_array_to_pixbuf (ar);
+  if (!pix)
+    return TRUE;
+
+  ho_pixbuf_bw_tiff_save (pix, filename);
+
+  ho_pixbuf_free (pix);
+
+  return FALSE;
+}
+
+#endif /* USE_TIFF */
 
 #ifdef USE_FFTW
 
@@ -925,22 +1307,6 @@ ho_array_fft_shift (const ho_array * ar_r, const ho_array * ar_im,
       (shift_ar_im->data)[x + y * ar_r->width] =
         (ar_im->data)[xtag + ytag * ar_r->width];
     }
-
-  return FALSE;
-}
-
-int
-ho_array_pnm_save (const ho_array * ar, const char *filename)
-{
-  ho_pixbuf *pix;
-
-  pix = ho_array_to_pixbuf (ar);
-  if (!pix)
-    return TRUE;
-
-  ho_pixbuf_pnm_save (pix, filename);
-
-  ho_pixbuf_free (pix);
 
   return FALSE;
 }

@@ -473,10 +473,10 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
 {
   ho_bitmap *m_bw = NULL;
   ho_bitmap *m_bw_temp = NULL;
-
+  unsigned char size = 0;
   m_bw =
     ho_pixbuf_to_bitmap_wrapper (pix, scale_by, adaptive_threshold_type,
-    threshold, adaptive_threshold);
+    threshold, adaptive_threshold, size);
 
   if (!m_bw)
   {
@@ -521,7 +521,7 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
       ho_bitmap_free (m_bw);
       m_bw =
         ho_pixbuf_to_bitmap_wrapper (pix, scale_by,
-        adaptive_threshold_type, threshold, adaptive_threshold);
+        adaptive_threshold_type, threshold, adaptive_threshold, size);
 
       if (!m_bw)
       {

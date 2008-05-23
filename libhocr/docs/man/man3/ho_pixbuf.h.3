@@ -1,4 +1,4 @@
-.TH "src/ho_pixbuf.h" 3 "20 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
+.TH "src/ho_pixbuf.h" 3 "23 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -69,6 +69,9 @@ src/ho_pixbuf.h \- libhocr C language header.
 .RI "\fBho_pixbuf\fP * \fBho_pixbuf_clone\fP (const \fBho_pixbuf\fP *m)"
 .br
 .ti -1c
+.RI "\fBho_pixbuf\fP * \fBho_pixbuf_clone_window\fP (const \fBho_pixbuf\fP *m, const int x, const int y, const int width, const int height)"
+.br
+.ti -1c
 .RI "int \fBho_pixbuf_set_data\fP (\fBho_pixbuf\fP *pix, const char *data)"
 .br
 .ti -1c
@@ -126,16 +129,25 @@ src/ho_pixbuf.h \- libhocr C language header.
 .RI "\fBho_bitmap\fP * \fBho_pixbuf_to_bitmap\fP (const \fBho_pixbuf\fP *pix, unsigned char threshold)"
 .br
 .ti -1c
+.RI "\fBho_bitmap\fP * \fBho_pixbuf_to_bitmap_by_color\fP (const \fBho_pixbuf\fP *pix, unsigned char min_red, unsigned char max_red, unsigned char min_green, unsigned char max_green, unsigned char min_blue, unsigned char max_blue)"
+.br
+.ti -1c
 .RI "\fBho_bitmap\fP * \fBho_pixbuf_to_bitmap_adaptive\fP (const \fBho_pixbuf\fP *pix, unsigned char threshold, unsigned char size, unsigned char adaptive_threshold)"
 .br
 .ti -1c
 .RI "\fBho_bitmap\fP * \fBho_pixbuf_to_bitmap_adaptive_fine\fP (const \fBho_pixbuf\fP *pix, unsigned char threshold, unsigned char size, unsigned char adaptive_threshold)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_pixbuf_to_bitmap_wrapper\fP (const \fBho_pixbuf\fP *pix_in, const unsigned char scale, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
+.RI "\fBho_bitmap\fP * \fBho_pixbuf_to_bitmap_wrapper\fP (const \fBho_pixbuf\fP *pix_in, const unsigned char scale, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const unsigned char size)"
 .br
 .ti -1c
 .RI "int \fBho_pixbuf_draw_line\fP (\fBho_pixbuf\fP *m, const int x1, const int y1, const int x2, const int y2, const unsigned char red, const unsigned char green, const unsigned char blue)"
+.br
+.ti -1c
+.RI "int \fBho_pixbuf_draw_box\fP (\fBho_pixbuf\fP *m, const int x, const int y, const int width, const int height, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
+.br
+.ti -1c
+.RI "int \fBho_pixbuf_draw_box_empty\fP (\fBho_pixbuf\fP *m, const int x, const int y, const int width, const int height, const unsigned char red, const unsigned char green, const unsigned char blue)"
 .br
 .ti -1c
 .RI "int \fBho_pixbuf_draw_horizontal_scale\fP (\fBho_pixbuf\fP *m, const int x1, const int y1, const int length, const int step, const unsigned char red, const unsigned char green, const unsigned char blue)"
@@ -228,6 +240,29 @@ clone \fBho_pixbuf\fP
 \fBParameters:\fP
 .RS 4
 \fIm\fP pointer to a \fBho_pixbuf\fP image 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_pixbuf_clone_window (const \fBho_pixbuf\fP * m, const int x, const int y, const int width, const int height)"
+.PP
+clone \fBho_pixbuf\fP window 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to a \fBho_pixbuf\fP image 
+.br
+\fIx\fP x-start of window 
+.br
+\fIy\fP y-start of window 
+.br
+\fIwidth\fP width of window 
+.br
+\fIheight\fP height of window 
 .RE
 .PP
 \fBReturns:\fP
@@ -584,6 +619,33 @@ newly allocated b/w \fBho_bitmap\fP
 .RE
 .PP
 
+.SS "\fBho_bitmap\fP* ho_pixbuf_to_bitmap_by_color (const \fBho_pixbuf\fP * pix, unsigned char min_red, unsigned char max_red, unsigned char min_green, unsigned char max_green, unsigned char min_blue, unsigned char max_blue)"
+.PP
+convert a color or gray pixbuf to bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP the input \fBho_pixbuf\fP 
+.br
+\fImin_red\fP the min threshold for red channel 
+.br
+\fImax_red\fP the max threshold for red channel 
+.br
+\fImin_green\fP the min threshold for green channel 
+.br
+\fImax_gren\fP the max threshold for green channel 
+.br
+\fImin_blue\fP the min threshold for blue channel 
+.br
+\fImax_blue\fP the max threshold for blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated b/w \fBho_bitmap\fP 
+.RE
+.PP
+
 .SS "\fBho_bitmap\fP* ho_pixbuf_to_bitmap_adaptive (const \fBho_pixbuf\fP * pix, unsigned char threshold, unsigned char size, unsigned char adaptive_threshold)"
 .PP
 convert a gray pixbuf to bitmap using adaptive thresholding 
@@ -626,7 +688,7 @@ newly allocated b/w \fBho_bitmap\fP
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_pixbuf_to_bitmap_wrapper (const \fBho_pixbuf\fP * pix_in, const unsigned char scale, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold)"
+.SS "\fBho_bitmap\fP* ho_pixbuf_to_bitmap_wrapper (const \fBho_pixbuf\fP * pix_in, const unsigned char scale, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const unsigned char size)"
 .PP
 convert a color of gray pixbuf to bitmap wrapper function 
 .PP
@@ -641,6 +703,8 @@ convert a color of gray pixbuf to bitmap wrapper function
 \fIthreshold\fP the threshold to use 0..100 
 .br
 \fIa_threshold\fP the threshold to use for adaptive thresholding 0..100 
+.br
+\fIsize\fP kernel size to use for adaptive thresholding 
 .RE
 .PP
 \fBReturns:\fP
@@ -664,6 +728,66 @@ draw a line from x1,y1 to x2,y2
 \fIx2\fP x cordinate of end point 
 .br
 \fIy2\fP y cordinate of end point 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_box (\fBho_pixbuf\fP * m, const int x, const int y, const int width, const int height, const unsigned char red, const unsigned char green, const unsigned char blue, const unsigned char alpha)"
+.PP
+draw a box on pixbuf
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the pixbuf to draw on 
+.br
+\fIx\fP x-start of box 
+.br
+\fIy\fP y-start of box 
+.br
+\fIwidth\fP width of box 
+.br
+\fIheight\fP height of box 
+.br
+\fIred\fP value of red channel 
+.br
+\fIgreen\fP value of green channel 
+.br
+\fIblue\fP value of blue channel 
+.br
+\fIalpha\fP value of alpha channel 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_pixbuf_draw_box_empty (\fBho_pixbuf\fP * m, const int x, const int y, const int width, const int height, const unsigned char red, const unsigned char green, const unsigned char blue)"
+.PP
+draw an empty box on pixbuf
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP the pixbuf to draw on 
+.br
+\fIx\fP x-start of box 
+.br
+\fIy\fP y-start of box 
+.br
+\fIwidth\fP width of box 
+.br
+\fIheight\fP height of box 
 .br
 \fIred\fP value of red channel 
 .br
