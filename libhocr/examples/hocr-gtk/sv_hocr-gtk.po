@@ -1,0 +1,222 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-05-27 14:04+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: hocr-gtk:79
+msgid ""
+"Hocr-GTK, Hebrew optical character recognition\n"
+"graphical front end (GTK)\n"
+"\n"
+msgstr ""
+
+#: hocr-gtk:81
+msgid "Shlomi Israel <sijproject@gmail.com>"
+msgstr ""
+
+#: hocr-gtk:82
+msgid "Yaacov Zamir <kzamir@walla.co.il>"
+msgstr ""
+
+#: hocr-gtk:321
+msgid ""
+"Can't load hocr's glade GUI file, check your install.\n"
+"Exit program."
+msgstr ""
+
+#: hocr-gtk:358
+msgid "Processing..."
+msgstr ""
+
+#: hocr-gtk:489
+msgid "Open.."
+msgstr ""
+
+#: hocr-gtk:517 hocr-gtk:538
+msgid "Closed, no files selected"
+msgstr ""
+
+#: hocr-gtk:525
+msgid "Save.."
+msgstr ""
+
+#: hocr-gtk:626
+msgid "Closed, no files scaned"
+msgstr ""
+
+#: hocr-gtk:771
+msgid "translator-credits"
+msgstr ""
+
+#: hocr-gtk:782
+msgid "Set text font"
+msgstr ""
+
+#: hocr-gtk.glade.h:1
+msgid "Black and White"
+msgstr ""
+
+#: hocr-gtk.glade.h:2
+msgid "Engine"
+msgstr ""
+
+#: hocr-gtk.glade.h:3
+msgid "Font"
+msgstr ""
+
+#: hocr-gtk.glade.h:4
+msgid "Font 1"
+msgstr ""
+
+#: hocr-gtk.glade.h:5
+msgid "Font 2"
+msgstr ""
+
+#: hocr-gtk.glade.h:6
+msgid "Font 3"
+msgstr ""
+
+#: hocr-gtk.glade.h:7
+msgid "Font 4"
+msgstr ""
+
+#: hocr-gtk.glade.h:8
+msgid "Font 5"
+msgstr ""
+
+#: hocr-gtk.glade.h:9
+msgid "Font 6"
+msgstr ""
+
+#: hocr-gtk.glade.h:10
+msgid "Hocr"
+msgstr ""
+
+#: hocr-gtk.glade.h:11
+msgid "Image"
+msgstr ""
+
+#: hocr-gtk.glade.h:12
+msgid "Layout"
+msgstr ""
+
+#: hocr-gtk.glade.h:13
+msgid "Original"
+msgstr ""
+
+#: hocr-gtk.glade.h:14
+msgid "Scan"
+msgstr ""
+
+#: hocr-gtk.glade.h:15
+msgid "Tesseract"
+msgstr ""
+
+#: hocr-gtk.glade.h:16
+msgid "_Edit"
+msgstr ""
+
+#: hocr-gtk.glade.h:17
+msgid "_File"
+msgstr ""
+
+#: hocr-gtk.glade.h:18
+msgid "_Help"
+msgstr ""
+
+#: hocr-gtk.glade.h:19
+msgid "_View"
+msgstr ""
+
+#: hocr-gtk.glade.h:20
+msgid "auto"
+msgstr ""
+
+#: hocr-gtk.glade.h:21
+msgid "clear"
+msgstr ""
+
+#: hocr-gtk.glade.h:22
+msgid "column"
+msgstr ""
+
+#: hocr-gtk.glade.h:23
+msgid "gtk-about"
+msgstr ""
+
+#: hocr-gtk.glade.h:24
+msgid "gtk-apply"
+msgstr ""
+
+#: hocr-gtk.glade.h:25
+msgid "gtk-copy"
+msgstr ""
+
+#: hocr-gtk.glade.h:26
+msgid "gtk-cut"
+msgstr ""
+
+#: hocr-gtk.glade.h:27
+msgid "gtk-delete"
+msgstr ""
+
+#: hocr-gtk.glade.h:28
+msgid "gtk-new"
+msgstr ""
+
+#: hocr-gtk.glade.h:29
+msgid "gtk-paste"
+msgstr ""
+
+#: hocr-gtk.glade.h:30
+msgid "gtk-quit"
+msgstr ""
+
+#: hocr-gtk.glade.h:31
+msgid "gtk-save"
+msgstr ""
+
+#: hocr-gtk.glade.h:32
+msgid "gtk-select-font"
+msgstr ""
+
+#: hocr-gtk.glade.h:33
+msgid "gtk-zoom-100"
+msgstr ""
+
+#: hocr-gtk.glade.h:34
+msgid "gtk-zoom-fit"
+msgstr ""
+
+#: hocr-gtk.glade.h:35
+msgid "gtk-zoom-in"
+msgstr ""
+
+#: hocr-gtk.glade.h:36
+msgid "gtk-zoom-out"
+msgstr ""
+
+#: hocr-gtk.glade.h:37
+msgid "html"
+msgstr ""
+
+#: hocr-gtk.glade.h:38
+msgid "nikud"
+msgstr ""
+
+#: hocr-gtk.glade.h:39
+msgid "one column"
+msgstr ""
