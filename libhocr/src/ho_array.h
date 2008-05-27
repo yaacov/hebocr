@@ -32,6 +32,7 @@
 #define HO_ARRAY_H 1
 
 #include <ho_pixbuf.h>
+#include <ho_bitmap.h>
 
  /* hocr array set/get macros */
 #define ho_array_set(m,x,y,val) (((m)->data)[(x)+(y)*(m)->width]=(val))
@@ -101,6 +102,13 @@ double ho_array_get_at (ho_array * pix, int x, int y);
 ho_array *ho_array_new_from_pixbuf (const ho_pixbuf * pix);
 
 /**
+ new ho_array from ho_bitmap
+ @param pix pointer to an ho_array image
+ @return newly allocated gray ho_array
+ */
+ho_array *ho_array_new_from_bitmap (const ho_bitmap * pix);
+
+/**
  new gray ho_pixbuf from ho_array
  @param pix_in pointer the original array
  @return newly allocated gray ho_pixbuf
@@ -135,8 +143,7 @@ unsigned char ho_array_minmax (const ho_array * pix, double *min, double *max);
  @param pix ho_array
  @return min value
  */
-double
-ho_array_mean (const ho_array * pix);
+double ho_array_mean (const ho_array * pix);
 
 /**
  get the min value in a array
@@ -307,10 +314,11 @@ unsigned char ho_array_gradient (const ho_array * ar, ho_array * ar_r,
  @param ar the ho_array to us for gradient detection
  @param min_radius the circles min radius
  @param max_radius the circles max radius
+ @param threshold the min value to use in the gradient matrix percent
  @return FALSE
  */
 ho_array *ho_array_hough_circles (const ho_array * ar, const int min_radius,
-  const int max_radius);
+  const int max_radius, const unsigned char t);
 
 /**
  fft_forword 
@@ -345,6 +353,14 @@ ho_array_fft_shift (const ho_array * ar_r, const ho_array * ar_im,
   ho_array * shift_ar_r, ho_array * shift_ar_im);
 
 /**
+ fft_filter - applay a filter in w space
+ @param ar input array
+ @param ar_filter input array of the imaginary values
+ @return FALSE
+ */
+unsigned char ho_array_fft_filter (ho_array * ar, const ho_array * ar_filter);
+
+/**
  writes ho_array to pnm file
  @param ar ho_array to save as gray image
  @param filename save as file name 
@@ -365,15 +381,44 @@ const ho_array *ho_array_pnm_load (const char *filename);
  @param filename save as file name 
  @return FALSE
  */
-int
-ho_array_tiff_save (const ho_array * ar, const char *filename);
+int ho_array_tiff_save (const ho_array * ar, const char *filename);
 
 /**
  load ho_array from tiff file
  @param filename save as file name 
  @return new ho_array
  */
-const ho_array *
-ho_array_tiff_load (const char *filename);
+const ho_array *ho_array_tiff_load (const char *filename);
+
+/**
+ new ho_array init to gaussian
+ @param height hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param sigma the sigma to use in the gaussien
+ @return newly allocated ho_array
+ */
+ho_array *ho_array_new_gaussien (const int width, const int height,
+  const double sigma);
+
+/**
+ new ho_array init to box
+ @param height hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param box_height height of box
+ @param box_width width of box
+ @return newly allocated ho_array
+ */
+ho_array *ho_array_new_box (const int width, const int height,
+  const int box_width, const int box_height);
+
+/**
+ new ho_array init to circle
+ @param height hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param radius radius of circle
+ @return newly allocated ho_array
+ */
+ho_array *ho_array_new_circle (const int width, const int height,
+  const int radius);
 
 #endif /* HO_ARRAY_H */

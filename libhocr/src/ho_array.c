@@ -45,6 +45,8 @@
 #include "ho_pixbuf.h"
 #include "ho_array.h"
 
+#define square(x) ((x)*(x))
+
 /**
  new ho_array 
  @param height hight of pixbuf in pixels
@@ -199,6 +201,34 @@ ho_array_new_from_pixbuf (const ho_pixbuf * pix)
 }
 
 /**
+ new ho_array from ho_bitmap
+ @param pix pointer to an ho_array image
+ @return newly allocated gray ho_array
+ */
+ho_array *
+ho_array_new_from_bitmap (const ho_bitmap * pix)
+{
+  int x, y;
+  double pixel_val;
+  ho_array *m_out = NULL;
+
+  /* allocate memory */
+  m_out = ho_array_new (pix->width, pix->height);
+  if (!m_out)
+    return NULL;
+
+  /* copy data */
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+    {
+      pixel_val = 1.0 - (double) ho_bitmap_get (pix, x, y);
+      ho_array_set (m_out, x, y, pixel_val);
+    }
+
+  return m_out;
+}
+
+/**
  new gray ho_pixbuf from ho_array
  @param pix_in pointer the original array
  @return newly allocated gray ho_pixbuf
@@ -322,8 +352,8 @@ ho_array_mean (const ho_array * pix)
       mean += (pix->data)[x + y * pix->width];
     }
 
-  mean /= ((double)x * (double)y);
-    
+  mean /= ((double) x * (double) y);
+
   return FALSE;
 }
 
@@ -537,11 +567,18 @@ unsigned char
 ho_array_polerize (ho_array * ar, const double treshold)
 {
   int x, y;
+  double min, max;
+  double real_treshold;
+
+  ho_array_minmax (ar, &min, &max);
+
+  /* calculate threshold for this array */
+  real_treshold = min + treshold * (max - min);
 
   for (x = 0; x < ar->width; x++)
     for (y = 0; y < ar->height; y++)
     {
-      if ((ar->data)[x + y * ar->width] < treshold)
+      if ((ar->data)[x + y * ar->width] < real_treshold)
         (ar->data)[x + y * ar->width] = 0.0;
       else
         (ar->data)[x + y * ar->width] = 1.0;
@@ -1039,17 +1076,23 @@ ho_array_gradient (const ho_array * ar, ho_array * ar_r, ho_array * ar_theta)
  */
 ho_array *
 ho_array_hough_circles (const ho_array * ar, const int min_radius,
-  const int max_radius)
+  const int max_radius, const unsigned char t)
 {
   int radius;
   double r, theta;
   double min, max;
   double threshold;
+  double threshold_percent;
   int x, y;
   int xtag, ytag;
   ho_array *ar_out = NULL;
   ho_array *ar_r = NULL;
   ho_array *ar_theta = NULL;
+
+  if (!t)
+    threshold_percent = 0.1;
+  else
+    threshold_percent = t;
 
   /* allocate memory */
   ar_out = ho_array_new (ar->width, ar->height);
@@ -1075,8 +1118,8 @@ ho_array_hough_circles (const ho_array * ar, const int min_radius,
   ho_array_gradient (ar, ar_r, ar_theta);
 
   /* get threshold values of ar_r */
-  ho_array_minmax ( ar_r, &min, &max);
-  threshold = min + 1.0 * (max - min) / 3.0;
+  ho_array_minmax (ar_r, &min, &max);
+  threshold = min + threshold_percent * (max - min) / 100.0;
 
   /* transform data */
   for (x = 0; x < ar->width; x++)
@@ -1096,7 +1139,7 @@ ho_array_hough_circles (const ho_array * ar, const int min_radius,
           if (ytag >= 0 && ytag < ar_r->height &&
             xtag >= 0 && xtag < ar_r->width)
           {
-            (ar_out->data)[xtag + ytag * ar_out->width] = 
+            (ar_out->data)[xtag + ytag * ar_out->width] =
               (ar_out->data)[xtag + ytag * ar_out->width] + 1;
           }
         }
@@ -1270,7 +1313,7 @@ ho_array_fft_backword (const ho_array * ar_r, const ho_array * ar_im,
   /* copy results to output arrays */
   for (i = 0; i < width * height; i++)
   {
-    (ar->data)[i] = fft_ar_xy[i][0];
+    (ar->data)[i] = sqrt (square (fft_ar_xy[i][0]) + square (fft_ar_w[i][0]));
   }
 
   /* free fft objects */
@@ -1311,4 +1354,215 @@ ho_array_fft_shift (const ho_array * ar_r, const ho_array * ar_im,
   return FALSE;
 }
 
+/**
+ fft_filter - applay a filter in w space
+ @param ar input array
+ @param ar_filter input array of the imaginary values
+ @return FALSE
+ */
+unsigned char
+ho_array_fft_filter (ho_array * ar, const ho_array * ar_filter)
+{
+  int w, h, x, y;
+  ho_array *ar_shift;
+
+  ho_array *ar_r;
+  ho_array *ar_im;
+
+  ho_array *ar_filter_r;
+  ho_array *ar_filter_im;
+
+  /* get memory */
+  w = ar->width;
+  h = ar->height;
+
+  ar_shift = ho_array_new (w, h);
+
+  ar_r = ho_array_new (w, h);
+  ar_im = ho_array_new (w, h);
+
+  ar_filter_r = ho_array_new (w, h);
+  ar_filter_im = ho_array_new (w, h);
+
+  /* FIXME: free memory */
+  if (!ar_shift || !ar_r || !ar_im || !ar_filter_r || !ar_filter_im)
+    return TRUE;
+
+  /* shift ar to ar_shift FIXME: ar_im,ar_filter_im are just place holders */
+  ho_array_fft_shift (ar, ar_im, ar_shift, ar_filter_im);
+
+  /* move to w space */
+  ho_array_fft_forword (ar_shift, ar_r, ar_im);
+  ho_array_free (ar_shift);
+
+  ho_array_fft_forword (ar_filter, ar_filter_r, ar_filter_im);
+
+  /* applay filter */
+  ho_array_compex_mul (ar_r, ar_im, ar_filter_r, ar_filter_im);
+
+  /* move to xy space */
+  ho_array_fft_backword (ar_r, ar_im, ar);
+
+  /* free memory */
+  ho_array_free (ar_r);
+  ho_array_free (ar_im);
+  ho_array_free (ar_filter_r);
+  ho_array_free (ar_filter_im);
+
+  return FALSE;
+}
+
 #endif /* USE_FFTW */
+
+/**
+ new ho_array init to gaussian
+ @param height hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param sigma the sigma to use in the gaussien
+ @return newly allocated ho_array
+ */
+ho_array *
+ho_array_new_gaussien (const int width, const int height, const double sigma)
+{
+  int x, y;
+  ho_array *pix = NULL;
+
+  /* 
+   * allocate memory for pixbuf 
+   */
+  pix = (ho_array *) malloc (sizeof (ho_array));
+  if (!pix)
+  {
+    return NULL;
+  }
+
+  /* 
+   * read header 
+   */
+  pix->width = width;
+  pix->height = height;
+
+  /* 
+   * allocate memory for data
+   */
+  pix->data = malloc (pix->height * pix->width * sizeof (double));
+  if (!(pix->data))
+  {
+    free (pix);
+    return NULL;
+  }
+
+  /* init value to 0 */
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+    {
+      (pix->data)[x + y * pix->width] =
+        exp (-square (sigma) * (square (x - width / 2.0) + square (y -
+            height / 2.0)) / (2.0));
+    }
+
+  return pix;
+}
+
+/**
+ new ho_array init to box
+ @param height hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param box_height height of box
+ @param box_width width of box
+ @return newly allocated ho_array
+ */
+ho_array *
+ho_array_new_box (const int width, const int height, const int box_width,
+  const int box_height)
+{
+  int x, y;
+  ho_array *pix = NULL;
+
+  /* 
+   * allocate memory for pixbuf 
+   */
+  pix = (ho_array *) malloc (sizeof (ho_array));
+  if (!pix)
+  {
+    return NULL;
+  }
+
+  /* 
+   * read header 
+   */
+  pix->width = width;
+  pix->height = height;
+
+  /* 
+   * allocate memory for data
+   */
+  pix->data = malloc (pix->height * pix->width * sizeof (double));
+  if (!(pix->data))
+  {
+    free (pix);
+    return NULL;
+  }
+
+  /* init value to 0 */
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+    {
+      (pix->data)[x + y * pix->width] =
+        x > (width - box_width) / 2 &&
+        x < (width + box_width) / 2 &&
+        y > (height - box_height) / 2 && y < (height + box_height) / 2;
+    }
+
+  return pix;
+}
+
+/**
+ new ho_array init to circle
+ @param height hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param radius radius of circle
+ @return newly allocated ho_array
+ */
+ho_array *
+ho_array_new_circle (const int width, const int height, const int radius)
+{
+  int x, y;
+  ho_array *pix = NULL;
+
+  /* 
+   * allocate memory for pixbuf 
+   */
+  pix = (ho_array *) malloc (sizeof (ho_array));
+  if (!pix)
+  {
+    return NULL;
+  }
+
+  /* 
+   * read header 
+   */
+  pix->width = width;
+  pix->height = height;
+
+  /* 
+   * allocate memory for data
+   */
+  pix->data = malloc (pix->height * pix->width * sizeof (double));
+  if (!(pix->data))
+  {
+    free (pix);
+    return NULL;
+  }
+
+  /* init value to 0 */
+  for (x = 0; x < pix->width; x++)
+    for (y = 0; y < pix->height; y++)
+    {
+      (pix->data)[x + y * pix->width] =
+        (square (x - width / 2.0) + square (y - height / 2.0)) <
+        square (radius);
+    }
+
+  return pix;
+}
