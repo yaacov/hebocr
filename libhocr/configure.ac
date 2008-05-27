@@ -316,6 +316,7 @@ echo build: $BUILD_STR
 echo prefix: $prefix
 echo compiler: ${CC}
 echo have swig:	${have_swig}
+echo pkg-config path: ${PKG_CONFIG}
 echo
 echo with glib: ${build_glib}
 echo with gtk: ${build_gtk}

@@ -7,7 +7,7 @@ INCLUDES = \
         $(fftw_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
 
-lib_LTLIBRARIES = libhocr.la libhocrgtk.la
+lib_LTLIBRARIES = libhocr.la
 
 libhocr_la_SOURCES = \
         hocr.c \
@@ -61,6 +61,8 @@ library_include_HEADERS = \
 
 # libhocrgtk, helper functions to use hocr in gtk programs
 if WITH_GTK
+
+lib_LTLIBRARIES += libhocrgtk.la
 
 libhocrgtk_la_SOURCES = \
         ho_gtk.c
