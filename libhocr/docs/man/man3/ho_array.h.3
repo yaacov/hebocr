@@ -1,0 +1,967 @@
+.TH "src/ho_array.h" 3 "27 May 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/ho_array.h \- libhocr C language header. 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ho_pixbuf.h>\fP
+.br
+\fC#include <ho_bitmap.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBho_array\fP"
+.br
+.RI "\fIlibhocr pixbuf map struct (copy gtk pixbuf) \fP"
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHO_ARRAY_H\fP   1"
+.br
+.ti -1c
+.RI "#define \fBho_array_set\fP(m, x, y, val)   (((m)->data)[(x)+(y)*(m)->width]=(val))"
+.br
+.ti -1c
+.RI "#define \fBho_array_get\fP(m, x, y)   (((m)->data)[(x)+(y)*(m)->width])"
+.br
+.ti -1c
+.RI "#define \fBho_array_get_width\fP(m)   ((m)->width)"
+.br
+.ti -1c
+.RI "#define \fBho_array_get_height\fP(m)   ((m)->height)"
+.br
+.ti -1c
+.RI "#define \fBho_array_get_data\fP(m)   ((m)->data)"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_new\fP (const int width, const int height)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_clone\fP (const \fBho_array\fP *m)"
+.br
+.ti -1c
+.RI "int \fBho_array_set_data\fP (\fBho_array\fP *pix, double data)"
+.br
+.ti -1c
+.RI "int \fBho_array_set_at\fP (\fBho_array\fP *pix, int x, int y, double data)"
+.br
+.ti -1c
+.RI "double \fBho_array_get_at\fP (\fBho_array\fP *pix, int x, int y)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_new_from_pixbuf\fP (const \fBho_pixbuf\fP *pix)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_new_from_bitmap\fP (const \fBho_bitmap\fP *pix)"
+.br
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBho_array_to_pixbuf\fP (const \fBho_array\fP *pix_in)"
+.br
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBho_array_to_rgb_pixbuf\fP (const \fBho_array\fP *pix_in)"
+.br
+.ti -1c
+.RI "int \fBho_array_free\fP (\fBho_array\fP *pix)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_minmax\fP (const \fBho_array\fP *pix, double *min, double *max)"
+.br
+.ti -1c
+.RI "double \fBho_array_mean\fP (const \fBho_array\fP *pix)"
+.br
+.ti -1c
+.RI "double \fBho_array_get_min\fP (const \fBho_array\fP *pix)"
+.br
+.ti -1c
+.RI "double \fBho_array_get_max\fP (const \fBho_array\fP *pix)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_add\fP (\fBho_array\fP *ar1, const \fBho_array\fP *ar2)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_add_const\fP (\fBho_array\fP *ar, const double num)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_sub\fP (\fBho_array\fP *ar1, const \fBho_array\fP *ar2)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_mul\fP (\fBho_array\fP *ar1, const \fBho_array\fP *ar2)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_compex_mul\fP (\fBho_array\fP *ar1_r, \fBho_array\fP *ar1_i, const \fBho_array\fP *ar2_r, const \fBho_array\fP *ar2_i)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_mul_const\fP (\fBho_array\fP *ar, const double num)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_div\fP (\fBho_array\fP *ar1, const \fBho_array\fP *ar2)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_inv\fP (\fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_polerize\fP (\fBho_array\fP *ar, const double treshold)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_log\fP (\fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_streach\fP (\fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_equl\fP (\fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_conv\fP (const \fBho_array\fP *ar, const \fBho_array\fP *kernel)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_median\fP (const \fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_max_filter\fP (const \fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_min_filter\fP (const \fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_abs\fP (const \fBho_array\fP *ar1, const \fBho_array\fP *ar2)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_atan2\fP (const \fBho_array\fP *ar1, const \fBho_array\fP *ar2)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_gradient\fP (const \fBho_array\fP *ar, \fBho_array\fP *ar_r, \fBho_array\fP *ar_theta)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_hough_circles\fP (const \fBho_array\fP *ar, const int min_radius, const int max_radius, const unsigned char t)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_fft_forword\fP (const \fBho_array\fP *ar, \fBho_array\fP *ar_r, \fBho_array\fP *ar_im)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_fft_backword\fP (const \fBho_array\fP *ar_r, const \fBho_array\fP *ar_im, \fBho_array\fP *ar)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_fft_shift\fP (const \fBho_array\fP *ar_r, const \fBho_array\fP *ar_im, \fBho_array\fP *shift_ar_r, \fBho_array\fP *shift_ar_im)"
+.br
+.ti -1c
+.RI "unsigned char \fBho_array_fft_filter\fP (\fBho_array\fP *ar, const \fBho_array\fP *ar_filter)"
+.br
+.ti -1c
+.RI "int \fBho_array_pnm_save\fP (const \fBho_array\fP *ar, const char *filename)"
+.br
+.ti -1c
+.RI "const \fBho_array\fP * \fBho_array_pnm_load\fP (const char *filename)"
+.br
+.ti -1c
+.RI "int \fBho_array_tiff_save\fP (const \fBho_array\fP *ar, const char *filename)"
+.br
+.ti -1c
+.RI "const \fBho_array\fP * \fBho_array_tiff_load\fP (const char *filename)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_new_gaussien\fP (const int width, const int height, const double sigma)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_new_box\fP (const int width, const int height, const int box_width, const int box_height)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_new_circle\fP (const int width, const int height, const int radius)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+libhocr C language header. 
+
+libhocr - LIBrary for Hebrew Optical Character Recognition 
+.SH "Define Documentation"
+.PP 
+.SS "#define HO_ARRAY_H   1"
+.PP
+.SS "#define ho_array_set(m, x, y, val)   (((m)->data)[(x)+(y)*(m)->width]=(val))"
+.PP
+.SS "#define ho_array_get(m, x, y)   (((m)->data)[(x)+(y)*(m)->width])"
+.PP
+.SS "#define ho_array_get_width(m)   ((m)->width)"
+.PP
+.SS "#define ho_array_get_height(m)   ((m)->height)"
+.PP
+.SS "#define ho_array_get_data(m)   ((m)->data)"
+.PP
+.SH "Function Documentation"
+.PP 
+.SS "\fBho_array\fP* ho_array_new (const int width, const int height)"
+.PP
+new \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIheight\fP hight of pixbuf in pixels 
+.br
+\fIwidth\fP width of pixbuf in pixels 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_array\fP 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_clone (const \fBho_array\fP * m)"
+.PP
+clone \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm\fP pointer to a \fBho_array\fP image 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_array\fP 
+.RE
+.PP
+
+.SS "int ho_array_set_data (\fBho_array\fP * pix, double data)"
+.PP
+copy pixel data to a \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to a \fBho_array\fP image 
+.br
+\fIdata\fP the pixel data to copy 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+false 
+.RE
+.PP
+
+.SS "int ho_array_set_at (\fBho_array\fP * pix, int x, int y, double data)"
+.PP
+copy pixel data to a \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to a \fBho_array\fP image 
+.br
+\fIdata\fP the pixel data to copy 
+.br
+\fIx\fP the pixel x 
+.br
+\fIy\fP the pixel y 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+false 
+.RE
+.PP
+
+.SS "double ho_array_get_at (\fBho_array\fP * pix, int x, int y)"
+.PP
+get pixel data from a \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to a \fBho_array\fP image 
+.br
+\fIx\fP the pixel x 
+.br
+\fIy\fP the pixel y 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+false 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_new_from_pixbuf (const \fBho_pixbuf\fP * pix)"
+.PP
+new \fBho_array\fP from \fBho_pixbuf\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to an \fBho_array\fP image 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_array\fP 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_new_from_bitmap (const \fBho_bitmap\fP * pix)"
+.PP
+new \fBho_array\fP from \fBho_bitmap\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to an \fBho_array\fP image 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_array\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_array_to_pixbuf (const \fBho_array\fP * pix_in)"
+.PP
+new gray \fBho_pixbuf\fP from \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix_in\fP pointer the original array 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "\fBho_pixbuf\fP* ho_array_to_rgb_pixbuf (const \fBho_array\fP * pix_in)"
+.PP
+new rgb \fBho_pixbuf\fP from \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix_in\fP pointer the original array 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated gray \fBho_pixbuf\fP 
+.RE
+.PP
+
+.SS "int ho_array_free (\fBho_array\fP * pix)"
+.PP
+free an \fBho_array\fP 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP pointer to an \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_minmax (const \fBho_array\fP * pix, double * min, double * max)"
+.PP
+get the min and max values in a array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP \fBho_array\fP 
+.br
+\fImin\fP a pointer to return the min 
+.br
+\fImax\fP a pointer to return the max 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "double ho_array_mean (const \fBho_array\fP * pix)"
+.PP
+get the mean value in a array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+min value 
+.RE
+.PP
+
+.SS "double ho_array_get_min (const \fBho_array\fP * pix)"
+.PP
+get the min value in a array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+min value 
+.RE
+.PP
+
+.SS "double ho_array_get_max (const \fBho_array\fP * pix)"
+.PP
+get the max value in a array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpix\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+max value 
+.RE
+.PP
+
+.SS "unsigned char ho_array_add (\fBho_array\fP * ar1, const \fBho_array\fP * ar2)"
+.PP
+add two ho arrays 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar1\fP left side \fBho_array\fP 
+.br
+\fIar2\fP right side \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_add_const (\fBho_array\fP * ar, const double num)"
+.PP
+add const to ho arrays 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP left side \fBho_array\fP 
+.br
+\fInum\fP a number to add to array 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_sub (\fBho_array\fP * ar1, const \fBho_array\fP * ar2)"
+.PP
+subtruct two ho arrays 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar1\fP left side \fBho_array\fP 
+.br
+\fIar2\fP right side \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_mul (\fBho_array\fP * ar1, const \fBho_array\fP * ar2)"
+.PP
+multiply two ho arrays 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar1\fP left side \fBho_array\fP 
+.br
+\fIar2\fP right side \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_compex_mul (\fBho_array\fP * ar1_r, \fBho_array\fP * ar1_i, const \fBho_array\fP * ar2_r, const \fBho_array\fP * ar2_i)"
+.PP
+multiply two ho real and imagenary ho_arrays pairs 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar1_r\fP left side \fBho_array\fP real part 
+.br
+\fIar1_i\fP left side \fBho_array\fP imagenaryl part 
+.br
+\fIar2_r\fP right side \fBho_array\fP real part 
+.br
+\fIar2_i\fP right side \fBho_array\fP imagenary part 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_mul_const (\fBho_array\fP * ar, const double num)"
+.PP
+multiply const to ho arrays 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP left side \fBho_array\fP 
+.br
+\fInum\fP a number to multiply to array 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_div (\fBho_array\fP * ar1, const \fBho_array\fP * ar2)"
+.PP
+divide two ho arrays 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar1\fP left side \fBho_array\fP 
+.br
+\fIar2\fP right side \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_inv (\fBho_array\fP * ar)"
+.PP
+inverse ho array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_polerize (\fBho_array\fP * ar, const double treshold)"
+.PP
+polerize ho array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_log (\fBho_array\fP * ar)"
+.PP
+do log (ho array + 1) 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_streach (\fBho_array\fP * ar)"
+.PP
+streach 0..1 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_equl (\fBho_array\fP * ar)"
+.PP
+histogram equalization 0..1 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_conv (const \fBho_array\fP * ar, const \fBho_array\fP * kernel)"
+.PP
+convolution 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to us for the convolution 
+.br
+\fIkernel\fP a 3x3 kernel \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated ho array 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_median (const \fBho_array\fP * ar)"
+.PP
+median 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to us for median filter 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated ho array 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_max_filter (const \fBho_array\fP * ar)"
+.PP
+max filter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to us for max filter 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated ho array 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_min_filter (const \fBho_array\fP * ar)"
+.PP
+min filter 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to us for max filter 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated ho array 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_abs (const \fBho_array\fP * ar1, const \fBho_array\fP * ar2)"
+.PP
+absulute value 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar1\fP left side \fBho_array\fP 
+.br
+\fIar2\fP right side \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated ho array 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_atan2 (const \fBho_array\fP * ar1, const \fBho_array\fP * ar2)"
+.PP
+atan2 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar1\fP left side \fBho_array\fP 
+.br
+\fIar2\fP right side \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated ho array 
+.RE
+.PP
+
+.SS "unsigned char ho_array_gradient (const \fBho_array\fP * ar, \fBho_array\fP * ar_r, \fBho_array\fP * ar_theta)"
+.PP
+gradient 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to us for gradient detection 
+.br
+\fIar_r\fP return the r value of the gradient 
+.br
+\fIar_theta\fP return the theta value of the gradient 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_hough_circles (const \fBho_array\fP * ar, const int min_radius, const int max_radius, const unsigned char t)"
+.PP
+hough trasform for circles 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to us for gradient detection 
+.br
+\fImin_radius\fP the circles min radius 
+.br
+\fImax_radius\fP the circles max radius 
+.br
+\fIthreshold\fP the min value to use in the gradient matrix percent 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_fft_forword (const \fBho_array\fP * ar, \fBho_array\fP * ar_r, \fBho_array\fP * ar_im)"
+.PP
+fft_forword 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to us for fft 
+.br
+\fIar_re\fP the output real values 
+.br
+\fIar_im\fP the output imaginary values 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_fft_backword (const \fBho_array\fP * ar_r, const \fBho_array\fP * ar_im, \fBho_array\fP * ar)"
+.PP
+fft_backword 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar_re\fP input array of the real values 
+.br
+\fIar_im\fP input array of the imaginary values 
+.br
+\fIar\fP the output \fBho_array\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_fft_shift (const \fBho_array\fP * ar_r, const \fBho_array\fP * ar_im, \fBho_array\fP * shift_ar_r, \fBho_array\fP * shift_ar_im)"
+.PP
+fft_shift 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar_re\fP input array of the real values 
+.br
+\fIar_im\fP input array of the imaginary values 
+.br
+\fIshift_ar_re\fP output array of the real values 
+.br
+\fIshift_ar_im\fP output array of the imaginary values 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "unsigned char ho_array_fft_filter (\fBho_array\fP * ar, const \fBho_array\fP * ar_filter)"
+.PP
+fft_filter - applay a filter in w space 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP input array 
+.br
+\fIar_filter\fP input array of the imaginary values 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "int ho_array_pnm_save (const \fBho_array\fP * ar, const char * filename)"
+.PP
+writes \fBho_array\fP to pnm file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP \fBho_array\fP to save as gray image 
+.br
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "const \fBho_array\fP* ho_array_pnm_load (const char * filename)"
+.PP
+load \fBho_array\fP from pnm file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+new \fBho_array\fP 
+.RE
+.PP
+
+.SS "int ho_array_tiff_save (const \fBho_array\fP * ar, const char * filename)"
+.PP
+writes \fBho_array\fP to tiff file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP \fBho_array\fP to save as gray image 
+.br
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "const \fBho_array\fP* ho_array_tiff_load (const char * filename)"
+.PP
+load \fBho_array\fP from tiff file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP save as file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+new \fBho_array\fP 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_new_gaussien (const int width, const int height, const double sigma)"
+.PP
+new \fBho_array\fP init to gaussian 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIheight\fP hight of pixbuf in pixels 
+.br
+\fIwidth\fP width of pixbuf in pixels 
+.br
+\fIsigma\fP the sigma to use in the gaussien 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_array\fP 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_new_box (const int width, const int height, const int box_width, const int box_height)"
+.PP
+new \fBho_array\fP init to box 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIheight\fP hight of pixbuf in pixels 
+.br
+\fIwidth\fP width of pixbuf in pixels 
+.br
+\fIbox_height\fP height of box 
+.br
+\fIbox_width\fP width of box 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_array\fP 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_new_circle (const int width, const int height, const int radius)"
+.PP
+new \fBho_array\fP init to circle 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIheight\fP hight of pixbuf in pixels 
+.br
+\fIwidth\fP width of pixbuf in pixels 
+.br
+\fIradius\fP radius of circle 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+newly allocated \fBho_array\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.
