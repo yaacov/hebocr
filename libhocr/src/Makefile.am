@@ -13,6 +13,8 @@ libhocr_la_SOURCES = \
         hocr.c \
         ho_pixbuf.c \
         ho_array.c \
+        ho_array_hist.c \
+        ho_array_stat.c \
         ho_bitmap.c \
         ho_objmap.c \
         ho_dimentions.c \
@@ -42,6 +44,8 @@ library_include_HEADERS = \
          hocrpp.h \
          ho_pixbuf.h \
          ho_array.h \
+         ho_array_hist.h \
+         ho_array_stat.h \
          ho_bitmap.h \
          ho_objmap.h \
          ho_dimentions.h \

@@ -4,6 +4,8 @@ libhocr (0.10.10)
  * Fix hocr-gtk example show image filename in title
  * hocr-gtk example requires python bindings 
  * add an ho_array object for arithmetic based operations
+ * add an ho_array_hist helper object for ho_array
+ * add an ho_array_stat helper object for ho_array's statistics
  * Fix libhocrgtk build on none gtk systems (Bug report: Nadav Mavor)
  
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Sunday, 10 May 2008 09:04

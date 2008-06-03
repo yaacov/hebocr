@@ -43,7 +43,7 @@
 #define ho_array_get_data(m) ((m)->data)
 
 /** @struct ho_array
-  @brief libhocr pixbuf map struct (copy gtk pixbuf)
+  @brief libhocr array struct
 */
 typedef struct
 {
@@ -96,15 +96,15 @@ double ho_array_get_at (ho_array * pix, int x, int y);
 
 /**
  new ho_array from ho_pixbuf
- @param pix pointer to an ho_array image
- @return newly allocated gray ho_array
+ @param pix pointer to an ho_pixbuf image
+ @return newly allocated ho_array
  */
 ho_array *ho_array_new_from_pixbuf (const ho_pixbuf * pix);
 
 /**
  new ho_array from ho_bitmap
- @param pix pointer to an ho_array image
- @return newly allocated gray ho_array
+ @param pix pointer to an ho_bitmap image
+ @return newly allocated ho_array
  */
 ho_array *ho_array_new_from_bitmap (const ho_bitmap * pix);
 
@@ -143,7 +143,7 @@ unsigned char ho_array_minmax (const ho_array * pix, double *min, double *max);
  @param pix ho_array
  @return min value
  */
-double ho_array_mean (const ho_array * pix);
+double ho_array_get_mean (const ho_array * pix);
 
 /**
  get the min value in a array
@@ -200,8 +200,8 @@ unsigned char ho_array_mul (ho_array * ar1, const ho_array * ar2);
  @return FALSE
  */
 unsigned char
-ho_array_compex_mul (ho_array * ar1_r, ho_array * ar1_i, const ho_array * ar2_r,
-  const ho_array * ar2_i);
+ho_array_complex_mul (ho_array * ar1_r, ho_array * ar1_i,
+  const ho_array * ar2_r, const ho_array * ar2_i);
 
 /**
  multiply const to ho arrays
@@ -260,14 +260,15 @@ unsigned char ho_array_equl (ho_array * ar);
  @param kernel a 3x3 kernel ho_array
  @return newly allocated ho array
  */
-ho_array *ho_array_conv (const ho_array * ar, const ho_array * kernel);
+ho_array *ho_array_convolution_filter (const ho_array * ar,
+  const ho_array * kernel);
 
 /**
  median
  @param ar the ho_array to us for median filter
  @return newly allocated ho array
  */
-ho_array *ho_array_median (const ho_array * ar);
+ho_array *ho_array_median_filter (const ho_array * ar);
 
 /**
  max filter
@@ -285,19 +286,19 @@ ho_array *ho_array_min_filter (const ho_array * ar);
 
 /**
  absulute value 
- @param ar1 left side ho_array
- @param ar2 right side ho_array
+ @param ar_r real part ho_array
+ @param ar_i imagenary part ho_array
  @return newly allocated ho array
  */
-ho_array *ho_array_abs (const ho_array * ar1, const ho_array * ar2);
+ho_array *ho_array_complex_abs (const ho_array * ar_r, const ho_array * ar_i);
 
 /**
  atan2
- @param ar1 left side ho_array
- @param ar2 right side ho_array
+ @param ar_r real part ho_array
+ @param ar_i imagenary part ho_array
  @return newly allocated ho array
  */
-ho_array *ho_array_atan2 (const ho_array * ar1, const ho_array * ar2);
+ho_array *ho_array_complex_atan2 (const ho_array * ar_r, const ho_array * ar_i);
 
 /**
  gradient 
@@ -315,10 +316,53 @@ unsigned char ho_array_gradient (const ho_array * ar, ho_array * ar_r,
  @param min_radius the circles min radius
  @param max_radius the circles max radius
  @param threshold the min value to use in the gradient matrix percent
- @return FALSE
+ @return the transformed matrix
  */
 ho_array *ho_array_hough_circles (const ho_array * ar, const int min_radius,
-  const int max_radius, const unsigned char t);
+  const int max_radius, const unsigned char threshold);
+
+/**
+ hough trasform for lines
+ @param ar the ho_array to use for gradient detection
+ @param threshold the min value to use in the gradient matrix percent
+ @return the transformed matrix
+ */
+ho_array *ho_array_hough_lines (const ho_array * ar,
+  const unsigned char threshold);
+
+/**
+ backwords hough trasform for lines
+ @param ar the ho_array to use for backword hough
+ @param width the array height
+ @param height the array height
+ @return the backword transformed matrix
+ */
+ho_array *ho_array_hough_lines_backwords (const ho_array * ar, const int width,
+  const int height);
+
+/**
+ backwords hough trasform for lines by angle
+ @param ar the ho_array to use for backword hough
+ @param width the array height
+ @param height the array height
+ @param angle1 start line angle
+ @param angle2 end line angle
+ @return FALSE
+ */
+ho_array *ho_array_hough_lines_backwords_by_angle (const ho_array * ar,
+  const int width, const int height, const int angle1, const int angle2);
+
+/**
+ backwords hough trasform for lines by vertical angle
+ @param ar the ho_array to use for backword hough
+ @param width the array height
+ @param height the array height
+ @param angle1 start line angle
+ @param angle2 end line angle
+ @return FALSE
+ */
+ho_array *ho_array_hough_lines_backwords_by_angle_v (const ho_array * ar,
+  const int width, const int height, const int angle1, const int angle2);
 
 /**
  fft_forword 
@@ -355,10 +399,37 @@ ho_array_fft_shift (const ho_array * ar_r, const ho_array * ar_im,
 /**
  fft_filter - applay a filter in w space
  @param ar input array
- @param ar_filter input array of the imaginary values
+ @param ar_filter input array of the filter
  @return FALSE
  */
 unsigned char ho_array_fft_filter (ho_array * ar, const ho_array * ar_filter);
+
+/**
+ fft_filter - applay a box filter in w space
+ @param ar input array
+ @param box_height height of box
+ @param box_width width of box
+ @return FALSE
+ */
+unsigned char
+ho_array_fft_filter_box (ho_array * ar, const int box_width,
+  const int box_height);
+
+/**
+ fft_filter - applay a circle filter in w space
+ @param ar input array
+ @param radius radius of circle
+ @return FALSE
+ */
+unsigned char ho_array_fft_filter_circle (ho_array * ar, const int radius);
+
+/**
+ fft_filter - applay a gaussien filter in w space
+ @param ar input array
+ @param sigma of gaussien
+ @return FALSE
+ */
+unsigned char ho_array_fft_filter_gaussien (ho_array * ar, const double sigma);
 
 /**
  writes ho_array to pnm file

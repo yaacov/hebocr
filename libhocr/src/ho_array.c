@@ -57,6 +57,7 @@ ho_array *
 ho_array_new (const int width, const int height)
 {
   int x, y;
+
   ho_array *pix = NULL;
 
   /* 
@@ -171,8 +172,11 @@ ho_array *
 ho_array_new_from_pixbuf (const ho_pixbuf * pix)
 {
   int x, y;
+
   double pixel_val;
+
   ho_array *m_out = NULL;
+
   ho_pixbuf *gray_pix = NULL;
 
   /* if pix is color convert to gray scale */
@@ -209,7 +213,9 @@ ho_array *
 ho_array_new_from_bitmap (const ho_bitmap * pix)
 {
   int x, y;
+
   double pixel_val;
+
   ho_array *m_out = NULL;
 
   /* allocate memory */
@@ -237,8 +243,11 @@ ho_pixbuf *
 ho_array_to_pixbuf (const ho_array * pix_in)
 {
   int x, y;
+
   unsigned char pixel_val;
+
   ho_pixbuf *pix = NULL;
+
   double min, max, range;
 
   ho_array_minmax (pix_in, &min, &max);
@@ -268,8 +277,11 @@ ho_pixbuf *
 ho_array_to_rgb_pixbuf (const ho_array * pix_in)
 {
   int x, y;
+
   unsigned char pixel_val;
+
   ho_pixbuf *pix = NULL;
+
   double min, max, range;
 
   ho_array_minmax (pix_in, &min, &max);
@@ -339,9 +351,10 @@ ho_array_minmax (const ho_array * pix, double *min, double *max)
 }
 
 double
-ho_array_mean (const ho_array * pix)
+ho_array_get_mean (const ho_array * pix)
 {
   double mean;
+
   int x, y;
 
   mean = 0;
@@ -478,10 +491,11 @@ ho_array_mul (ho_array * ar1, const ho_array * ar2)
  @return FALSE
  */
 unsigned char
-ho_array_compex_mul (ho_array * ar1_r, ho_array * ar1_i, const ho_array * ar2_r,
-  const ho_array * ar2_i)
+ho_array_complex_mul (ho_array * ar1_r, ho_array * ar1_i,
+  const ho_array * ar2_r, const ho_array * ar2_i)
 {
   int x, y;
+
   double a, b, c, d;
 
   for (x = 0; x < ar1_r->width; x++)
@@ -567,7 +581,9 @@ unsigned char
 ho_array_polerize (ho_array * ar, const double treshold)
 {
   int x, y;
+
   double min, max;
+
   double real_treshold;
 
   ho_array_minmax (ar, &min, &max);
@@ -615,6 +631,7 @@ unsigned char
 ho_array_streach (ho_array * ar)
 {
   int x, y;
+
   double min, max, range;
 
   ho_array_minmax (ar, &min, &max);
@@ -639,9 +656,13 @@ unsigned char
 ho_array_equl (ho_array * ar)
 {
   int i, x, y;
+
   int l, k;
+
   double min, max, range;
+
   double acc_hist[256];
+
   double look_up_table[256];
 
   /* clean accumulated histogram and look up table */
@@ -696,11 +717,14 @@ ho_array_equl (ho_array * ar)
  @return newly allocated ho array
  */
 ho_array *
-ho_array_conv (const ho_array * ar, const ho_array * kernel)
+ho_array_convolution_filter (const ho_array * ar, const ho_array * kernel)
 {
   int x, y;
+
   double sum;
+
   double neigbours[9];
+
   ho_array *ar_out = NULL;
 
   /* allocate memory */
@@ -759,12 +783,16 @@ ho_array_conv (const ho_array * ar, const ho_array * kernel)
  @return newly allocated ho array
  */
 ho_array *
-ho_array_median (const ho_array * ar)
+ho_array_median_filter (const ho_array * ar)
 {
   int i, j, x, y;
+
   int i_min;
+
   double median, max;
+
   double neigbours[9];
+
   ho_array *ar_out = NULL;
 
   /* allocate memory */
@@ -838,8 +866,11 @@ ho_array *
 ho_array_max_filter (const ho_array * ar)
 {
   int i, j, x, y;
+
   double max;
+
   double neigbours[9];
+
   ho_array *ar_out = NULL;
 
   /* allocate memory */
@@ -898,8 +929,11 @@ ho_array *
 ho_array_min_filter (const ho_array * ar)
 {
   int i, j, x, y;
+
   double min;
+
   double neigbours[9];
+
   ho_array *ar_out = NULL;
 
   /* allocate memory */
@@ -956,9 +990,10 @@ ho_array_min_filter (const ho_array * ar)
  @return newly allocated ho array
  */
 ho_array *
-ho_array_abs (const ho_array * ar1, const ho_array * ar2)
+ho_array_complex_abs (const ho_array * ar1, const ho_array * ar2)
 {
   int x, y;
+
   ho_array *ar_out = NULL;
 
   /* allocate memory */
@@ -986,9 +1021,10 @@ ho_array_abs (const ho_array * ar1, const ho_array * ar2)
  @return newly allocated ho array
  */
 ho_array *
-ho_array_atan2 (const ho_array * ar1, const ho_array * ar2)
+ho_array_complex_atan2 (const ho_array * ar1, const ho_array * ar2)
 {
   int x, y;
+
   ho_array *ar_out = NULL;
 
   /* allocate memory */
@@ -1019,7 +1055,9 @@ unsigned char
 ho_array_gradient (const ho_array * ar, ho_array * ar_r, ho_array * ar_theta)
 {
   int x, y;
+
   double sum_x, sum_y;
+
   double neigbours[9];
   double sobol_x[] = { -1, 0, 1, -2, 0, 2, -1, 0, 1 };
   double sobol_y[] = { 1, 2, 1, 0, 0, 0, -1, -2, -1 };
@@ -1079,14 +1117,23 @@ ho_array_hough_circles (const ho_array * ar, const int min_radius,
   const int max_radius, const unsigned char t)
 {
   int radius;
+
   double r, theta;
+
   double min, max;
+
   double threshold;
+
   double threshold_percent;
+
   int x, y;
+
   int xtag, ytag;
+
   ho_array *ar_out = NULL;
+
   ho_array *ar_r = NULL;
+
   ho_array *ar_theta = NULL;
 
   if (!t)
@@ -1152,10 +1199,327 @@ ho_array_hough_circles (const ho_array * ar, const int min_radius,
   return ar_out;
 }
 
+/**
+ hough trasform for lines
+ @param ar the ho_array to use for gradient detection
+ @return FALSE
+ */
+ho_array *
+ho_array_hough_lines (const ho_array * ar, const unsigned char t)
+{
+  double r, theta;
+
+  double min, max;
+
+  double threshold;
+
+  double threshold_percent;
+
+  int x, y;
+
+  int xtag, ytag;
+
+  ho_array *ar_out = NULL;
+
+  ho_array *ar_r = NULL;
+
+  ho_array *ar_theta = NULL;
+
+  if (!t)
+    threshold_percent = 0.1;
+  else
+    threshold_percent = t;
+
+  /* allocate memory */
+  ar_out = ho_array_new (ar->width, 180);
+  if (!ar_out)
+    return NULL;
+
+  ar_r = ho_array_new (ar->width, ar->height);
+  if (!ar_r)
+  {
+    ho_array_free (ar_out);
+    return NULL;
+  }
+
+  ar_theta = ho_array_new (ar->width, ar->height);
+  if (!ar_theta)
+  {
+    ho_array_free (ar_out);
+    ho_array_free (ar_r);
+    return NULL;
+  }
+
+  /* get image gradient */
+  ho_array_gradient (ar, ar_r, ar_theta);
+
+  /* free mem */
+  ho_array_free (ar_theta);
+
+  /* get threshold values of ar_r */
+  ho_array_minmax (ar_r, &min, &max);
+  threshold = min + threshold_percent * (max - min) / 100.0;
+
+  /* transform data */
+  for (x = 0; x < ar->width; x++)
+    for (y = 0; y < ar->height; y++)
+    {
+      r = ho_array_get (ar_r, x, y);
+
+      /* if pixel is on in xy plane */
+      if (r > threshold)
+        for (ytag = 0; ytag < 180; ytag++)
+        {
+          theta = M_PI * (double) ytag / 180.0;
+
+          xtag =
+            ar_out->width / 2 + (int) ((double) x * cos (theta) +
+            (double) y * sin (theta));
+
+          /* check if xytag is in image */
+          if (xtag >= 0 && xtag < ar_out->width)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+    }
+
+  /* free mem */
+  ho_array_free (ar_r);
+
+  return ar_out;
+}
+
+/**
+ backwords hough trasform for lines
+ @param ar the ho_array to use for backword hough
+ @param width the array height
+ @param height the array height
+ @return FALSE
+ */
+ho_array *
+ho_array_hough_lines_backwords (const ho_array * ar, const int width,
+  const int height)
+{
+  int x, y;
+
+  int xtag, ytag;
+
+  double theta, a, b;
+
+  ho_array *ar_out = NULL;
+
+  /* allocate memory */
+  ar_out = ho_array_new (width, height);
+  if (!ar_out)
+    return NULL;
+
+  /* transform data */
+  for (x = 0; x < ar->width; x++)
+  {
+    for (y = 1; y < 45; y++)
+    {
+      /* if pixel is on in xy plane */
+      if (ho_array_get (ar, x, y) > 0.5)
+      {
+        theta = M_PI * (double) y / 180.0;
+        a = -cos (theta) / sin (theta);
+        b = (double) (x - ar->width / 2) / sin (theta);
+
+        /* draw a line */
+        for (xtag = 0; xtag < width; xtag++)
+        {
+          ytag = a * x + b;
+
+          /* check if xytag is in image */
+          if (ytag >= 0 && ytag < ar_out->height)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+      }
+    }
+
+    for (y = 135; y < 180; y++)
+    {
+      /* if pixel is on in xy plane */
+      if (ho_array_get (ar, x, y) > 0.5)
+      {
+        theta = M_PI * (double) y / 180.0;
+        a = -cos (theta) / sin (theta);
+        b = (double) (x - ar->width / 2) / sin (theta);
+
+        /* draw a line */
+        for (xtag = 0; xtag < width; xtag++)
+        {
+          ytag = a * x + b;
+
+          /* check if xytag is in image */
+          if (ytag >= 0 && ytag < ar_out->height)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+      }
+    }
+
+    for (y = 45; y < 135; y++)
+    {
+      /* if pixel is on in xy plane */
+      if (ho_array_get (ar, x, y) > 0.5 && y != 90)
+      {
+        theta = M_PI * (double) y / 180.0;
+        a = -sin (theta) / cos (theta);
+        b = (double) (x - ar->width / 2) / cos (theta);
+
+        /* draw a line */
+        for (ytag = 0; ytag < height; ytag++)
+        {
+          xtag = a * x + b;
+
+          /* check if xytag is in image */
+          if (xtag >= 0 && xtag < ar_out->width)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+      }
+    }
+  }
+
+  return ar_out;
+}
+
+/**
+ backwords hough trasform for lines by angle
+ @param ar the ho_array to use for backword hough
+ @param width the array height
+ @param height the array height
+ @param angle1 start line angle
+ @param angle2 end line angle
+ @return FALSE
+ */
+ho_array *
+ho_array_hough_lines_backwords_by_angle (const ho_array * ar, const int width,
+  const int height, const int angle1, const int angle2)
+{
+  int x, y;
+
+  int xtag, ytag;
+
+  double theta, a, b;
+
+  ho_array *ar_out = NULL;
+
+  /* check if this is a vertical angle */
+  if (angle1 > 45 && angle1 < 135)
+    return ho_array_hough_lines_backwords_by_angle_v (ar, width,
+      height, angle1, angle2);
+
+  /* allocate memory */
+  ar_out = ho_array_new (width, height);
+  if (!ar_out)
+    return NULL;
+
+  /* transform data */
+  for (x = 0; x < ar->width; x++)
+  {
+    for (y = angle1; y < angle2; y++)
+    {
+      /* if pixel is on in xy plane */
+      if (ho_array_get (ar, x, y) > 0.5)
+      {
+        /* FIXME: this is only good for ~horizontal lines */
+        theta = M_PI * (double) y / 180.0;
+        a = -cos (theta) / sin (theta);
+        b = (double) (x - ar->width / 2) / sin (theta);
+
+        /* draw a line */
+        for (xtag = 0; xtag < width; xtag++)
+        {
+          ytag = a * x + b;
+
+          /* check if xytag is in image */
+          if (ytag >= 0 && ytag < ar_out->height)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+      }
+    }
+  }
+
+  return ar_out;
+}
+
+/**
+ backwords hough trasform for lines by angle
+ @param ar the ho_array to use for backword hough
+ @param width the array height
+ @param height the array height
+ @param angle1 start line angle
+ @param angle2 end line angle
+ @return FALSE
+ */
+ho_array *
+ho_array_hough_lines_backwords_by_angle_v (const ho_array * ar, const int width,
+  const int height, const int angle1, const int angle2)
+{
+  int x, y;
+
+  int xtag, ytag;
+
+  double theta, a, b;
+
+  ho_array *ar_out = NULL;
+
+  /* allocate memory */
+  ar_out = ho_array_new (width, height);
+  if (!ar_out)
+    return NULL;
+
+  /* transform data */
+  for (x = 0; x < ar->width; x++)
+  {
+    for (y = angle1; y < angle2; y++)
+    {
+      /* if pixel is on in xy plane */
+      if (y != 90 && ho_array_get (ar, x, y) > 0.5)
+      {
+        /* FIXME: this is only good for ~vertical lines */
+        theta = M_PI * (double) y / 180.0;
+        a = -sin (theta) / cos (theta);
+        b = (double) (x - ar->width / 2) / cos (theta);
+
+        /* draw a line */
+        for (ytag = 0; ytag < height; ytag++)
+        {
+          xtag = a * y + b;
+
+          /* check if xytag is in image */
+          if (xtag >= 0 && xtag < ar_out->width)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+      }
+    }
+  }
+
+  return ar_out;
+}
+
 const ho_array *
 ho_array_pnm_load (const char *filename)
 {
   ho_pixbuf *pix;
+
   ho_array *ar;
 
   pix = ho_pixbuf_pnm_load (filename);
@@ -1191,6 +1555,7 @@ const ho_array *
 ho_array_tiff_load (const char *filename)
 {
   ho_pixbuf *pix;
+
   ho_array *ar;
 
   pix = ho_pixbuf_bw_tiff_load (filename);
@@ -1235,9 +1600,13 @@ unsigned char
 ho_array_fft_forword (const ho_array * ar, ho_array * ar_r, ho_array * ar_im)
 {
   unsigned int i;
+
   int width, height;
+
   fftw_plan plan;
+
   fftw_complex *fft_ar_xy;
+
   fftw_complex *fft_ar_w;
 
   width = ar->width;
@@ -1286,9 +1655,13 @@ ho_array_fft_backword (const ho_array * ar_r, const ho_array * ar_im,
   ho_array * ar)
 {
   unsigned int i;
+
   int width, height;
+
   fftw_plan plan;
+
   fftw_complex *fft_ar_xy;
+
   fftw_complex *fft_ar_w;
 
   width = ar->width;
@@ -1364,12 +1737,15 @@ unsigned char
 ho_array_fft_filter (ho_array * ar, const ho_array * ar_filter)
 {
   int w, h, x, y;
+
   ho_array *ar_shift;
 
   ho_array *ar_r;
+
   ho_array *ar_im;
 
   ho_array *ar_filter_r;
+
   ho_array *ar_filter_im;
 
   /* get memory */
@@ -1398,7 +1774,7 @@ ho_array_fft_filter (ho_array * ar, const ho_array * ar_filter)
   ho_array_fft_forword (ar_filter, ar_filter_r, ar_filter_im);
 
   /* applay filter */
-  ho_array_compex_mul (ar_r, ar_im, ar_filter_r, ar_filter_im);
+  ho_array_complex_mul (ar_r, ar_im, ar_filter_r, ar_filter_im);
 
   /* move to xy space */
   ho_array_fft_backword (ar_r, ar_im, ar);
@@ -1410,6 +1786,89 @@ ho_array_fft_filter (ho_array * ar, const ho_array * ar_filter)
   ho_array_free (ar_filter_im);
 
   return FALSE;
+}
+
+/**
+ fft_filter - applay a box filter in w space
+ @param ar input array
+ @param box_height height of box
+ @param box_width width of box
+ @return FALSE
+ */
+unsigned char
+ho_array_fft_filter_box (ho_array * ar, const int box_width,
+  const int box_height)
+{
+  unsigned char return_value;
+
+  ho_array *ar_filter = NULL;
+
+  /* create a filter */
+  ar_filter = ho_array_new_box (ar->width, ar->height, box_width, box_height);
+  if (!ar_filter)
+    return TRUE;
+
+  /* aplay filter */
+  return_value = ho_array_fft_filter (ar, ar_filter);
+
+  /* free filter */
+  ho_array_free (ar_filter);
+
+  return return_value;
+}
+
+/**
+ fft_filter - applay a circle filter in w space
+ @param ar input array
+ @param radius radius of circle
+ @return FALSE
+ */
+unsigned char
+ho_array_fft_filter_circle (ho_array * ar, const int radius)
+{
+  unsigned char return_value;
+
+  ho_array *ar_filter = NULL;
+
+  /* create a filter */
+  ar_filter = ho_array_new_circle (ar->width, ar->height, radius);
+  if (!ar_filter)
+    return TRUE;
+
+  /* aplay filter */
+  return_value = ho_array_fft_filter (ar, ar_filter);
+
+  /* free filter */
+  ho_array_free (ar_filter);
+
+  return return_value;
+}
+
+/**
+ fft_filter - applay a gaussien filter in w space
+ @param ar input array
+ @param sigma of gaussien
+ @return FALSE
+ */
+unsigned char
+ho_array_fft_filter_gaussien (ho_array * ar, const double sigma)
+{
+  unsigned char return_value;
+
+  ho_array *ar_filter = NULL;
+
+  /* create a filter */
+  ar_filter = ho_array_new_gaussien (ar->width, ar->height, sigma);
+  if (!ar_filter)
+    return TRUE;
+
+  /* aplay filter */
+  return_value = ho_array_fft_filter (ar, ar_filter);
+
+  /* free filter */
+  ho_array_free (ar_filter);
+
+  return return_value;
 }
 
 #endif /* USE_FFTW */
@@ -1425,6 +1884,7 @@ ho_array *
 ho_array_new_gaussien (const int width, const int height, const double sigma)
 {
   int x, y;
+
   ho_array *pix = NULL;
 
   /* 
@@ -1477,6 +1937,7 @@ ho_array_new_box (const int width, const int height, const int box_width,
   const int box_height)
 {
   int x, y;
+
   ho_array *pix = NULL;
 
   /* 
@@ -1528,6 +1989,7 @@ ho_array *
 ho_array_new_circle (const int width, const int height, const int radius)
 {
   int x, y;
+
   ho_array *pix = NULL;
 
   /* 
