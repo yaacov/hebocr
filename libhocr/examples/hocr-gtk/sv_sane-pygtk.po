@@ -1,18 +1,19 @@
-# Swedish translations for libhocr package.
+# Swedish translations for libhocr package
+# Svenska översättningar för paket libhocr.
 # Copyright (C) 2008 THE libhocr'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the libhocr package.
 # kobi <kzamir@walla.co.il>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libhocr 0.10.9\n"
+"Project-Id-Version: libhocr 0.10.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-11 08:22+0300\n"
-"PO-Revision-Date: 2008-05-11 08:23+0300\n"
+"POT-Creation-Date: 2008-04-28 18:50+0300\n"
+"PO-Revision-Date: 2008-04-28 18:50+0300\n"
 "Last-Translator: kobi <kzamir@walla.co.il>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

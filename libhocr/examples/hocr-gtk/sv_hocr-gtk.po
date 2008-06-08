@@ -1,18 +1,19 @@
-# Swedish translations for libhocr package.
+# Swedish translations for libhocr package
+# Svenska översättningar för paket libhocr.
 # Copyright (C) 2008 THE libhocr'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the libhocr package.
 # kobi <kzamir@walla.co.il>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libhocr 0.10.9\n"
+"Project-Id-Version: libhocr 0.10.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-27 16:03+0300\n"
-"PO-Revision-Date: 2008-05-11 08:22+0300\n"
-"Last-Translator: kobi <kzamir@walla.co.il>\n"
-"Language-Team: Swedish\n"
+"POT-Creation-Date: 2008-04-28 18:55+0300\n"
+"PO-Revision-Date: 2008-02-12 00:55+0200\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -22,6 +23,8 @@ msgid ""
 "graphical front end (GTK)\n"
 "\n"
 msgstr ""
+"Hocr-GTK - Programvara för att känna igen hebreiska tecken.\n"
+"\n"
 
 #: hocr-gtk:81
 msgid "Shlomi Israel <sijproject@gmail.com>"
@@ -37,33 +40,33 @@ msgid ""
 "Exit program."
 msgstr ""
 
-#: hocr-gtk:358
+#: hocr-gtk:356
 msgid "Processing..."
 msgstr ""
 
-#: hocr-gtk:489
+#: hocr-gtk:479
 msgid "Open.."
-msgstr ""
+msgstr "Ny.."
 
-#: hocr-gtk:517 hocr-gtk:538
+#: hocr-gtk:503 hocr-gtk:524
 msgid "Closed, no files selected"
 msgstr ""
 
-#: hocr-gtk:525
+#: hocr-gtk:511
 msgid "Save.."
-msgstr ""
+msgstr "Spara.."
 
-#: hocr-gtk:626
+#: hocr-gtk:612
 msgid "Closed, no files scaned"
 msgstr ""
 
-#: hocr-gtk:771
+#: hocr-gtk:757
 msgid "translator-credits"
-msgstr ""
+msgstr "Daniel Nylander <po@danielnylander.se>"
 
-#: hocr-gtk:782
+#: hocr-gtk:768
 msgid "Set text font"
-msgstr ""
+msgstr "Ställ in texttypsnitt"
 
 #: hocr-gtk.glade.h:1
 msgid "Black and White"
@@ -127,31 +130,31 @@ msgstr ""
 
 #: hocr-gtk.glade.h:16
 msgid "_Edit"
-msgstr ""
+msgstr "_Redigera"
 
 #: hocr-gtk.glade.h:17
 msgid "_File"
-msgstr ""
+msgstr "_Arkiv"
 
 #: hocr-gtk.glade.h:18
 msgid "_Help"
-msgstr ""
+msgstr "_Hjälp"
 
 #: hocr-gtk.glade.h:19
 msgid "_View"
-msgstr ""
+msgstr "_Visa"
 
 #: hocr-gtk.glade.h:20
 msgid "auto"
-msgstr ""
+msgstr "auto"
 
 #: hocr-gtk.glade.h:21
 msgid "clear"
-msgstr ""
+msgstr "Töm"
 
 #: hocr-gtk.glade.h:22
 msgid "column"
-msgstr ""
+msgstr "kolonn"
 
 #: hocr-gtk.glade.h:23
 msgid "gtk-about"
@@ -211,12 +214,13 @@ msgstr ""
 
 #: hocr-gtk.glade.h:37
 msgid "html"
-msgstr ""
+msgstr "html"
 
 #: hocr-gtk.glade.h:38
 msgid "nikud"
-msgstr ""
+msgstr "Använd nikud"
 
 #: hocr-gtk.glade.h:39
 msgid "one column"
-msgstr ""
+msgstr "en kolonn"
+

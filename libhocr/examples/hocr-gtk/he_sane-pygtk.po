@@ -1,16 +1,16 @@
-# Hebrew translations for libhocr package.
-# Copyright (C) 2008 THE libhocr'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the libhocr package.
-# kobi <kzamir@walla.co.il>, 2008.
+# Hebrew translations for sane-pygtk package.
+# Copyright (C) 2007 THE sane-pygtk'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the sane-pygtk package.
+# kobi <kobi_zamir@yahoo.com>, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libhocr 0.10.9\n"
+"Project-Id-Version: sane-pygtk 0.0.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-11 08:22+0300\n"
-"PO-Revision-Date: 2008-05-11 08:22+0300\n"
-"Last-Translator: kobi <kzamir@walla.co.il>\n"
-"Language-Team: Hebrew\n"
+"POT-Creation-Date: 2008-04-28 18:10+0300\n"
+"PO-Revision-Date: 2007-06-25 14:57+0300\n"
+"Last-Translator: kobi <kobi_zamir@yahoo.com>\n"
+"Language-Team: Hebrew <eliz@gnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid ""
 "Can't load sane-pygtk's glade GUI file, check your install.\n"
 "Exit program."
-msgstr ""
+msgstr "קובץ הגלייד אינו נמצא, בידקו את ההתקנה"
 
 #: sane-pygtk:273
 #, python-format
@@ -29,6 +29,9 @@ msgid ""
 "%s,\n"
 "Check scanner settings"
 msgstr ""
+"תמונת המראה המקדים לא נתקבלה\n"
+"%s,\n"
+"בידקו את הגדרות הסורק"
 
 #: sane-pygtk:321
 #, python-format
@@ -37,6 +40,9 @@ msgid ""
 "%s,\n"
 "Check scanner settings"
 msgstr ""
+"תמונת הסריקה לא נתקבלה\n"
+"%s,\n"
+"בידקו את הגדרות הסורק"
 
 #: sane-pygtk.glade.h:1
 msgid "(0,0) - (100,100)"
@@ -44,83 +50,83 @@ msgstr ""
 
 #: sane-pygtk.glade.h:2
 msgid "Brightness:"
-msgstr ""
+msgstr "בהירות:"
 
 #: sane-pygtk.glade.h:3
 msgid "Contrast:"
-msgstr ""
+msgstr "ניגודיות:"
 
 #: sane-pygtk.glade.h:4
 msgid "Mode:"
-msgstr ""
+msgstr "מצב:"
 
 #: sane-pygtk.glade.h:5
 msgid "Preview"
-msgstr ""
+msgstr "מראה מקדים"
 
 #: sane-pygtk.glade.h:6
 msgid "Reset"
-msgstr ""
+msgstr "החזר"
 
 #: sane-pygtk.glade.h:7
 msgid "Resolution:"
-msgstr ""
+msgstr "הפרדה:"
 
 #: sane-pygtk.glade.h:8
 msgid "Save as:"
-msgstr ""
+msgstr "שמור בשם:"
 
 #: sane-pygtk.glade.h:9
 msgid "Scan"
-msgstr ""
+msgstr "סרוק"
 
 #: sane-pygtk.glade.h:10
 msgid "Scanner:"
-msgstr ""
+msgstr "סורק"
 
 #: sane-pygtk.glade.h:11
 msgid "Settings"
-msgstr ""
+msgstr "הגדרות"
 
 #: sane-pygtk.glade.h:12
 msgid "Update preview"
-msgstr ""
+msgstr "עדכן תמונה מקדימה"
 
 #: sane-pygtk.glade.h:13
 msgid "Window:"
-msgstr ""
+msgstr "חלון:"
 
 #: sane-pygtk.glade.h:14
 msgid "_Edit"
-msgstr ""
+msgstr "עריכה"
 
 #: sane-pygtk.glade.h:15
 msgid "_File"
-msgstr ""
+msgstr "קובץ"
 
 #: sane-pygtk.glade.h:16
 msgid "_Help"
-msgstr ""
+msgstr "עזרה"
 
 #: sane-pygtk.glade.h:17
 msgid "_Preview"
-msgstr ""
+msgstr "תצוגה מקדימה"
 
 #: sane-pygtk.glade.h:18
 msgid "_Reset settings to defaults"
-msgstr ""
+msgstr "עדכן הגדרות לברירות מחדל"
 
 #: sane-pygtk.glade.h:19
 msgid "_Save current settings as defaults"
-msgstr ""
+msgstr "שמור מצב נוכחי כברירת מחדל"
 
 #: sane-pygtk.glade.h:20
 msgid "_Scan"
-msgstr ""
+msgstr "סרוק"
 
 #: sane-pygtk.glade.h:21
 msgid "_View"
-msgstr ""
+msgstr "תצוגה"
 
 #: sane-pygtk.glade.h:22
 msgid "gtk-about"

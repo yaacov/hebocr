@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libhocr 0.10.9\n"
+"Project-Id-Version: libhocr 0.10.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-27 16:03+0300\n"
-"PO-Revision-Date: 2008-05-11 08:22+0300\n"
+"POT-Creation-Date: 2008-04-28 18:55+0300\n"
+"PO-Revision-Date: 2008-02-11 10:56+0200\n"
 "Last-Translator: kobi <kzamir@walla.co.il>\n"
 "Language-Team: Hebrew\n"
 "MIME-Version: 1.0\n"
@@ -22,60 +22,66 @@ msgid ""
 "graphical front end (GTK)\n"
 "\n"
 msgstr ""
+"Hocr-GTK, מזהה אותיות אופטי עברי\n"
+"מנשק גרפי (GTK)\n"
+"\n"
 
 #: hocr-gtk:81
 msgid "Shlomi Israel <sijproject@gmail.com>"
-msgstr ""
+msgstr "שלומי ישראל <sijproject@gmail.com>"
 
 #: hocr-gtk:82
 msgid "Yaacov Zamir <kzamir@walla.co.il>"
-msgstr ""
+msgstr "יעקב זמיר <kzamir@walla.co.il>"
 
 #: hocr-gtk:321
 msgid ""
 "Can't load hocr's glade GUI file, check your install.\n"
 "Exit program."
 msgstr ""
+"לא מסוגל למצא את קובץ המנשק הגרפי, בדוק את ההתקנה.\n"
+"יוצא מהתכנית."
 
-#: hocr-gtk:358
+#: hocr-gtk:356
 msgid "Processing..."
-msgstr ""
+msgstr "מעבד..."
 
-#: hocr-gtk:489
+#: hocr-gtk:479
 msgid "Open.."
-msgstr ""
+msgstr "פתח.."
 
-#: hocr-gtk:517 hocr-gtk:538
+#: hocr-gtk:503 hocr-gtk:524
 msgid "Closed, no files selected"
-msgstr ""
+msgstr "סוגר, לא נבחרו קבצים"
 
-#: hocr-gtk:525
+#: hocr-gtk:511
 msgid "Save.."
-msgstr ""
+msgstr "שמור.."
 
-#: hocr-gtk:626
+#: hocr-gtk:612
+#, fuzzy
 msgid "Closed, no files scaned"
-msgstr ""
+msgstr "סוגר, לא נבחרו קבצים"
 
-#: hocr-gtk:771
+#: hocr-gtk:757
 msgid "translator-credits"
-msgstr ""
+msgstr "יעקב זמיר <kzamir@walla.co.il>"
 
-#: hocr-gtk:782
+#: hocr-gtk:768
 msgid "Set text font"
-msgstr ""
+msgstr "קבע סוג אות"
 
 #: hocr-gtk.glade.h:1
 msgid "Black and White"
-msgstr ""
+msgstr "שחור לבן"
 
 #: hocr-gtk.glade.h:2
 msgid "Engine"
-msgstr ""
+msgstr "מנוע"
 
 #: hocr-gtk.glade.h:3
 msgid "Font"
-msgstr ""
+msgstr "גופן"
 
 #: hocr-gtk.glade.h:4
 msgid "Font 1"
@@ -103,55 +109,55 @@ msgstr ""
 
 #: hocr-gtk.glade.h:10
 msgid "Hocr"
-msgstr ""
+msgstr "Hocr"
 
 #: hocr-gtk.glade.h:11
 msgid "Image"
-msgstr ""
+msgstr "תמונה"
 
 #: hocr-gtk.glade.h:12
 msgid "Layout"
-msgstr ""
+msgstr "עימוד"
 
 #: hocr-gtk.glade.h:13
 msgid "Original"
-msgstr ""
+msgstr "מקור"
 
 #: hocr-gtk.glade.h:14
 msgid "Scan"
-msgstr ""
+msgstr "סרוק"
 
 #: hocr-gtk.glade.h:15
 msgid "Tesseract"
-msgstr ""
+msgstr "Tesseract"
 
 #: hocr-gtk.glade.h:16
 msgid "_Edit"
-msgstr ""
+msgstr "עריכה"
 
 #: hocr-gtk.glade.h:17
 msgid "_File"
-msgstr ""
+msgstr "קובץ"
 
 #: hocr-gtk.glade.h:18
 msgid "_Help"
-msgstr ""
+msgstr "עזרה"
 
 #: hocr-gtk.glade.h:19
 msgid "_View"
-msgstr ""
+msgstr "תצוגה"
 
 #: hocr-gtk.glade.h:20
 msgid "auto"
-msgstr ""
+msgstr "אוטומטי"
 
 #: hocr-gtk.glade.h:21
 msgid "clear"
-msgstr ""
+msgstr "נקה"
 
 #: hocr-gtk.glade.h:22
 msgid "column"
-msgstr ""
+msgstr "עמודות"
 
 #: hocr-gtk.glade.h:23
 msgid "gtk-about"
@@ -215,8 +221,9 @@ msgstr ""
 
 #: hocr-gtk.glade.h:38
 msgid "nikud"
-msgstr ""
+msgstr "ניקוד"
 
 #: hocr-gtk.glade.h:39
 msgid "one column"
-msgstr ""
+msgstr "עמודה אחת"
+
