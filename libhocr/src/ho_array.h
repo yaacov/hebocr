@@ -338,7 +338,7 @@ ho_array *ho_array_hough_lines (const ho_array * ar,
  @return the backword transformed matrix
  */
 ho_array *ho_array_hough_lines_backwords (const ho_array * ar, const int width,
-  const int height);
+  const int height, const unsigned char threshold);
 
 /**
  backwords hough trasform for lines by angle

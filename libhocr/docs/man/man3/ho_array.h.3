@@ -1,4 +1,4 @@
-.TH "src/ho_array.h" 3 "3 Jun 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
+.TH "src/ho_array.h" 3 "4 Jun 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -151,6 +151,12 @@ src/ho_array.h \- libhocr C language header.
 .br
 .ti -1c
 .RI "\fBho_array\fP * \fBho_array_hough_lines_backwords\fP (const \fBho_array\fP *ar, const int width, const int height)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_hough_lines_backwords_by_angle\fP (const \fBho_array\fP *ar, const int width, const int height, const int angle1, const int angle2)"
+.br
+.ti -1c
+.RI "\fBho_array\fP * \fBho_array_hough_lines_backwords_by_angle_v\fP (const \fBho_array\fP *ar, const int width, const int height, const int angle1, const int angle2)"
 .br
 .ti -1c
 .RI "unsigned char \fBho_array_fft_forword\fP (const \fBho_array\fP *ar, \fBho_array\fP *ar_r, \fBho_array\fP *ar_im)"
@@ -811,6 +817,52 @@ backwords hough trasform for lines
 \fBReturns:\fP
 .RS 4
 the backword transformed matrix 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_hough_lines_backwords_by_angle (const \fBho_array\fP * ar, const int width, const int height, const int angle1, const int angle2)"
+.PP
+backwords hough trasform for lines by angle 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to use for backword hough 
+.br
+\fIwidth\fP the array height 
+.br
+\fIheight\fP the array height 
+.br
+\fIangle1\fP start line angle 
+.br
+\fIangle2\fP end line angle 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
+.RE
+.PP
+
+.SS "\fBho_array\fP* ho_array_hough_lines_backwords_by_angle_v (const \fBho_array\fP * ar, const int width, const int height, const int angle1, const int angle2)"
+.PP
+backwords hough trasform for lines by vertical angle 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIar\fP the \fBho_array\fP to use for backword hough 
+.br
+\fIwidth\fP the array height 
+.br
+\fIheight\fP the array height 
+.br
+\fIangle1\fP start line angle 
+.br
+\fIangle2\fP end line angle 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE 
 .RE
 .PP
 

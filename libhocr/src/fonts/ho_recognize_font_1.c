@@ -1163,6 +1163,8 @@ ho_recognize_font_1_mem_sofit (const double *array_in)
     return_value -= 0.1;
   if (BOTTOM_LEFT > 0.45 || BOTTOM_RIGHT > 0.45)
     return_value -= 0.2;
+  if (BOTTOM_RIGHT > 0.32)
+    return_value -= 0.1;
   if (BOTTOM > 0.57 || BOTTOM < 43)
     return_value -= 0.10;
   if (MID_TOP_NOTCH)
@@ -1287,6 +1289,8 @@ ho_recognize_font_1_samech (const double *array_in)
   if (LEFT_VBAR)
     return_value += 0.1;
   if (RIGHT_VBAR)
+    return_value += 0.1;
+  if (BOTTOM_RIGHT > 0.25)
     return_value += 0.1;
   if (BOTTOM_LEFT > 0.45 || BOTTOM_RIGHT > 0.45)
     return_value += 0.1;

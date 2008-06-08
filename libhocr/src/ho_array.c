@@ -1226,7 +1226,7 @@ ho_array_hough_lines (const ho_array * ar, const unsigned char t)
   ho_array *ar_theta = NULL;
 
   if (!t)
-    threshold_percent = 0.1;
+    threshold_percent = 10;
   else
     threshold_percent = t;
 
@@ -1300,9 +1300,15 @@ ho_array_hough_lines (const ho_array * ar, const unsigned char t)
  */
 ho_array *
 ho_array_hough_lines_backwords (const ho_array * ar, const int width,
-  const int height)
+  const int height, const unsigned char t)
 {
   int x, y;
+
+  double min, max;
+
+  double threshold;
+
+  double threshold_percent;
 
   int xtag, ytag;
 
@@ -1310,66 +1316,51 @@ ho_array_hough_lines_backwords (const ho_array * ar, const int width,
 
   ho_array *ar_out = NULL;
 
+  if (!t)
+    threshold_percent = 40;
+  else
+    threshold_percent = t;
+  
   /* allocate memory */
   ar_out = ho_array_new (width, height);
   if (!ar_out)
     return NULL;
 
+  /* get threshold values of ar */
+  ho_array_minmax (ar, &min, &max);
+  threshold = min + threshold_percent * (max - min) / 100.0;
+  
   /* transform data */
   for (x = 0; x < ar->width; x++)
   {
-    for (y = 1; y < 45; y++)
-    {
-      /* if pixel is on in xy plane */
-      if (ho_array_get (ar, x, y) > 0.5)
-      {
-        theta = M_PI * (double) y / 180.0;
-        a = -cos (theta) / sin (theta);
-        b = (double) (x - ar->width / 2) / sin (theta);
-
-        /* draw a line */
-        for (xtag = 0; xtag < width; xtag++)
-        {
-          ytag = a * x + b;
-
-          /* check if xytag is in image */
-          if (ytag >= 0 && ytag < ar_out->height)
-          {
-            (ar_out->data)[xtag + ytag * ar_out->width] =
-              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
-          }
-        }
-      }
-    }
-
-    for (y = 135; y < 180; y++)
-    {
-      /* if pixel is on in xy plane */
-      if (ho_array_get (ar, x, y) > 0.5)
-      {
-        theta = M_PI * (double) y / 180.0;
-        a = -cos (theta) / sin (theta);
-        b = (double) (x - ar->width / 2) / sin (theta);
-
-        /* draw a line */
-        for (xtag = 0; xtag < width; xtag++)
-        {
-          ytag = a * x + b;
-
-          /* check if xytag is in image */
-          if (ytag >= 0 && ytag < ar_out->height)
-          {
-            (ar_out->data)[xtag + ytag * ar_out->width] =
-              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
-          }
-        }
-      }
-    }
-
     for (y = 45; y < 135; y++)
     {
       /* if pixel is on in xy plane */
-      if (ho_array_get (ar, x, y) > 0.5 && y != 90)
+      if (ho_array_get (ar, x, y) > threshold)
+      {
+        theta = M_PI * (double) y / 180.0;
+        a = -cos (theta) / sin (theta);
+        b = (double) (x - ar->width / 2) / sin (theta);
+
+        /* draw a line */
+        for (xtag = 0; xtag < width; xtag++)
+        {
+          ytag = (int)(a * (double)xtag + b) + ar->width / 2;
+
+          /* check if xytag is in image */
+          if (ytag >= 0 && ytag < ar_out->height)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+      }
+    }
+
+    for (y = 1; y < 45; y++)
+    {
+      /* if pixel is on in xy plane */
+      if (ho_array_get (ar, x, y) > threshold && y != 90)
       {
         theta = M_PI * (double) y / 180.0;
         a = -sin (theta) / cos (theta);
@@ -1378,7 +1369,31 @@ ho_array_hough_lines_backwords (const ho_array * ar, const int width,
         /* draw a line */
         for (ytag = 0; ytag < height; ytag++)
         {
-          xtag = a * x + b;
+          xtag = (int)(a * (double)ytag + b);
+
+          /* check if xytag is in image */
+          if (xtag >= 0 && xtag < ar_out->width)
+          {
+            (ar_out->data)[xtag + ytag * ar_out->width] =
+              (ar_out->data)[xtag + ytag * ar_out->width] + 1;
+          }
+        }
+      }
+    }
+    
+    for (y = 135; y < 180; y++)
+    {
+      /* if pixel is on in xy plane */
+      if (ho_array_get (ar, x, y) > threshold && y != 90)
+      {
+        theta = M_PI * (double) y / 180.0;
+        a = -sin (theta) / cos (theta);
+        b = (double) (x - ar->width / 2) / cos (theta);
+
+        /* draw a line */
+        for (ytag = 0; ytag < height; ytag++)
+        {
+          xtag = (int)(a * (double)ytag + b);
 
           /* check if xytag is in image */
           if (xtag >= 0 && xtag < ar_out->width)

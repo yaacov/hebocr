@@ -10,6 +10,8 @@
 
 %include ../../src/ho_pixbuf.h
 %include ../../src/ho_array.h
+%include ../../src/ho_array_hist.h
+%include ../../src/ho_array_stat.h
 %include ../../src/ho_bitmap.h
 %include ../../src/ho_objmap.h
 %include ../../src/ho_layout.h
