@@ -254,8 +254,7 @@ ho_array_stat_to_array_mask (const ho_array_stat * ar_st, const ho_array * ar)
 
       val = ho_array_get (ar, x, y);
 
-      if (square (val - avg) > threshold)
-        ho_array_set (m_out, x, y, 1.0);
+      ho_array_set (m_out, x, y, square (val - avg) - threshold);
     }
 
   return m_out;

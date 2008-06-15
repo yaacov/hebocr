@@ -142,10 +142,10 @@ ho_recognize_nikud_dimentions (const ho_bitmap * m_text,
     obj_width = ho_objmap_get_object (o_obj, i).width;
     obj_height = ho_objmap_get_object (o_obj, i).height;
 
-    is_dot = (obj_height < line_height / 3 && obj_height > line_height / 16
-      && obj_width < line_height / 3 && obj_width > line_height / 16);
+    is_dot = (obj_height < line_height / 4 && obj_height > line_height / 16
+      && obj_width < line_height / 4 && obj_width > line_height / 16);
 
-    is_obj = (obj_height > line_height / 3 || obj_width > line_height / 3);
+    is_obj = (obj_height > line_height / 4 || obj_width > line_height / 4);
 
     if (is_dot)
     {
@@ -529,7 +529,7 @@ ho_recognize_nikud_array_out (const double *array_in, double *array_out,
   /* three dots */
   if (array_in[15] > 0.2 && array_in[15] < 0.4)
   {
-    if (array_in[11] > 0.1)
+    if (array_in[11] > 0.1 || array_in[7] > 0.5)
     {
       /* kobotz */
       array_out[7] = 1.0;

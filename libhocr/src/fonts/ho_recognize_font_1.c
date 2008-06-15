@@ -411,7 +411,7 @@ ho_recognize_font_1_question (const double *array_in)
   if (WIDTH < 0.3)
     return_value += 0.1;
   if (DOT_PART)
-    return_value += 0.1;
+    return_value += 0.2;
   if (TOP_RIGTH_EDGE || MID_RIGTH_EDGE)
     return_value += 0.1;
 
@@ -437,7 +437,7 @@ ho_recognize_font_1_exclem (const double *array_in)
   if (WIDTH < 0.2)
     return_value += 0.1;
   if (DOT_PART)
-    return_value += 0.1;
+    return_value += 0.2;
 
   if (WIDTH_BY_HEIGHT > 0.4)
     return_value -= 0.1;
@@ -466,7 +466,9 @@ ho_recognize_font_1_dot_dot (const double *array_in)
     return_value += 0.1;
   if (WIDTH_BY_HEIGHT < 0.6)
     return_value += 0.1;
-
+  if (DOT_PART)
+    return_value += 0.2;
+  
   if (!TOP_HBAR)
     return_value -= 0.2;
   if (!BOTTOM_HBAR)
@@ -592,7 +594,16 @@ ho_recognize_font_1_gimal (const double *array_in)
     return_value += 0.1;
   if (TOP_RIGHT > BOTTOM_RIGHT)
     return_value += 0.1;
-
+  if (BOTTOM_MID > 0.25 && BOTTOM_MID < 0.45)
+    return_value += 0.1;
+  if (TOP_LEFT > (BOTTOM_LEFT + 0.25))
+    return_value += 0.2;
+  if (WIDTH < 0.3)
+    return_value += 0.2;
+  if (WIDTH < 0.3 && BOTTOM_HBAR && 
+      (BOTTOM_MID_CROSS == 0.1 || BOTTOM_RIGHT_CROSS == 0.1))
+    return_value += 0.2;
+  
   if (BOTTOM_MID > 0.5)
     return_value -= 0.3;
   if (BOTTOM > 0.57 || BOTTOM < 43)
@@ -745,7 +756,9 @@ ho_recognize_font_1_vav (const double *array_in)
     return_value -= 0.2;
   if (ONE_HOLE)
     return_value -= 0.2;
-
+  if (DOT_PART)
+    return_value -= 0.2;
+  
   return return_value;
 }
 
@@ -792,11 +805,13 @@ ho_recognize_font_1_zayin (const double *array_in)
   if (TOP_RIGHT > MID_RIGHT)
     return_value -= 0.2;
   if (DOT_PART)
-    return_value -= 0.2;
+    return_value -= 0.3;
   if (ONE_HOLE || TWO_HOLES)
     return_value -= 0.3;
   if (WIDTH_BY_HEIGHT > 0.63)
     return_value -= 0.2;
+  if (TOP_MID_CROSS < 0.1 && TOP_RIGHT_CROSS < 0.1)
+    return_value -= 0.1;
   
   return return_value;
 }
@@ -1198,9 +1213,12 @@ ho_recognize_font_1_nun (const double *array_in)
     return_value += 0.2;
   if (WIDTH < 0.3)
     return_value += 0.2;
-  if (WIDTH < 0.3 && BOTTOM_HBAR)
+  if (WIDTH < 0.3 && BOTTOM_HBAR && 
+      BOTTOM_MID_CROSS < 0.1 && BOTTOM_RIGHT_CROSS < 0.1)
     return_value += 0.2;
 
+  if (BOTTOM_MID > 0.25)
+    return_value -= 0.2;
   if (MID_BOTTOM_NOTCH || RIGHT_BOTTOM_NOTCH)
     return_value -= 0.3;
   if (BOTTOM_HBAR < 0.5)
