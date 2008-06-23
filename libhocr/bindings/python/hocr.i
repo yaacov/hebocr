@@ -13,6 +13,7 @@
 %include ../../src/ho_array_hist.h
 %include ../../src/ho_array_stat.h
 %include ../../src/ho_bitmap.h
+%include ../../src/ho_bitmap_hist.h
 %include ../../src/ho_objmap.h
 %include ../../src/ho_layout.h
 %include ../../src/ho_dimentions.h

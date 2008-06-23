@@ -327,6 +327,6 @@ echo
 echo build python binding, requires swig, libtiff, fftw: ${build_python}
 echo python site lib path: ${PY_MODULES_PATH}
 echo
-echo build hocr, requires glib: ${build_hocr}
+echo build hocr, requires glib, suggests gtk: ${build_hocr}
 echo build hocr-gtk, requires python bindings: ${build_hocr_gtk}
 echo

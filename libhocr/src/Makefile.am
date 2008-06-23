@@ -16,6 +16,7 @@ libhocr_la_SOURCES = \
         ho_array_hist.c \
         ho_array_stat.c \
         ho_bitmap.c \
+        ho_bitmap_hist.c \
         ho_objmap.c \
         ho_dimentions.c \
         ho_segment.c \
@@ -47,6 +48,7 @@ library_include_HEADERS = \
          ho_array_hist.h \
          ho_array_stat.h \
          ho_bitmap.h \
+         ho_bitmap_hist.h \
          ho_objmap.h \
          ho_dimentions.h \
          ho_segment.h \

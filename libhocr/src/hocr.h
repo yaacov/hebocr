@@ -60,11 +60,12 @@ extern "C"
 
 /* gray array (double) */
 #include <ho_array.h>
-#include <ho_array_stat.h>
 #include <ho_array_hist.h>
-    
+#include <ho_array_stat.h>
+  
 /* binary image map */
 #include <ho_bitmap.h>
+#include <ho_bitmap_hist.h>
 
 /* object image map */
 #include <ho_objmap.h>

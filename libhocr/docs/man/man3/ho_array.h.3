@@ -1,4 +1,4 @@
-.TH "src/ho_array.h" 3 "4 Jun 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
+.TH "src/ho_array.h" 3 "23 Jun 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -150,7 +150,7 @@ src/ho_array.h \- libhocr C language header.
 .RI "\fBho_array\fP * \fBho_array_hough_lines\fP (const \fBho_array\fP *ar, const unsigned char threshold)"
 .br
 .ti -1c
-.RI "\fBho_array\fP * \fBho_array_hough_lines_backwords\fP (const \fBho_array\fP *ar, const int width, const int height)"
+.RI "\fBho_array\fP * \fBho_array_hough_lines_backwords\fP (const \fBho_array\fP *ar, const int width, const int height, const unsigned char threshold)"
 .br
 .ti -1c
 .RI "\fBho_array\fP * \fBho_array_hough_lines_backwords_by_angle\fP (const \fBho_array\fP *ar, const int width, const int height, const int angle1, const int angle2)"
@@ -801,7 +801,7 @@ the transformed matrix
 .RE
 .PP
 
-.SS "\fBho_array\fP* ho_array_hough_lines_backwords (const \fBho_array\fP * ar, const int width, const int height)"
+.SS "\fBho_array\fP* ho_array_hough_lines_backwords (const \fBho_array\fP * ar, const int width, const int height, const unsigned char threshold)"
 .PP
 backwords hough trasform for lines 
 .PP
