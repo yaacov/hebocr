@@ -385,8 +385,19 @@ class MainWindow:
         self.menuitem_clear = xml.get_widget('menuitem_clear')
         self.menuitem_html = xml.get_widget('menuitem_html')
         self.menuitem_nikud = xml.get_widget('menuitem_nikud')
+        
         self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
         self.menuitem_column_one = xml.get_widget('menuitem_column_one')
+        
+        self.menuitem_scale_auto = xml.get_widget('menuitem_scale_auto')
+        self.menuitem_scale_1 = xml.get_widget('menuitem_scale_1')
+        self.menuitem_scale_2 = xml.get_widget('menuitem_scale_2')
+        self.menuitem_scale_3 = xml.get_widget('menuitem_scale_3')
+        self.menuitem_scale_4 = xml.get_widget('menuitem_scale_4')
+        
+        self.menuitem_threshold_no = xml.get_widget('menuitem_threshold_no')
+        self.menuitem_threshold_adaptive = xml.get_widget('menuitem_threshold_adaptive')
+        self.menuitem_threshold_fine = xml.get_widget('menuitem_threshold_fine')
         
         self.menuitem_font_1 = xml.get_widget('menuitem_font_1')
         self.menuitem_font_2 = xml.get_widget('menuitem_font_2')
@@ -562,10 +573,12 @@ class MainWindow:
             self.hocr_obj.set_pixbuf(pix)
             self.hocr_obj.set_html(self.menuitem_html.get_active())
             self.hocr_obj.set_nikud(self.menuitem_nikud.get_active())
+            
             if self.menuitem_column_auto.get_active():
                   self.hocr_obj.set_paragraph_setup(0)
             else:
                   self.hocr_obj.set_paragraph_setup(1)
+                  
             if self.menuitem_font_1.get_active():
                   self.hocr_obj.set_font (0)
             if self.menuitem_font_2.get_active():
@@ -578,6 +591,24 @@ class MainWindow:
                   self.hocr_obj.set_font (4)
             if self.menuitem_font_6.get_active():
                   self.hocr_obj.set_font (5)
+            
+            if self.menuitem_scale_auto.get_active():
+                  self.hocr_obj.set_auto_scale ()
+            if self.menuitem_scale_1.get_active():
+                  self.hocr_obj.set_scale (1)
+            if self.menuitem_scale_2.get_active():
+                  self.hocr_obj.set_scale (2)
+            if self.menuitem_scale_3.get_active():
+                  self.hocr_obj.set_scale (3)
+            if self.menuitem_scale_4.get_active():
+                  self.hocr_obj.set_scale (4)
+            
+            if self.menuitem_threshold_no.get_active():
+                  self.hocr_obj.set_adaptive (1)
+            if self.menuitem_threshold_adaptive.get_active():
+                  self.hocr_obj.set_adaptive (0)
+            if self.menuitem_threshold_fine.get_active():
+                  self.hocr_obj.set_adaptive (2)
             
             # run ocr
             ro = RunHocrOCR()

@@ -440,6 +440,45 @@ namespace hocr
     }
 
     /**
+     @brief set scale param
+    
+     @param scale_in new value of scale param
+     @return scale of objct
+     */
+    unsigned char set_scale (const unsigned char scale_in)
+    {
+      scale = scale_in;
+      no_auto_scale = 1;
+      
+      return scale;
+    }
+      
+    /**
+     @brief set auto_scale param
+    
+     @return no_auto_scale of objct
+     */
+    unsigned char set_auto_scale ()
+    {
+      no_auto_scale = 0;
+      
+      return no_auto_scale;
+    }
+    
+    /**
+     @brief set adaptive param
+    
+     @param adaptive_in new value of adaptive param
+     @return adaptive of objct
+     */
+    unsigned char set_adaptive (const unsigned char adaptive_in)
+    {
+      adaptive = adaptive_in;
+      
+      return adaptive;
+    }
+      
+    /**
      @brief get paragraph setup param
     
      @return paragraph setup

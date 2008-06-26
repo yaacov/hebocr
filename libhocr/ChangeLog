@@ -1,7 +1,8 @@
 libhocr (0.10.11)
 
  * Change default values in hocr command line utility
- 
+ * Change default values in hocr-gtk graphical utility
+ * Add scale and threshold settings to OO c++ and python bindings
 
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 26 June 2008 09:04
  

@@ -1,4 +1,4 @@
-.TH "hocr::Hocr" 3 "23 Jun 2008" "Version 0.10.10" "libhocr" \" -*- nroff -*-
+.TH "hocr::Hocr" 3 "26 Jun 2008" "Version 0.10.11" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -101,6 +101,18 @@ hocr::Hocr \- \fBHocr\fP class.
 .RI "unsigned char \fBset_nikud\fP (const unsigned char nikud_in)"
 .br
 .RI "\fIset nikud param \fP"
+.ti -1c
+.RI "unsigned char \fBset_scale\fP (const unsigned char scale_in)"
+.br
+.RI "\fIset scale param \fP"
+.ti -1c
+.RI "unsigned char \fBset_auto_scale\fP ()"
+.br
+.RI "\fIset auto_scale param \fP"
+.ti -1c
+.RI "unsigned char \fBset_adaptive\fP (const unsigned char adaptive_in)"
+.br
+.RI "\fIset adaptive param \fP"
 .ti -1c
 .RI "int \fBget_paragraph_setup\fP ()"
 .br
@@ -402,6 +414,46 @@ set nikud param
 \fBReturns:\fP
 .RS 4
 nikud of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_scale (const unsigned char scale_in)\fC [inline]\fP"
+.PP
+set scale param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIscale_in\fP new value of scale param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+scale of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_auto_scale ()\fC [inline]\fP"
+.PP
+set auto_scale param 
+.PP
+\fBReturns:\fP
+.RS 4
+no_auto_scale of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_adaptive (const unsigned char adaptive_in)\fC [inline]\fP"
+.PP
+set adaptive param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIadaptive_in\fP new value of adaptive param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+adaptive of objct 
 .RE
 .PP
 
