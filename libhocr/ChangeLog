@@ -1,3 +1,10 @@
+libhocr (0.10.11)
+
+ * Change default values in hocr command line utility
+ 
+
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 26 June 2008 09:04
+ 
 libhocr (0.10.10)
 
  * Fix hocr-gtk example remember window size

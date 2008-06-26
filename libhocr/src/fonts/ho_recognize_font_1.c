@@ -282,6 +282,8 @@ ho_recognize_font_1_open (const double *array_in)
     return_value -= 0.2;
   if (COMMA_PART)
     return_value -= 0.2;
+  if (MID_LEFT > 0.25)
+    return_value -= 0.2;
   
   return return_value;
 }
@@ -321,6 +323,8 @@ ho_recognize_font_1_close (const double *array_in)
   if (DOT_PART)
     return_value -= 0.2;
   if (COMMA_PART)
+    return_value -= 0.2;
+  if (MID_RIGHT > 0.25)
     return_value -= 0.2;
   
   return return_value;
@@ -416,6 +420,8 @@ ho_recognize_font_1_question (const double *array_in)
     return_value += 0.1;
 
   if (MID_RIGHT_END || TOP_MID_END)
+    return_value -= 0.2;
+  if (BOTTOM_HBAR)
     return_value -= 0.2;
   if (!DOT_PART)
     return_value -= 0.1;
@@ -618,7 +624,9 @@ ho_recognize_font_1_gimal (const double *array_in)
     return_value -= 0.2;
   if (WIDTH_BY_HEIGHT > 0.8)
     return_value -= 0.2;
-
+  if (HEIGHT < 0.3)
+    return_value -= 0.3;
+  
   return return_value;
 }
 
@@ -751,7 +759,7 @@ ho_recognize_font_1_vav (const double *array_in)
   if (!BOTTOM_MID_END && !BOTTOM_RIGHT_END)
     return_value -= 0.2;
   if (HEIGHT < 0.35)
-    return_value -= 0.2;
+    return_value -= 0.3;
   if (WIDTH_BY_HEIGHT > 0.55)
     return_value -= 0.2;
   if (ONE_HOLE)
@@ -812,6 +820,8 @@ ho_recognize_font_1_zayin (const double *array_in)
     return_value -= 0.2;
   if (TOP_MID_CROSS < 0.1 && TOP_RIGHT_CROSS < 0.1)
     return_value -= 0.1;
+  if (HEIGHT < 0.3)
+    return_value -= 0.2;
   
   return return_value;
 }
@@ -927,9 +937,11 @@ ho_recognize_font_1_tet (const double *array_in)
     return_value -= 0.2;
   if (ONE_HOLE && HOLE_BOTTOM_LEFT_EDGE)
     return_value -= 0.2;
-  if (BOTTOM_LEFT_CROSS || BOTTOM_MID_CROSS)
+  /*if (BOTTOM_LEFT_CROSS || BOTTOM_MID_CROSS)
+    return_value -= 0.2;*/
+  if (MID_LEFT > 0.5)
     return_value -= 0.2;
-
+  
   return return_value;
 }
 
@@ -1133,7 +1145,7 @@ ho_recognize_font_1_mem (const double *array_in)
   if (MID_RIGHT_NOTCH || BOTTOM_RIGHT_NOTCH)
     return_value -= 0.2;
   if (BOTTOM_RIGHT_END)
-    return_value -= 0.1;
+    return_value -= 0.2;
   if (BOTTOM > 0.60)
     return_value -= 0.2;
   if (BOTTOM_RIGHT > 0.35)
@@ -1154,7 +1166,7 @@ ho_recognize_font_1_mem_sofit (const double *array_in)
   if (TOP_HBAR)
     return_value += 0.1;
   if (BOTTOM_HBAR)
-    return_value += 0.1;
+    return_value += 0.2;
   if (LEFT_VBAR)
     return_value += 0.1;
   if (RIGHT_VBAR)
@@ -1178,7 +1190,7 @@ ho_recognize_font_1_mem_sofit (const double *array_in)
     return_value -= 0.1;
   if (BOTTOM_LEFT > 0.45 || BOTTOM_RIGHT > 0.45)
     return_value -= 0.2;
-  if (BOTTOM_RIGHT > 0.32)
+  if (BOTTOM_RIGHT > 0.42)
     return_value -= 0.1;
   if (BOTTOM > 0.57 || BOTTOM < 43)
     return_value -= 0.10;
@@ -1227,6 +1239,8 @@ ho_recognize_font_1_nun (const double *array_in)
     return_value -= 0.2;
   if (MID_LEFT_EDGE)
     return_value -= 0.2;
+  if (BIG_TOP_RIGTH_EDGE)
+    return_value -= 0.2;
   if (WIDTH > 0.33 && (TOP_LEFT < (BOTTOM_LEFT + 0.2)))
     return_value -= 0.35;
   if (TOP_LEFT < (BOTTOM_LEFT))
@@ -1242,6 +1256,8 @@ ho_recognize_font_1_nun (const double *array_in)
   if (MID_LEFT_END || MID_MID_END)
     return_value -= 0.3;
   if (HEIGHT > 0.55)
+    return_value -= 0.2;
+  if (HEIGHT < 0.3)
     return_value -= 0.2;
   if (MID_RIGHT > 0.9)
     return_value -= 0.3;
@@ -1308,11 +1324,11 @@ ho_recognize_font_1_samech (const double *array_in)
     return_value += 0.1;
   if (RIGHT_VBAR)
     return_value += 0.1;
-  if (BOTTOM_RIGHT > 0.25)
+  if (BOTTOM_RIGHT > 0.45)
     return_value += 0.1;
   if (BOTTOM_LEFT > 0.45 || BOTTOM_RIGHT > 0.45)
     return_value += 0.1;
-  if ((BOTTOM_LEFT + 0.2) < (BOTTOM_RIGHT))
+  if ((BOTTOM_LEFT + 0.3) < (BOTTOM_RIGHT))
     return_value += 0.1;
   if (BOTTOM_LEFT > 0.30 && BOTTOM_RIGHT > 0.30)
     return_value += 0.1;
@@ -1341,6 +1357,8 @@ ho_recognize_font_1_samech (const double *array_in)
     return_value -= 0.3;
   if (TOP_LEFT > 0.4)
     return_value -= 0.2;
+  if (MID_LEFT > 0.4)
+    return_value -= 0.2;
   if (MID_LEFT_NOTCH)
     return_value -= 0.1;
   if (MID_TOP_NOTCH)
@@ -1351,7 +1369,9 @@ ho_recognize_font_1_samech (const double *array_in)
     return_value -= 0.2;
   if (BOTTOM_LEFT_END)
     return_value -= 0.2;
-
+  if (BOTTOM_RIGHT < 0.32)
+    return_value -= 0.3;
+  
   return return_value;
 }
 
@@ -1530,7 +1550,9 @@ ho_recognize_font_1_tzadi (const double *array_in)
     return_value += 0.1;
   if (MID_RIGHT_NOTCH || BOTTOM_RIGHT_NOTCH)
     return_value += 0.2;
-
+  if (MID_MID_CROSS)
+    return_value += 0.1;
+  
   if (BOTTOM_LEFT < BOTTOM_RIGHT)
     return_value -= 0.1;
   if (MID_BOTTOM_NOTCH)

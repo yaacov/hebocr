@@ -53,13 +53,13 @@ gboolean no_gtk = TRUE;
 
 gint threshold = 0;
 gint adaptive_threshold = 0;
-gint adaptive_threshold_type = 0;
+gint adaptive_threshold_type = 1;
 gint scale_by = 0;
 gboolean do_not_auto_scale = FALSE;
 gdouble rotate_angle = 0.0;
 gboolean do_not_auto_rotate = FALSE;
 
-gint paragraph_setup = 0;
+gint paragraph_setup = 1;
 gint slicing_threshold = 0;
 gint slicing_width = 0;
 gint font_spacing_code = 0;
@@ -503,7 +503,7 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
 
     /* if fonts are too small and user wants auto scale, re-scale image */
     if (m_bw->font_height < 10)
-      scale_by = 4;
+      scale_by = 3;
     else if (m_bw->font_height < 20)
       scale_by = 2;
     else

@@ -453,12 +453,12 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
     return NULL;
 
   /* set default slicing_threshold */
-  if (slicing_threshold < 15)
-    s_threshold = 70;
+  if (slicing_threshold < 5)
+    s_threshold = 30;
   else
     s_threshold = slicing_threshold;
 
-  if (slicing_width < 80)
+  if (slicing_width < 20)
     s_width = 160;
   else
     s_width = slicing_width;
