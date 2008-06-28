@@ -330,6 +330,9 @@ class MainWindow:
         self.config.set('edit', 'nikud', '1')
         self.config.set('edit', 'column', '0')
         self.config.set('edit', 'font', '1')
+        self.config.set('edit', 'scale', '1')
+        self.config.set('edit', 'threshold', '0')
+        self.config.set('edit', 'threshold_v', '0')
         self.config.set('edit', 'engine', '0')
         
         self.config.add_section('view')
@@ -423,6 +426,20 @@ class MainWindow:
         self.menuitem_column_auto.set_active(self.config.getint('edit', 'column') == 0)
         self.menuitem_column_one.set_active(self.config.getint('edit', 'column') == 1)
         
+        self.menuitem_scale_auto.set_active(self.config.getint('edit', 'scale') == 0)
+        self.menuitem_scale_1.set_active(self.config.getint('edit', 'scale') == 1)
+        self.menuitem_scale_2.set_active(self.config.getint('edit', 'scale') == 2)
+        self.menuitem_scale_3.set_active(self.config.getint('edit', 'scale') == 3)
+        self.menuitem_scale_4.set_active(self.config.getint('edit', 'scale') == 4)
+        
+        self.menuitem_threshold_no.set_active(self.config.getint('edit', 'threshold') == 0)
+        self.menuitem_threshold_adaptive.set_active(self.config.getint('edit', 'threshold') == 1)
+        self.menuitem_threshold_fine.set_active(self.config.getint('edit', 'threshold') == 2)
+        
+        self.menuitem_threshold_v_0.set_active(self.config.getint('edit', 'threshold_v') == 0)
+        self.menuitem_threshold_v_20.set_active(self.config.getint('edit', 'threshold_v') == 20)
+        self.menuitem_threshold_v_90.set_active(self.config.getint('edit', 'threshold_v') == 90)
+        
         self.menuitem_engine_hocr.set_active(self.config.getint('edit', 'engine') == 0)
         self.menuitem_engine_tess.set_active(self.config.getint('edit', 'engine') == 1)
         
@@ -466,6 +483,31 @@ class MainWindow:
         if self.menuitem_column_one.get_active():
             self.config.set('edit', 'column', '1')
         
+        if self.menuitem_scale_auto.get_active():
+            self.config.set('edit', 'scale', '0')
+        if self.menuitem_scale_1.get_active():
+            self.config.set('edit', 'scale', '1')
+        if self.menuitem_scale_2.get_active():
+            self.config.set('edit', 'scale', '2')
+        if self.menuitem_scale_3.get_active():
+            self.config.set('edit', 'scale', '3')
+        if self.menuitem_scale_4.get_active():
+            self.config.set('edit', 'scale', '4')
+        
+        if self.menuitem_threshold_no.get_active():
+            self.config.set('edit', 'threshold', '0')
+        if self.menuitem_threshold_adaptive.get_active():
+            self.config.set('edit', 'threshold', '1')
+        if self.menuitem_threshold_fine.get_active():
+            self.config.set('edit', 'threshold', '2')
+        
+        if self.menuitem_threshold_v_0.get_active():
+            self.config.set('edit', 'threshold_v', '0')
+        if self.menuitem_threshold_v_20.get_active():
+            self.config.set('edit', 'threshold_v', '20')
+        if self.menuitem_threshold_v_90.get_active():
+            self.config.set('edit', 'threshold_v', '90')
+            
         if self.menuitem_engine_hocr.get_active():
             self.config.set('edit', 'engine', '0')
         if self.menuitem_engine_tess.get_active():
