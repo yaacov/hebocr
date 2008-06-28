@@ -477,6 +477,32 @@ namespace hocr
       
       return adaptive;
     }
+    
+    /**
+     @brief set threshold param
+    
+     @param threshold_in new value of threshold param
+     @return threshold of objct
+     */
+    unsigned char set_threshold (const unsigned char threshold_in)
+    {
+      threshold = threshold_in;
+      
+      return threshold;
+    }
+    
+    /**
+     @brief set a_threshold param
+    
+     @param a_threshold_in new value of a_threshold param
+     @return a_threshold of objct
+     */
+    unsigned char set_a_threshold (const unsigned char a_threshold_in)
+    {
+      a_threshold = a_threshold_in;
+      
+      return a_threshold;
+    }
       
     /**
      @brief get paragraph setup param

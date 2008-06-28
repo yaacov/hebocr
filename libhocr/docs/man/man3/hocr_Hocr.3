@@ -1,4 +1,4 @@
-.TH "hocr::Hocr" 3 "26 Jun 2008" "Version 0.10.11" "libhocr" \" -*- nroff -*-
+.TH "hocr::Hocr" 3 "27 Jun 2008" "Version 0.10.11" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -113,6 +113,14 @@ hocr::Hocr \- \fBHocr\fP class.
 .RI "unsigned char \fBset_adaptive\fP (const unsigned char adaptive_in)"
 .br
 .RI "\fIset adaptive param \fP"
+.ti -1c
+.RI "unsigned char \fBset_threshold\fP (const unsigned char threshold_in)"
+.br
+.RI "\fIset threshold param \fP"
+.ti -1c
+.RI "unsigned char \fBset_a_threshold\fP (const unsigned char a_threshold_in)"
+.br
+.RI "\fIset a_threshold param \fP"
 .ti -1c
 .RI "int \fBget_paragraph_setup\fP ()"
 .br
@@ -454,6 +462,36 @@ set adaptive param
 \fBReturns:\fP
 .RS 4
 adaptive of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_threshold (const unsigned char threshold_in)\fC [inline]\fP"
+.PP
+set threshold param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIthreshold_in\fP new value of threshold param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+threshold of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_a_threshold (const unsigned char a_threshold_in)\fC [inline]\fP"
+.PP
+set a_threshold param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIa_threshold_in\fP new value of a_threshold param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a_threshold of objct 
 .RE
 .PP
 

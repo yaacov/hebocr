@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu Jun 26 22:10:35 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Jun 27 07:04:47 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -261,7 +261,7 @@
                     <child>
                       <widget class="GtkMenuItem" id="menuitem_threshold">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Threshold</property>
+                        <property name="label" translatable="yes">Threshold type</property>
                         <property name="use_underline">True</property>
                         <child>
                           <widget class="GtkMenu" id="menu10">
@@ -291,6 +291,45 @@
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_threshold_no</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_threshold_v">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Threshold</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu11">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_threshold_v_0">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">auto</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_threshold_v_90">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">very light</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_threshold_v_0</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_threshold_v_20">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">very dark</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_threshold_v_0</property>
                               </widget>
                             </child>
                           </widget>

@@ -399,6 +399,10 @@ class MainWindow:
         self.menuitem_threshold_adaptive = xml.get_widget('menuitem_threshold_adaptive')
         self.menuitem_threshold_fine = xml.get_widget('menuitem_threshold_fine')
         
+        self.menuitem_threshold_v_0 = xml.get_widget('menuitem_threshold_v_0')
+        self.menuitem_threshold_v_20 = xml.get_widget('menuitem_threshold_v_20')
+        self.menuitem_threshold_v_90 = xml.get_widget('menuitem_threshold_v_90')
+        
         self.menuitem_font_1 = xml.get_widget('menuitem_font_1')
         self.menuitem_font_2 = xml.get_widget('menuitem_font_2')
         self.menuitem_font_3 = xml.get_widget('menuitem_font_3')
@@ -603,6 +607,11 @@ class MainWindow:
             if self.menuitem_scale_4.get_active():
                   self.hocr_obj.set_scale (4)
             
+            if self.menuitem_threshold_v_20.get_active():
+                  self.hocr_obj.set_threshold (20)
+            if self.menuitem_threshold_v_90.get_active():
+                  self.hocr_obj.set_threshold (90)
+                  
             if self.menuitem_threshold_no.get_active():
                   self.hocr_obj.set_adaptive (1)
             if self.menuitem_threshold_adaptive.get_active():
