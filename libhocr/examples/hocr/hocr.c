@@ -53,13 +53,13 @@ gboolean no_gtk = TRUE;
 
 gint threshold = 0;
 gint adaptive_threshold = 0;
-gint adaptive_threshold_type = 1;
+gint adaptive_threshold_type = 0;
 gint scale_by = 0;
 gboolean do_not_auto_scale = FALSE;
 gdouble rotate_angle = 0.0;
 gboolean do_not_auto_rotate = FALSE;
 
-gint paragraph_setup = 1;
+gint paragraph_setup = 0;
 gint slicing_threshold = 0;
 gint slicing_width = 0;
 gint font_spacing_code = 0;
@@ -92,7 +92,7 @@ ho_layout *l_page = NULL;
 /* progress indicator */
 gint progress;
 
-static gchar *copyright_message = "hocr - Hebrew OCR utility\n\
+static gchar *copyright_message = "hocr %s - Hebrew OCR utility\n\
 %s\n\
 http://hocr.berlios.de\n\
 Copyright (C) 2005-2008 Yaacov Zamir <kzamir@walla.co.il>\n\
@@ -351,7 +351,7 @@ hocr_cmd_parser (int *argc, char **argv[])
 
   if (version)
   {
-    g_printf (copyright_message, BUILD);
+    g_printf (copyright_message, VERSION, BUILD);
     exit (0);
   }
 
@@ -406,6 +406,11 @@ hocr_cmd_parser (int *argc, char **argv[])
     hocr_printerr ("unknown font_spacing value using auto settings");
     font_spacing_code = 0;
   }
+  
+  if (only_save_fonts)
+  {
+    save_fonts = TRUE;
+  }
 
   return FALSE;
 }
@@ -458,7 +463,7 @@ hocr_pixbuf_load_with_debug ()
         ho_pixbuf_pnm_save (pix, filename);
 #ifdef USE_GTK
       else
-        ho_gtk_pixbuf_save (pix, filename);
+        ho_gtk_pixbuf_save (pix, filename, "png");
 #endif /* USE_GTK */
       g_free (filename);
     }
@@ -502,9 +507,9 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
     }
 
     /* if fonts are too small and user wants auto scale, re-scale image */
-    if (m_bw->font_height < 10)
+    if (m_bw->font_height < 15)
       scale_by = 3;
-    else if (m_bw->font_height < 20)
+    else if (m_bw->font_height < 30)
       scale_by = 2;
     else
       scale_by = 1;
@@ -1053,7 +1058,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 #ifdef USE_GTK
             else
               ho_gtk_font_save (m_font_main_sign,
-                m_font_nikud, m_mask, filename);
+                m_font_nikud, m_mask, filename, "png");
 #endif /* USE_GTK */
             /* free filename */
             g_free (filename);
@@ -1105,7 +1110,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 #ifdef USE_GTK
                   else
                     ho_gtk_font_save (m_font_main_sign,
-                      m_font_test, m_mask, filename);
+                      m_font_test, m_mask, filename, "png");
 #endif /* USE_GTK */
                   /* free file name */
                   g_free (filename);
@@ -1159,7 +1164,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 #ifdef USE_GTK
                   else
                     ho_gtk_font_save (m_font_main_sign,
-                      m_font_test, m_mask, filename);
+                      m_font_test, m_mask, filename, "png");
 #endif /* USE_GTK */
                   /* free file name */
                   g_free (filename);
@@ -1216,7 +1221,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 #ifdef USE_GTK
                     else
                       ho_gtk_font_save (m_font_main_sign,
-                        m_font_test, m_mask, filename);
+                        m_font_test, m_mask, filename, "png");
 #endif /* USE_GTK */
                     /* free file name */
                     g_free (filename);
@@ -1270,7 +1275,7 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
 #ifdef USE_GTK
                     else
                       ho_gtk_font_save (m_font_main_sign,
-                        m_font_test, m_mask, filename);
+                        m_font_test, m_mask, filename, "png");
 #endif /* USE_GTK */
                     /* free file name */
                     g_free (filename);
@@ -1452,7 +1457,7 @@ main (int argc, char *argv[])
         ho_pixbuf_pnm_save (pix_out, filename);
 #ifdef USE_GTK
       else
-        ho_gtk_pixbuf_save (pix_out, filename);
+        ho_gtk_pixbuf_save (pix_out, filename, "png");
 #endif /* USE_GTK */
       /* free locale memory */
       ho_pixbuf_free (pix_out);
@@ -1542,7 +1547,7 @@ main (int argc, char *argv[])
         ho_pixbuf_pnm_save (pix_out, filename);
 #ifdef USE_GTK
       else
-        ho_gtk_pixbuf_save (pix_out, filename);
+        ho_gtk_pixbuf_save (pix_out, filename, "png");
 #endif /* USE_GTK */
       ho_pixbuf_free (pix_out);
       g_free (filename);

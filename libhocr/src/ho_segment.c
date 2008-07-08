@@ -316,7 +316,7 @@ ho_segment_words_fine (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
   /* check for extreem font spacing */
   if (m->font_spacing == 0)
-    font_spacing = m->font_width / 4;
+    font_spacing = m->font_width / 4 + 1;
   else if (m->font_spacing == 255)
     font_spacing = m->font_width;
   else
@@ -385,7 +385,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
 {
   ho_bitmap *m_out = NULL;
 
-  double horizontal_link_factor = 9.0 / 5.0;
+  double horizontal_link_factor = 11.0 / 5.0;
   double top_frame_factor = 0.4;
   double bottom_frame_factor = 1.1;
 
@@ -447,19 +447,20 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   int s_width;
   unsigned char nikud_ret;
   int *line_fill;
-
+  int avg_line_fill = 0;
+  
   /* sanity check */
   if (!m->width || !m->height)
     return NULL;
 
   /* set default slicing_threshold */
   if (slicing_threshold < 5)
-    s_threshold = 30;
+    s_threshold = 80;
   else
     s_threshold = slicing_threshold;
 
-  if (slicing_width < 20)
-    s_width = 160;
+  if (slicing_width < 5)
+    s_width = 80;
   else
     s_width = slicing_width;
 
@@ -486,8 +487,13 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
   for (x = 0; x < m->width; x++)
     for (y = 0; y < m->height; y++)
+  {
       line_fill[x] += ho_bitmap_get (m_temp, x, y);
-
+      avg_line_fill += ho_bitmap_get (m_temp, x, y);
+  }
+  
+  avg_line_fill /= m->width;
+  
   /* make line fill % of 100 */
   for (x = 0; x < m->width; x++)
     line_fill[x] = 100 * line_fill[x] / line_height;
@@ -542,10 +548,25 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
             int next_object_start;
             int thin_object_width;
             int overlaping;
-
-            i1 = i;
-            i2 = i + 1;
-
+            int x1, x2;
+            
+            x1 = ho_objmap_get_object (o_obj, i).x + 
+              ho_objmap_get_object (o_obj, i).width / 2;
+            x2 = ho_objmap_get_object (o_obj, i + 1).x + 
+              ho_objmap_get_object (o_obj, i + 1).width / 2;
+            
+            /* recheck objects order */
+            if (x2 < x1)
+            {
+              i1 = i;
+              i2 = i + 1;
+            }
+            else
+            {
+              i2 = i;
+              i1 = i + 1;
+            }
+            
             thin_object_width = ho_objmap_get_object (o_obj, i1).width;
             if (thin_object_width > ho_objmap_get_object (o_obj, i2).width)
               thin_object_width = ho_objmap_get_object (o_obj, i2).width;
@@ -597,14 +618,33 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
         ho_bitmap_free (m_font);
 
         /* check that it is not a long _ or - 's */
-        if (!(ho_objmap_get_size (o_obj) == 1
+        if (!(ho_objmap_get_size (o_obj) < 1
             && ho_objmap_get_object (o_obj, 0).height < m->font_height / 3))
-          for (i = font_start; i < font_end; i++)
+        {
+          /* if this is not a very wide font be careful */
+          if ((font_end - font_start) < 2 * s_width * (m->font_width) / 100)
           {
-            if (line_fill[i] <= s_threshold * m->com_line_fill / 100)
-              ho_bitmap_draw_vline (m_out, i, 0, m_out->height);
+            for (i = (font_start + 1); i < font_end; i++)
+            {
+              if (line_fill[i] <= s_threshold * avg_line_fill / 100)
+              {
+                  ho_bitmap_draw_vline (m_out, i, 0, m_out->height);
+              }
+            }
           }
-
+          /* if this is a very wide font be more agresive */
+          else
+          {
+            for (i = (font_start + 1); i < font_end; i++)
+            {
+              if (line_fill[i] <= s_threshold * avg_line_fill / 70)
+              {
+                  ho_bitmap_draw_vline (m_out, i, 0, m_out->height);
+              }
+            }
+          }
+        }
+        
         ho_objmap_free (o_obj);
       }
     }

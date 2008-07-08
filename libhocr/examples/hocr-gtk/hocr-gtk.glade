@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jun 27 07:04:47 2008 -->
+<!--Generated with glade3 3.4.5 on Sat Jul  5 08:57:29 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -184,6 +184,7 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="label" translatable="yes">auto</property>
                                 <property name="use_underline">True</property>
+                                <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
                               </widget>
                             </child>
@@ -193,7 +194,6 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="label" translatable="yes">one column</property>
                                 <property name="use_underline">True</property>
-                                <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_column_auto</property>
                               </widget>
@@ -215,6 +215,7 @@
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">auto</property>
                                 <property name="use_underline">True</property>
+                                <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
                               </widget>
                             </child>
@@ -223,7 +224,6 @@
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">1</property>
                                 <property name="use_underline">True</property>
-                                <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_scale_auto</property>
                               </widget>
@@ -271,7 +271,6 @@
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">regular</property>
                                 <property name="use_underline">True</property>
-                                <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
                               </widget>
                             </child>
@@ -280,6 +279,7 @@
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">adaptive</property>
                                 <property name="use_underline">True</property>
+                                <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_threshold_no</property>
                               </widget>

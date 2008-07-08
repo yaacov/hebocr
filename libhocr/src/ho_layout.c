@@ -492,7 +492,12 @@ ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
     ho_layout_get_word_line_mask (l_page, block_index, line_index, word_index);
   l_page->m_words_line_mask[block_index][line_index][word_index] =
     m_word_line_mask;
-
+  
+  /* re-adjust the font width to reflect the paragraph */
+  /* we need this for lines with lines with small number of fonts */
+  /* ho_segment_fonts use this value for segmentation */
+  m_word_text->font_width = l_page->m_blocks_text[block_index]->font_width;
+  
   m_word_font_mask =
     ho_segment_fonts (m_word_text, m_word_line_mask, slicing_threshold,
     slicing_width);

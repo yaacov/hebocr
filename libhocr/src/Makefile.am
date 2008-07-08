@@ -5,7 +5,8 @@ INCLUDES = \
         $(hspell_CFLAGS) \
         $(tiff_CFLAGS) \
         $(fftw_CFLAGS) \
-        -DBUILD=\"$(BUILD_STR)\" 
+        -DBUILD=\"$(BUILD_STR)\" \
+        -DVERSION=\"$(VERSION)\"
 
 lib_LTLIBRARIES = libhocr.la
 

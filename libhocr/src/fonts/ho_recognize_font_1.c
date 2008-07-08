@@ -967,6 +967,8 @@ ho_recognize_font_1_yud (const double *array_in)
 
   if (HEIGHT > 0.38)
     return_value -= 0.2;
+  if (WIDTH > 0.4)
+    return_value -= 0.2;
   if (TOP_LEFT > 0.8)
     return_value -= 0.1;
   if (BOTTOM < 0.58)

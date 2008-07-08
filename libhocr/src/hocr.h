@@ -202,6 +202,13 @@ extern "C"
  */
   const char *hocr_get_build_string ();
 
+/**
+ return the version string
+
+ @return version string
+ */
+  const char *hocr_get_version_string ();
+  
 #ifdef __cplusplus
 }
 #endif                          /* __cplusplus */

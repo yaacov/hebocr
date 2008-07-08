@@ -150,11 +150,10 @@ ho_gtk_pixbuf_load (const char *filename)
 }
 
 int
-ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename)
+ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename, const char *ext)
 {
   GError *error = NULL;
   GdkPixbuf *gdk_pix = NULL;
-  gchar **ext_type = NULL;
 
   /* load gdk pixbuf from ho_pixbuf */
   gdk_pix = ho_gtk_pixbuf_to_gdk (pix);
@@ -162,14 +161,9 @@ ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename)
     return TRUE;
 
   /* save gdk pixbuf */
-  ext_type = g_strsplit (filename, ".", 2);
-  if (!g_ascii_strncasecmp (ext_type[1], "jpg", 4))
-    gdk_pixbuf_save (gdk_pix, filename, "jpeg", &error, NULL);
-  else
-    gdk_pixbuf_save (gdk_pix, filename, ext_type[1], &error, NULL);
+  gdk_pixbuf_save (gdk_pix, filename, ext, &error, NULL);
 
   /* free memory */
-  g_strfreev (ext_type);
   g_object_unref (gdk_pix);
 
   if (error)
@@ -183,16 +177,15 @@ ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename)
 
 int
 ho_gtk_font_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
-  const ho_bitmap * m_mask, const char *filename)
+  const ho_bitmap * m_mask, const char *filename, const char *ext)
 {
   int return_value;
   ho_pixbuf *p_out;
 
   p_out = ho_pixbuf_new (3, m_text->width, m_text->height, 0);
-
   ho_pixbuf_draw_rgb_bitmap (p_out, m_text, m_nikud, m_mask);
-
-  return_value = ho_gtk_pixbuf_save (p_out, filename);
+  
+  return_value = ho_gtk_pixbuf_save (p_out, filename, ext);
 
   ho_pixbuf_free (p_out);
 

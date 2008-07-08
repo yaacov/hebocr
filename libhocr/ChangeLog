@@ -1,5 +1,15 @@
 libhocr (0.10.11)
 
+ * Fix font segmentation when fonts overlap
+ * Re change defaults for image prossecing
+ * Fix font slicing bug
+ * Sync hocr-gtk and hocr version numbers with libhocr version number
+ * Fix gtk pixbuf save extention problem
+
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 06 July 2008 09:04
+ 
+libhocr (0.10.11)
+
  * Change default values in hocr command line utility
  * Change default values in hocr-gtk graphical utility
  * Add scale and threshold settings to OO c++ and python bindings

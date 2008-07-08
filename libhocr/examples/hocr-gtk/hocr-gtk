@@ -34,7 +34,6 @@ import pango
 from hocr import *
 
 # hocr-gtk paths
-# FIXME: this can change from system to system
 app_name = "hocr-gtk"
 locale_dir = sys.prefix + '/share/locale'
 glade_file = 'hocr-gtk.glade'
@@ -74,7 +73,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # program info
-app_version = "0.1.2"
+app_version = hocr_get_version_string()
 copyright = "Copyright (C) Yaacov Zamir <kzamir@walla.co.il>"
 comments = _("Hocr-GTK, Hebrew optical character recognition\ngraphical front end (GTK)\n\n")
 comments += hocr_get_build_string()
@@ -82,7 +81,6 @@ artists = [_("Shlomi Israel <sijproject@gmail.com>")]
 authors = [_("Yaacov Zamir <kzamir@walla.co.il>")]
 
 # search for python-imaging-sane
-# FIXME: find a nicer way to check for sane
 have_sane = True
 try:
     import sane
@@ -94,7 +92,6 @@ tesseract_path = sys.prefix + "/bin/tesseract"
 tesseract_image_path = usr_hocr_gtk_path + "/temp_tess_image.tiff"
 tesseract_text_path = usr_hocr_gtk_path + "/temp_tess_text"
 # search for tesseract
-# FIXME: find a nicer way to check for tesseract
 have_tesseract = os.path.isfile(tesseract_path)
 
 # try and create a .hocr_gtk directory
@@ -330,8 +327,8 @@ class MainWindow:
         self.config.set('edit', 'nikud', '1')
         self.config.set('edit', 'column', '0')
         self.config.set('edit', 'font', '1')
-        self.config.set('edit', 'scale', '1')
-        self.config.set('edit', 'threshold', '0')
+        self.config.set('edit', 'scale', '0')
+        self.config.set('edit', 'threshold', '1')
         self.config.set('edit', 'threshold_v', '0')
         self.config.set('edit', 'engine', '0')
         

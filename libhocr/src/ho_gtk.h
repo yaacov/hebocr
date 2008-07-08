@@ -76,10 +76,12 @@ extern "C"
  writes ho_pixbuf to file
  
  @param pix ho_pixbuf 8 or 24 bpp
- @param filename save as file name 
+ @param filename save as file name
+ @param ext file type extention, e.g jpeg, png ...
  @return FALSE
  */
-  int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename);
+  int ho_gtk_pixbuf_save (const ho_pixbuf * pix, const char *filename, 
+                          const char *ext);
 
 /**
  writes font to file
@@ -88,11 +90,12 @@ extern "C"
  @param m_nikud ho_bitmap of nikud
  @param m_mask ho_bitmap of line
  @param filename save as file name 
+ @param ext file type extention, e.g jpeg, png ...
  @return FALSE
  */
   int
     ho_gtk_font_save (const ho_bitmap * m_text, const ho_bitmap * m_nikud,
-    const ho_bitmap * m_mask, const char *filename);
+    const ho_bitmap * m_mask, const char *filename, const char *ext);
 
 #ifdef __cplusplus
 }

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([libhocr], [0.10.11], [Yaacov Zamir <kzamir@walla.co.il>])
+AC_INIT([libhocr], [0.10.12], [Yaacov Zamir <kzamir@walla.co.il>])
 AC_CONFIG_AUX_DIR([config])
 
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -283,6 +283,7 @@ if test "$build_gtk" = "yes"; then
 BUILD_STR+="-gtk"
 fi
 AC_SUBST(BUILD_STR)
+AC_SUBST(VERSION)
 
 dnl ============================================================================
 dnl output

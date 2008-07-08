@@ -434,3 +434,9 @@ hocr_get_build_string ()
 {
   return BUILD;
 }
+
+const char *
+hocr_get_version_string ()
+{
+  return VERSION;
+}
