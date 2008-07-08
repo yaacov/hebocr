@@ -921,7 +921,10 @@ ho_recognize_parts (const ho_bitmap * m_text,
   int line_start;
   int line_end;
   int line_height;
-
+  int parts_start;
+  int parts_end;
+  int parts_height;
+  
   ho_bitmap *m_parts = NULL;
 
   *has_one_hole = 0.0;
@@ -972,6 +975,19 @@ ho_recognize_parts (const ho_bitmap * m_text,
   m_parts = ho_font_second_object (m_text, m_mask);
   if (m_parts)
   {
+    /* get font start and end */
+    sum = 0;
+    for (y = 0; y < m_parts->height && sum == 0; y++)
+      for (sum = 0, x = 0; x < m_parts->width; x++)
+        sum += ho_bitmap_get (m_parts, x, y);
+    parts_start = y - 1;
+    sum = 0;
+    for (y = m_parts->height - 1; y > parts_start && sum == 0; y--)
+      for (sum = 0, x = 0; x < m_parts->width; x++)
+        sum += ho_bitmap_get (m_parts, x, y);
+    parts_end = y + 1;
+    parts_height = parts_end - parts_start;
+    
     /* hey part */
     y = font_end - font_height / 5;
 
@@ -981,7 +997,7 @@ ho_recognize_parts (const ho_bitmap * m_text,
     {
       for (; x < m_parts->width / 2 && ho_bitmap_get (m_parts, x, y); x++) ;
       /* part ends in left side of font */
-      if (x < m_parts->width / 2)
+      if (x < m_parts->width / 2 && parts_height > font_height / 4)
         *has_hey_part = 1.0;
     }
 
@@ -989,14 +1005,15 @@ ho_recognize_parts (const ho_bitmap * m_text,
     for (y = font_start; y < font_end && !ho_bitmap_get (m_parts, x, y); y++)
       for (x = 0; x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++) ;
     /* part is in middle bottom of font */
-    if (y > font_start + 2 * font_height / 3 && x > m_parts->width / 4)
+    if (y > font_start + 2 * font_height / 3 && 
+        parts_height < font_height / 2  && parts_height > font_height / 6)
       *has_dot_part = 1.0;
 
     /* comma part */
     for (y = font_start; y < font_end && !ho_bitmap_get (m_parts, x, y); y++)
       for (x = 0; x < m_parts->width && !ho_bitmap_get (m_parts, x, y); x++) ;
     /* part is in middle bottom of font */
-    if (y > font_start + font_height / 2 && x > m_parts->width / 2)
+    if (y > font_start + font_height / 2 && parts_height > font_height / 5)
       *has_comma_part = 1.0;
   }
 

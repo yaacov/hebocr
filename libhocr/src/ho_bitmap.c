@@ -361,6 +361,9 @@ ho_bitmap_dilation_n (const ho_bitmap * m, const unsigned char n)
   int x, y;
   unsigned char sum;
 
+  if (!m)
+    return NULL;
+  
   /* 
    * allocate memory 
    */
@@ -414,6 +417,9 @@ ho_bitmap_erosion_n (const ho_bitmap * m, const unsigned char n)
   int x, y;
   unsigned char sum;
 
+  if (!m)
+    return NULL;
+  
   /* 
    * allocate memory 
    */
@@ -580,12 +586,18 @@ ho_bitmap_set_height_from_bottom (const ho_bitmap * m, const int height,
 ho_bitmap *
 ho_bitmap_dilation (const ho_bitmap * m)
 {
+  if (!m)
+    return NULL;
+  
   return ho_bitmap_dilation_n (m, 1);
 }
 
 ho_bitmap *
 ho_bitmap_erosion (const ho_bitmap * m)
 {
+  if (!m)
+    return NULL;
+  
   return ho_bitmap_erosion_n (m, 1);
 }
 
@@ -595,6 +607,9 @@ ho_bitmap_opening (const ho_bitmap * m)
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
+  if (!m)
+    return NULL;
+  
   m_temp = ho_bitmap_erosion (m);
   m_out = ho_bitmap_dilation (m_temp);
   ho_bitmap_free (m_temp);
@@ -608,6 +623,9 @@ ho_bitmap_closing (const ho_bitmap * m)
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
+  if (!m)
+    return NULL;
+  
   m_temp = ho_bitmap_dilation (m);
   m_out = ho_bitmap_erosion (m_temp);
   ho_bitmap_free (m_temp);

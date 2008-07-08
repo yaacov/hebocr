@@ -455,7 +455,7 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
   /* set default slicing_threshold */
   if (slicing_threshold < 5)
-    s_threshold = 80;
+    s_threshold = 60;
   else
     s_threshold = slicing_threshold;
 
@@ -662,9 +662,18 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
     int min_x_start;
     int width = m->width;
 
-    x = 0;
+    x = 1;
     while (x < width)
     {
+      /* get start&end of font */
+      min_x = x - 1;
+      for (; x < width && !ho_bitmap_get (m_out, x, 2); x++) ;
+      
+      /* if this is not a real font close gap */
+      if ((double)(x - min_x) < ((double)m->font_width / 6.0))
+        for (;min_x <= x; min_x++)
+          ho_bitmap_draw_vline (m_temp, min_x, 0, m_out->height);
+      
       /* get start&end of interfont line */
       for (; x < width && !ho_bitmap_get (m_out, x, 2); x++) ;
       min_x = x - 1;

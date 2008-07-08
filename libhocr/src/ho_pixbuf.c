@@ -865,7 +865,7 @@ ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf * pix,
     threshold = 0;
 
   if (!factor)
-    factor = 85.0 / 100.0;
+    factor = 80.0 / 100.0;
 
   if (!size)
   {

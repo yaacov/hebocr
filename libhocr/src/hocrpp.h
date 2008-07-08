@@ -309,6 +309,50 @@ namespace hocr
     }
 
     /**
+     @brief do bitmap closing
+    
+     @return 0
+     */
+    int do_bitmap_closing ()
+    {
+      ho_bitmap * m_bit_temp = NULL;
+      
+      if (!m_bit_bw)
+        return 1;
+
+      m_bit_temp = ho_bitmap_closing (m_bit_bw);
+      if (!m_bit_temp)
+        return 1;
+      
+      ho_bitmap_free (m_bit_bw);
+      m_bit_bw = m_bit_temp;
+
+      return 0;
+    }
+    
+    /**
+     @brief do bitmap opening
+    
+     @return 0
+     */
+    int do_bitmap_opening ()
+    {
+      ho_bitmap * m_bit_temp = NULL;
+      
+      if (!m_bit_bw)
+        return 1;
+
+      m_bit_temp = ho_bitmap_opening (m_bit_bw);
+      if (!m_bit_temp)
+        return 1;
+      
+      ho_bitmap_free (m_bit_bw);
+      m_bit_bw = m_bit_temp;
+
+      return 0;
+    }
+      
+    /**
      @brief do layout analysis
     
      @return 0
@@ -502,6 +546,42 @@ namespace hocr
       a_threshold = a_threshold_in;
       
       return a_threshold;
+    }
+    
+    /**
+     @brief get font_spacing_code param
+    
+     @return font_spacing_code of objct
+     */
+    int get_font_spacing_code ()
+    {
+      return font_spacing_code;
+    }
+      
+    /**
+     @brief set font_spacing_code param
+    
+     @param font_spacing_code_in new value of font_spacing_code param
+     @return font_spacing_code of objct
+     */
+    int set_font_spacing_code (const int font_spacing_code_in)
+    {
+      font_spacing_code = font_spacing_code_in;
+      
+      return font_spacing_code;
+    }
+    
+    /**
+     @brief set no_auto_rotate
+    
+     @param no_auto_rotate_in new value of font_spacing_code param
+     @return no_auto_rotate of objct
+     */
+    unsigned char set_no_auto_rotate (const unsigned char no_auto_rotate_in)
+    {
+      no_auto_rotate = no_auto_rotate_in;
+      
+      return no_auto_rotate;
     }
       
     /**

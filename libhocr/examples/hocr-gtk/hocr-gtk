@@ -176,7 +176,16 @@ class RunHocrOCR(threading.Thread):
         
         # do ocr
         ps.start()
-        hocr_obj.do_ocr()
+        hocr_obj.do_image_processing()
+        # do extra image processing
+        if main_window.menuitem_image_processing_closing.get_active():
+            hocr_obj.do_bitmap_closing ()
+        if main_window.menuitem_image_processing_opening.get_active():
+            hocr_obj.do_bitmap_opening ()
+            
+        hocr_obj.do_layout_analysis ()
+        hocr_obj.do_font_recognition ()
+        #hocr_obj.do_ocr()
         ps.stop()
         
         # set the new image in image window
@@ -236,6 +245,13 @@ class RunTessOCR(threading.Thread):
         
         # save the b/w image to temp file
         hocr_obj.do_image_processing ()
+        
+        # do extra image processing
+        if main_window.menuitem_image_processing_closing.get_active():
+            hocr_obj.do_bitmap_closing ()
+        if main_window.menuitem_image_processing_opening.get_active():
+            hocr_obj.do_bitmap_opening ()
+            
         hocr_obj.save_bitmap_as_tiff (tesseract_image_path)
             
         # run tess on the b/w image file
@@ -325,11 +341,15 @@ class MainWindow:
         self.config.set('edit', 'clear', '1')
         self.config.set('edit', 'html', '0')
         self.config.set('edit', 'nikud', '1')
+        self.config.set('edit', 'autorotate', '1')
+        self.config.set('edit', 'closing', '0')
+        self.config.set('edit', 'opening', '0')
         self.config.set('edit', 'column', '0')
         self.config.set('edit', 'font', '1')
         self.config.set('edit', 'scale', '0')
         self.config.set('edit', 'threshold', '1')
         self.config.set('edit', 'threshold_v', '0')
+        self.config.set('edit', 'font_spacing', '0')
         self.config.set('edit', 'engine', '0')
         
         self.config.add_section('view')
@@ -385,6 +405,10 @@ class MainWindow:
         self.menuitem_clear = xml.get_widget('menuitem_clear')
         self.menuitem_html = xml.get_widget('menuitem_html')
         self.menuitem_nikud = xml.get_widget('menuitem_nikud')
+        self.menuitem_autorotate = xml.get_widget('menuitem_autorotate')
+        
+        self.menuitem_image_processing_closing = xml.get_widget('menuitem_image_processing_closing')
+        self.menuitem_image_processing_opening = xml.get_widget('menuitem_image_processing_opening')
         
         self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
         self.menuitem_column_one = xml.get_widget('menuitem_column_one')
@@ -403,6 +427,10 @@ class MainWindow:
         self.menuitem_threshold_v_20 = xml.get_widget('menuitem_threshold_v_20')
         self.menuitem_threshold_v_90 = xml.get_widget('menuitem_threshold_v_90')
         
+        self.menuitem_font_spacing_normal = xml.get_widget('menuitem_font_spacing_normal')
+        self.menuitem_font_spacing_spaced = xml.get_widget('menuitem_font_spacing_spaced')
+        self.menuitem_font_spacing_tight = xml.get_widget('menuitem_font_spacing_tight')
+        
         self.menuitem_font_1 = xml.get_widget('menuitem_font_1')
         self.menuitem_font_2 = xml.get_widget('menuitem_font_2')
         self.menuitem_font_3 = xml.get_widget('menuitem_font_3')
@@ -419,6 +447,10 @@ class MainWindow:
         self.menuitem_clear.set_active(self.config.getint('edit', 'clear'))
         self.menuitem_html.set_active(self.config.getint('edit', 'html'))
         self.menuitem_nikud.set_active(self.config.getint('edit', 'nikud'))
+        self.menuitem_autorotate.set_active(self.config.getint('edit', 'autorotate'))
+        
+        self.menuitem_image_processing_opening.set_active(self.config.getint('edit', 'opening'))
+        self.menuitem_image_processing_closing.set_active(self.config.getint('edit', 'closing'))
         
         self.menuitem_column_auto.set_active(self.config.getint('edit', 'column') == 0)
         self.menuitem_column_one.set_active(self.config.getint('edit', 'column') == 1)
@@ -436,6 +468,10 @@ class MainWindow:
         self.menuitem_threshold_v_0.set_active(self.config.getint('edit', 'threshold_v') == 0)
         self.menuitem_threshold_v_20.set_active(self.config.getint('edit', 'threshold_v') == 20)
         self.menuitem_threshold_v_90.set_active(self.config.getint('edit', 'threshold_v') == 90)
+        
+        self.menuitem_font_spacing_normal.set_active(self.config.getint('edit', 'font_spacing') == 0)
+        self.menuitem_font_spacing_spaced.set_active(self.config.getint('edit', 'font_spacing') == 1)
+        self.menuitem_font_spacing_tight.set_active(self.config.getint('edit', 'font_spacing') == 2)
         
         self.menuitem_engine_hocr.set_active(self.config.getint('edit', 'engine') == 0)
         self.menuitem_engine_tess.set_active(self.config.getint('edit', 'engine') == 1)
@@ -474,6 +510,19 @@ class MainWindow:
             self.config.set('edit', 'nikud', '1')
         else:
             self.config.set('edit', 'nikud', '0')
+        if self.menuitem_autorotate.get_active():
+            self.config.set('edit', 'autorotate', '1')
+        else:
+            self.config.set('edit', 'autorotate', '0')
+        
+        if self.menuitem_image_processing_opening.get_active():
+            self.config.set('edit', 'opening', '1')
+        else:
+            self.config.set('edit', 'opening', '0')
+        if self.menuitem_image_processing_closing.get_active():
+            self.config.set('edit', 'closing', '1')
+        else:
+            self.config.set('edit', 'closing', '0')
             
         if self.menuitem_column_auto.get_active():
             self.config.set('edit', 'column', '0')
@@ -504,7 +553,14 @@ class MainWindow:
             self.config.set('edit', 'threshold_v', '20')
         if self.menuitem_threshold_v_90.get_active():
             self.config.set('edit', 'threshold_v', '90')
-            
+        
+        if self.menuitem_font_spacing_normal.get_active():
+            self.config.set('edit', 'font_spacing', '0')
+        if self.menuitem_font_spacing_spaced.get_active():
+            self.config.set('edit', 'font_spacing', '1')
+        if self.menuitem_font_spacing_tight.get_active():
+            self.config.set('edit', 'font_spacing', '2')
+        
         if self.menuitem_engine_hocr.get_active():
             self.config.set('edit', 'engine', '0')
         if self.menuitem_engine_tess.get_active():
@@ -616,6 +672,7 @@ class MainWindow:
             self.hocr_obj.set_pixbuf(pix)
             self.hocr_obj.set_html(self.menuitem_html.get_active())
             self.hocr_obj.set_nikud(self.menuitem_nikud.get_active())
+            self.hocr_obj.set_no_auto_rotate(not self.menuitem_autorotate.get_active())
             
             if self.menuitem_column_auto.get_active():
                   self.hocr_obj.set_paragraph_setup(0)
@@ -648,9 +705,18 @@ class MainWindow:
             
             if self.menuitem_threshold_v_20.get_active():
                   self.hocr_obj.set_threshold (20)
+                  self.hocr_obj.set_a_threshold (50)
             if self.menuitem_threshold_v_90.get_active():
                   self.hocr_obj.set_threshold (90)
-                  
+                  self.hocr_obj.set_a_threshold (90)
+            
+            if self.menuitem_font_spacing_normal.get_active():
+                  self.hocr_obj.set_font_spacing_code (0)
+            if self.menuitem_font_spacing_spaced.get_active():
+                  self.hocr_obj.set_font_spacing_code (2)
+            if self.menuitem_font_spacing_tight.get_active():
+                  self.hocr_obj.set_font_spacing_code (-2)
+            
             if self.menuitem_threshold_no.get_active():
                   self.hocr_obj.set_adaptive (1)
             if self.menuitem_threshold_adaptive.get_active():

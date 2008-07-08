@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Jul  5 08:57:29 2008 -->
+<!--Generated with glade3 3.4.5 on Tue Jul  8 20:30:26 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -169,6 +169,14 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkCheckMenuItem" id="menuitem_autorotate">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">auto rotate</property>
+                        <property name="use_underline">True</property>
+                        <property name="active">True</property>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkMenuItem" id="menuitem_column">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -259,6 +267,32 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkMenuItem" id="menuitem_image_processing">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Image processing</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu13">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkCheckMenuItem" id="menuitem_image_processing_closing">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">closing</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckMenuItem" id="menuitem_image_processing_opening">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">opening</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkMenuItem" id="menuitem_threshold">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Threshold type</property>
@@ -330,6 +364,45 @@
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_threshold_v_0</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_font_spacing">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Font spacing</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu12">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_spacing_normal">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">normal</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_spacing_spaced">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">spaced</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_font_spacing_normal</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_spacing_tight">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">tight</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_font_spacing_normal</property>
                               </widget>
                             </child>
                           </widget>

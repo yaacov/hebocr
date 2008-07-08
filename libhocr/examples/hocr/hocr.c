@@ -58,6 +58,8 @@ gint scale_by = 0;
 gboolean do_not_auto_scale = FALSE;
 gdouble rotate_angle = 0.0;
 gboolean do_not_auto_rotate = FALSE;
+gboolean do_opening = FALSE;
+gboolean do_closing = FALSE;
 
 gint paragraph_setup = 0;
 gint slicing_threshold = 0;
@@ -85,6 +87,7 @@ GError *error = NULL;
 
 /* black and white text image */
 ho_bitmap *m_page_text = NULL;
+ho_bitmap *m_page_text_temp = NULL;
 
 /* text layout */
 ho_layout *l_page = NULL;
@@ -220,6 +223,12 @@ static GOptionEntry image_entries[] = {
     "DEG"},
   {"no-auto-rotate", 'Q', 0, G_OPTION_ARG_NONE, &do_not_auto_rotate,
       "do not auto rotate image",
+    NULL},
+  {"opening", '1', 0, G_OPTION_ARG_NONE, &do_opening,
+      "try to separate touching fonts",
+    NULL},
+  {"closing", '2', 0, G_OPTION_ARG_NONE, &do_closing,
+      "try to connect disconnected font parts",
     NULL},
   {NULL}
 };
@@ -595,7 +604,7 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
       m_bw = m_bw_temp;
     }
   }
-
+  
   return m_bw;
 }
 
@@ -1415,6 +1424,35 @@ main (int argc, char *argv[])
     m_page_text = hocr_image_processing_with_debug (pix);
   }
 
+  /* do extra image proccesing */
+  if (do_opening)
+  {
+    m_page_text_temp = ho_bitmap_opening (m_page_text);
+    ho_bitmap_free (m_page_text);
+
+    if (!m_page_text_temp)
+    {
+      hocr_printerr ("can't do opening on image \n");
+      exit (1);
+    }
+
+    m_page_text = m_page_text_temp;
+  }
+  
+  if (do_closing)
+  {
+    m_page_text_temp = ho_bitmap_closing (m_page_text);
+    ho_bitmap_free (m_page_text);
+
+    if (!m_page_text_temp)
+    {
+      hocr_printerr ("can't do closing on image \n");
+      exit (1);
+    }
+    
+    m_page_text = m_page_text_temp;
+  }
+  
   /* free input pixbuf */
   ho_pixbuf_free (pix);
 
