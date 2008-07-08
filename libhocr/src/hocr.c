@@ -87,9 +87,9 @@ hocr_image_processing (const ho_pixbuf * pix_in,
       return NULL;
 
     /* if fonts are too small, re-scale image */
-    if (bitmap_temp->font_height < 10)
+    if (bitmap_temp->font_height < 15)
       scale_by = 3;
-    else if (bitmap_temp->font_height < 20)
+    else if (bitmap_temp->font_height < 30)
       scale_by = 2;
     else
       scale_by = 1;
