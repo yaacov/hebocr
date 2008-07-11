@@ -185,6 +185,7 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
   if (!layout_out)
     return NULL;
 
+  *progress = 10;
   ho_layout_create_block_mask (layout_out);
 
   /* look for lines inside blocks */
@@ -208,8 +209,10 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
 
       /* update progress */
       *progress = 100 *
-        block_index / layout_out->n_blocks +
-        100 * line_index / layout_out->n_lines[block_index];
+        ((double)block_index / 
+         (double)layout_out->n_blocks +
+        (double)line_index / 
+         (double)(layout_out->n_lines[block_index] * layout_out->n_blocks));
     }
   }
 

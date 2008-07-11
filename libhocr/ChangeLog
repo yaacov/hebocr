@@ -4,6 +4,7 @@ libhocr (0.10.11)
  * Re change defaults for image prossecing
  * Fix font slicing bug
  * Sync hocr-gtk and hocr version numbers with libhocr version number
+ * Fix memory leaks in hocr-gtk
  * Fix gtk pixbuf save extention problem
 
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Thursday, 06 July 2008 09:04

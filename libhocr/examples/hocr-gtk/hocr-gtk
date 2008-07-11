@@ -176,14 +176,18 @@ class RunHocrOCR(threading.Thread):
         
         # do ocr
         ps.start()
+        progressbar.set_text(_("Image Processing..."))
         hocr_obj.do_image_processing()
         # do extra image processing
         if main_window.menuitem_image_processing_closing.get_active():
             hocr_obj.do_bitmap_closing ()
         if main_window.menuitem_image_processing_opening.get_active():
             hocr_obj.do_bitmap_opening ()
-            
+        
+        progressbar.set_text(_("Layout Analysis..."))
         hocr_obj.do_layout_analysis ()
+        
+        progressbar.set_text(_("Font Recognition..."))
         hocr_obj.do_font_recognition ()
         #hocr_obj.do_ocr()
         ps.stop()
@@ -194,15 +198,16 @@ class RunHocrOCR(threading.Thread):
         else:
             # create an hocr pixbuf
             if image_window_type == 1:
-                pix = hocr_pixbuf = hocr_obj.get_bitmap_pixbuf ()
+                pix = hocr_obj.get_bitmap_pixbuf ()
             if image_window_type == 2:
-                pix = self.hocr_pixbuf = hocr_obj.get_layout_pixbuf ()
+                pix = hocr_obj.get_layout_pixbuf ()
             # create a gtk pixbuf
             hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
                 ho_pixbuf_get_data_string(pix),
                 gtk.gdk.COLORSPACE_RGB, 0, 8, 
                 pix.width, pix.height, pix.rowstride)
-        
+            ho_pixbuf_free(pix)
+            
         main_window.on_image_refresh(None, None)
         
         # return original cursor and print idle on the progress bar
@@ -241,6 +246,7 @@ class RunTessOCR(threading.Thread):
         progressbar.show()
         
         # do ocr
+        progressbar.set_text(_("Processing..."))
         ps.start()
         
         # save the b/w image to temp file
@@ -287,14 +293,15 @@ class RunTessOCR(threading.Thread):
             hocr_pixbuf = pixbuf.copy()
         else:
             # create an hocr pixbuf
-            if image_window_type > 0:
-                pix = hocr_pixbuf = hocr_obj.get_bitmap_pixbuf ()
+            pix = hocr_obj.get_bitmap_pixbuf ()
+            
             # create a gtk pixbuf
             hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
                 ho_pixbuf_get_data_string(pix),
                 gtk.gdk.COLORSPACE_RGB, 0, 8, 
                 pix.width, pix.height, pix.rowstride)
-        
+            ho_pixbuf_free(pix)
+            
         main_window.on_image_refresh(None, None)
         
         # return original cursor and print idle on the progress bar
@@ -375,7 +382,6 @@ class MainWindow:
         image = self.image
         
         # init progress bar and hide it
-        progressbar.set_text(_("Processing..."))
         progressbar.hide()
         
         # text 
@@ -703,13 +709,6 @@ class MainWindow:
             if self.menuitem_scale_4.get_active():
                   self.hocr_obj.set_scale (4)
             
-            if self.menuitem_threshold_v_20.get_active():
-                  self.hocr_obj.set_threshold (20)
-                  self.hocr_obj.set_a_threshold (50)
-            if self.menuitem_threshold_v_90.get_active():
-                  self.hocr_obj.set_threshold (90)
-                  self.hocr_obj.set_a_threshold (90)
-            
             if self.menuitem_font_spacing_normal.get_active():
                   self.hocr_obj.set_font_spacing_code (0)
             if self.menuitem_font_spacing_spaced.get_active():
@@ -719,10 +718,22 @@ class MainWindow:
             
             if self.menuitem_threshold_no.get_active():
                   self.hocr_obj.set_adaptive (1)
+                  if self.menuitem_threshold_v_20.get_active():
+                        self.hocr_obj.set_threshold (20)
+                  if self.menuitem_threshold_v_90.get_active():
+                        self.hocr_obj.set_threshold (90)
             if self.menuitem_threshold_adaptive.get_active():
                   self.hocr_obj.set_adaptive (0)
+                  if self.menuitem_threshold_v_20.get_active():
+                        self.hocr_obj.set_a_threshold (50)
+                  if self.menuitem_threshold_v_90.get_active():
+                        self.hocr_obj.set_a_threshold (90)
             if self.menuitem_threshold_fine.get_active():
                   self.hocr_obj.set_adaptive (2)
+                  if self.menuitem_threshold_v_20.get_active():
+                        self.hocr_obj.set_a_threshold (50)
+                  if self.menuitem_threshold_v_90.get_active():
+                        self.hocr_obj.set_a_threshold (90)
             
             # run ocr
             ro = RunHocrOCR()
@@ -977,24 +988,21 @@ class MainWindow:
         image_window_type = 0
         
         # do we have an hocr pixbuf ?
-        if not hocr_pixbuf:
+        if not hocr_pixbuf and not pixbuf:
             return
         
         # get the new image 
-        pix = hocr_pixbuf = pixbuf.copy()
+        hocr_pixbuf = pixbuf.copy()
         
         #
-        if not pix:
-            pix = pixbuf
-            
-        if not pix:
-            return
+        if not hocr_pixbuf:
+            hocr_pixbuf = pixbuf
                         
         factor = self.zoom_factor
-        w = pix.get_width()
-        h = pix.get_height()
+        w = hocr_pixbuf.get_width()
+        h = hocr_pixbuf.get_height()
         
-        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        window_pixbuf = hocr_pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
 
     def on_menuitem_bw_toggled(self, obj, event = None):
@@ -1009,30 +1017,28 @@ class MainWindow:
         image_window_type = 1
                
         # do we have an hocr pixbuf ?
-        if not hocr_pixbuf:
+        if not hocr_pixbuf and not pixbuf:
             return
         
         # get the new image 
         ho_pix = self.hocr_obj.get_bitmap_pixbuf ()
-        
+        print "hello"
         # create a gtk pixbuf
-        pix = hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
+        hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
                 ho_pixbuf_get_data_string(ho_pix),
                 gtk.gdk.COLORSPACE_RGB, 0, 8, 
                 ho_pix.width, ho_pix.height, ho_pix.rowstride)
-                
-        #
-        if not pix:
-            pix = pixbuf
-            
-        if not pix:
-            return
+        
+        ho_pixbuf_free(ho_pix)
+        
+        if not hocr_pixbuf:
+            hocr_pixbuf = pixbuf
                         
         factor = self.zoom_factor
-        w = pix.get_width()
-        h = pix.get_height()
+        w = hocr_pixbuf.get_width()
+        h = hocr_pixbuf.get_height()
         
-        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        window_pixbuf = hocr_pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
 
     def on_menuitem_layout_toggled(self, obj, event = None):
@@ -1046,8 +1052,8 @@ class MainWindow:
             
         image_window_type = 2
         
-        # do we have an hocr pixbuf ?
-        if not hocr_pixbuf:
+        # do we have an hocr pixbuf or an original pixbuf?
+        if not hocr_pixbuf and not pixbuf:
             return
          
         # get the new image 
@@ -1058,21 +1064,21 @@ class MainWindow:
             ho_pix = self.hocr_obj.get_bitmap_pixbuf ()
             
         # create a gtk pixbuf
-        pix = hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
+        hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
                 ho_pixbuf_get_data_string(ho_pix),
                 gtk.gdk.COLORSPACE_RGB, 0, 8, 
                 ho_pix.width, ho_pix.height, ho_pix.rowstride)
-        if not pix:
-            pix = pixbuf
-            
-        if not pix:
-            return
+        
+        ho_pixbuf_free(ho_pix)
+        
+        if not hocr_pixbuf:
+            hocr_pixbuf = pixbuf
                         
         factor = self.zoom_factor
-        w = pix.get_width()
-        h = pix.get_height()
+        w = hocr_pixbuf.get_width()
+        h = hocr_pixbuf.get_height()
         
-        window_pixbuf = pix.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
+        window_pixbuf = hocr_pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
     
 # run main loop
