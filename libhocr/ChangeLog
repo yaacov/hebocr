@@ -1,4 +1,13 @@
-libhocr (0.10.11)
+libhocr (0.10.13)
+
+ * Oron Peled <oron_at_actcom.co.il> :
+   - Fix errors in examples/hocr-gtk/sane-pygtk.desktop
+   - Fix naming in examples/bindings/Makefile.am
+   - Use AM_PATH_PYTHON in configure.ac
+
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 21 July 2008 09:04
+ 
+libhocr (0.10.12)
 
  * Fix font segmentation when fonts overlap
  * Re change defaults for image prossecing

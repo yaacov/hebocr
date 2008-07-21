@@ -357,6 +357,7 @@ class MainWindow:
         self.config.set('edit', 'threshold', '1')
         self.config.set('edit', 'threshold_v', '0')
         self.config.set('edit', 'font_spacing', '0')
+        self.config.set('edit', 'font_splicing', '0')
         self.config.set('edit', 'engine', '0')
         
         self.config.add_section('view')
@@ -437,6 +438,10 @@ class MainWindow:
         self.menuitem_font_spacing_spaced = xml.get_widget('menuitem_font_spacing_spaced')
         self.menuitem_font_spacing_tight = xml.get_widget('menuitem_font_spacing_tight')
         
+        self.menuitem_font_splicing_normal = xml.get_widget('menuitem_font_splicing_normal')
+        self.menuitem_font_splicing_agresive = xml.get_widget('menuitem_font_splicing_agresive')
+        self.menuitem_font_splicing_careful = xml.get_widget('menuitem_font_splicing_careful')
+        
         self.menuitem_font_1 = xml.get_widget('menuitem_font_1')
         self.menuitem_font_2 = xml.get_widget('menuitem_font_2')
         self.menuitem_font_3 = xml.get_widget('menuitem_font_3')
@@ -478,6 +483,10 @@ class MainWindow:
         self.menuitem_font_spacing_normal.set_active(self.config.getint('edit', 'font_spacing') == 0)
         self.menuitem_font_spacing_spaced.set_active(self.config.getint('edit', 'font_spacing') == 1)
         self.menuitem_font_spacing_tight.set_active(self.config.getint('edit', 'font_spacing') == 2)
+        
+        self.menuitem_font_splicing_normal.set_active(self.config.getint('edit', 'font_splicing') == 0)
+        self.menuitem_font_splicing_agresive.set_active(self.config.getint('edit', 'font_splicing') == 1)
+        self.menuitem_font_splicing_careful.set_active(self.config.getint('edit', 'font_splicing') == 2)
         
         self.menuitem_engine_hocr.set_active(self.config.getint('edit', 'engine') == 0)
         self.menuitem_engine_tess.set_active(self.config.getint('edit', 'engine') == 1)
@@ -567,6 +576,13 @@ class MainWindow:
         if self.menuitem_font_spacing_tight.get_active():
             self.config.set('edit', 'font_spacing', '2')
         
+        if self.menuitem_font_splicing_normal.get_active():
+            self.config.set('edit', 'font_splicing', '0')
+        if self.menuitem_font_splicing_agresive.get_active():
+            self.config.set('edit', 'font_splicing', '1')
+        if self.menuitem_font_splicing_careful.get_active():
+            self.config.set('edit', 'font_splicing', '2')
+            
         if self.menuitem_engine_hocr.get_active():
             self.config.set('edit', 'engine', '0')
         if self.menuitem_engine_tess.get_active():
@@ -712,10 +728,20 @@ class MainWindow:
             if self.menuitem_font_spacing_normal.get_active():
                   self.hocr_obj.set_font_spacing_code (0)
             if self.menuitem_font_spacing_spaced.get_active():
-                  self.hocr_obj.set_font_spacing_code (2)
+                  self.hocr_obj.set_font_spacing_code (3)
             if self.menuitem_font_spacing_tight.get_active():
-                  self.hocr_obj.set_font_spacing_code (-2)
+                  self.hocr_obj.set_font_spacing_code (-3)
             
+            if self.menuitem_font_splicing_normal.get_active():
+                  self.hocr_obj.set_slicing_width (0)
+                  self.hocr_obj.set_slicing_threshold (0)
+            if self.menuitem_font_splicing_agresive.get_active():
+                  self.hocr_obj.set_slicing_width (50)
+                  self.hocr_obj.set_slicing_threshold (90)
+            if self.menuitem_font_splicing_careful.get_active():
+                  self.hocr_obj.set_slicing_width (250)
+                  self.hocr_obj.set_slicing_threshold (20)
+                  
             if self.menuitem_threshold_no.get_active():
                   self.hocr_obj.set_adaptive (1)
                   if self.menuitem_threshold_v_20.get_active():

@@ -572,6 +572,52 @@ namespace hocr
     }
     
     /**
+     @brief get slicing_width param
+    
+     @return slicing_width of objct
+     */
+    int get_slicing_width ()
+    {
+      return slicing_width;
+    }
+      
+    /**
+     @brief set slicing_width param
+    
+     @param slicing_width_in new value of slicing_width param
+     @return slicing_width of objct
+     */
+    int set_slicing_width (const int slicing_width_in)
+    {
+      slicing_width = slicing_width_in;
+      
+      return slicing_width;
+    }
+      
+    /**
+     @brief get slicing_threshold param
+    
+     @return slicing_threshold of objct
+     */
+    int get_slicing_threshold ()
+    {
+      return slicing_threshold;
+    }
+      
+    /**
+     @brief set slicing_threshold param
+    
+     @param slicing_threshold_in new value of slicing_threshold param
+     @return slicing_threshold of objct
+     */
+    int set_slicing_threshold (const int slicing_threshold_in)
+    {
+      slicing_threshold = slicing_threshold_in;
+      
+      return slicing_threshold;
+    }
+    
+    /**
      @brief set no_auto_rotate
     
      @param no_auto_rotate_in new value of font_spacing_code param

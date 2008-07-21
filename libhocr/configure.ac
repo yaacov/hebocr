@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([libhocr], [0.10.12], [Yaacov Zamir <kzamir@walla.co.il>])
+AC_INIT([libhocr], [0.10.13], [Yaacov Zamir <kzamir@walla.co.il>])
 AC_CONFIG_AUX_DIR([config])
 
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -151,7 +151,7 @@ AM_CONDITIONAL(WITH_GTK, test "$build_gtk" = yes)
 dnl ============================================================================
 dnl check for python
 
-AC_CHECK_PROG(have_python, "python", yes, no)
+AM_PATH_PYTHON([2.5], [have_python=yes], [have_python=no])
 
 build_python=$have_python
 
@@ -165,20 +165,18 @@ AC_ARG_WITH(python-sitelib-dir,
   [path to python site lib])])
 
 if test "$have_python" = "yes"; then
-	  PY_PREFIX=`python -c 'import sys ; print sys.prefix'`
-	  PY_VERSION=`python -c 'import sys ; print sys.version[[0:3]]'`
-	  AC_MSG_CHECKING(for $PY_PREFIX/include/python$PY_VERSION/Python.h)
-	  if test -f $PY_PREFIX/include/python$PY_VERSION/Python.h; then
+    PY_PREFIX=`python -c 'import sys ; print sys.prefix'`
+    AC_MSG_CHECKING(for $PY_PREFIX/include/python${PYTHON_VERSION}/Python.h)
+    if test -f $PY_PREFIX/include/python${PYTHON_VERSION}/Python.h; then
 		  AC_MSG_RESULT(yes)
-		  PY_CFLAGS="-I$PY_PREFIX/include/python$PY_VERSION"
+		  PY_CFLAGS="-I$PY_PREFIX/include/python${PYTHON_VERSION}"
 		  
 		  if test "$with_python_sitelib_dir" = "" ; then
-		    PY_MODULES_PATH="$PY_PREFIX/lib/python$PY_VERSION/site-packages"
+		    PY_MODULES_PATH=$pythondir
 		  else
 		    PY_MODULES_PATH=$with_python_sitelib_dir
 		  fi
 		  
-		  AC_SUBST([PY_VERSION])
 		  AC_SUBST([PY_CFLAGS])
 		  AC_SUBST([PY_MODULES_PATH])
 		  

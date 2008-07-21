@@ -1,7 +1,5 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=sane-pygtk
-Comment=A simple program to work with scanner.
 Comment=A minimal program to work with scanner.
 Comment[ru]=Программа для работы со сканером.
 Comment[ca]=Un programa per a treballar amb escànners.

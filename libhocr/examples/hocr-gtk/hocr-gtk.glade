@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jul 11 11:21:05 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Jul 11 13:45:39 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -137,7 +137,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem1a">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                       </widget>
@@ -164,14 +164,6 @@
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">nikud</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkCheckMenuItem" id="menuitem_autorotate">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">auto rotate</property>
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                       </widget>
@@ -208,6 +200,20 @@
                             </child>
                           </widget>
                         </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem2a">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckMenuItem" id="menuitem_autorotate">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">auto rotate</property>
+                        <property name="use_underline">True</property>
+                        <property name="active">True</property>
                       </widget>
                     </child>
                     <child>
@@ -371,6 +377,51 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem3a">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_font_splicing">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Font splicing</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu14">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_splicing_normal">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">normal</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_splicing_agresive">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">agresive</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_font_splicing_normal</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_splicing_careful">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">careful</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_font_splicing_normal</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkMenuItem" id="menuitem_font_spacing">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Font spacing</property>
@@ -410,7 +461,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem6">
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem6a">
                         <property name="visible">True</property>
                       </widget>
                     </child>
@@ -487,7 +538,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem8">
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem8a">
                         <property name="visible">True</property>
                       </widget>
                     </child>

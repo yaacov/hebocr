@@ -385,7 +385,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
 {
   ho_bitmap *m_out = NULL;
 
-  double horizontal_link_factor = 11.0 / 5.0;
+  double horizontal_link_factor = 9.0 / 5.0;
   double top_frame_factor = 0.4;
   double bottom_frame_factor = 1.1;
 
@@ -417,7 +417,7 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
     horizontal_link_factor = 22.0 / 5.0;
     break;
   default:
-    horizontal_link_factor = 9.0 / 5.0;
+    horizontal_link_factor = 8.0 / 5.0;
   }
 
   m_out = ho_segment_words_fine (m, m_line_map,
@@ -455,12 +455,12 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
   /* set default slicing_threshold */
   if (slicing_threshold < 5)
-    s_threshold = 60;
+    s_threshold = 85;
   else
     s_threshold = slicing_threshold;
 
   if (slicing_width < 5)
-    s_width = 80;
+    s_width = 150;
   else
     s_width = slicing_width;
 
