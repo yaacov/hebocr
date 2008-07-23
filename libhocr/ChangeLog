@@ -1,10 +1,17 @@
+libhocr (0.10.14)
+
+ * Re Fix python install scripts
+ 
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 22 July 2008 09:04
+ 
 libhocr (0.10.13)
 
  * Oron Peled <oron_at_actcom.co.il> :
    - Fix errors in examples/hocr-gtk/sane-pygtk.desktop
    - Fix naming in examples/bindings/Makefile.am
    - Use AM_PATH_PYTHON in configure.ac
-
+ * Add more options to hocr-gtk
+ 
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 21 July 2008 09:04
  
 libhocr (0.10.12)

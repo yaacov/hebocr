@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jul 11 13:45:39 2008 -->
+<!--Generated with glade3 3.4.5 on Mon Jul 21 22:37:36 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -138,6 +138,22 @@
                     </child>
                     <child>
                       <widget class="GtkSeparatorMenuItem" id="separatormenuitem1a">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkImageMenuItem" id="menuitem_revert">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_menuitem_revert_activate"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem1f">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                       </widget>
@@ -294,6 +310,20 @@
                                 <property name="use_underline">True</property>
                               </widget>
                             </child>
+                            <child>
+                              <widget class="GtkCheckMenuItem" id="menuitem_image_processing_dilation">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">dilation</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckMenuItem" id="menuitem_image_processing_erosion">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">erosion</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                            </child>
                           </widget>
                         </child>
                       </widget>
@@ -358,6 +388,24 @@
                               <widget class="GtkRadioMenuItem" id="menuitem_threshold_v_90">
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">very light</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_threshold_v_0</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_threshold_v_70">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">light</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_threshold_v_0</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_threshold_v_40">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">dark</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_threshold_v_0</property>
@@ -439,6 +487,15 @@
                               </widget>
                             </child>
                             <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_spacing_v_spaced">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">very spaced</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_font_spacing_normal</property>
+                              </widget>
+                            </child>
+                            <child>
                               <widget class="GtkRadioMenuItem" id="menuitem_font_spacing_spaced">
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">spaced</property>
@@ -451,6 +508,15 @@
                               <widget class="GtkRadioMenuItem" id="menuitem_font_spacing_tight">
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">tight</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_font_spacing_normal</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_font_spacing_v_tight">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">very tight</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_font_spacing_normal</property>
@@ -557,6 +623,15 @@
                                 <property name="use_underline">True</property>
                                 <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_engine_ocrad">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Ocrad</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_engine_hocr</property>
                               </widget>
                             </child>
                             <child>

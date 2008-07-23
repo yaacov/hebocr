@@ -1,4 +1,4 @@
-.TH "src/ho_bitmap.h" 3 "27 Jun 2008" "Version 0.10.11" "libhocr" \" -*- nroff -*-
+.TH "src/ho_bitmap.h" 3 "22 Jul 2008" "Version 0.10.13" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -237,7 +237,7 @@ FALSE
 .PP
 
 .PP
-Referenced by hocr::Hocr::do_image_processing(), hocr::Hocr::set_bitmap(), hocr::Hocr::set_pixbuf(), and hocr::Hocr::~Hocr().
+Referenced by hocr::Hocr::do_bitmap_closing(), hocr::Hocr::do_bitmap_opening(), hocr::Hocr::do_image_processing(), hocr::Hocr::set_bitmap(), hocr::Hocr::set_pixbuf(), and hocr::Hocr::~Hocr().
 .SS "\fBho_bitmap\fP* ho_bitmap_clone (const \fBho_bitmap\fP * m)"
 .PP
 copy a bitmap
@@ -497,6 +497,8 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_bitmap_opening().
 .SS "\fBho_bitmap\fP* ho_bitmap_closing (const \fBho_bitmap\fP * m)"
 .PP
 closing of a a bitmap with 3x3 box
@@ -512,6 +514,8 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_bitmap_closing().
 .SS "\fBho_bitmap\fP* ho_bitmap_hlink (const \fBho_bitmap\fP * m, const int size)"
 .PP
 horizontaly link black dots in a bitmap

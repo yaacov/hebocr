@@ -1,4 +1,4 @@
-.TH "src/ho_gtk.h" 3 "27 Jun 2008" "Version 0.10.11" "libhocr" \" -*- nroff -*-
+.TH "src/ho_gtk.h" 3 "22 Jul 2008" "Version 0.10.13" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -34,10 +34,10 @@ src/ho_gtk.h \- libhocr C language header.
 .RI "\fBho_pixbuf\fP * \fBho_gtk_pixbuf_load\fP (const char *filename)"
 .br
 .ti -1c
-.RI "int \fBho_gtk_pixbuf_save\fP (const \fBho_pixbuf\fP *pix, const char *filename)"
+.RI "int \fBho_gtk_pixbuf_save\fP (const \fBho_pixbuf\fP *pix, const char *filename, const char *ext)"
 .br
 .ti -1c
-.RI "int \fBho_gtk_font_save\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_nikud, const \fBho_bitmap\fP *m_mask, const char *filename)"
+.RI "int \fBho_gtk_font_save\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_nikud, const \fBho_bitmap\fP *m_mask, const char *filename, const char *ext)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -111,7 +111,7 @@ newly allocated \fBho_pixbuf\fP
 .RE
 .PP
 
-.SS "int ho_gtk_pixbuf_save (const \fBho_pixbuf\fP * pix, const char * filename)"
+.SS "int ho_gtk_pixbuf_save (const \fBho_pixbuf\fP * pix, const char * filename, const char * ext)"
 .PP
 writes \fBho_pixbuf\fP to file
 .PP
@@ -120,6 +120,8 @@ writes \fBho_pixbuf\fP to file
 \fIpix\fP \fBho_pixbuf\fP 8 or 24 bpp 
 .br
 \fIfilename\fP save as file name 
+.br
+\fIext\fP file type extention, e.g jpeg, png ... 
 .RE
 .PP
 \fBReturns:\fP
@@ -128,7 +130,7 @@ FALSE
 .RE
 .PP
 
-.SS "int ho_gtk_font_save (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_nikud, const \fBho_bitmap\fP * m_mask, const char * filename)"
+.SS "int ho_gtk_font_save (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_nikud, const \fBho_bitmap\fP * m_mask, const char * filename, const char * ext)"
 .PP
 writes font to file
 .PP
@@ -141,6 +143,8 @@ writes font to file
 \fIm_mask\fP \fBho_bitmap\fP of line 
 .br
 \fIfilename\fP save as file name 
+.br
+\fIext\fP file type extention, e.g jpeg, png ... 
 .RE
 .PP
 \fBReturns:\fP

@@ -94,6 +94,13 @@ tesseract_text_path = usr_hocr_gtk_path + "/temp_tess_text"
 # search for tesseract
 have_tesseract = os.path.isfile(tesseract_path)
 
+# ocrad paths
+ocrad_path = sys.prefix + "/bin/ocrad"
+ocrad_image_path = usr_hocr_gtk_path + "/temp_ocrad_image.pnm"
+ocrad_text_path = usr_hocr_gtk_path + "/temp_ocrad_text.txt"
+# search for ocrad
+have_ocrad = os.path.isfile(ocrad_path)
+
 # try and create a .hocr_gtk directory
 if not os.path.exists(usr_hocr_gtk_path):
     os.mkdir(usr_hocr_gtk_path)
@@ -178,12 +185,17 @@ class RunHocrOCR(threading.Thread):
         ps.start()
         progressbar.set_text(_("Image Processing..."))
         hocr_obj.do_image_processing()
+        
         # do extra image processing
         if main_window.menuitem_image_processing_closing.get_active():
             hocr_obj.do_bitmap_closing ()
         if main_window.menuitem_image_processing_opening.get_active():
             hocr_obj.do_bitmap_opening ()
-        
+        if main_window.menuitem_image_processing_erosion.get_active():
+            hocr_obj.do_bitmap_erosion ()
+        if main_window.menuitem_image_processing_dilation.get_active():
+            hocr_obj.do_bitmap_dilation ()
+            
         progressbar.set_text(_("Layout Analysis..."))
         hocr_obj.do_layout_analysis ()
         
@@ -257,6 +269,10 @@ class RunTessOCR(threading.Thread):
             hocr_obj.do_bitmap_closing ()
         if main_window.menuitem_image_processing_opening.get_active():
             hocr_obj.do_bitmap_opening ()
+        if main_window.menuitem_image_processing_erosion.get_active():
+            hocr_obj.do_bitmap_erosion ()
+        if main_window.menuitem_image_processing_dilation.get_active():
+            hocr_obj.do_bitmap_dilation ()
             
         hocr_obj.save_bitmap_as_tiff (tesseract_image_path)
             
@@ -285,6 +301,104 @@ class RunTessOCR(threading.Thread):
         # clean the temp file
         os.remove (tesseract_image_path)
         os.remove (tesseract_text_path + '.txt')
+            
+        ps.stop()
+        
+        # set the new image in image window
+        if image_window_type == 0:
+            hocr_pixbuf = pixbuf.copy()
+        else:
+            # create an hocr pixbuf
+            pix = hocr_obj.get_bitmap_pixbuf ()
+            
+            # create a gtk pixbuf
+            hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
+                ho_pixbuf_get_data_string(pix),
+                gtk.gdk.COLORSPACE_RGB, 0, 8, 
+                pix.width, pix.height, pix.rowstride)
+            ho_pixbuf_free(pix)
+            
+        main_window.on_image_refresh(None, None)
+        
+        # return original cursor and print idle on the progress bar
+        textview.get_parent_window().set_cursor(None)
+        progressbar.hide()
+        
+        # set text
+        if hocr_obj.get_text():
+            if menuitem_clear.get_active():
+                textbuffer.set_text(hocr_obj.get_text())
+            else:
+                textbuffer.insert_at_cursor(hocr_obj.get_text())
+            textview.grab_focus()
+
+class RunOcradOCR(threading.Thread):
+    def run(self):
+        # importing the ocr object from the global scope
+        global main_window
+        global hocr_obj
+        global menuitem_clear
+        global textbuffer
+        global textview
+        global progressbar 
+        global image_window_type
+        global hocr_pixbuf
+        global pixbuf
+        global image
+        global tesseract_path
+        global tesseract_image_path
+        global tesseract_text_path
+        
+        ps = ProgressSet(True)
+        
+        # set cursor to gtk.gdk.WATCH and print processing on the progress bar
+        textview.get_parent_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        progressbar.show()
+        
+        # do ocr
+        progressbar.set_text(_("Processing..."))
+        ps.start()
+        
+        # save the b/w image to temp file
+        hocr_obj.do_image_processing ()
+        
+        # do extra image processing
+        if main_window.menuitem_image_processing_closing.get_active():
+            hocr_obj.do_bitmap_closing ()
+        if main_window.menuitem_image_processing_opening.get_active():
+            hocr_obj.do_bitmap_opening ()
+        if main_window.menuitem_image_processing_erosion.get_active():
+            hocr_obj.do_bitmap_erosion ()
+        if main_window.menuitem_image_processing_dilation.get_active():
+            hocr_obj.do_bitmap_dilation ()
+            
+        hocr_obj.save_bitmap_as_pnm (ocrad_image_path)
+            
+        # run ocrad on the b/w image file
+        # call ocrad command line tool
+        # FIXME: this is ugly 
+        args = [ocrad_path, "-o", ocrad_text_path, ocrad_image_path]
+        proc = subprocess.Popen(args)
+        retcode = proc.wait()
+        # FIXME: check retcode
+            
+        # get text
+        f = open(ocrad_text_path)
+        try:
+            text = f.read()
+        finally:
+            f.close()
+        
+        if text:
+            if menuitem_clear.get_active():
+                textbuffer.set_text(text)
+            else:
+                textbuffer.insert_at_cursor(text)
+            textview.grab_focus()
+            
+        # clean the temp file
+        os.remove (ocrad_image_path)
+        os.remove (ocrad_text_path)
             
         ps.stop()
         
@@ -351,6 +465,8 @@ class MainWindow:
         self.config.set('edit', 'autorotate', '1')
         self.config.set('edit', 'closing', '0')
         self.config.set('edit', 'opening', '0')
+        self.config.set('edit', 'dilation', '0')
+        self.config.set('edit', 'erosion', '0')
         self.config.set('edit', 'column', '0')
         self.config.set('edit', 'font', '1')
         self.config.set('edit', 'scale', '0')
@@ -416,6 +532,8 @@ class MainWindow:
         
         self.menuitem_image_processing_closing = xml.get_widget('menuitem_image_processing_closing')
         self.menuitem_image_processing_opening = xml.get_widget('menuitem_image_processing_opening')
+        self.menuitem_image_processing_dilation = xml.get_widget('menuitem_image_processing_dilation')
+        self.menuitem_image_processing_erosion = xml.get_widget('menuitem_image_processing_erosion')
         
         self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
         self.menuitem_column_one = xml.get_widget('menuitem_column_one')
@@ -433,10 +551,14 @@ class MainWindow:
         self.menuitem_threshold_v_0 = xml.get_widget('menuitem_threshold_v_0')
         self.menuitem_threshold_v_20 = xml.get_widget('menuitem_threshold_v_20')
         self.menuitem_threshold_v_90 = xml.get_widget('menuitem_threshold_v_90')
+        self.menuitem_threshold_v_70 = xml.get_widget('menuitem_threshold_v_70')
+        self.menuitem_threshold_v_40 = xml.get_widget('menuitem_threshold_v_40')
         
         self.menuitem_font_spacing_normal = xml.get_widget('menuitem_font_spacing_normal')
         self.menuitem_font_spacing_spaced = xml.get_widget('menuitem_font_spacing_spaced')
         self.menuitem_font_spacing_tight = xml.get_widget('menuitem_font_spacing_tight')
+        self.menuitem_font_spacing_v_spaced = xml.get_widget('menuitem_font_spacing_v_spaced')
+        self.menuitem_font_spacing_v_tight = xml.get_widget('menuitem_font_spacing_v_tight')
         
         self.menuitem_font_splicing_normal = xml.get_widget('menuitem_font_splicing_normal')
         self.menuitem_font_splicing_agresive = xml.get_widget('menuitem_font_splicing_agresive')
@@ -450,55 +572,13 @@ class MainWindow:
         self.menuitem_font_6 = xml.get_widget('menuitem_font_6')
         
         self.menuitem_engine_hocr = xml.get_widget('menuitem_engine_hocr')
+        self.menuitem_engine_ocrad = xml.get_widget('menuitem_engine_ocrad')
         self.menuitem_engine_tess = xml.get_widget('menuitem_engine_tess')
         
         menuitem_clear = self.menuitem_clear
         
         # set options using the config file
-        self.menuitem_clear.set_active(self.config.getint('edit', 'clear'))
-        self.menuitem_html.set_active(self.config.getint('edit', 'html'))
-        self.menuitem_nikud.set_active(self.config.getint('edit', 'nikud'))
-        self.menuitem_autorotate.set_active(self.config.getint('edit', 'autorotate'))
-        
-        self.menuitem_image_processing_opening.set_active(self.config.getint('edit', 'opening'))
-        self.menuitem_image_processing_closing.set_active(self.config.getint('edit', 'closing'))
-        
-        self.menuitem_column_auto.set_active(self.config.getint('edit', 'column') == 0)
-        self.menuitem_column_one.set_active(self.config.getint('edit', 'column') == 1)
-        
-        self.menuitem_scale_auto.set_active(self.config.getint('edit', 'scale') == 0)
-        self.menuitem_scale_1.set_active(self.config.getint('edit', 'scale') == 1)
-        self.menuitem_scale_2.set_active(self.config.getint('edit', 'scale') == 2)
-        self.menuitem_scale_3.set_active(self.config.getint('edit', 'scale') == 3)
-        self.menuitem_scale_4.set_active(self.config.getint('edit', 'scale') == 4)
-        
-        self.menuitem_threshold_no.set_active(self.config.getint('edit', 'threshold') == 0)
-        self.menuitem_threshold_adaptive.set_active(self.config.getint('edit', 'threshold') == 1)
-        self.menuitem_threshold_fine.set_active(self.config.getint('edit', 'threshold') == 2)
-        
-        self.menuitem_threshold_v_0.set_active(self.config.getint('edit', 'threshold_v') == 0)
-        self.menuitem_threshold_v_20.set_active(self.config.getint('edit', 'threshold_v') == 20)
-        self.menuitem_threshold_v_90.set_active(self.config.getint('edit', 'threshold_v') == 90)
-        
-        self.menuitem_font_spacing_normal.set_active(self.config.getint('edit', 'font_spacing') == 0)
-        self.menuitem_font_spacing_spaced.set_active(self.config.getint('edit', 'font_spacing') == 1)
-        self.menuitem_font_spacing_tight.set_active(self.config.getint('edit', 'font_spacing') == 2)
-        
-        self.menuitem_font_splicing_normal.set_active(self.config.getint('edit', 'font_splicing') == 0)
-        self.menuitem_font_splicing_agresive.set_active(self.config.getint('edit', 'font_splicing') == 1)
-        self.menuitem_font_splicing_careful.set_active(self.config.getint('edit', 'font_splicing') == 2)
-        
-        self.menuitem_engine_hocr.set_active(self.config.getint('edit', 'engine') == 0)
-        self.menuitem_engine_tess.set_active(self.config.getint('edit', 'engine') == 1)
-        
-        self.menuitem_font_1.set_active(self.config.getint('edit', 'font') == 1)
-        self.menuitem_font_2.set_active(self.config.getint('edit', 'font') == 2)
-        self.menuitem_font_3.set_active(self.config.getint('edit', 'font') == 3)
-        self.menuitem_font_4.set_active(self.config.getint('edit', 'font') == 4)
-        self.menuitem_font_5.set_active(self.config.getint('edit', 'font') == 5)
-        self.menuitem_font_6.set_active(self.config.getint('edit', 'font') == 6)
-        
-        self.textview.modify_font(pango.FontDescription(self.config.get('view', 'font')))
+        self.on_menuitem_revert_activate(None)
         
         if self.config.getint('view', 'window_width') > 0:
             self.window_main.resize(self.config.getint('view', 'window_width'), 
@@ -538,7 +618,15 @@ class MainWindow:
             self.config.set('edit', 'closing', '1')
         else:
             self.config.set('edit', 'closing', '0')
-            
+        if self.menuitem_image_processing_dilation.get_active():
+            self.config.set('edit', 'dilation', '1')
+        else:
+            self.config.set('edit', 'dilation', '0')
+        if self.menuitem_image_processing_erosion.get_active():
+            self.config.set('edit', 'erosion', '1')
+        else:
+            self.config.set('edit', 'erosion', '0')
+        
         if self.menuitem_column_auto.get_active():
             self.config.set('edit', 'column', '0')
         if self.menuitem_column_one.get_active():
@@ -568,6 +656,10 @@ class MainWindow:
             self.config.set('edit', 'threshold_v', '20')
         if self.menuitem_threshold_v_90.get_active():
             self.config.set('edit', 'threshold_v', '90')
+        if self.menuitem_threshold_v_70.get_active():
+            self.config.set('edit', 'threshold_v', '70')
+        if self.menuitem_threshold_v_40.get_active():
+            self.config.set('edit', 'threshold_v', '40')
         
         if self.menuitem_font_spacing_normal.get_active():
             self.config.set('edit', 'font_spacing', '0')
@@ -575,7 +667,11 @@ class MainWindow:
             self.config.set('edit', 'font_spacing', '1')
         if self.menuitem_font_spacing_tight.get_active():
             self.config.set('edit', 'font_spacing', '2')
-        
+        if self.menuitem_font_spacing_v_spaced.get_active():
+            self.config.set('edit', 'font_spacing', '3')
+        if self.menuitem_font_spacing_v_tight.get_active():
+            self.config.set('edit', 'font_spacing', '4')
+            
         if self.menuitem_font_splicing_normal.get_active():
             self.config.set('edit', 'font_splicing', '0')
         if self.menuitem_font_splicing_agresive.get_active():
@@ -587,6 +683,8 @@ class MainWindow:
             self.config.set('edit', 'engine', '0')
         if self.menuitem_engine_tess.get_active():
             self.config.set('edit', 'engine', '1')
+        if self.menuitem_engine_ocrad.get_active():
+            self.config.set('edit', 'engine', '2')
         
         if self.menuitem_font_1.get_active():
             self.config.set('edit', 'font', '1')
@@ -728,8 +826,12 @@ class MainWindow:
             if self.menuitem_font_spacing_normal.get_active():
                   self.hocr_obj.set_font_spacing_code (0)
             if self.menuitem_font_spacing_spaced.get_active():
-                  self.hocr_obj.set_font_spacing_code (3)
+                  self.hocr_obj.set_font_spacing_code (2)
             if self.menuitem_font_spacing_tight.get_active():
+                  self.hocr_obj.set_font_spacing_code (-2)
+            if self.menuitem_font_spacing_v_spaced.get_active():
+                  self.hocr_obj.set_font_spacing_code (3)
+            if self.menuitem_font_spacing_v_tight.get_active():
                   self.hocr_obj.set_font_spacing_code (-3)
             
             if self.menuitem_font_splicing_normal.get_active():
@@ -748,18 +850,30 @@ class MainWindow:
                         self.hocr_obj.set_threshold (20)
                   if self.menuitem_threshold_v_90.get_active():
                         self.hocr_obj.set_threshold (90)
+                  if self.menuitem_threshold_v_70.get_active():
+                        self.hocr_obj.set_threshold (70)
+                  if self.menuitem_threshold_v_40.get_active():
+                        self.hocr_obj.set_threshold (40)
             if self.menuitem_threshold_adaptive.get_active():
                   self.hocr_obj.set_adaptive (0)
                   if self.menuitem_threshold_v_20.get_active():
                         self.hocr_obj.set_a_threshold (50)
                   if self.menuitem_threshold_v_90.get_active():
                         self.hocr_obj.set_a_threshold (90)
+                  if self.menuitem_threshold_v_70.get_active():
+                        self.hocr_obj.set_a_threshold (80)
+                  if self.menuitem_threshold_v_40.get_active():
+                        self.hocr_obj.set_a_threshold (60)
             if self.menuitem_threshold_fine.get_active():
                   self.hocr_obj.set_adaptive (2)
                   if self.menuitem_threshold_v_20.get_active():
                         self.hocr_obj.set_a_threshold (50)
                   if self.menuitem_threshold_v_90.get_active():
                         self.hocr_obj.set_a_threshold (90)
+                  if self.menuitem_threshold_v_70.get_active():
+                        self.hocr_obj.set_a_threshold (80)
+                  if self.menuitem_threshold_v_40.get_active():
+                        self.hocr_obj.set_a_threshold (60)
             
             # run ocr
             ro = RunHocrOCR()
@@ -772,6 +886,15 @@ class MainWindow:
             
             # run ocr
             ro = RunTessOCR()
+            ro.start()
+            
+        # use ocrad
+        if self.menuitem_engine_ocrad.get_active():
+            # get the b/w image
+            self.hocr_obj.set_pixbuf (pix)
+            
+            # run ocr
+            ro = RunOcradOCR()
             ro.start()
             
     def on_imagemenuitem_scan_activate(self, obj, event = None):
@@ -1106,6 +1229,61 @@ class MainWindow:
         
         window_pixbuf = hocr_pixbuf.scale_simple(int(w * factor), int(h * factor), gtk.gdk.INTERP_NEAREST)
         self.image.set_from_pixbuf(window_pixbuf)
+    
+    def on_menuitem_revert_activate(self, obj, event = None):
+        "on_menuitem_revert_activate activated"
+        self.menuitem_clear.set_active(self.config.getint('edit', 'clear'))
+        self.menuitem_html.set_active(self.config.getint('edit', 'html'))
+        self.menuitem_nikud.set_active(self.config.getint('edit', 'nikud'))
+        self.menuitem_autorotate.set_active(self.config.getint('edit', 'autorotate'))
+        
+        self.menuitem_image_processing_opening.set_active(self.config.getint('edit', 'opening'))
+        self.menuitem_image_processing_closing.set_active(self.config.getint('edit', 'closing'))
+        self.menuitem_image_processing_erosion.set_active(self.config.getint('edit', 'erosion'))
+        self.menuitem_image_processing_dilation.set_active(self.config.getint('edit', 'dilation'))
+        
+        self.menuitem_column_auto.set_active(self.config.getint('edit', 'column') == 0)
+        self.menuitem_column_one.set_active(self.config.getint('edit', 'column') == 1)
+        
+        self.menuitem_scale_auto.set_active(self.config.getint('edit', 'scale') == 0)
+        self.menuitem_scale_1.set_active(self.config.getint('edit', 'scale') == 1)
+        self.menuitem_scale_2.set_active(self.config.getint('edit', 'scale') == 2)
+        self.menuitem_scale_3.set_active(self.config.getint('edit', 'scale') == 3)
+        self.menuitem_scale_4.set_active(self.config.getint('edit', 'scale') == 4)
+        
+        self.menuitem_threshold_no.set_active(self.config.getint('edit', 'threshold') == 0)
+        self.menuitem_threshold_adaptive.set_active(self.config.getint('edit', 'threshold') == 1)
+        self.menuitem_threshold_fine.set_active(self.config.getint('edit', 'threshold') == 2)
+        
+        self.menuitem_threshold_v_0.set_active(self.config.getint('edit', 'threshold_v') == 0)
+        self.menuitem_threshold_v_20.set_active(self.config.getint('edit', 'threshold_v') == 20)
+        self.menuitem_threshold_v_90.set_active(self.config.getint('edit', 'threshold_v') == 90)
+        self.menuitem_threshold_v_40.set_active(self.config.getint('edit', 'threshold_v') == 40)
+        self.menuitem_threshold_v_70.set_active(self.config.getint('edit', 'threshold_v') == 70)
+        
+        self.menuitem_font_spacing_normal.set_active(self.config.getint('edit', 'font_spacing') == 0)
+        self.menuitem_font_spacing_spaced.set_active(self.config.getint('edit', 'font_spacing') == 1)
+        self.menuitem_font_spacing_tight.set_active(self.config.getint('edit', 'font_spacing') == 2)
+        self.menuitem_font_spacing_v_spaced.set_active(self.config.getint('edit', 'font_spacing') == 3)
+        self.menuitem_font_spacing_v_tight.set_active(self.config.getint('edit', 'font_spacing') == 4)
+        
+        self.menuitem_font_splicing_normal.set_active(self.config.getint('edit', 'font_splicing') == 0)
+        self.menuitem_font_splicing_agresive.set_active(self.config.getint('edit', 'font_splicing') == 1)
+        self.menuitem_font_splicing_careful.set_active(self.config.getint('edit', 'font_splicing') == 2)
+        
+        self.menuitem_engine_hocr.set_active(self.config.getint('edit', 'engine') == 0)
+        self.menuitem_engine_tess.set_active(self.config.getint('edit', 'engine') == 1)
+        self.menuitem_engine_ocrad.set_active(self.config.getint('edit', 'engine') == 2)
+        
+        self.menuitem_font_1.set_active(self.config.getint('edit', 'font') == 1)
+        self.menuitem_font_2.set_active(self.config.getint('edit', 'font') == 2)
+        self.menuitem_font_3.set_active(self.config.getint('edit', 'font') == 3)
+        self.menuitem_font_4.set_active(self.config.getint('edit', 'font') == 4)
+        self.menuitem_font_5.set_active(self.config.getint('edit', 'font') == 5)
+        self.menuitem_font_6.set_active(self.config.getint('edit', 'font') == 6)
+        
+        self.textview.modify_font(pango.FontDescription(self.config.get('view', 'font')))
+        
     
 # run main loop
 def main():

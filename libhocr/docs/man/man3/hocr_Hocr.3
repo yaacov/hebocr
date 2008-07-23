@@ -1,4 +1,4 @@
-.TH "hocr::Hocr" 3 "27 Jun 2008" "Version 0.10.11" "libhocr" \" -*- nroff -*-
+.TH "hocr::Hocr" 3 "22 Jul 2008" "Version 0.10.13" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -66,6 +66,14 @@ hocr::Hocr \- \fBHocr\fP class.
 .br
 .RI "\fIdo image processing \fP"
 .ti -1c
+.RI "int \fBdo_bitmap_closing\fP ()"
+.br
+.RI "\fIdo bitmap closing \fP"
+.ti -1c
+.RI "int \fBdo_bitmap_opening\fP ()"
+.br
+.RI "\fIdo bitmap opening \fP"
+.ti -1c
 .RI "int \fBdo_layout_analysis\fP ()"
 .br
 .RI "\fIdo layout analysis \fP"
@@ -121,6 +129,34 @@ hocr::Hocr \- \fBHocr\fP class.
 .RI "unsigned char \fBset_a_threshold\fP (const unsigned char a_threshold_in)"
 .br
 .RI "\fIset a_threshold param \fP"
+.ti -1c
+.RI "int \fBget_font_spacing_code\fP ()"
+.br
+.RI "\fIget font_spacing_code param \fP"
+.ti -1c
+.RI "int \fBset_font_spacing_code\fP (const int font_spacing_code_in)"
+.br
+.RI "\fIset font_spacing_code param \fP"
+.ti -1c
+.RI "int \fBget_slicing_width\fP ()"
+.br
+.RI "\fIget slicing_width param \fP"
+.ti -1c
+.RI "int \fBset_slicing_width\fP (const int slicing_width_in)"
+.br
+.RI "\fIset slicing_width param \fP"
+.ti -1c
+.RI "int \fBget_slicing_threshold\fP ()"
+.br
+.RI "\fIget slicing_threshold param \fP"
+.ti -1c
+.RI "int \fBset_slicing_threshold\fP (const int slicing_threshold_in)"
+.br
+.RI "\fIset slicing_threshold param \fP"
+.ti -1c
+.RI "unsigned char \fBset_no_auto_rotate\fP (const unsigned char no_auto_rotate_in)"
+.br
+.RI "\fIset no_auto_rotate \fP"
 .ti -1c
 .RI "int \fBget_paragraph_setup\fP ()"
 .br
@@ -310,6 +346,30 @@ do image processing
 References ho_bitmap_free(), hocr_image_processing(), and progress.
 .PP
 Referenced by do_ocr().
+.SS "int hocr::Hocr::do_bitmap_closing ()\fC [inline]\fP"
+.PP
+do bitmap closing 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_closing(), and ho_bitmap_free().
+.SS "int hocr::Hocr::do_bitmap_opening ()\fC [inline]\fP"
+.PP
+do bitmap opening 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_free(), and ho_bitmap_opening().
 .SS "int hocr::Hocr::do_layout_analysis ()\fC [inline]\fP"
 .PP
 do layout analysis 
@@ -492,6 +552,96 @@ set a_threshold param
 \fBReturns:\fP
 .RS 4
 a_threshold of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_font_spacing_code ()\fC [inline]\fP"
+.PP
+get font_spacing_code param 
+.PP
+\fBReturns:\fP
+.RS 4
+font_spacing_code of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_font_spacing_code (const int font_spacing_code_in)\fC [inline]\fP"
+.PP
+set font_spacing_code param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfont_spacing_code_in\fP new value of font_spacing_code param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+font_spacing_code of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_slicing_width ()\fC [inline]\fP"
+.PP
+get slicing_width param 
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_width of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_slicing_width (const int slicing_width_in)\fC [inline]\fP"
+.PP
+set slicing_width param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIslicing_width_in\fP new value of slicing_width param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_width of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_slicing_threshold ()\fC [inline]\fP"
+.PP
+get slicing_threshold param 
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_threshold of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_slicing_threshold (const int slicing_threshold_in)\fC [inline]\fP"
+.PP
+set slicing_threshold param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIslicing_threshold_in\fP new value of slicing_threshold param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_threshold of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_no_auto_rotate (const unsigned char no_auto_rotate_in)\fC [inline]\fP"
+.PP
+set no_auto_rotate 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIno_auto_rotate_in\fP new value of font_spacing_code param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+no_auto_rotate of objct 
 .RE
 .PP
 
