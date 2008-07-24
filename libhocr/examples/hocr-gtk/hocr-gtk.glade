@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jul 21 22:37:36 2008 -->
+<!--Generated with glade3 3.4.5 on Thu Jul 24 09:28:01 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -532,7 +532,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkMenuItem" id="menuitem6">
+                      <widget class="GtkMenuItem" id="menuitem_font">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">Font</property>
@@ -604,7 +604,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem8a">
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem_font">
                         <property name="visible">True</property>
                       </widget>
                     </child>

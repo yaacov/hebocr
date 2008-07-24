@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([libhocr], [0.10.14], [Yaacov Zamir <kzamir@walla.co.il>])
+AC_INIT([libhocr], [0.10.15], [Yaacov Zamir <kzamir@walla.co.il>])
 AC_CONFIG_AUX_DIR([config])
 
 AM_INIT_AUTOMAKE([1.9 foreign])

@@ -89,7 +89,7 @@ except:
 
 # tesseract paths
 tesseract_path = sys.prefix + "/bin/tesseract"
-tesseract_image_path = usr_hocr_gtk_path + "/temp_tess_image.tiff"
+tesseract_image_path = usr_hocr_gtk_path + "/temp_tess_image.tif"
 tesseract_text_path = usr_hocr_gtk_path + "/temp_tess_text"
 # search for tesseract
 have_tesseract = os.path.isfile(tesseract_path)
@@ -563,6 +563,9 @@ class MainWindow:
         self.menuitem_font_splicing_normal = xml.get_widget('menuitem_font_splicing_normal')
         self.menuitem_font_splicing_agresive = xml.get_widget('menuitem_font_splicing_agresive')
         self.menuitem_font_splicing_careful = xml.get_widget('menuitem_font_splicing_careful')
+        
+        self.separatormenuitem_font = xml.get_widget('separatormenuitem_font')
+        self.menuitem_font = xml.get_widget('menuitem_font')
         
         self.menuitem_font_1 = xml.get_widget('menuitem_font_1')
         self.menuitem_font_2 = xml.get_widget('menuitem_font_2')
@@ -1171,7 +1174,7 @@ class MainWindow:
         
         # get the new image 
         ho_pix = self.hocr_obj.get_bitmap_pixbuf ()
-        print "hello"
+        
         # create a gtk pixbuf
         hocr_pixbuf = gtk.gdk.pixbuf_new_from_data(
                 ho_pixbuf_get_data_string(ho_pix),
@@ -1293,12 +1296,16 @@ def main():
     main_window.window_main.show()
     
     # hide not implemented fonts
-    main_window.menuitem_font_5.hide()
-    main_window.menuitem_font_6.hide()
-        
+    main_window.separatormenuitem_font.hide()
+    main_window.menuitem_font.hide()
+    main_window.menuitem_font_1.set_active(True)
+    
     # if no tesseract hide the tesseract option
     if not have_tesseract:
       main_window.menuitem_engine_tess.hide()
+    # if no ocrad hide the ocrad option
+    if not have_ocrad:
+      main_window.menuitem_engine_ocrad.hide()
     # if no sane hide the sane button
     if not have_sane:
       main_window.separatormenuitem3.hide()

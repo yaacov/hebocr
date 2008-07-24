@@ -1,3 +1,9 @@
+libhocr (0.10.15)
+
+ * Update hocr-gtk Hebrew translation
+ 
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 23 July 2008 09:04
+ 
 libhocr (0.10.14)
 
  * Re Fix python install scripts
