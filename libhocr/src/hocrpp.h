@@ -351,6 +351,50 @@ namespace hocr
 
       return 0;
     }
+    
+    /**
+     @brief do bitmap erosion
+    
+     @return 0
+     */
+    int do_bitmap_erosion ()
+    {
+      ho_bitmap * m_bit_temp = NULL;
+      
+      if (!m_bit_bw)
+        return 1;
+
+      m_bit_temp = ho_bitmap_erosion (m_bit_bw);
+      if (!m_bit_temp)
+        return 1;
+      
+      ho_bitmap_free (m_bit_bw);
+      m_bit_bw = m_bit_temp;
+
+      return 0;
+    }
+    
+    /**
+     @brief do bitmap dilation
+    
+     @return 0
+     */
+    int do_bitmap_dilation ()
+    {
+      ho_bitmap * m_bit_temp = NULL;
+      
+      if (!m_bit_bw)
+        return 1;
+
+      m_bit_temp = ho_bitmap_dilation (m_bit_bw);
+      if (!m_bit_temp)
+        return 1;
+      
+      ho_bitmap_free (m_bit_bw);
+      m_bit_bw = m_bit_temp;
+
+      return 0;
+    }
       
     /**
      @brief do layout analysis
