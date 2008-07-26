@@ -47,6 +47,7 @@ static const char *ho_sign_array[HO_ARRAY_OUT_SIZE] =
 };
 
 int ho_recognize_array_in_size ();
+
 int ho_recognize_array_out_size ();
 
 /* make array_in more readble */
@@ -198,10 +199,13 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 int ho_recognize_create_array_out (const double *array_in, double *array_out,
   int font_code);
 
-const char *ho_recognize_array_out_to_font (const double *array_out);
+const char *ho_recognize_array_out_to_font (const double *array_out,
+  int *this_char_i);
 
 const char *ho_recognize_font (const ho_bitmap * m_text,
-  const ho_bitmap * m_mask, int font_code);
+  const ho_bitmap * m_mask, int font_code, unsigned char do_linguistics,
+  unsigned char word_end, unsigned char word_start, int *this_char_i,
+  int last_char_i);
 
 int
 ho_recognize_dimentions (const ho_bitmap * m_text,

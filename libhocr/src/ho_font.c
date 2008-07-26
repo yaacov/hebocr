@@ -135,7 +135,7 @@ ho_font_main_sign (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap_delete_hline (m_sign_mask, 0, 0, m_sign_mask->width);
   ho_bitmap_delete_hline (m_sign_mask, 0, m_sign_mask->height - 1,
     m_sign_mask->width);
-
+  
   ho_objmap_free (o_obj);
 
   return m_sign_mask;

@@ -35,14 +35,23 @@
 #endif
 
 gchar *image_in_filename = NULL;
+
 gchar *text_out_filename = NULL;
+
 gchar *data_out_filename = NULL;
+
 gchar *image_out_path = NULL;
+
 gboolean version = FALSE;
+
 gboolean debug = FALSE;
+
 gboolean verbose = FALSE;
+
 gboolean dir_ltr = FALSE;
+
 gboolean text_out_html = FALSE;
+
 gboolean text_out_font_numbers = FALSE;
 
 #ifdef USE_GTK
@@ -52,41 +61,70 @@ gboolean no_gtk = TRUE;
 #endif
 
 gint threshold = 0;
+
 gint adaptive_threshold = 0;
+
 gint adaptive_threshold_type = 0;
+
 gint scale_by = 0;
+
 gboolean do_not_auto_scale = FALSE;
+
 gdouble rotate_angle = 0.0;
+
 gboolean do_not_auto_rotate = FALSE;
+
 gboolean do_opening = FALSE;
+
 gboolean do_closing = FALSE;
 
+gboolean do_dilation = FALSE;
+
+gboolean do_erosion = FALSE;
+
 gint paragraph_setup = 0;
+
 gint slicing_threshold = 0;
+
 gint slicing_width = 0;
+
 gint font_spacing_code = 0;
 
 gboolean show_grid = FALSE;
+
 gboolean save_copy = FALSE;
+
 gboolean save_bw = FALSE;
+
 gboolean save_layout = FALSE;
+
 gboolean save_fonts = FALSE;
+
 gboolean debug_font_filter_list = FALSE;
+
 gint debug_font_filter = 0;
 
 gboolean only_image_proccesing = FALSE;
+
 gboolean only_layout_analysis = FALSE;
+
 gboolean only_save_fonts = FALSE;
 
 gint spacing_code = 0;
+
 gint lang_code = 0;
+
 gint font_code = 0;
+
 gboolean dont_recognize_nikud = FALSE;
+
+gboolean do_linguistics = FALSE;
 
 GError *error = NULL;
 
 /* black and white text image */
 ho_bitmap *m_page_text = NULL;
+
 ho_bitmap *m_page_text_temp = NULL;
 
 /* text layout */
@@ -230,6 +268,12 @@ static GOptionEntry image_entries[] = {
   {"closing", '2', 0, G_OPTION_ARG_NONE, &do_closing,
       "try to connect disconnected font parts",
     NULL},
+  {"erosion", '3', 0, G_OPTION_ARG_NONE, &do_erosion,
+      "try to delete artefacts",
+    NULL},
+  {"dilation", '4', 0, G_OPTION_ARG_NONE, &do_dilation,
+      "try to redraw missing font parts",
+    NULL},
   {NULL}
 };
 
@@ -280,6 +324,8 @@ static GOptionEntry entries[] = {
     "use font NUM", "NUM"},
   {"no-nikud", 'n', 0, G_OPTION_ARG_NONE, &dont_recognize_nikud,
     "do not recognize nikud", NULL},
+  {"linguistics", 'A', 0, G_OPTION_ARG_NONE, &do_linguistics,
+    "do linguistics check", NULL},
   {"version", 'v', 0, G_OPTION_ARG_NONE, &version,
     "print version information and exit", NULL},
   {NULL}
@@ -317,6 +363,7 @@ int
 hocr_cmd_parser (int *argc, char **argv[])
 {
   GOptionContext *context;
+
   GOptionGroup *group;
 
   /* get user args */
@@ -415,7 +462,7 @@ hocr_cmd_parser (int *argc, char **argv[])
     hocr_printerr ("unknown font_spacing value using auto settings");
     font_spacing_code = 0;
   }
-  
+
   if (only_save_fonts)
   {
     save_fonts = TRUE;
@@ -428,6 +475,7 @@ ho_pixbuf *
 hocr_pixbuf_load_with_debug ()
 {
   ho_pixbuf *pix = NULL;
+
   gchar *filename;
 
   /* read image from file */
@@ -440,12 +488,12 @@ hocr_pixbuf_load_with_debug ()
       pix = ho_pixbuf_bw_tiff_load (image_in_filename);
 #endif /* USE_TIFF */
   }
-  
+
 #ifdef USE_GTK
   else
     pix = ho_gtk_pixbuf_load (image_in_filename);
 #endif /* USE_GTK */
-  
+
   if (!pix)
   {
     hocr_printerr ("can't read input image\n");
@@ -486,8 +534,11 @@ ho_bitmap *
 hocr_image_processing_with_debug (ho_pixbuf * pix)
 {
   ho_bitmap *m_bw = NULL;
+
   ho_bitmap *m_bw_temp = NULL;
+
   unsigned char size = 0;
+
   m_bw =
     ho_pixbuf_to_bitmap_wrapper (pix, scale_by, adaptive_threshold_type,
     threshold, adaptive_threshold, size);
@@ -604,7 +655,7 @@ hocr_image_processing_with_debug (ho_pixbuf * pix)
       m_bw = m_bw_temp;
     }
   }
-  
+
   return m_bw;
 }
 
@@ -614,7 +665,9 @@ hocr_layout_analysis_with_debug (const ho_bitmap * m_in,
   const unsigned char dir_ltr)
 {
   int block_index;
+
   int line_index;
+
   int word_index;
 
   ho_layout *layout_out = NULL;
@@ -656,8 +709,7 @@ hocr_layout_analysis_with_debug (const ho_bitmap * m_in,
 
       if (debug)
         g_print ("        line avg fill %d common fill %d\n",
-          layout_out->m_lines_text[block_index][line_index]->
-          avg_line_fill,
+          layout_out->m_lines_text[block_index][line_index]->avg_line_fill,
           layout_out->m_lines_text[block_index][line_index]->com_line_fill);
 
       if (debug)
@@ -690,28 +742,45 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
   ho_string * s_data_out)
 {
   int i;
+
   int font_number = 0;
+
   int number_of_fonts = l_page->number_of_fonts;
+
   int block_index;
+
   int line_index;
+
   int word_index;
+
   int font_index;
 
   ho_pixbuf *pix_out = NULL;
+
   ho_bitmap *m_text = NULL;
+
   ho_bitmap *m_mask = NULL;
+
   ho_bitmap *m_font_main_sign = NULL;
+
   ho_bitmap *m_font_nikud = NULL;
+
   ho_bitmap *m_font_filter = NULL;
+
   ho_bitmap *m_font_test = NULL;
+
   ho_bitmap *m_edge = NULL;
 
   ho_objmap *o_fonts = NULL;
 
   gchar *text_out = NULL;
+
   gchar *filename = NULL;
+
   gsize length;
+
   gsize terminator_pos;
+
   GError *error = NULL;
 
   for (block_index = 0; block_index < l_page->n_blocks; block_index++)
@@ -750,11 +819,22 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
       for (word_index = 0;
         word_index < l_page->n_words[block_index][line_index]; word_index++)
       {
+        int word_length = l_page->n_fonts[block_index][line_index][word_index];
+
+        unsigned char word_end = FALSE;
+
+        unsigned char word_start = TRUE;
+
+        int last_char_i = 0;
+
+        int char_i = 0;
+
         /* start of word */
-        for (font_index = 0;
-          font_index <
-          l_page->n_fonts[block_index][line_index][word_index]; font_index++)
+        for (font_index = 0; font_index < word_length; font_index++)
         {
+          word_end = (font_index == (word_length - 1));
+          word_start = (font_index == 0);
+
           /* count recognized fonts */
           font_number++;
 
@@ -808,10 +888,15 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
           /* recognize font from images */
           {
             const char *font;
+
             const char *nikud;
+
             double array_in[HO_ARRAY_IN_SIZE];
+
             double array_out[HO_ARRAY_OUT_SIZE];
+
             double array_nikud_in[HO_NIKUD_ARRAY_IN_SIZE];
+
             double array_nikud_out[HO_NIKUD_ARRAY_OUT_SIZE];
 
             /* get font */
@@ -819,7 +904,16 @@ hocr_font_recognition_with_debug (ho_layout * l_page, ho_string * s_text_out,
             /* insert font to text out */
             ho_recognize_create_array_in (m_font_main_sign, m_mask, array_in);
             ho_recognize_create_array_out (array_in, array_out, font_code);
-            font = ho_recognize_array_out_to_font (array_out);
+            last_char_i = char_i;
+            
+            /* linguistics */
+            if (do_linguistics)
+            {
+              ho_linguistics_adjust_array_out (array_out, word_end,
+  word_start, last_char_i);
+            }
+            
+            font = ho_recognize_array_out_to_font (array_out, &char_i);
 
             /* insert font to text out */
             ho_string_cat (s_text_out, font);
@@ -1352,6 +1446,7 @@ int
 hocr_exit ()
 {
   int block_index;
+
   int line_index;
 
   /* allert user */
@@ -1384,9 +1479,13 @@ int
 main (int argc, char *argv[])
 {
   int number_of_fonts;
+
   ho_string *s_text_out = NULL;
+
   ho_string *s_data_out = NULL;
+
   gchar *text_out = NULL;
+
   ho_pixbuf *pix = NULL;
 
   /* start of argument analyzing section */
@@ -1438,7 +1537,7 @@ main (int argc, char *argv[])
 
     m_page_text = m_page_text_temp;
   }
-  
+
   if (do_closing)
   {
     m_page_text_temp = ho_bitmap_closing (m_page_text);
@@ -1449,10 +1548,38 @@ main (int argc, char *argv[])
       hocr_printerr ("can't do closing on image \n");
       exit (1);
     }
-    
+
     m_page_text = m_page_text_temp;
   }
   
+  if (do_dilation)
+  {
+    m_page_text_temp = ho_bitmap_dilation (m_page_text);
+    ho_bitmap_free (m_page_text);
+
+    if (!m_page_text_temp)
+    {
+      hocr_printerr ("can't do dilation on image \n");
+      exit (1);
+    }
+
+    m_page_text = m_page_text_temp;
+  }
+  
+  if (do_erosion)
+  {
+    m_page_text_temp = ho_bitmap_erosion (m_page_text);
+    ho_bitmap_free (m_page_text);
+
+    if (!m_page_text_temp)
+    {
+      hocr_printerr ("can't do erosion on image \n");
+      exit (1);
+    }
+
+    m_page_text = m_page_text_temp;
+  }
+
   /* free input pixbuf */
   ho_pixbuf_free (pix);
 
@@ -1475,6 +1602,7 @@ main (int argc, char *argv[])
   if (save_bw || only_image_proccesing)
   {
     gchar *filename;
+
     ho_pixbuf *pix_out;
 
     pix_out = ho_pixbuf_new_from_bitmap (m_page_text);
@@ -1558,6 +1686,7 @@ main (int argc, char *argv[])
   if (save_layout || only_layout_analysis)
   {
     gchar *filename = NULL;
+
     ho_pixbuf *pix_out = NULL;
 
     /* allocate */
@@ -1650,7 +1779,7 @@ main (int argc, char *argv[])
   else
   {
     hocr_font_recognition (l_page, s_text_out, text_out_html, font_code,
-      !dont_recognize_nikud, &progress);
+      !dont_recognize_nikud, do_linguistics, &progress);
   }
 
   /* end of page */

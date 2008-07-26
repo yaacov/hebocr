@@ -1,11 +1,7 @@
-libhocr (0.10.15)
+libhocr (0.10.16)
 
  * Update hocr-gtk Hebrew translation
- 
- -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 23 July 2008 09:04
- 
-libhocr (0.10.14)
-
+ * Add dilation and erosion to hocrpp.h
  * Re Fix python install scripts
  
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 22 July 2008 09:04

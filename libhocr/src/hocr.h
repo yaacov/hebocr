@@ -62,7 +62,7 @@ extern "C"
 #include <ho_array.h>
 #include <ho_array_hist.h>
 #include <ho_array_stat.h>
-  
+
 /* binary image map */
 #include <ho_bitmap.h>
 #include <ho_bitmap_hist.h>
@@ -80,8 +80,11 @@ extern "C"
 #include <ho_recognize.h>
 #include <ho_recognize_nikud.h>
 
+/* linguistics */
+#include <ho_linguistics.h>
+
 /* specific font recognition */
-  
+
 /* string utilities */
 #include <ho_string.h>
 
@@ -141,7 +144,7 @@ extern "C"
   int
     hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
     const unsigned char html, int font_code, const unsigned char nikud,
-    int *progress);
+    unsigned char do_linguistics, int *progress);
 
  /**
  do ocr on a pixbuf 
@@ -179,7 +182,7 @@ extern "C"
     const int slicing_threshold, const int slicing_width,
     const unsigned char dir_ltr,
     const unsigned char html, int font_code, const unsigned char nikud,
-    int *progress);
+    const unsigned char do_linguistics, int *progress);
 
  /**
  do ocr on a pixbuf, using default values
@@ -193,7 +196,7 @@ extern "C"
  */
   int hocr_do_ocr (const ho_pixbuf * pix_in,
     ho_string * s_text_out, const unsigned char html, int font_code,
-    int *progress);
+    const unsigned char do_linguistics, int *progress);
 
 /**
  return the build string
@@ -208,7 +211,7 @@ extern "C"
  @return version string
  */
   const char *hocr_get_version_string ();
-  
+
 #ifdef __cplusplus
 }
 #endif                          /* __cplusplus */

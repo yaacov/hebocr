@@ -31,6 +31,7 @@ libhocr_la_SOURCES = \
         fonts/ho_recognize_font_5.c \
         fonts/ho_recognize_font_6.c \
         ho_string.c \
+        ho_linguistics.c \
         ho_layout.c
      
 libhocr_la_LDFLAGS = -version-info 0:0:0
@@ -64,6 +65,7 @@ library_include_HEADERS = \
          fonts/ho_recognize_font_6.h \
          ho_layout.h \
          ho_string.h \
+         ho_linguistics.h \
          ho_gtk.h 
 
 # libhocrgtk, helper functions to use hocr in gtk programs

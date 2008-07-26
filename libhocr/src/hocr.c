@@ -62,11 +62,15 @@ hocr_image_processing (const ho_pixbuf * pix_in,
 {
 
   ho_bitmap *bitmap_out = NULL;
+
   ho_bitmap *bitmap_temp = NULL;
+
   double angle = 0.0;
+
   int scale_by = 0;
+
   unsigned char size = 0;
-  
+
   /* init progress */
   *progress = 0;
 
@@ -168,9 +172,13 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
   const int slicing_width, const unsigned char dir_ltr, int *progress)
 {
   int cols = paragraph_setup;
+
   int block_index;
+
   int line_index;
+
   int word_index;
+
   ho_layout *layout_out = NULL;
 
   /* init progress */
@@ -209,10 +217,10 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
 
       /* update progress */
       *progress = 100 *
-        ((double)block_index / 
-         (double)layout_out->n_blocks +
-        (double)line_index / 
-         (double)(layout_out->n_lines[block_index] * layout_out->n_blocks));
+        ((double) block_index /
+        (double) layout_out->n_blocks +
+        (double) line_index /
+        (double) (layout_out->n_lines[block_index] * layout_out->n_blocks));
     }
   }
 
@@ -233,25 +241,36 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
 int
 hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
   const unsigned char html, int font_code, const unsigned char nikud,
-  int *progress)
+  unsigned char do_linguistics, int *progress)
 {
   int block_index;
+
   int line_index;
+
   int word_index;
+
   int font_index;
 
   int current_font_number = 0;
+
   int number_of_fonts = l_page->number_of_fonts;
 
   ho_bitmap *m_text = NULL;
+
   ho_bitmap *m_mask = NULL;
+
   ho_bitmap *m_font_main_sign = NULL;
+
   ho_bitmap *m_font_nikud = NULL;
 
   char text_out[200];
+
   const char *font;
+
   const char *font_nikud;
+
   const char *font_dagesh;
+
   const char *font_shin;
 
   /* init progress */
@@ -288,11 +307,22 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
       for (word_index = 0;
         word_index < l_page->n_words[block_index][line_index]; word_index++)
       {
+        int word_length = l_page->n_fonts[block_index][line_index][word_index];
+
+        unsigned char word_end = FALSE;
+
+        unsigned char word_start = TRUE;
+
+        int last_char_i = 0;
+
+        int char_i = 0;
+
         /* start of word */
-        for (font_index = 0;
-          font_index <
-          l_page->n_fonts[block_index][line_index][word_index]; font_index++)
+        for (font_index = 0; font_index < word_length; font_index++)
         {
+          word_end = (font_index == (word_length - 1));
+          word_start = (font_index == 0);
+
           /* get font images */
 
           /* get the font */
@@ -315,7 +345,11 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
             return TRUE;
 
           /* recognize font from images */
-          font = ho_recognize_font (m_font_main_sign, m_mask, font_code);
+          last_char_i = char_i;
+          font =
+            ho_recognize_font (m_font_main_sign, m_mask,
+            font_code, do_linguistics, word_end, word_start, &char_i,
+            last_char_i);
 
           /* insert font to text out */
           ho_string_cat (s_text_out, font);
@@ -389,10 +423,12 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
   const int slicing_threshold, const int slicing_width,
   const unsigned char dir_ltr,
   const unsigned char html, int font_code, const unsigned char nikud,
-  int *progress)
+  const unsigned char do_linguistics, int *progress)
 {
   ho_bitmap *m_in = NULL;
+
   ho_layout *l_page = NULL;
+
   int return_val;
 
   if (!pix_in)
@@ -417,7 +453,7 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
   }
 
   return_val = hocr_font_recognition (l_page, s_text_out,
-    html, font_code, nikud, progress);
+    html, font_code, nikud, do_linguistics, progress);
 
   return return_val;
 }
@@ -425,11 +461,13 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
 int
 hocr_do_ocr (const ho_pixbuf * pix_in,
   ho_string * s_text_out,
-  const unsigned char html, int font_code, int *progress)
+  const unsigned char html, int font_code, const unsigned char do_linguistics,
+  int *progress)
 {
   return hocr_do_ocr_fine (pix_in,
     s_text_out,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, html, font_code, 1, progress);
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, html, font_code, 1, do_linguistics,
+    progress);
 }
 
 const char *

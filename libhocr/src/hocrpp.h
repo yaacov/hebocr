@@ -89,7 +89,8 @@ namespace hocr
       font_code = 0;
       html = 0;
       nikud = 1;
-
+      do_linguistics = 0;
+      
       /* init progress */
       progress = 0;
     }
@@ -438,7 +439,7 @@ namespace hocr
       text_out = ho_string_new ();
 
       hocr_font_recognition (page_layout, text_out, html, font_code, nikud,
-        &progress);
+        do_linguistics, &progress);
 
       return 0;
     }
@@ -673,6 +674,19 @@ namespace hocr
       
       return no_auto_rotate;
     }
+    
+    /**
+     @brief set do_linguistics
+    
+     @param do_linguistics_in new value of do_linguistics param
+     @return do_linguistics of objct
+     */
+    unsigned char set_do_linguistics (const unsigned char do_linguistics_in)
+    {
+      do_linguistics = do_linguistics_in;
+      
+      return do_linguistics;
+    }
       
     /**
      @brief get paragraph setup param
@@ -731,6 +745,7 @@ namespace hocr
     int slicing_width;
 
     unsigned char nikud;
+    unsigned char do_linguistics;
     int font_code;
     unsigned char html;
   };                            // class
