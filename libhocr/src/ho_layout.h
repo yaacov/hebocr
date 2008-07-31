@@ -122,11 +122,13 @@ int ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
  @param word_index the word_index to work on
  @param slicing_threshold the slicing threshold
  @param slicing_width the slicing width
+ @param line_leeway the line leeway below and above line
  @return FALSE
  */
 int ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
   const int line_index, const int word_index,
-  const unsigned char slicing_threshold, const unsigned char slicing_width);
+  const unsigned char slicing_threshold, const unsigned char slicing_width,
+  const unsigned char line_leeway);
 
 /**
  new ho_bitamp of the text in a layout block

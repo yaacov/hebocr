@@ -85,6 +85,7 @@ namespace hocr
       paragraph_setup = 0;
       slicing_threshold = 0;
       slicing_width = 0;
+      line_leeway = 0;
 
       font_code = 0;
       html = 0;
@@ -415,7 +416,7 @@ namespace hocr
 
       page_layout = hocr_layout_analysis (m_bit_bw,
         font_spacing_code, paragraph_setup,
-        slicing_threshold, slicing_width, dir_ltr, &progress);
+        slicing_threshold, slicing_width, line_leeway, dir_ltr, &progress);
 
       return 0;
     }
@@ -526,6 +527,19 @@ namespace hocr
       nikud = nikud_in;
 
       return nikud;
+    }
+      
+    /**
+     @brief set dir_ltr param
+    
+     @param dir_ltr_in new value of dir_ltr param
+     @return dir_ltr of objct
+     */
+    unsigned char set_dir_ltr (const unsigned char dir_ltr_in)
+    {
+      dir_ltr = dir_ltr_in;
+
+      return dir_ltr;
     }
 
     /**
@@ -661,6 +675,19 @@ namespace hocr
       
       return slicing_threshold;
     }
+      
+    /**
+     @brief set line_leeway param
+    
+     @param line_leeway_in new value of line_leeway param
+     @return line_leeway of objct
+     */
+    int set_line_leeway (const int line_leeway_in)
+    {
+      line_leeway = line_leeway_in;
+      
+      return line_leeway;
+    }
     
     /**
      @brief set no_auto_rotate
@@ -743,6 +770,7 @@ namespace hocr
     int paragraph_setup;
     int slicing_threshold;
     int slicing_width;
+    int line_leeway;
 
     unsigned char nikud;
     unsigned char do_linguistics;

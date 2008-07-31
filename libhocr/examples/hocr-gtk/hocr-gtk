@@ -475,7 +475,9 @@ class MainWindow:
         self.config.set('edit', 'threshold_v', '0')
         self.config.set('edit', 'font_spacing', '0')
         self.config.set('edit', 'font_splicing', '0')
+        self.config.set('edit', 'line_leeway', '0')
         self.config.set('edit', 'engine', '0')
+        self.config.set('edit', 'rtl', '0')
         
         self.config.add_section('view')
         self.config.set('view', 'font', 'sans 12')
@@ -538,6 +540,7 @@ class MainWindow:
         self.menuitem_image_processing_erosion = xml.get_widget('menuitem_image_processing_erosion')
         
         self.menuitem_column_auto = xml.get_widget('menuitem_column_auto')
+        self.menuitem_column_free = xml.get_widget('menuitem_column_free')
         self.menuitem_column_one = xml.get_widget('menuitem_column_one')
         
         self.menuitem_scale_auto = xml.get_widget('menuitem_scale_auto')
@@ -566,6 +569,9 @@ class MainWindow:
         self.menuitem_font_splicing_agresive = xml.get_widget('menuitem_font_splicing_agresive')
         self.menuitem_font_splicing_careful = xml.get_widget('menuitem_font_splicing_careful')
         
+        self.menuitem_line_leeway_small = xml.get_widget('menuitem_line_leeway_small')
+        self.menuitem_line_leeway_big = xml.get_widget('menuitem_line_leeway_big')
+        
         self.separatormenuitem_font = xml.get_widget('separatormenuitem_font')
         self.menuitem_font = xml.get_widget('menuitem_font')
         
@@ -577,6 +583,8 @@ class MainWindow:
         self.menuitem_font_6 = xml.get_widget('menuitem_font_6')
         
         self.menuitem_engine_hocr = xml.get_widget('menuitem_engine_hocr')
+        self.menuitem_dir_rtl = xml.get_widget('menuitem_dir_rtl')
+        self.menuitem_dir_ltr = xml.get_widget('menuitem_dir_ltr')
         self.menuitem_engine_ocrad = xml.get_widget('menuitem_engine_ocrad')
         self.menuitem_engine_tess = xml.get_widget('menuitem_engine_tess')
         
@@ -638,6 +646,8 @@ class MainWindow:
         
         if self.menuitem_column_auto.get_active():
             self.config.set('edit', 'column', '0')
+        if self.menuitem_column_free.get_active():
+            self.config.set('edit', 'column', '255')
         if self.menuitem_column_one.get_active():
             self.config.set('edit', 'column', '1')
         
@@ -687,6 +697,11 @@ class MainWindow:
             self.config.set('edit', 'font_splicing', '1')
         if self.menuitem_font_splicing_careful.get_active():
             self.config.set('edit', 'font_splicing', '2')
+        
+        if self.menuitem_line_leeway_small.get_active():
+            self.config.set('edit', 'line_leeway', '0')
+        if self.menuitem_line_leeway_big.get_active():
+            self.config.set('edit', 'line_leeway', '1')
             
         if self.menuitem_engine_hocr.get_active():
             self.config.set('edit', 'engine', '0')
@@ -708,6 +723,11 @@ class MainWindow:
         if self.menuitem_font_6.get_active():
             self.config.set('edit', 'font', '6')
         
+        if self.menuitem_dir_rtl.get_active():
+            self.config.set('edit', 'rtl', '0')
+        if self.menuitem_dir_ltr.get_active():
+            self.config.set('edit', 'rtl', '1')
+            
         view_font = self.textview.get_pango_context().get_font_description().to_string()
         self.config.set('view', 'font', view_font)
         
@@ -806,6 +826,8 @@ class MainWindow:
             
             if self.menuitem_column_auto.get_active():
                   self.hocr_obj.set_paragraph_setup(0)
+            elif self.menuitem_column_free.get_active():
+                  self.hocr_obj.set_paragraph_setup(255)
             else:
                   self.hocr_obj.set_paragraph_setup(1)
                   
@@ -851,8 +873,8 @@ class MainWindow:
                   self.hocr_obj.set_slicing_width (50)
                   self.hocr_obj.set_slicing_threshold (90)
             if self.menuitem_font_splicing_careful.get_active():
-                  self.hocr_obj.set_slicing_width (250)
-                  self.hocr_obj.set_slicing_threshold (20)
+                  self.hocr_obj.set_slicing_width (254)
+                  self.hocr_obj.set_slicing_threshold (2)
                   
             if self.menuitem_threshold_no.get_active():
                   self.hocr_obj.set_adaptive (1)
@@ -884,7 +906,17 @@ class MainWindow:
                         self.hocr_obj.set_a_threshold (80)
                   if self.menuitem_threshold_v_40.get_active():
                         self.hocr_obj.set_a_threshold (60)
+                        
+            if self.menuitem_dir_rtl.get_active():
+                  self.hocr_obj.set_dir_ltr (0)
+            if self.menuitem_dir_ltr.get_active():
+                  self.hocr_obj.set_dir_ltr (1)
             
+            if self.menuitem_line_leeway_small.get_active():
+                  self.hocr_obj.set_line_leeway (80)
+            if self.menuitem_line_leeway_big.get_active():
+                  self.hocr_obj.set_line_leeway (80)
+                  
             # run ocr
             ro = RunHocrOCR()
             ro.start()
@@ -1254,6 +1286,7 @@ class MainWindow:
         self.menuitem_image_processing_dilation.set_active(self.config.getint('edit', 'dilation'))
         
         self.menuitem_column_auto.set_active(self.config.getint('edit', 'column') == 0)
+        self.menuitem_column_free.set_active(self.config.getint('edit', 'column') == 255)
         self.menuitem_column_one.set_active(self.config.getint('edit', 'column') == 1)
         
         self.menuitem_scale_auto.set_active(self.config.getint('edit', 'scale') == 0)
@@ -1293,6 +1326,12 @@ class MainWindow:
         self.menuitem_font_5.set_active(self.config.getint('edit', 'font') == 5)
         self.menuitem_font_6.set_active(self.config.getint('edit', 'font') == 6)
         
+        self.menuitem_dir_rtl.set_active(self.config.getint('edit', 'rtl') == 0)
+        self.menuitem_dir_ltr.set_active(self.config.getint('edit', 'rtl') == 1)
+        
+        self.menuitem_line_leeway_small.set_active(self.config.getint('edit', 'line_leeway') == 0)
+        self.menuitem_line_leeway_big.set_active(self.config.getint('edit', 'line_leeway') == 1)
+        
         self.textview.modify_font(pango.FontDescription(self.config.get('view', 'font')))
         
     
@@ -1304,9 +1343,9 @@ def main():
     main_window.window_main.show()
     
     # hide not implemented fonts
-    main_window.separatormenuitem_font.hide()
-    main_window.menuitem_font.hide()
-    main_window.menuitem_font_1.set_active(True)
+    #main_window.separatormenuitem_font.hide()
+    #main_window.menuitem_font.hide()
+    #main_window.menuitem_font_1.set_active(True)
     
     # if no tesseract hide the tesseract option
     if not have_tesseract:

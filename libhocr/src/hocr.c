@@ -169,7 +169,7 @@ hocr_image_processing (const ho_pixbuf * pix_in,
 ho_layout *
 hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
   const int paragraph_setup, const int slicing_threshold,
-  const int slicing_width, const unsigned char dir_ltr, int *progress)
+  const int slicing_width, const int line_leeway, const unsigned char dir_ltr, int *progress)
 {
   int cols = paragraph_setup;
 
@@ -212,7 +212,7 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
         word_index < layout_out->n_words[block_index][line_index]; word_index++)
       {
         ho_layout_create_font_mask (layout_out, block_index, line_index,
-          word_index, slicing_threshold, slicing_width);
+          word_index, slicing_threshold, slicing_width, line_leeway);
       }
 
       /* update progress */
@@ -420,7 +420,7 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
   const unsigned char adaptive,
   const unsigned char threshold, const unsigned char a_threshold,
   const int font_spacing_code, const int paragraph_setup,
-  const int slicing_threshold, const int slicing_width,
+  const int slicing_threshold, const int slicing_width, const int line_leeway,
   const unsigned char dir_ltr,
   const unsigned char html, int font_code, const unsigned char nikud,
   const unsigned char do_linguistics, int *progress)
@@ -444,7 +444,7 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
 
   l_page = hocr_layout_analysis (m_in,
     font_spacing_code, paragraph_setup,
-    slicing_threshold, slicing_width, dir_ltr, progress);
+    slicing_threshold, slicing_width, line_leeway, dir_ltr, progress);
 
   if (!l_page)
   {
@@ -466,7 +466,7 @@ hocr_do_ocr (const ho_pixbuf * pix_in,
 {
   return hocr_do_ocr_fine (pix_in,
     s_text_out,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, html, font_code, 1, do_linguistics,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, html, font_code, 1, do_linguistics,
     progress);
 }
 

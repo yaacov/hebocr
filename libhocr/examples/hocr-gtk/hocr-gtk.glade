@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jul 25 15:19:03 2008 -->
+<!--Generated with glade3 3.4.5 on Wed Jul 30 21:05:52 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window_main">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -210,6 +210,15 @@
                                 <property name="use_underline">True</property>
                                 <property name="active">True</property>
                                 <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_column_free">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">free</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_column_auto</property>
                               </widget>
                             </child>
                             <child>
@@ -480,7 +489,7 @@
                     <child>
                       <widget class="GtkMenuItem" id="menuitem_font_spacing">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Font spacing</property>
+                        <property name="label" translatable="yes">Word spacing</property>
                         <property name="use_underline">True</property>
                         <child>
                           <widget class="GtkMenu" id="menu12">
@@ -528,6 +537,36 @@
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_font_spacing_normal</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_line_leeway">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Line leeway</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu16">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_line_leeway_small">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">small</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_line_leeway_big">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">big</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_line_leeway_small</property>
                               </widget>
                             </child>
                           </widget>
@@ -649,6 +688,36 @@
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
                                 <property name="group">menuitem_engine_hocr</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="menuitem_dir">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Direction</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu15">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_dir_rtl">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">RTL</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_as_radio">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioMenuItem" id="menuitem_dir_ltr">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">LTR</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">menuitem_dir_rtl</property>
                               </widget>
                             </child>
                           </widget>

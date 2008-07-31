@@ -408,41 +408,43 @@ ho_objlist_statistics (ho_objlist * object_list,
     width = ((object_list->objects)[i]).width;
     height = ((object_list->objects)[i]).height;
 
-    if (width < min_width || width > max_width || height < min_height
-      || height > max_height)
-      continue;
+    if (width > min_width && width < max_width && height > min_height
+      && height < max_height)
+    {
 
-    (*counter)++;
+      (*counter)++;
 
-    /* set min max and sum */
-    weight_sum += weight;
-    if ((*weight_min) > weight)
-      *weight_min = weight;
-    if ((*weight_max) < weight)
-      *weight_max = weight;
+      /* set min max and sum */
+      weight_sum += weight;
+      if ((*weight_min) > weight)
+        *weight_min = weight;
+      if ((*weight_max) < weight)
+        *weight_max = weight;
 
-    width_sum += width;
-    if ((*width_min) > width)
-      *width_min = width;
-    if ((*width_max) < width)
-      *width_max = width;
+      width_sum += width;
+      if ((*width_min) > width)
+        *width_min = width;
+      if ((*width_max) < width)
+        *width_max = width;
 
-    height_sum += height;
-    if ((*height_min) > height)
-      *height_min = height;
-    if ((*height_max) < height)
-      *height_max = height;
+      height_sum += height;
+      if ((*height_min) > height)
+        *height_min = height;
+      if ((*height_max) < height)
+        *height_max = height;
 
-    /* set histograms */
-    histogram_index = weight / 25;
-    if (histogram_index < 60)
-      (weight_histogram[histogram_index])++;
-    histogram_index = height / 5;
-    if (histogram_index < 60)
-      (height_histogram[histogram_index])++;
-    histogram_index = width / 5;
-    if (histogram_index < 60)
-      (width_histogram[histogram_index])++;
+      /* set histograms */
+      histogram_index = weight / 25;
+      if (histogram_index < 60)
+        (weight_histogram[histogram_index])++;
+      histogram_index = height / 5;
+      if (histogram_index < 60)
+        (height_histogram[histogram_index])++;
+      histogram_index = width / 5;
+      if (histogram_index < 60)
+        (width_histogram[histogram_index])++;
+      
+    }
   }
 
   /* set average values */
@@ -486,20 +488,21 @@ ho_objlist_statistics (ho_objlist * object_list,
       height = ((object_list->objects)[i]).height;
       width = ((object_list->objects)[i]).width;
 
-      if (width < min_width || width > max_width || height < min_height
-        || height > max_height)
-        continue;
-
-      /* check for common only height */
-      if (height >= (*height_com) - 2 && height <= (*height_com) + 2)
+      if (width > min_width && width < max_width && height > min_height
+      && height < max_height)
       {
-        (height_histogram[height - (*height_com) + 2])++;
-      }
 
-      /* check for common only width */
-      if (width >= (*width_com) - 2 && width <= (*width_com) + 2)
-      {
-        (width_histogram[width - (*width_com) + 2])++;
+        /* check for common only height */
+        if (height >= (*height_com) - 2 && height <= (*height_com) + 2)
+        {
+          (height_histogram[height - (*height_com) + 2])++;
+        }
+
+        /* check for common only width */
+        if (width >= (*width_com) - 2 && width <= (*width_com) + 2)
+        {
+          (width_histogram[width - (*width_com) + 2])++;
+        }
       }
     }
 

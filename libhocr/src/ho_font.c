@@ -1597,7 +1597,7 @@ ho_font_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 3;
+  int threshold = 5;
   int sum;
 
   /* get font start and end */
@@ -1941,7 +1941,7 @@ ho_font_notch_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int dx, dy;
   int i, x, y, line_height, y_start;
   int y1, y2, x1, x2;
-  int threshold = 0;
+  int threshold = 2;
   int sum;
 
   /* get font start and end */

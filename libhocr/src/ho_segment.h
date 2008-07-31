@@ -118,10 +118,12 @@ ho_bitmap *ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
  @param m_line_map pointer to an ho_bitmap of line
  @param slicing_threshold percent of line fill declared space between fonts
  @param slicing_width percent of font width above try to choop font in two
+ @param line_leeway percent of line height to use above and below line
  @return a newly allocated bitmap
  */
 ho_bitmap *ho_segment_fonts (const ho_bitmap * m,
   const ho_bitmap * m_line_map,
-  const unsigned char slicing_threshold, const unsigned char slicing_width);
+  const unsigned char slicing_threshold, const unsigned char slicing_width,
+  const unsigned char line_leeway);
 
 #endif /* HO_SEGMENT_H */

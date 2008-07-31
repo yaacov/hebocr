@@ -73,8 +73,10 @@ ho_segment_paragraphs_fine (const ho_bitmap * m, const unsigned char box,
 
   ho_bitmap_free (m_temp1);
 
-  if (box)
+  if (box > 0 && box < 255)
     m_temp1 = ho_bitmap_filter_boxes (m_out, 0, 0);
+  else if (box == 255)
+    m_temp1 = ho_bitmap_filter_fill (m_out);
   else
     m_temp1 = ho_bitmap_filter_fill (m_out);
 
@@ -94,8 +96,9 @@ ho_segment_paragraphs_fine (const ho_bitmap * m, const unsigned char box,
     m->font_width * 3, m->width);
 
   ho_bitmap_free (m_out);
-
-  return m_temp1;
+  m_out = m_temp1;
+  
+  return m_out;
 }
 
 ho_bitmap *
@@ -125,6 +128,14 @@ ho_segment_paragraphs (const ho_bitmap * m, const unsigned char box)
     vertical_link_factor = 1.2;
   }
 
+  /* if we want "free" page setup, evry line is a different paragraph 
+     and we can recognize more font sizes */
+  if (box == 255)
+  {
+    horizontal_link_factor = 1.5;
+    vertical_link_factor = 0.8;
+  }
+  
   m_out =
     ho_segment_paragraphs_fine (m, box, font_height_factor_min,
     font_height_factor_max, font_width_factor_min, font_width_factor_max,
@@ -145,7 +156,9 @@ ho_segment_lines_fine (const ho_bitmap * m,
   ho_bitmap *m_temp;
   ho_bitmap *m_out;
 
-  /* filter only "regular" sized fonts */
+  /* set the font dimentions info in the paragrap text matrix */
+  ho_dimentions_font_width_height_nikud (m, 12, 350, 12, 350);
+  
   m_clean = ho_bitmap_filter_by_size (m,
     (double) (m->font_height) * font_height_factor_min,
     (double) (m->font_height) * font_height_factor_max,
@@ -303,9 +316,10 @@ ho_segment_words_fine (const ho_bitmap * m, const ho_bitmap * m_line_map,
   const double horizontal_link_factor, const double top_frame_factor,
   const double bottom_frame_factor)
 {
-  ho_bitmap *m_temp;
-  ho_bitmap *m_out;
-
+  ho_bitmap *m_temp = NULL;
+  ho_bitmap *m_out = NULL;
+  ho_bitmap *m_temp_line_map = NULL;
+  
   int i;
   int x, y;
   int width;
@@ -334,7 +348,20 @@ ho_segment_words_fine (const ho_bitmap * m, const ho_bitmap * m_line_map,
   m_temp = ho_bitmap_clone (m);
   if (!m_temp)
     return NULL;
-  ho_bitmap_and (m_temp, m_line_map);
+  
+  /* add some lee way above and below line */
+  m_temp_line_map = ho_bitmap_set_height (m_line_map, line_height, line_height / 4,
+  line_height / 4);
+  
+  if (m_temp_line_map)
+  {
+    ho_bitmap_and (m_temp, m_temp_line_map);
+    ho_bitmap_free (m_temp_line_map);
+  }
+  else
+  {
+    ho_bitmap_and (m_temp, m_line_map);
+  }
   m_out = m_temp;
 
   /* get font boxes */
@@ -428,7 +455,8 @@ ho_segment_words (const ho_bitmap * m, const ho_bitmap * m_line_map,
 
 ho_bitmap *
 ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
-  const unsigned char slicing_threshold, const unsigned char slicing_width)
+  const unsigned char slicing_threshold, const unsigned char slicing_width,
+  const unsigned char line_leeway)
 {
   int return_val;
 
@@ -442,7 +470,8 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   int x, y;
   int width;
   int height;
-  int line_height;
+  int line_start, line_end, line_height;
+  int lee_way;
   int s_threshold;
   int s_width;
   unsigned char nikud_ret;
@@ -454,12 +483,12 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
     return NULL;
 
   /* set default slicing_threshold */
-  if (slicing_threshold < 5)
+  if (slicing_threshold < 1)
     s_threshold = 85;
   else
     s_threshold = slicing_threshold;
 
-  if (slicing_width < 5)
+  if (slicing_width < 1)
     s_width = 150;
   else
     s_width = slicing_width;
@@ -468,28 +497,26 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   x = m_line_map->width / 2;
   for (y = 0; y < m_line_map->height && !ho_bitmap_get (m_line_map, x, y);
     y++) ;
-  line_height = y;
+  line_start = y;
   for (; y < m_line_map->height && ho_bitmap_get (m_line_map, x, y); y++) ;
-  line_height = y - line_height;
-
+  line_end = y;
+  
+  line_height = line_end - line_start;
+  lee_way = line_leeway * line_height / 100;
+  if (line_start - lee_way < 0)
+    lee_way = line_start;
+  
   /* create a fill arrays */
   line_fill = (int *) calloc (m->width, sizeof (int));
   if (!line_fill)
     return NULL;
 
-  /* chop of none line thigs */
-  m_temp = ho_bitmap_clone (m);
-  if (!m_temp)
-    return NULL;
-  /* FIXME: here and in ho_dimentions_line_fill() use a m_line_map + some
-   * leeyway, letters that are out of the line like 'lamed' are choped */
-  ho_bitmap_and (m_temp, m_line_map);
-
   for (x = 0; x < m->width; x++)
-    for (y = 0; y < m->height; y++)
+    for (y = line_start - lee_way; 
+         y < (line_end + lee_way) &&  y < m->height; y++)
   {
-      line_fill[x] += ho_bitmap_get (m_temp, x, y);
-      avg_line_fill += ho_bitmap_get (m_temp, x, y);
+      line_fill[x] += ho_bitmap_get (m, x, y);
+      avg_line_fill += ho_bitmap_get (m, x, y);
   }
   
   avg_line_fill /= m->width;
@@ -510,6 +537,14 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   }
 
   /* look for small overlaping */
+  
+  /* chop of none line thigs */
+
+  m_temp = ho_bitmap_clone (m);
+  if (!m_temp)
+    return NULL;
+  ho_bitmap_and (m_temp, m_line_map);
+  
   {
     int font_start;
     int font_end;

@@ -42,6 +42,8 @@ gchar *data_out_filename = NULL;
 
 gchar *image_out_path = NULL;
 
+gchar *image_out_type = NULL;
+
 gboolean version = FALSE;
 
 gboolean debug = FALSE;
@@ -87,6 +89,8 @@ gint paragraph_setup = 0;
 gint slicing_threshold = 0;
 
 gint slicing_width = 0;
+
+gint line_leeway = 0;
 
 gint font_spacing_code = 0;
 
@@ -220,6 +224,8 @@ static gchar *html_debug_footer = "</pre>\n</body>\n</html>\n";
 static GOptionEntry file_entries[] = {
   {"images-out-path", 'O', 0, G_OPTION_ARG_FILENAME, &image_out_path,
     "use PATH for output images", "PATH"},
+  {"images-out-type", 'G', 0, G_OPTION_ARG_FILENAME, &image_out_type,
+    "output images as TYPE (tiff, jpeg, png)", "TYPE"},
   {"data-out", 'u', 0, G_OPTION_ARG_FILENAME, &data_out_filename,
     "use FILE as output data file name", "FILE"},
   {"save-copy", 'C', 0, G_OPTION_ARG_NONE, &save_copy,
@@ -287,6 +293,9 @@ static GOptionEntry segmentation_entries[] = {
   {"slicing-width", 'X', 0, G_OPTION_ARG_INT, &slicing_width,
       "use NUM as font slicing width, 50..250",
     "NUM"},
+  {"slicing-line", 'E', 0, G_OPTION_ARG_INT, &line_leeway,
+      "use NUM line leeway for font slicing, 0..90",
+    "NUM"},
   {"font-spacing", 'w', 0, G_OPTION_ARG_INT, &font_spacing_code,
       "font spacing: tight ..-1, 0, 1.. spaced",
     "NUM"},
@@ -320,6 +329,8 @@ static GOptionEntry entries[] = {
   {"no-gtk", 'N', 0, G_OPTION_ARG_NONE, &no_gtk,
     "do not use gtk for file input and output", NULL},
 #endif
+  {"ltr", 'R', 0, G_OPTION_ARG_NONE, &dir_ltr,
+    "left to right text", NULL},
   {"font", 'z', 0, G_OPTION_ARG_INT, &font_code,
     "use font NUM", "NUM"},
   {"no-nikud", 'n', 0, G_OPTION_ARG_NONE, &dont_recognize_nikud,
@@ -511,8 +522,20 @@ hocr_pixbuf_load_with_debug ()
     if (no_gtk)
       filename = g_strdup_printf ("%s-image-copy.pgm", image_out_path);
     else
-      filename = g_strdup_printf ("%s-image-copy.png", image_out_path);
-
+    {
+      if (image_out_type)
+      {
+        if (image_out_type[0] == 't') /* tiff */
+          filename = g_strdup_printf ("%s-image-copy.tif", image_out_path);
+        if (image_out_type[0] == 'j') /* jpg */
+          filename = g_strdup_printf ("%s-image-copy.jpg", image_out_path);
+        if (image_out_type[0] == 'p') /* png */
+          filename = g_strdup_printf ("%s-image-copy.png", image_out_path);
+      }
+      else
+        filename = g_strdup_printf ("%s-image-copy.jpg", image_out_path);
+    }
+    
     /* save to file system */
     if (filename)
     {
@@ -520,7 +543,20 @@ hocr_pixbuf_load_with_debug ()
         ho_pixbuf_pnm_save (pix, filename);
 #ifdef USE_GTK
       else
-        ho_gtk_pixbuf_save (pix, filename, "png");
+      {
+        if (image_out_type)
+        {
+          if (image_out_type[0] == 't') /* tiff */
+            ho_gtk_pixbuf_save (pix, filename, "tiff");
+          if (image_out_type[0] == 'j') /* jpg */
+            ho_gtk_pixbuf_save (pix, filename, "jpeg");
+          if (image_out_type[0] == 'p') /* png */
+            ho_gtk_pixbuf_save (pix, filename, "png");
+        }
+        else
+          ho_gtk_pixbuf_save (pix, filename, "png");
+      }
+      
 #endif /* USE_GTK */
       g_free (filename);
     }
@@ -724,7 +760,7 @@ hocr_layout_analysis_with_debug (const ho_bitmap * m_in,
         if (debug)
           g_print ("        analyzing word %d.\n", word_index + 1);
         ho_layout_create_font_mask (layout_out, block_index, line_index,
-          word_index, slicing_threshold, slicing_width);
+          word_index, slicing_threshold, slicing_width, line_leeway);
 
         if (debug)
           g_print ("          found %d fonts.\n",
@@ -1464,6 +1500,8 @@ hocr_exit ()
     g_free (image_in_filename);
   if (image_out_path)
     g_free (image_out_path);
+  if (image_out_type)
+    g_free (image_out_type);
   if (text_out_filename)
     g_free (text_out_filename);
   if (data_out_filename)
@@ -1614,8 +1652,20 @@ main (int argc, char *argv[])
     if (no_gtk)
       filename = g_strdup_printf ("%s-image-bw.pgm", image_out_path);
     else
-      filename = g_strdup_printf ("%s-image-bw.png", image_out_path);
-
+    {
+      if (image_out_type)
+        {
+          if (image_out_type[0] == 't') /* tiff */
+            filename = g_strdup_printf ("%s-image-bw.tif", image_out_path);
+          if (image_out_type[0] == 'j') /* jpg */
+            filename = g_strdup_printf ("%s-image-bw.jpg", image_out_path);
+          if (image_out_type[0] == 'p') /* png */
+            filename = g_strdup_printf ("%s-image-bw.png", image_out_path);
+        }
+        else
+          filename = g_strdup_printf ("%s-image-bw.png", image_out_path);
+    }
+    
     /* save to file system */
     if (filename)
     {
@@ -1623,7 +1673,19 @@ main (int argc, char *argv[])
         ho_pixbuf_pnm_save (pix_out, filename);
 #ifdef USE_GTK
       else
-        ho_gtk_pixbuf_save (pix_out, filename, "png");
+      {
+        if (image_out_type)
+        {
+          if (image_out_type[0] == 't') /* tiff */
+            ho_gtk_pixbuf_save (pix_out, filename, "tiff");
+          if (image_out_type[0] == 'j') /* jpg */
+            ho_gtk_pixbuf_save (pix_out, filename, "jpeg");
+          if (image_out_type[0] == 'p') /* png */
+            ho_gtk_pixbuf_save (pix_out, filename, "png");
+        }
+        else
+          ho_gtk_pixbuf_save (pix_out, filename, "png");
+      }
 #endif /* USE_GTK */
       /* free locale memory */
       ho_pixbuf_free (pix_out);
@@ -1663,7 +1725,7 @@ main (int argc, char *argv[])
   if (!debug && !verbose)
   {
     l_page = hocr_layout_analysis (m_page_text, font_spacing_code,
-      paragraph_setup, slicing_threshold, slicing_width, dir_ltr, &progress);
+      paragraph_setup, slicing_threshold, slicing_width, line_leeway, dir_ltr, &progress);
   }
   else
   {
@@ -1705,8 +1767,21 @@ main (int argc, char *argv[])
     if (no_gtk)
       filename = g_strdup_printf ("%s-image-layout.pgm", image_out_path);
     else
-      filename = g_strdup_printf ("%s-image-layout.png", image_out_path);
-
+    {
+      if (image_out_type)
+        {
+          if (image_out_type[0] == 't') /* tiff */
+            filename = g_strdup_printf ("%s-image-layout.tif", image_out_path);
+          if (image_out_type[0] == 'j') /* jpg */
+            filename = g_strdup_printf ("%s-image-layout.jpg", image_out_path);
+          if (image_out_type[0] == 'p') /* png */
+            filename = g_strdup_printf ("%s-image-layout.png", image_out_path);
+        }
+        else
+          filename = g_strdup_printf ("%s-image-layout.png", image_out_path);
+      
+    }
+    
     /* save to file system */
     if (filename)
     {
@@ -1714,7 +1789,20 @@ main (int argc, char *argv[])
         ho_pixbuf_pnm_save (pix_out, filename);
 #ifdef USE_GTK
       else
-        ho_gtk_pixbuf_save (pix_out, filename, "png");
+      {
+        if (image_out_type)
+        {
+          if (image_out_type[0] == 't') /* tiff */
+            ho_gtk_pixbuf_save (pix_out, filename, "tiff");
+          if (image_out_type[0] == 'j') /* jpg */
+            ho_gtk_pixbuf_save (pix_out, filename, "jpeg");
+          if (image_out_type[0] == 'p') /* png */
+            ho_gtk_pixbuf_save (pix_out, filename, "png");
+        }
+        else
+          ho_gtk_pixbuf_save (pix_out, filename, "png");
+      }
+      
 #endif /* USE_GTK */
       ho_pixbuf_free (pix_out);
       g_free (filename);

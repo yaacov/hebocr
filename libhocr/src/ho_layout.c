@@ -217,7 +217,7 @@ ho_layout_create_block_mask (ho_layout * l_page)
   int i;
 
   /* set the font dimentions info in the main text matrix */
-  ho_dimentions_font_width_height_nikud (l_page->m_page_text, 6, 200, 6, 200);
+  ho_dimentions_font_width_height_nikud (l_page->m_page_text, 12, 350, 12, 350);
   /* set line_spacing in the main text matrix */
   ho_dimentions_line_spacing (l_page->m_page_text);
   /* create the blocks mask */
@@ -315,7 +315,7 @@ ho_layout_create_line_mask (ho_layout * l_page, const int block_index)
   m_block_text = ho_layout_get_block_text (l_page, block_index);
 
   /* set the font dimentions info in the main text block */
-  ho_dimentions_font_width_height_nikud (m_block_text, 6, 200, 6, 200);
+  ho_dimentions_font_width_height_nikud (m_block_text, 12, 350, 12, 350);
   /* set line_spacing in the main text block */
   ho_dimentions_line_spacing (m_block_text);
   /* create the lines mask */
@@ -405,7 +405,7 @@ ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
   if (!m_line_text)
     return TRUE;
 
-  ho_dimentions_font_width_height_nikud (m_line_text, 6, 200, 6, 200);
+  ho_dimentions_font_width_height_nikud (m_line_text, 12, 350, 12, 350);
   l_page->m_lines_text[block_index][line_index] = m_line_text;
 
   /* create the words mask */
@@ -473,7 +473,8 @@ ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
 int
 ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
   const int line_index, const int word_index,
-  const unsigned char slicing_threshold, const unsigned char slicing_width)
+  const unsigned char slicing_threshold, const unsigned char slicing_width,
+                            const unsigned char line_leeway)
 {
   ho_objmap *o_map_blocks = NULL;
   ho_bitmap *m_word_text = NULL;
@@ -500,7 +501,7 @@ ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
   
   m_word_font_mask =
     ho_segment_fonts (m_word_text, m_word_line_mask, slicing_threshold,
-    slicing_width);
+    slicing_width, line_leeway);
 
   l_page->m_words_font_mask[block_index][line_index][word_index] =
     m_word_font_mask;
@@ -552,8 +553,8 @@ ho_layout_get_block_text (const ho_layout * l_page, int block_index)
   /* get sum leeway */
   x -= l_page->m_page_text->font_width;
   y -= l_page->m_page_text->font_height;
-  width += l_page->m_page_text->font_width * 2;
-  height += 5 * l_page->m_page_text->font_height / 2;
+  width += 2 * l_page->m_page_text->font_width;
+  height += 2 * l_page->m_page_text->font_height;
 
   /* sanity check */
   if (x < 0)
@@ -592,7 +593,8 @@ ho_layout_get_line_text (const ho_layout * l_page, int block_index, int line_ind
   ho_objmap *o_map_lines = NULL;
   int x, y, height, width;
   int i;
-
+  double vertical_leeway = 0.8;
+  
   /* get paragraph objmap */
   o_map_lines =
     ho_objmap_new_from_bitmap (l_page->m_blocks_lines_mask[block_index]);
@@ -607,13 +609,15 @@ ho_layout_get_line_text (const ho_layout * l_page, int block_index, int line_ind
 
   /* get sum leeway */
   x -= l_page->m_blocks_text[block_index]->font_width;
-  y -= l_page->m_blocks_text[block_index]->font_height;
-  width += l_page->m_blocks_text[block_index]->font_width * 2;
-  height += 5 * l_page->m_blocks_text[block_index]->font_height / 2;
+  y -= (int)(vertical_leeway * (double)height);
+  width += 2 * l_page->m_blocks_text[block_index]->font_width;
+  height = height + 2 * (int)(vertical_leeway * (double)height);
 
   /* sanity check */
   if (x < 0)
     x = 0;
+  if (y < 0)
+    y = 0;
   if (x + width > l_page->m_blocks_text[block_index]->width)
     width = l_page->m_blocks_text[block_index]->width - x;
   if (y < 0)
@@ -649,7 +653,8 @@ ho_layout_get_line_line_mask (const ho_layout * l_page, int block_index,
   ho_objmap *o_map_lines = NULL;
   int x, y, height, width;
   int i;
-
+  double vertical_leeway = 0.8;
+  
   /* get paragraph objmap */
   o_map_lines =
     ho_objmap_new_from_bitmap (l_page->m_blocks_lines_mask[block_index]);
@@ -664,20 +669,20 @@ ho_layout_get_line_line_mask (const ho_layout * l_page, int block_index,
 
   /* get sum leeway */
   x -= l_page->m_blocks_text[block_index]->font_width;
-  y -= l_page->m_blocks_text[block_index]->font_height;
-  width += l_page->m_blocks_text[block_index]->font_width * 2;
-  height += 5 * l_page->m_blocks_text[block_index]->font_height / 2;
-
+  y -= (int)(vertical_leeway * (double)height);
+  width += 2 * l_page->m_blocks_text[block_index]->font_width;
+  height += 2 * (int)(vertical_leeway * (double)height);
+  
   /* sanity check */
   if (x < 0)
     x = 0;
-  if (x + width > l_page->m_blocks_text[block_index]->width)
-    width = l_page->m_blocks_text[block_index]->width - x;
   if (y < 0)
     y = 0;
+  if (x + width > l_page->m_blocks_text[block_index]->width)
+    width = l_page->m_blocks_text[block_index]->width - x;
   if (y + height > l_page->m_blocks_text[block_index]->height)
     height = l_page->m_blocks_text[block_index]->height - y;
-
+  
   m_temp = ho_objmap_to_bitmap_by_index (o_map_lines, line_index);
 
   ho_objmap_free (o_map_lines);

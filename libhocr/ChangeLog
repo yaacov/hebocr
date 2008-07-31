@@ -1,3 +1,9 @@
+libhocr (0.10.17)
+
+ * Font recognition fine tuning
+ 
+ -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 27 July 2008 09:04
+
 libhocr (0.10.16)
 
  * Update hocr-gtk Hebrew translation

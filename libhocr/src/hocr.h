@@ -127,7 +127,7 @@ extern "C"
  */
   ho_layout *hocr_layout_analysis (const ho_bitmap * m_in,
     const int font_spacing_code, const int paragraph_setup,
-    const int slicing_threshold, const int slicing_width,
+    const int slicing_threshold, const int slicing_width, const int line_leeway,
     const unsigned char dir_ltr, int *progress);
 
 /**
@@ -179,7 +179,7 @@ extern "C"
     const unsigned char adaptive,
     const unsigned char threshold, const unsigned char a_threshold,
     const int font_spacing_code, const int paragraph_setup,
-    const int slicing_threshold, const int slicing_width,
+    const int slicing_threshold, const int slicing_width, const int line_leeway,
     const unsigned char dir_ltr,
     const unsigned char html, int font_code, const unsigned char nikud,
     const unsigned char do_linguistics, int *progress);
