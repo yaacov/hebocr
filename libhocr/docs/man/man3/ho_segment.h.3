@@ -1,4 +1,4 @@
-.TH "src/ho_segment.h" 3 "23 Jul 2008" "Version 0.10.14" "libhocr" \" -*- nroff -*-
+.TH "src/ho_segment.h" 3 "31 Jul 2008" "Version 0.10.17" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -40,7 +40,7 @@ src/ho_segment.h \- libhocr C language header.
 .RI "\fBho_bitmap\fP * \fBho_segment_words\fP (const \fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map, const char font_spacing_code)"
 .br
 .ti -1c
-.RI "\fBho_bitmap\fP * \fBho_segment_fonts\fP (const \fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.RI "\fBho_bitmap\fP * \fBho_segment_fonts\fP (const \fBho_bitmap\fP *m, const \fBho_bitmap\fP *m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width, const unsigned char line_leeway)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -190,7 +190,7 @@ a newly allocated bitmap
 .RE
 .PP
 
-.SS "\fBho_bitmap\fP* ho_segment_fonts (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width)"
+.SS "\fBho_bitmap\fP* ho_segment_fonts (const \fBho_bitmap\fP * m, const \fBho_bitmap\fP * m_line_map, const unsigned char slicing_threshold, const unsigned char slicing_width, const unsigned char line_leeway)"
 .PP
 return a bitmap of the interfont spaces 
 .PP
@@ -203,6 +203,8 @@ return a bitmap of the interfont spaces
 \fIslicing_threshold\fP percent of line fill declared space between fonts 
 .br
 \fIslicing_width\fP percent of font width above try to choop font in two 
+.br
+\fIline_leeway\fP percent of line height to use above and below line 
 .RE
 .PP
 \fBReturns:\fP

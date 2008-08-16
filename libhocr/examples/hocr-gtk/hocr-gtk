@@ -1343,9 +1343,9 @@ def main():
     main_window.window_main.show()
     
     # hide not implemented fonts
-    #main_window.separatormenuitem_font.hide()
-    #main_window.menuitem_font.hide()
-    #main_window.menuitem_font_1.set_active(True)
+    main_window.separatormenuitem_font.hide()
+    main_window.menuitem_font.hide()
+    main_window.menuitem_font_1.set_active(True)
     
     # if no tesseract hide the tesseract option
     if not have_tesseract:

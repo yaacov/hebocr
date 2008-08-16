@@ -106,7 +106,7 @@ ho_pixbuf_clone_window (const ho_pixbuf * m, const int x, const int y,
   const int width, const int height)
 {
   ho_pixbuf *m_out;
-  int i, x1, y1;
+  int x1, y1;
   unsigned char val;
 
   /* allocate memory */
@@ -252,8 +252,6 @@ ho_pixbuf_new_from_layout (const ho_layout * lay_in,
 {
   ho_pixbuf *pix_out = NULL;
   ho_bitmap *m_block_frame = NULL;
-  ho_bitmap *m_word_text = NULL;
-  ho_bitmap *m_word_mask = NULL;
   ho_bitmap *m_word_font_mask = NULL;
   int block_index;
   int line_index;
@@ -979,7 +977,6 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
   ho_pixbuf *pix = NULL;
   ho_pixbuf *pix_temp = NULL;
   ho_bitmap *m_bw = NULL;
-  unsigned char nead_to_free_pix = FALSE;
 
   /* if pix is color convert to gray scale */
   if (pix_in->n_channels > 1)
@@ -1544,7 +1541,6 @@ ho_pixbuf_pnm_load (const char *filename)
   int width = 0;
   int height = 0;
   int x, y, rowstride;
-  int i;
 
   /* if no input file name use stdin for input */
   if (!filename || filename[0] == '\0'

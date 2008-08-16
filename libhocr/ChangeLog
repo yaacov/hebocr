@@ -1,6 +1,12 @@
 libhocr (0.10.17)
 
  * Font recognition fine tuning
+ * Add tiff and jpeg formats output to hocr utility
+ * Add left to right options to hocr and hocr-gtk utilities
+ * Oron Peled <oron_at_actcom.co.il> :
+   - Fix hocr-gtk and sane-pygtk desktop files 
+   - Fix pkg-config files
+   - code cleanups: missings includes and unused vars
  
  -- Yaacov Zamir <kzamir_at_walla.co.il>  Monday, 27 July 2008 09:04
 

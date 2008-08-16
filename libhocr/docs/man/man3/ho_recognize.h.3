@@ -1,4 +1,4 @@
-.TH "src/ho_recognize.h" 3 "23 Jul 2008" "Version 0.10.14" "libhocr" \" -*- nroff -*-
+.TH "src/ho_recognize.h" 3 "31 Jul 2008" "Version 0.10.17" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -352,10 +352,10 @@ src/ho_recognize.h \- libhocr C language header.
 .RI "int \fBho_recognize_create_array_out\fP (const double *array_in, double *array_out, int font_code)"
 .br
 .ti -1c
-.RI "const char * \fBho_recognize_array_out_to_font\fP (const double *array_out)"
+.RI "const char * \fBho_recognize_array_out_to_font\fP (const double *array_out, int *this_char_i)"
 .br
 .ti -1c
-.RI "const char * \fBho_recognize_font\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, int font_code)"
+.RI "const char * \fBho_recognize_font\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, int font_code, unsigned char do_linguistics, unsigned char word_end, unsigned char word_start, int *this_char_i, int last_char_i)"
 .br
 .ti -1c
 .RI "int \fBho_recognize_dimentions\fP (const \fBho_bitmap\fP *m_text, const \fBho_bitmap\fP *m_mask, double *height, double *width, double *top, double *bottom, double *top_left, double *top_mid, double *top_right, double *mid_left, double *mid_right, double *bottom_left, double *bottom_mid, double *bottom_right, double *has_two_hlines_up, double *has_two_hlines_down, double *has_three_hlines_up, double *has_three_hlines_down)"
@@ -616,9 +616,9 @@ libhocr - LIBrary for Hebrew Optical Character Recognition
 .PP
 .SS "int ho_recognize_create_array_out (const double * array_in, double * array_out, int font_code)"
 .PP
-.SS "const char* ho_recognize_array_out_to_font (const double * array_out)"
+.SS "const char* ho_recognize_array_out_to_font (const double * array_out, int * this_char_i)"
 .PP
-.SS "const char* ho_recognize_font (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, int font_code)"
+.SS "const char* ho_recognize_font (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, int font_code, unsigned char do_linguistics, unsigned char word_end, unsigned char word_start, int * this_char_i, int last_char_i)"
 .PP
 .SS "int ho_recognize_dimentions (const \fBho_bitmap\fP * m_text, const \fBho_bitmap\fP * m_mask, double * height, double * width, double * top, double * bottom, double * top_left, double * top_mid, double * top_right, double * mid_left, double * mid_right, double * bottom_left, double * bottom_mid, double * bottom_right, double * has_two_hlines_up, double * has_two_hlines_down, double * has_three_hlines_up, double * has_three_hlines_down)"
 .PP

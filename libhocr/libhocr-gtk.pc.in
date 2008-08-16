@@ -1,7 +1,7 @@
 prefix=@prefix@
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
 
 Name: libhocr-gtk
 Description: A C library for hebrew optical character recognition (with GTK support)
@@ -9,4 +9,4 @@ Version: @VERSION@
 
 Requires: @requires_gtk@
 Libs: -lhocr -lhocrgtk -lm
-Cflags: -I${includedir}/libhocr
+Cflags: -I@pkgincludedir@

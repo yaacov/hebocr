@@ -55,7 +55,6 @@ ho_font_main_sign (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   int line_start, line_end, line_height;
   unsigned char is_inside;
   unsigned char is_dot;
-  unsigned char is_long_font;
   int count_dots;
 
   /* get line_height */
@@ -147,13 +146,9 @@ ho_font_second_object (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_objmap *o_obj = NULL;
   ho_bitmap *m_sign_mask = NULL;
   ho_bitmap *m_current_object = NULL;
-  int x, y, y1, y2, x1, x2;
+  int x, y;
   int i, dy;
   int line_start, line_end, line_height;
-  unsigned char is_inside;
-  unsigned char is_dot;
-  unsigned char is_long_font;
-  int count_dots;
 
   /* get line_height */
   x = m_mask->width / 2;
@@ -445,8 +440,7 @@ ho_font_diagonal (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_main_font = NULL;
   ho_bitmap *m_temp = NULL;
   ho_bitmap *m_bars = NULL;
-  ho_bitmap *m_out = NULL;
-  int sum, i, x, y, line_height, y_start;
+  int sum, x, y, line_height, y_start;
   int threshold = 90;
 
   /* get font height */
@@ -513,8 +507,7 @@ ho_font_diagonal_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_main_font = NULL;
   ho_bitmap *m_temp = NULL;
   ho_bitmap *m_bars = NULL;
-  ho_bitmap *m_out = NULL;
-  int sum, i, x, y, line_height, y_start;
+  int sum, x, y, line_height, y_start;
   int threshold = 90;
 
   /* get font height */
@@ -580,7 +573,7 @@ ho_font_thin_naive (const ho_bitmap * m_text, const ho_bitmap * m_mask)
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
 
-  int sum, i, x, y, line_height, y_start;
+  int sum, x, y, line_height, y_start;
   unsigned char direction;
   unsigned char thin = TRUE;
   unsigned char thinned = TRUE;
@@ -836,7 +829,7 @@ ho_font_thin (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  int sum, i, x, y, line_height, y_start;
+  int sum, x, y, line_height, y_start;
 
   /* get font height */
   sum = 0;
@@ -896,10 +889,9 @@ ho_font_edges_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int sum, i, x, y, line_height, y_start;
+  int sum, x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 10;
 
@@ -1007,10 +999,9 @@ ho_font_edges_top_big (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int sum, i, x, y, line_height, y_start;
+  int sum, x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 20;
 
@@ -1118,10 +1109,9 @@ ho_font_edges_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 0;
   int sum;
@@ -1238,10 +1228,9 @@ ho_font_edges_bottom_big (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 10;
   int sum;
@@ -1358,10 +1347,9 @@ ho_font_edges_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 3;
   int sum;
@@ -1474,10 +1462,9 @@ ho_font_edges_left_big (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 10;
   int sum;
@@ -1592,10 +1579,9 @@ ho_font_edges_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 5;
   int sum;
@@ -1709,10 +1695,9 @@ ho_font_edges_right_big (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 10;
   int sum;
@@ -1826,10 +1811,9 @@ ho_font_notch_top (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 0;
   int sum;
@@ -2052,10 +2036,9 @@ ho_font_notch_left (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 0;
   int sum;
@@ -2167,10 +2150,9 @@ ho_font_notch_right (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 0;
   int sum;

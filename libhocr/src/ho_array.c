@@ -865,7 +865,7 @@ ho_array_median_filter (const ho_array * ar)
 ho_array *
 ho_array_max_filter (const ho_array * ar)
 {
-  int i, j, x, y;
+  int i, x, y;
 
   double max;
 
@@ -928,7 +928,7 @@ ho_array_max_filter (const ho_array * ar)
 ho_array *
 ho_array_min_filter (const ho_array * ar)
 {
-  int i, j, x, y;
+  int i, x, y;
 
   double min;
 
@@ -1751,7 +1751,7 @@ ho_array_fft_shift (const ho_array * ar_r, const ho_array * ar_im,
 unsigned char
 ho_array_fft_filter (ho_array * ar, const ho_array * ar_filter)
 {
-  int w, h, x, y;
+  int w, h;
 
   ho_array *ar_shift;
 

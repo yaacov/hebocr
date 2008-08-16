@@ -51,7 +51,6 @@ ho_segment_paragraphs_fine (const ho_bitmap * m, const unsigned char box,
   ho_bitmap *m_clean;
   ho_bitmap *m_temp1;
   ho_bitmap *m_out;
-  int x, y;
 
   /* take only "regular" fonts */
   m_clean = ho_bitmap_filter_by_size (m,
@@ -458,8 +457,6 @@ ho_segment_fonts (const ho_bitmap * m, const ho_bitmap * m_line_map,
   const unsigned char slicing_threshold, const unsigned char slicing_width,
   const unsigned char line_leeway)
 {
-  int return_val;
-
   ho_bitmap *m_temp;
   ho_bitmap *m_font;
   ho_bitmap *m_font_temp;

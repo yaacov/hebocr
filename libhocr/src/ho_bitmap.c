@@ -471,7 +471,6 @@ ho_bitmap_set_height (const ho_bitmap * m, const int height, const int top,
 {
   ho_bitmap *m_out;
   int x, y, locale_top, locale_bottom, locale_height;
-  unsigned char sum;
 
   /* 
    * allocate memory 
@@ -530,7 +529,6 @@ ho_bitmap_set_height_from_bottom (const ho_bitmap * m, const int height,
 {
   ho_bitmap *m_out;
   int x, y, locale_top, locale_bottom, locale_height;
-  unsigned char sum;
 
   /* 
    * allocate memory 

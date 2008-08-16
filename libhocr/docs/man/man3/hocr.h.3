@@ -1,4 +1,4 @@
-.TH "src/hocr.h" 3 "23 Jul 2008" "Version 0.10.14" "libhocr" \" -*- nroff -*-
+.TH "src/hocr.h" 3 "31 Jul 2008" "Version 0.10.17" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -32,6 +32,8 @@ src/hocr.h \- libhocr main C language header.
 .br
 \fC#include <ho_recognize_nikud.h>\fP
 .br
+\fC#include <ho_linguistics.h>\fP
+.br
 \fC#include <ho_string.h>\fP
 .br
 
@@ -49,16 +51,16 @@ src/hocr.h \- libhocr main C language header.
 .RI "\fBho_bitmap\fP * \fBhocr_image_processing\fP (const \fBho_pixbuf\fP *pix_in, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, int *progress)"
 .br
 .ti -1c
-.RI "\fBho_layout\fP * \fBhocr_layout_analysis\fP (const \fBho_bitmap\fP *m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, int *progress)"
+.RI "\fBho_layout\fP * \fBhocr_layout_analysis\fP (const \fBho_bitmap\fP *m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const int line_leeway, const unsigned char dir_ltr, int *progress)"
 .br
 .ti -1c
-.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, const unsigned char nikud, int *progress)"
+.RI "int \fBhocr_font_recognition\fP (const \fBho_layout\fP *l_page, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, const unsigned char nikud, unsigned char do_linguistics, int *progress)"
 .br
 .ti -1c
-.RI "int \fBhocr_do_ocr_fine\fP (const \fBho_pixbuf\fP *pix_in, \fBho_string\fP *s_text_out, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, const unsigned char html, int font_code, const unsigned char nikud, int *progress)"
+.RI "int \fBhocr_do_ocr_fine\fP (const \fBho_pixbuf\fP *pix_in, \fBho_string\fP *s_text_out, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const int line_leeway, const unsigned char dir_ltr, const unsigned char html, int font_code, const unsigned char nikud, const unsigned char do_linguistics, int *progress)"
 .br
 .ti -1c
-.RI "int \fBhocr_do_ocr\fP (const \fBho_pixbuf\fP *pix_in, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, int *progress)"
+.RI "int \fBhocr_do_ocr\fP (const \fBho_pixbuf\fP *pix_in, \fBho_string\fP *s_text_out, const unsigned char html, int font_code, const unsigned char do_linguistics, int *progress)"
 .br
 .ti -1c
 .RI "const char * \fBhocr_get_build_string\fP ()"
@@ -111,7 +113,7 @@ newly allocated gray \fBho_bitmap\fP
 
 .PP
 Referenced by hocr::Hocr::do_image_processing().
-.SS "\fBho_layout\fP* hocr_layout_analysis (const \fBho_bitmap\fP * m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, int * progress)"
+.SS "\fBho_layout\fP* hocr_layout_analysis (const \fBho_bitmap\fP * m_in, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const int line_leeway, const unsigned char dir_ltr, int * progress)"
 .PP
 new \fBho_layout\fP
 .PP
@@ -140,7 +142,7 @@ a newly allocated and filled layout
 
 .PP
 Referenced by hocr::Hocr::do_layout_analysis().
-.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, const unsigned char nikud, int * progress)"
+.SS "int hocr_font_recognition (const \fBho_layout\fP * l_page, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, const unsigned char nikud, unsigned char do_linguistics, int * progress)"
 .PP
 fill a text buffer with fonts recognized from a page layout
 .PP
@@ -167,7 +169,7 @@ FALSE
 
 .PP
 Referenced by hocr::Hocr::do_font_recognition().
-.SS "int hocr_do_ocr_fine (const \fBho_pixbuf\fP * pix_in, \fBho_string\fP * s_text_out, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const unsigned char dir_ltr, const unsigned char html, int font_code, const unsigned char nikud, int * progress)"
+.SS "int hocr_do_ocr_fine (const \fBho_pixbuf\fP * pix_in, \fBho_string\fP * s_text_out, const unsigned char scale, const unsigned char no_auto_scale, double rotate, const unsigned char no_auto_rotate, const unsigned char adaptive, const unsigned char threshold, const unsigned char a_threshold, const int font_spacing_code, const int paragraph_setup, const int slicing_threshold, const int slicing_width, const int line_leeway, const unsigned char dir_ltr, const unsigned char html, int font_code, const unsigned char nikud, const unsigned char do_linguistics, int * progress)"
 .PP
 do ocr on a pixbuf
 .PP
@@ -218,7 +220,7 @@ FALSE
 .RE
 .PP
 
-.SS "int hocr_do_ocr (const \fBho_pixbuf\fP * pix_in, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, int * progress)"
+.SS "int hocr_do_ocr (const \fBho_pixbuf\fP * pix_in, \fBho_string\fP * s_text_out, const unsigned char html, int font_code, const unsigned char do_linguistics, int * progress)"
 .PP
 do ocr on a pixbuf, using default values
 .PP

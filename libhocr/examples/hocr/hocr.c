@@ -26,10 +26,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 
 #include "hocr.h"
 
 #ifdef USE_GTK
+#include <gtk/gtkmain.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "ho_gtk.h"
 #endif

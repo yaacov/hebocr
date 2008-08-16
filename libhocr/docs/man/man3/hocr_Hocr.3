@@ -1,4 +1,4 @@
-.TH "hocr::Hocr" 3 "23 Jul 2008" "Version 0.10.14" "libhocr" \" -*- nroff -*-
+.TH "hocr::Hocr" 3 "31 Jul 2008" "Version 0.10.17" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -74,6 +74,14 @@ hocr::Hocr \- \fBHocr\fP class.
 .br
 .RI "\fIdo bitmap opening \fP"
 .ti -1c
+.RI "int \fBdo_bitmap_erosion\fP ()"
+.br
+.RI "\fIdo bitmap erosion \fP"
+.ti -1c
+.RI "int \fBdo_bitmap_dilation\fP ()"
+.br
+.RI "\fIdo bitmap dilation \fP"
+.ti -1c
 .RI "int \fBdo_layout_analysis\fP ()"
 .br
 .RI "\fIdo layout analysis \fP"
@@ -109,6 +117,10 @@ hocr::Hocr \- \fBHocr\fP class.
 .RI "unsigned char \fBset_nikud\fP (const unsigned char nikud_in)"
 .br
 .RI "\fIset nikud param \fP"
+.ti -1c
+.RI "unsigned char \fBset_dir_ltr\fP (const unsigned char dir_ltr_in)"
+.br
+.RI "\fIset dir_ltr param \fP"
 .ti -1c
 .RI "unsigned char \fBset_scale\fP (const unsigned char scale_in)"
 .br
@@ -154,9 +166,17 @@ hocr::Hocr \- \fBHocr\fP class.
 .br
 .RI "\fIset slicing_threshold param \fP"
 .ti -1c
+.RI "int \fBset_line_leeway\fP (const int line_leeway_in)"
+.br
+.RI "\fIset line_leeway param \fP"
+.ti -1c
 .RI "unsigned char \fBset_no_auto_rotate\fP (const unsigned char no_auto_rotate_in)"
 .br
 .RI "\fIset no_auto_rotate \fP"
+.ti -1c
+.RI "unsigned char \fBset_do_linguistics\fP (const unsigned char do_linguistics_in)"
+.br
+.RI "\fIset do_linguistics \fP"
 .ti -1c
 .RI "int \fBget_paragraph_setup\fP ()"
 .br
@@ -370,6 +390,30 @@ do bitmap opening
 
 .PP
 References ho_bitmap_free(), and ho_bitmap_opening().
+.SS "int hocr::Hocr::do_bitmap_erosion ()\fC [inline]\fP"
+.PP
+do bitmap erosion 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_erosion(), and ho_bitmap_free().
+.SS "int hocr::Hocr::do_bitmap_dilation ()\fC [inline]\fP"
+.PP
+do bitmap dilation 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_dilation(), and ho_bitmap_free().
 .SS "int hocr::Hocr::do_layout_analysis ()\fC [inline]\fP"
 .PP
 do layout analysis 
@@ -482,6 +526,21 @@ set nikud param
 \fBReturns:\fP
 .RS 4
 nikud of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_dir_ltr (const unsigned char dir_ltr_in)\fC [inline]\fP"
+.PP
+set dir_ltr param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdir_ltr_in\fP new value of dir_ltr param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+dir_ltr of objct 
 .RE
 .PP
 
@@ -630,6 +689,21 @@ slicing_threshold of objct
 .RE
 .PP
 
+.SS "int hocr::Hocr::set_line_leeway (const int line_leeway_in)\fC [inline]\fP"
+.PP
+set line_leeway param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIline_leeway_in\fP new value of line_leeway param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+line_leeway of objct 
+.RE
+.PP
+
 .SS "unsigned char hocr::Hocr::set_no_auto_rotate (const unsigned char no_auto_rotate_in)\fC [inline]\fP"
 .PP
 set no_auto_rotate 
@@ -642,6 +716,21 @@ set no_auto_rotate
 \fBReturns:\fP
 .RS 4
 no_auto_rotate of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_do_linguistics (const unsigned char do_linguistics_in)\fC [inline]\fP"
+.PP
+set do_linguistics 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdo_linguistics_in\fP new value of do_linguistics param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+do_linguistics of objct 
 .RE
 .PP
 

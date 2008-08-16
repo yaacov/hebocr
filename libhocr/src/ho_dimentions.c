@@ -488,16 +488,13 @@ ho_dimentions_get_columns_with_x_start (const ho_bitmap * m,
 double
 ho_dimentions_get_lines_angle (const ho_bitmap * m)
 {
-  int i, index, number_of_lines;
-  int x;
+  int i, number_of_lines;
   int y_left, y_right;
   int width;
-  int hlink_value;
   double angle;
   ho_bitmap *m_lines = NULL;
   ho_bitmap *m_temp = NULL;
   ho_objmap *m_obj = NULL;
-  ho_bitmap *m_clean;
 
   /* link lines */
   m_lines = ho_segment_lines (m);

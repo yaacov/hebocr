@@ -1,4 +1,4 @@
-.TH "src/ho_bitmap.h" 3 "23 Jul 2008" "Version 0.10.14" "libhocr" \" -*- nroff -*-
+.TH "src/ho_bitmap.h" 3 "31 Jul 2008" "Version 0.10.17" "libhocr" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -237,7 +237,7 @@ FALSE
 .PP
 
 .PP
-Referenced by hocr::Hocr::do_bitmap_closing(), hocr::Hocr::do_bitmap_opening(), hocr::Hocr::do_image_processing(), hocr::Hocr::set_bitmap(), hocr::Hocr::set_pixbuf(), and hocr::Hocr::~Hocr().
+Referenced by hocr::Hocr::do_bitmap_closing(), hocr::Hocr::do_bitmap_dilation(), hocr::Hocr::do_bitmap_erosion(), hocr::Hocr::do_bitmap_opening(), hocr::Hocr::do_image_processing(), hocr::Hocr::set_bitmap(), hocr::Hocr::set_pixbuf(), and hocr::Hocr::~Hocr().
 .SS "\fBho_bitmap\fP* ho_bitmap_clone (const \fBho_bitmap\fP * m)"
 .PP
 copy a bitmap
@@ -467,6 +467,8 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_bitmap_dilation().
 .SS "\fBho_bitmap\fP* ho_bitmap_erosion (const \fBho_bitmap\fP * m)"
 .PP
 erosion of a a bitmap with 3x3 box
@@ -482,6 +484,8 @@ newly allocated \fBho_bitmap\fP
 .RE
 .PP
 
+.PP
+Referenced by hocr::Hocr::do_bitmap_erosion().
 .SS "\fBho_bitmap\fP* ho_bitmap_opening (const \fBho_bitmap\fP * m)"
 .PP
 opening of a a bitmap with 3x3 box

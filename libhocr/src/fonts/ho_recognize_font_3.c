@@ -197,8 +197,6 @@ ho_recognize_font_3_tag (const double *array_in)
 double
 ho_recognize_font_3_two_tags (const double *array_in)
 {
-  int count_edges_top;
-  int count_edges_bottom;
   double return_value = 0.0;
 
   return return_value;

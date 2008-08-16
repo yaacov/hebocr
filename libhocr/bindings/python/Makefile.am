@@ -3,6 +3,9 @@ EXTRA_DIST = hocr.i
 
 if WITH_PYTHON
 
+nodist_python_PYTHON = hocr.py
+nodist_pyexec_PYTHON = _hocr.so
+
 DEPS= $(top_builddir)/src/libhocr.la
 
 CLEANFILES = *.o *.cxx *.so *wrap* *.py
@@ -24,9 +27,7 @@ endif
 hocr_wrap.cxx: hocr.i
 	swig -python -c++ -threads hocr.i
 
-install-exec-hook: 
-	$(mkinstalldirs) $(DESTDIR)$(PY_MODULES_PATH)
-	$(INSTALL_PROGRAM) _hocr.so $(DESTDIR)$(PY_MODULES_PATH)/_hocr.so 		 
-	$(INSTALL_DATA) hocr.py $(DESTDIR)$(PY_MODULES_PATH)/hocr.py
+install-exec-hook:
+	chmod 755 $(DESTDIR)/$(pyexecdir)/_hocr.so
 
 endif

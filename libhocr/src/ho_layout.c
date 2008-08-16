@@ -38,6 +38,8 @@
 #endif
 
 #include "ho_segment.h"
+#include "ho_dimentions.h"
+
 #include "ho_layout.h"
 
 ho_layout *
@@ -307,9 +309,9 @@ int
 ho_layout_create_line_mask (ho_layout * l_page, const int block_index)
 {
   ho_bitmap *m_block_text = NULL;
-  ho_bitmap *m_temp = NULL;
+  /* ho_bitmap *m_temp = NULL; */
   ho_objmap *o_map_blocks = NULL;
-  int x, y, height, width;
+  /* int x, y, height, width; */
   int i;
 
   m_block_text = ho_layout_get_block_text (l_page, block_index);
@@ -398,7 +400,7 @@ ho_layout_create_word_mask (ho_layout * l_page, const int block_index,
   ho_objmap *o_map_blocks = NULL;
   ho_bitmap *m_line_text = NULL;
   ho_bitmap *m_line_line_mask = NULL;
-  int x, y, height, width;
+  /* int x, y, height, width; */
   int i;
 
   m_line_text = ho_layout_get_line_text (l_page, block_index, line_index);
@@ -476,11 +478,11 @@ ho_layout_create_font_mask (ho_layout * l_page, const int block_index,
   const unsigned char slicing_threshold, const unsigned char slicing_width,
                             const unsigned char line_leeway)
 {
-  ho_objmap *o_map_blocks = NULL;
+  /* ho_objmap *o_map_blocks = NULL; */
   ho_bitmap *m_word_text = NULL;
   ho_bitmap *m_word_line_mask = NULL;
   ho_bitmap *m_word_font_mask = NULL;
-  int x, y, height, width;
+  int x; /*, y, height, width;*/
   int i;
 
   m_word_text = ho_layout_get_word_text (l_page, block_index,
@@ -592,7 +594,6 @@ ho_layout_get_line_text (const ho_layout * l_page, int block_index, int line_ind
   ho_bitmap *m_temp2 = NULL;
   ho_objmap *o_map_lines = NULL;
   int x, y, height, width;
-  int i;
   double vertical_leeway = 0.8;
   
   /* get paragraph objmap */
@@ -649,10 +650,8 @@ ho_layout_get_line_line_mask (const ho_layout * l_page, int block_index,
 {
   ho_bitmap *m_line_mask = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_temp2 = NULL;
   ho_objmap *o_map_lines = NULL;
   int x, y, height, width;
-  int i;
   double vertical_leeway = 0.8;
   
   /* get paragraph objmap */
@@ -699,11 +698,9 @@ ho_layout_get_word_text (const ho_layout * l_page, int block_index, int line_ind
 {
   ho_bitmap *m_word_text = NULL;
   ho_bitmap *m_line_text = NULL;
-  ho_bitmap *m_temp = NULL;
   ho_objmap *o_map_words = NULL;
   int x, y, width, height;
   int x_start, y_start;
-  int i;
 
   /* get paragraph objmap */
   o_map_words =
@@ -742,11 +739,9 @@ ho_layout_get_word_line_mask (const ho_layout * l_page, int block_index,
 {
   ho_bitmap *m_word_line_mask = NULL;
   ho_bitmap *m_line_mask = NULL;
-  ho_bitmap *m_temp = NULL;
   ho_objmap *o_map_words = NULL;
   int x, y, width, height;
   int x_start, y_start;
-  int i;
 
   /* get paragraph objmap */
   o_map_words =
@@ -777,8 +772,6 @@ ho_layout_get_font_text (const ho_layout * l_page, int block_index, int line_ind
   ho_bitmap *m_font_text = NULL;
   ho_bitmap *m_word_text = NULL;
   ho_bitmap *m_word_font_mask = NULL;
-  ho_bitmap *m_temp = NULL;
-  ho_objmap *o_map_words = NULL;
   int x, y, width, height;
   int x_start, x_end;
   int i;
@@ -838,9 +831,7 @@ ho_layout_get_font_line_mask (const ho_layout * l_page, int block_index,
   ho_bitmap *m_font_line_mask = NULL;
   ho_bitmap *m_word_line_mask = NULL;
   ho_bitmap *m_word_font_mask = NULL;
-  ho_bitmap *m_temp = NULL;
-  ho_objmap *o_map_words = NULL;
-  int x, y, width, height;
+  int x, width, height;
   int x_start, x_end;
   int i;
   int index;

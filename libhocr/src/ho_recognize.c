@@ -46,6 +46,8 @@
 #include "fonts/ho_recognize_font_2.h"
 #include "fonts/ho_recognize_font_3.h"
 #include "fonts/ho_recognize_font_4.h"
+#include "fonts/ho_recognize_font_5.h"
+#include "fonts/ho_recognize_font_6.h"
 
 #include "ho_recognize.h"
 
