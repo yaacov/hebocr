@@ -7,6 +7,10 @@ he_sane-pygtk.po sv_sane-pygtk.po \
 he/hocr-gtk.mo sv/hocr-gtk.mo \
 he/sane-pygtk.mo sv/sane-pygtk.mo
 
+hocr-gtk.pot:
+	echo "Generating POT files"
+	sh gettext-bootstrap.sh
+
 if WITH_HOCR_GTK
 
 bin_SCRIPTS = hocr-gtk sane-pygtk
