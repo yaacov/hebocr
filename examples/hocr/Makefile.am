@@ -1,29 +1,29 @@
-EXTRA_DIST = hocr.c
+EXTRA_DIST = hebocr.c
 
 if WITH_HOCR
 
 INCLUDES=-I$(top_srcdir)/src
 
-DEPS= $(top_builddir)/src/libhocr.la
-ldadd= $(top_builddir)/src/libhocr.la -lm
+DEPS= $(top_builddir)/src/libhebocr.la
+ldadd= $(top_builddir)/src/libebhocr.la -lm
 
-bin_PROGRAMS= hocr
+bin_PROGRAMS= hebocr
 
-hocr_SOURCES = hocr.c
-hocr_CFLAGS = \
+hebocr_SOURCES = hebocr.c
+hebocr_CFLAGS = \
         $(glib_CFLAGS) \
         $(gtk_CFLAGS) \
         $(hspell_CFLAGS) \
         $(tiff_CFLAGS) \
         $(fftw_CFLAGS) \
         -DBUILD=\"$(BUILD_STR)\" 
-hocr_LDADD= \
+hebocr_LDADD= \
         $(glib_LIBS) \
         $(gtk_LIBS) \
         $(hspell_LIBS) \
         $(tiff_LIBS) \
         $(fftw_LIBS) \
-        $(libhocr_la_LIBADD) \
+        $(hebocr_la_LIBADD) \
         $(top_builddir)/src/*.o -lm
 
 endif

@@ -8,9 +8,9 @@ INCLUDES = \
         -DBUILD=\"$(BUILD_STR)\" \
         -DVERSION=\"$(VERSION)\"
 
-lib_LTLIBRARIES = libhocr.la
+lib_LTLIBRARIES = libhebocr.la
 
-libhocr_la_SOURCES = \
+libhebocr_la_SOURCES = \
         hocr.c \
         ho_pixbuf.c \
         ho_array.c \
@@ -34,14 +34,14 @@ libhocr_la_SOURCES = \
         ho_linguistics.c \
         ho_layout.c
      
-libhocr_la_LDFLAGS = -version-info 0:0:0
+libhebocr_la_LDFLAGS = -version-info 0:0:0
 
-libhocr_la_LIBADD = \
+libhebocr_la_LIBADD = \
         $(hspell_LIBS) \
         $(tiff_LIBS) \
         $(fftw_LIBS)
         
-library_includedir = $(includedir)/libhocr
+library_includedir = $(includedir)/hebocr
 library_include_HEADERS = \
          hocr.h \
          hocrpp.h \
@@ -71,19 +71,19 @@ library_include_HEADERS = \
 # libhocrgtk, helper functions to use hocr in gtk programs
 if WITH_GTK
 
-lib_LTLIBRARIES += libhocrgtk.la
+lib_LTLIBRARIES += libhebocrgtk.la
 
-libhocrgtk_la_SOURCES = \
+libhebocrgtk_la_SOURCES = \
         ho_gtk.c
 
-libhocrgtk_la_CFLAGS = \
+libhebocrgtk_la_CFLAGS = \
         $(gtk_CFLAGS)
         
-libhocrgtk_la_LIBADD = \
+libhebocrgtk_la_LIBADD = \
         $(gtk_LIBS) \
-        $(libhocr_la_LIBADD) \
-        -L. -lhocr
+        $(libhebocr_la_LIBADD) \
+        -L. -lhebocr
         
-libhocrgtk_la_LDFLAGS = $(libhocr_la_LDFLAGS)
+libhebocrgtk_la_LDFLAGS = $(libhebocr_la_LDFLAGS)
 
 endif

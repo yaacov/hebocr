@@ -1,4 +1,4 @@
-Working in HOCR
+Working in hebOCR
 -------------------
 
    When writing HOCR our priorities are
@@ -7,13 +7,13 @@ Working in HOCR
 	2) Maintainable & Documented.
 	3) Modular and well designed.
 	
-    When you submit code to me for inclusion in HOCR, or when you modify
+    When you submit code to me for inclusion in hebOCR, or when you modify
     the sources directly on the SVN repository, please keep those things in mind.
 
 	- Clarity of design and function are paramount
-	- Please follow the coding style used HOCR.
+	- Please follow the coding style used hebOCR.
 
-The HOCR coding style.
+The hebOCR coding style.
 --------------------------
 
    Use space for indentation, braces are 
@@ -36,14 +36,14 @@ The HOCR coding style.
 	  that there is a clean and maintainable way to do it.  
 
   - Optimized code that is difficult to maintain has no place in
-	  HOCR and will be dropped.
+	  hebOCR and will be dropped.
 
-   All of this is to ensure the HOCR code will be kept within
+   All of this is to ensure the hebOCR code will be kept within
 reasonable margins of maintainability for the future: Remember, in two
 years you will probably be far too busy to maintain your own
 contributions, and they might become a burden to the program maintainers.
 
 -----------------------
 
-   Cleaning code in HOCR is more important than trying not to break
+   Cleaning code in hebOCR is more important than trying not to break
 existing code.  By all means, code clean ups are always welcome.

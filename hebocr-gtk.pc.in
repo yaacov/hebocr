@@ -8,5 +8,5 @@ Description: A C library for hebrew optical character recognition (with GTK supp
 Version: @VERSION@
 
 Requires: @requires_gtk@
-Libs: -lhocr -lhocrgtk -lm
+Libs: -lhebocr -lhocrgtk -lm
 Cflags: -I@pkgincludedir@

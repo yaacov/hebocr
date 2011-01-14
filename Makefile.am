@@ -8,13 +8,13 @@ EXTRA_DIST = \
 pkgconfigdir = $(libdir)/pkgconfig
 
 if WITH_GTK
-pkgconfig_DATA = libhocr.pc libhocr-gtk.pc
+pkgconfig_DATA = hebocr.pc hebocr-gtk.pc
 else
-pkgconfig_DATA = libhocr.pc
+pkgconfig_DATA = hebocr.pc
 endif
 
-hocrdocdir = ${prefix}/share/doc/libhocr
-hocrdoc_DATA = \
+hebocrdocdir = ${prefix}/share/doc/hebocr
+hebocrdoc_DATA = \
         README \
         AUTHORS \
         COPYING \

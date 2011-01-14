@@ -3,10 +3,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: libhocr
+Name: hebocr
 Description: A C library for hebrew optical character recognition
 Version: @VERSION@
 
 Requires:
-Libs: -lhocr @ld_hspell@ @ld_tiff@ -lm
+Libs: -lhebocr @ld_hspell@ @ld_tiff@ -lm
 Cflags: -I@pkgincludedir@

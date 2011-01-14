@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([libhocr], [0.10.17], [Yaacov Zamir <kzamir@walla.co.il>])
+AC_INIT([hebocr], [0.11], [Diego Iastrubni <diegoiast@gmail.com>])
 AC_CONFIG_AUX_DIR([config])
 
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -288,8 +288,8 @@ dnl output
 
 AC_CONFIG_FILES([
 Makefile
-libhocr.pc
-libhocr-gtk.pc
+hebocr.pc
+hebocr-gtk.pc
 Doxyfile
 src/Makefile
 examples/Makefile

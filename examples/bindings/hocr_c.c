@@ -2,9 +2,16 @@
 /* 
  * hocr_c.c
  *
- * example file for libhocr.
- * compile: gcc -I/usr/include/libhocr -lm -lhocr -o hocr_c hocr_c.c
- * use: hocr_c IMAGE_FILENAME
+ * example file for hebocr.
+ * compile:
+ *    gcc -I /usr/include/hebhocr -lm -lhebocr -o hocr_c hocr_c.c
+ *
+ * if you installed in a different prefix:
+ *    export HEBOCR_PREFIX=/opt/hebocr (for example)
+ *    gcc -I $HEBOCR_PREFIX/include/libhebocr/ -L $HEBOCR_PREFIX/lib/ -lm -lhebocr -o hocr_c hocr_c.c
+ *    LD_LIBRARY_PATH=$HEBOCR_PREFIX/lib ./hocr_c
+ *
+ * usage: hocr_c IMAGE_FILENAME
  *
  * Copyright (C) 2008  Yaacov Zamir <kzamir@walla.co.il>
  */
@@ -45,10 +52,10 @@ main (int argc, char *argv[])
   /* do ocr on picture */
   /* NOTE: we do not use the progress indicator in this program. to use it,
    * create a new thread and sample the value of progress periodically */
-  hocr_do_ocr (pix, text, 0, 0, &progress);
+  hocr_do_ocr (pix, text, 0, 0, 0, &progress);
 
   /* print out the text */
-  printf (text->string);
+  printf ("%s\n", text->string);
 
   /* free picture */
   ho_pixbuf_free (pix);
