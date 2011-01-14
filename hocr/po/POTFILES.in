@@ -1,5 +1,0 @@
-# List of source files containing translatable strings.
-
-examples/hocr-gtk/interface.c
-examples/hocr-gtk/callbacks.c
-
