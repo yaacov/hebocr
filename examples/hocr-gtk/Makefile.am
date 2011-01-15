@@ -9,7 +9,7 @@ he/sane-pygtk.mo sv/sane-pygtk.mo
 
 hocr-gtk.pot:
 	echo "Generating POT files"
-	sh gettext-bootstrap.sh
+	cd $(top_srcdir)/examples/hocr-gtk/; sh gettext-bootstrap.sh
 
 if WITH_HOCR_GTK
 
