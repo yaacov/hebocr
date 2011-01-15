@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([hebocr], [0.11-rc2], [Diego Iastrubni <diegoiast@gmail.com>])
+AC_INIT([hebocr], [0.12.0-dev], [Diego Iastrubni <diegoiast@gmail.com>])
 AC_CONFIG_AUX_DIR([config])
 
 AM_INIT_AUTOMAKE([1.9 foreign])
