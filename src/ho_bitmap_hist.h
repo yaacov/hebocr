@@ -55,8 +55,8 @@ typedef struct
   
   int fill;
   
-  int max_x;
-  int max_y;
+  unsigned int max_x;
+  unsigned int max_y;
   
   int max_x_index;
   int max_y_index;
