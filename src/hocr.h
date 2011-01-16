@@ -90,6 +90,17 @@ extern "C"
 
 /* wrapper function */
 
+
+typedef struct HEBOCR_IMAGE_OPTIONS{
+	unsigned char scale;
+	unsigned char no_auto_scale;
+	double rotate;
+	unsigned char no_auto_rotate;
+	unsigned char adaptive;
+	unsigned char threshold;
+	unsigned char a_threshold;
+} HEBOCR_IMAGE_OPTIONS;
+
 /**
  convert a gray pixbuf to bitmap 
 
@@ -104,14 +115,7 @@ extern "C"
  @param progress a progress indicator 0..100
  @return newly allocated gray ho_bitmap
  */
-  ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in,
-    const unsigned char scale,
-    const unsigned char no_auto_scale,
-    double rotate,
-    const unsigned char no_auto_rotate,
-    const unsigned char adaptive,
-    const unsigned char threshold, const unsigned char a_threshold,
-    int *progress);
+  ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS *options, int *progress);
 
 /**
  new ho_layout 
@@ -172,12 +176,7 @@ extern "C"
  */
   int hocr_do_ocr_fine (const ho_pixbuf * pix_in,
     ho_string * s_text_out,
-    const unsigned char scale,
-    const unsigned char no_auto_scale,
-    double rotate,
-    const unsigned char no_auto_rotate,
-    const unsigned char adaptive,
-    const unsigned char threshold, const unsigned char a_threshold,
+    HEBOCR_IMAGE_OPTIONS *options,
     const int font_spacing_code, const int paragraph_setup,
     const int slicing_threshold, const int slicing_width, const int line_leeway,
     const unsigned char dir_ltr,
