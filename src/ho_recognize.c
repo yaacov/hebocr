@@ -2230,7 +2230,7 @@ ho_recognize_array (const double *array_in, const int sign_index, int font_code)
       break;
     }
   }
-
+#ifdef USE_FONT_2
   else if (font_code == 1)
   {
     switch (sign_index)
@@ -2390,6 +2390,7 @@ ho_recognize_array (const double *array_in, const int sign_index, int font_code)
       break;
     }
   }
+#endif // USE_FONT_2
 
   /* we only use the 0..1 range */
   if (return_value < 0.0)

@@ -27,16 +27,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
+#include "hebocr_globals.h"
 #include "ho_bitmap.h"
 #include "ho_objmap.h"
 #include "ho_segment.h"
@@ -46,6 +37,8 @@
 #include "ho_recognize_font_2.h"
 
 /* font recognition functions */
+
+#ifdef USE_FONT_2
 
 /* functions get an array of doubles 0..1 and return a double 0..1 
  * 0 if this does not look like the font until 1 looks exactly like the font */
@@ -449,3 +442,5 @@ ho_recognize_font_2_tav (const double *array_in)
 
   return return_value;
 }
+
+#endif // USE_FONT_2
