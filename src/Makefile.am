@@ -26,10 +26,6 @@ libhebocr_la_SOURCES = \
         ho_recognize_nikud.c \
         fonts/ho_recognize_font_1.c \
         fonts/ho_recognize_font_2.c \
-        fonts/ho_recognize_font_3.c \
-        fonts/ho_recognize_font_4.c \
-        fonts/ho_recognize_font_5.c \
-        fonts/ho_recognize_font_6.c \
         ho_string.c \
         ho_linguistics.c \
         ho_layout.c
