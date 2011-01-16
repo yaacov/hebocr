@@ -1920,10 +1920,9 @@ ho_font_notch_bottom (const ho_bitmap * m_text, const ho_bitmap * m_mask)
 {
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp = NULL;
-  ho_bitmap *m_clean = NULL;
   int *a_height;
   int dx, dy;
-  int i, x, y, line_height, y_start;
+  int x, y, line_height, y_start;
   int y1, y2, x1, x2;
   int threshold = 2;
   int sum;

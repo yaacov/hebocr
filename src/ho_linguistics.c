@@ -43,8 +43,6 @@ int
 ho_linguistics_adjust_array_out (double *array_out, unsigned char word_end,
   unsigned char word_start, int last_char_i)
 {
-  int i;
-
   const double factor = 0.3;
 
   

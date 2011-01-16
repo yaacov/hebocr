@@ -794,6 +794,8 @@ ho_layout_get_font_text (const ho_layout * l_page, int block_index, int line_ind
   /* count fonts */
   i = -1;
   x = m_word_font_mask->width - 1;
+  x_start = x;
+  x_end = x+1;
   while (x >= 0 && i < index)
   {
     /* get start&end of font */
@@ -854,6 +856,8 @@ ho_layout_get_font_line_mask (const ho_layout * l_page, int block_index,
   /* count fonts */
   i = -1;
   x = m_word_font_mask->width - 1;
+  x_start = x;
+  x_end = x + 1;
   while (x >= 0 && i < index)
   {
     /* get start&end of font */

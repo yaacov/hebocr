@@ -319,13 +319,9 @@ ho_segment_words_fine (const ho_bitmap * m, const ho_bitmap * m_line_map,
   ho_bitmap *m_out = NULL;
   ho_bitmap *m_temp_line_map = NULL;
   
-  int i;
   int x, y;
-  int width;
-  int height;
   int line_height;
   int font_spacing;
-  unsigned char nikud_ret;
 
   /* check for extreem font spacing */
   if (m->font_spacing == 0)
