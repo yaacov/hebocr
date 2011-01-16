@@ -35,6 +35,25 @@
 
 #include "ho_recognize_nikud.h"
 
+/* font shapes codes*/
+static const char *ho_nikud_array[HO_NIKUD_ARRAY_OUT_SIZE] = { "",  /* none */
+  "ָ",                         /* kamatz */
+  "ַ",                         /* patach */
+  "ֵ",                         /* tzere */
+  "ֶ",                         /* segol */
+  "ֹ",                         /* cholam */
+  "ּ",                         /* shorok */
+  "ֻ",                         /* kobotz */
+  "ִ",                         /* chirik */
+  "ְ",                         /* shva */
+  "ֱ",                         /* hataf segol */
+  "ֲ",                         /* hataf patach */
+  "ֳ",                         /* hataf kamatz */
+  "ּ",                         /* dagesh */
+  "ׁ",                         /* shin */
+  "ׂ"                          /* sin */
+};
+
 int
 ho_recognize_nikud_array_in_size ()
 {
