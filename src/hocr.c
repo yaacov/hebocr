@@ -25,17 +25,9 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "hebocr_globals.h"
 #include "hocr.h"
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
 
 /**
  convert a gray pixbuf to bitmap 

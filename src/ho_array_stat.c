@@ -27,19 +27,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
+#include "hebocr_globals.h"
 #include "ho_array_stat.h"
-
-#define square(x) ((x)*(x))
 
 /**
  new ho_array_stat
@@ -142,7 +131,7 @@ ho_array_stat_init (ho_array_stat * ar, const ho_array * pix)
     for (y = 0; y < pix->height; y++)
     {
       value = ho_array_get (pix, x, y);
-      value2 = square (value);
+      value2 = HEBOCR_SQUARE (value);
 
       ho_array_stat_set_sum (ar, x, y, value);
       ho_array_stat_set_sqr_sum (ar, x, y, value2);
@@ -173,7 +162,7 @@ ho_array_stat_add (ho_array_stat * ar, const ho_array * pix)
     for (y = 0; y < pix->height; y++)
     {
       value = ho_array_get (pix, x, y);
-      value2 = square (value);
+      value2 = HEBOCR_SQUARE (value);
 
       ho_array_stat_add_sum (ar, x, y, value);
       ho_array_stat_add_sqr_sum (ar, x, y, value2);
@@ -249,12 +238,12 @@ ho_array_stat_to_array_mask (const ho_array_stat * ar_st, const ho_array * ar)
     {
       avg = ho_array_stat_get_sum (ar_st, x, y) / (double) (ar_st->size);
       avg2 = ho_array_stat_get_sqr_sum (ar_st, x, y) / (double) (ar_st->size);
-      sd2 = avg2 - square (avg);
-      threshold = square (ar_st->threshold) * sd2;
+      sd2 = avg2 - HEBOCR_SQUARE (avg);
+      threshold = HEBOCR_SQUARE (ar_st->threshold) * sd2;
 
       val = ho_array_get (ar, x, y);
 
-      ho_array_set (m_out, x, y, square (val - avg) - threshold);
+      ho_array_set (m_out, x, y, HEBOCR_SQUARE (val - avg) - threshold);
     }
 
   return m_out;

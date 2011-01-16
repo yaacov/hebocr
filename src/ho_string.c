@@ -26,16 +26,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifndef TRUE
-#define TRUE -1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
+#include "hebocr_globals.h"
 #include "ho_string.h"
 
 /* 
