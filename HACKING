@@ -1,0 +1,49 @@
+Working in hebOCR
+-------------------
+
+   When writing HOCR our priorities are
+
+	1) Correctness.
+	2) Maintainable & Documented.
+	3) Modular and well designed.
+	
+    When you submit code to me for inclusion in hebOCR, or when you modify
+    the sources directly on the SVN repository, please keep those things in mind.
+
+	- Clarity of design and function are paramount
+	- Please follow the coding style used hebOCR.
+
+The hebOCR coding style.
+--------------------------
+
+   Use space for indentation, braces are 
+   unindented and on a seperate line. Use indent utility.
+   (indent -bad -bap -bbb -bli0 -fca -i2 -l80 -nlp -psl -sc -sob -ss -ts2 -nut)
+   
+   Use doxygen style documentation.
+   
+   On top of that, you will have to:
+
+	- Follow the hocr namespace convention for function names. 
+	  hocr_submodule_operation
+
+	- Do not optimize unnecesarly.  Do profile, do look for the
+	  weak spots before applying "optimization by feeling".
+
+	- It is more important to keep the code maintainable and
+	  readable than to be optimized.  If you have a great idea about
+	  optimizing the code, make sure it is implemented cleanly,
+	  that there is a clean and maintainable way to do it.  
+
+  - Optimized code that is difficult to maintain has no place in
+	  hebOCR and will be dropped.
+
+   All of this is to ensure the hebOCR code will be kept within
+reasonable margins of maintainability for the future: Remember, in two
+years you will probably be far too busy to maintain your own
+contributions, and they might become a burden to the program maintainers.
+
+-----------------------
+
+   Cleaning code in hebOCR is more important than trying not to break
+existing code.  By all means, code clean ups are always welcome.

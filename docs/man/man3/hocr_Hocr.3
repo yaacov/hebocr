@@ -1,0 +1,782 @@
+.TH "hocr::Hocr" 3 "31 Jul 2008" "Version 0.10.17" "libhocr" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+hocr::Hocr \- \fBHocr\fP class.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <hocrpp.h>\fP
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHocr\fP (\fBho_pixbuf\fP *m_in=NULL)"
+.br
+.RI "\fI\fBHocr\fP constructor. \fP"
+.ti -1c
+.RI "\fB~Hocr\fP ()"
+.br
+.RI "\fI\fBHocr\fP destructor. \fP"
+.ti -1c
+.RI "int \fBset_pixbuf\fP (\fBho_pixbuf\fP *m_in)"
+.br
+.RI "\fIset pixbuf \fP"
+.ti -1c
+.RI "int \fBset_bitmap\fP (\fBho_bitmap\fP *m_in)"
+.br
+.RI "\fIset b/w bitmap \fP"
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBget_pixbuf\fP ()"
+.br
+.RI "\fIget pixbuf \fP"
+.ti -1c
+.RI "\fBho_bitmap\fP * \fBget_bitmap\fP ()"
+.br
+.RI "\fIget bitmap \fP"
+.ti -1c
+.RI "int \fBsave_bitmap_as_pnm\fP (const char *filename)"
+.br
+.RI "\fIsave bitmap as pnm \fP"
+.ti -1c
+.RI "int \fBsave_bitmap_as_tiff\fP (const char *filename)"
+.br
+.RI "\fIsave bitmap as tiff (neads a tiff enabled libhocr) \fP"
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBget_bitmap_pixbuf\fP ()"
+.br
+.RI "\fIget bitmap pixbuf \fP"
+.ti -1c
+.RI "\fBho_pixbuf\fP * \fBget_layout_pixbuf\fP ()"
+.br
+.RI "\fIget layout pixbuf \fP"
+.ti -1c
+.RI "const char * \fBget_text\fP ()"
+.br
+.RI "\fIget text \fP"
+.ti -1c
+.RI "int \fBget_progress\fP ()"
+.br
+.RI "\fIget progress of ocr \fP"
+.ti -1c
+.RI "int \fBdo_image_processing\fP ()"
+.br
+.RI "\fIdo image processing \fP"
+.ti -1c
+.RI "int \fBdo_bitmap_closing\fP ()"
+.br
+.RI "\fIdo bitmap closing \fP"
+.ti -1c
+.RI "int \fBdo_bitmap_opening\fP ()"
+.br
+.RI "\fIdo bitmap opening \fP"
+.ti -1c
+.RI "int \fBdo_bitmap_erosion\fP ()"
+.br
+.RI "\fIdo bitmap erosion \fP"
+.ti -1c
+.RI "int \fBdo_bitmap_dilation\fP ()"
+.br
+.RI "\fIdo bitmap dilation \fP"
+.ti -1c
+.RI "int \fBdo_layout_analysis\fP ()"
+.br
+.RI "\fIdo layout analysis \fP"
+.ti -1c
+.RI "int \fBdo_font_recognition\fP ()"
+.br
+.RI "\fIdo font recognition \fP"
+.ti -1c
+.RI "int \fBdo_ocr\fP ()"
+.br
+.RI "\fIdo ocr \fP"
+.ti -1c
+.RI "int \fBget_html\fP ()"
+.br
+.RI "\fIget html param \fP"
+.ti -1c
+.RI "int \fBset_html\fP (const unsigned char html_in)"
+.br
+.RI "\fIset html param \fP"
+.ti -1c
+.RI "int \fBget_font\fP ()"
+.br
+.RI "\fIget font param \fP"
+.ti -1c
+.RI "int \fBset_font\fP (const int font_in)"
+.br
+.RI "\fIset font param \fP"
+.ti -1c
+.RI "unsigned char \fBget_nikud\fP ()"
+.br
+.RI "\fIget nikud param \fP"
+.ti -1c
+.RI "unsigned char \fBset_nikud\fP (const unsigned char nikud_in)"
+.br
+.RI "\fIset nikud param \fP"
+.ti -1c
+.RI "unsigned char \fBset_dir_ltr\fP (const unsigned char dir_ltr_in)"
+.br
+.RI "\fIset dir_ltr param \fP"
+.ti -1c
+.RI "unsigned char \fBset_scale\fP (const unsigned char scale_in)"
+.br
+.RI "\fIset scale param \fP"
+.ti -1c
+.RI "unsigned char \fBset_auto_scale\fP ()"
+.br
+.RI "\fIset auto_scale param \fP"
+.ti -1c
+.RI "unsigned char \fBset_adaptive\fP (const unsigned char adaptive_in)"
+.br
+.RI "\fIset adaptive param \fP"
+.ti -1c
+.RI "unsigned char \fBset_threshold\fP (const unsigned char threshold_in)"
+.br
+.RI "\fIset threshold param \fP"
+.ti -1c
+.RI "unsigned char \fBset_a_threshold\fP (const unsigned char a_threshold_in)"
+.br
+.RI "\fIset a_threshold param \fP"
+.ti -1c
+.RI "int \fBget_font_spacing_code\fP ()"
+.br
+.RI "\fIget font_spacing_code param \fP"
+.ti -1c
+.RI "int \fBset_font_spacing_code\fP (const int font_spacing_code_in)"
+.br
+.RI "\fIset font_spacing_code param \fP"
+.ti -1c
+.RI "int \fBget_slicing_width\fP ()"
+.br
+.RI "\fIget slicing_width param \fP"
+.ti -1c
+.RI "int \fBset_slicing_width\fP (const int slicing_width_in)"
+.br
+.RI "\fIset slicing_width param \fP"
+.ti -1c
+.RI "int \fBget_slicing_threshold\fP ()"
+.br
+.RI "\fIget slicing_threshold param \fP"
+.ti -1c
+.RI "int \fBset_slicing_threshold\fP (const int slicing_threshold_in)"
+.br
+.RI "\fIset slicing_threshold param \fP"
+.ti -1c
+.RI "int \fBset_line_leeway\fP (const int line_leeway_in)"
+.br
+.RI "\fIset line_leeway param \fP"
+.ti -1c
+.RI "unsigned char \fBset_no_auto_rotate\fP (const unsigned char no_auto_rotate_in)"
+.br
+.RI "\fIset no_auto_rotate \fP"
+.ti -1c
+.RI "unsigned char \fBset_do_linguistics\fP (const unsigned char do_linguistics_in)"
+.br
+.RI "\fIset do_linguistics \fP"
+.ti -1c
+.RI "int \fBget_paragraph_setup\fP ()"
+.br
+.RI "\fIget paragraph setup param \fP"
+.ti -1c
+.RI "int \fBset_paragraph_setup\fP (const int paragraph_setup_in)"
+.br
+.RI "\fIset paragraph setup param \fP"
+.ti -1c
+.RI "const char * \fBget_build_string\fP ()"
+.br
+.RI "\fIget build string \fP"
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBprogress\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBHocr\fP class. 
+
+class for Hebrew Optical Character Recognition 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "hocr::Hocr::Hocr (\fBho_pixbuf\fP * m_in = \fCNULL\fP)\fC [inline]\fP"
+.PP
+\fBHocr\fP constructor. 
+.PP
+References progress.
+.SS "hocr::Hocr::~Hocr ()\fC [inline]\fP"
+.PP
+\fBHocr\fP destructor. 
+.PP
+References ho_bitmap_free(), ho_layout_free(), ho_pixbuf_free(), and ho_string_free().
+.SH "Member Function Documentation"
+.PP 
+.SS "int hocr::Hocr::set_pixbuf (\fBho_pixbuf\fP * m_in)\fC [inline]\fP"
+.PP
+set pixbuf 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_in\fP the pixbuf to use 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_free(), ho_layout_free(), ho_pixbuf_free(), ho_string_free(), and progress.
+.SS "int hocr::Hocr::set_bitmap (\fBho_bitmap\fP * m_in)\fC [inline]\fP"
+.PP
+set b/w bitmap 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIm_in\fP the b/w bitmap to use 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_free(), ho_layout_free(), ho_pixbuf_free(), ho_string_free(), and progress.
+.SS "\fBho_pixbuf\fP* hocr::Hocr::get_pixbuf ()\fC [inline]\fP"
+.PP
+get pixbuf 
+.PP
+\fBReturns:\fP
+.RS 4
+the object pixbuf 
+.RE
+.PP
+
+.SS "\fBho_bitmap\fP* hocr::Hocr::get_bitmap ()\fC [inline]\fP"
+.PP
+get bitmap 
+.PP
+\fBReturns:\fP
+.RS 4
+the object bitmap 
+.RE
+.PP
+
+.SS "int hocr::Hocr::save_bitmap_as_pnm (const char * filename)\fC [inline]\fP"
+.PP
+save bitmap as pnm 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP the the image file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the object bitmap 
+.RE
+.PP
+
+.PP
+References ho_bitmap_pnm_save().
+.SS "int hocr::Hocr::save_bitmap_as_tiff (const char * filename)\fC [inline]\fP"
+.PP
+save bitmap as tiff (neads a tiff enabled libhocr) 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP the the image file name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the object bitmap 
+.RE
+.PP
+
+.PP
+References ho_bitmap_tiff_save().
+.SS "\fBho_pixbuf\fP* hocr::Hocr::get_bitmap_pixbuf ()\fC [inline]\fP"
+.PP
+get bitmap pixbuf 
+.PP
+\fBReturns:\fP
+.RS 4
+a pixbuf of the object bitmap 
+.RE
+.PP
+
+.PP
+References ho_pixbuf_free(), ho_pixbuf_new_from_bitmap(), and ho_pixbuf_to_rgb().
+.SS "\fBho_pixbuf\fP* hocr::Hocr::get_layout_pixbuf ()\fC [inline]\fP"
+.PP
+get layout pixbuf 
+.PP
+\fBReturns:\fP
+.RS 4
+a pixbuf of the object layout 
+.RE
+.PP
+
+.PP
+References ho_pixbuf_new_from_layout().
+.SS "const char* hocr::Hocr::get_text ()\fC [inline]\fP"
+.PP
+get text 
+.PP
+\fBReturns:\fP
+.RS 4
+the recognized text 
+.RE
+.PP
+
+.PP
+References ho_string::string.
+.SS "int hocr::Hocr::get_progress ()\fC [inline]\fP"
+.PP
+get progress of ocr 
+.PP
+\fBReturns:\fP
+.RS 4
+the progress 0..100 
+.RE
+.PP
+
+.PP
+References progress.
+.SS "int hocr::Hocr::do_image_processing ()\fC [inline]\fP"
+.PP
+do image processing 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_free(), hocr_image_processing(), and progress.
+.PP
+Referenced by do_ocr().
+.SS "int hocr::Hocr::do_bitmap_closing ()\fC [inline]\fP"
+.PP
+do bitmap closing 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_closing(), and ho_bitmap_free().
+.SS "int hocr::Hocr::do_bitmap_opening ()\fC [inline]\fP"
+.PP
+do bitmap opening 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_free(), and ho_bitmap_opening().
+.SS "int hocr::Hocr::do_bitmap_erosion ()\fC [inline]\fP"
+.PP
+do bitmap erosion 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_erosion(), and ho_bitmap_free().
+.SS "int hocr::Hocr::do_bitmap_dilation ()\fC [inline]\fP"
+.PP
+do bitmap dilation 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_bitmap_dilation(), and ho_bitmap_free().
+.SS "int hocr::Hocr::do_layout_analysis ()\fC [inline]\fP"
+.PP
+do layout analysis 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_layout_free(), hocr_layout_analysis(), and progress.
+.PP
+Referenced by do_ocr().
+.SS "int hocr::Hocr::do_font_recognition ()\fC [inline]\fP"
+.PP
+do font recognition 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References ho_string_free(), ho_string_new(), hocr_font_recognition(), and progress.
+.PP
+Referenced by do_ocr().
+.SS "int hocr::Hocr::do_ocr ()\fC [inline]\fP"
+.PP
+do ocr 
+.PP
+\fBReturns:\fP
+.RS 4
+0 
+.RE
+.PP
+
+.PP
+References do_font_recognition(), do_image_processing(), and do_layout_analysis().
+.SS "int hocr::Hocr::get_html ()\fC [inline]\fP"
+.PP
+get html param 
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE-no html in output, TRUE-output html text 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_html (const unsigned char html_in)\fC [inline]\fP"
+.PP
+set html param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhtml_in\fP new value of html param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+FALSE-no html in output, TRUE-output html text 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_font ()\fC [inline]\fP"
+.PP
+get font param 
+.PP
+\fBReturns:\fP
+.RS 4
+font code of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_font (const int font_in)\fC [inline]\fP"
+.PP
+set font param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfont_in\fP new value of font param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+font code of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::get_nikud ()\fC [inline]\fP"
+.PP
+get nikud param 
+.PP
+\fBReturns:\fP
+.RS 4
+nikud of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_nikud (const unsigned char nikud_in)\fC [inline]\fP"
+.PP
+set nikud param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInikud_in\fP new value of nikud param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+nikud of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_dir_ltr (const unsigned char dir_ltr_in)\fC [inline]\fP"
+.PP
+set dir_ltr param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdir_ltr_in\fP new value of dir_ltr param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+dir_ltr of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_scale (const unsigned char scale_in)\fC [inline]\fP"
+.PP
+set scale param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIscale_in\fP new value of scale param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+scale of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_auto_scale ()\fC [inline]\fP"
+.PP
+set auto_scale param 
+.PP
+\fBReturns:\fP
+.RS 4
+no_auto_scale of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_adaptive (const unsigned char adaptive_in)\fC [inline]\fP"
+.PP
+set adaptive param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIadaptive_in\fP new value of adaptive param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+adaptive of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_threshold (const unsigned char threshold_in)\fC [inline]\fP"
+.PP
+set threshold param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIthreshold_in\fP new value of threshold param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+threshold of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_a_threshold (const unsigned char a_threshold_in)\fC [inline]\fP"
+.PP
+set a_threshold param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIa_threshold_in\fP new value of a_threshold param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a_threshold of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_font_spacing_code ()\fC [inline]\fP"
+.PP
+get font_spacing_code param 
+.PP
+\fBReturns:\fP
+.RS 4
+font_spacing_code of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_font_spacing_code (const int font_spacing_code_in)\fC [inline]\fP"
+.PP
+set font_spacing_code param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfont_spacing_code_in\fP new value of font_spacing_code param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+font_spacing_code of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_slicing_width ()\fC [inline]\fP"
+.PP
+get slicing_width param 
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_width of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_slicing_width (const int slicing_width_in)\fC [inline]\fP"
+.PP
+set slicing_width param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIslicing_width_in\fP new value of slicing_width param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_width of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_slicing_threshold ()\fC [inline]\fP"
+.PP
+get slicing_threshold param 
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_threshold of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_slicing_threshold (const int slicing_threshold_in)\fC [inline]\fP"
+.PP
+set slicing_threshold param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIslicing_threshold_in\fP new value of slicing_threshold param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+slicing_threshold of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_line_leeway (const int line_leeway_in)\fC [inline]\fP"
+.PP
+set line_leeway param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIline_leeway_in\fP new value of line_leeway param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+line_leeway of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_no_auto_rotate (const unsigned char no_auto_rotate_in)\fC [inline]\fP"
+.PP
+set no_auto_rotate 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIno_auto_rotate_in\fP new value of font_spacing_code param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+no_auto_rotate of objct 
+.RE
+.PP
+
+.SS "unsigned char hocr::Hocr::set_do_linguistics (const unsigned char do_linguistics_in)\fC [inline]\fP"
+.PP
+set do_linguistics 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdo_linguistics_in\fP new value of do_linguistics param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+do_linguistics of objct 
+.RE
+.PP
+
+.SS "int hocr::Hocr::get_paragraph_setup ()\fC [inline]\fP"
+.PP
+get paragraph setup param 
+.PP
+\fBReturns:\fP
+.RS 4
+paragraph setup 
+.RE
+.PP
+
+.SS "int hocr::Hocr::set_paragraph_setup (const int paragraph_setup_in)\fC [inline]\fP"
+.PP
+set paragraph setup param 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIparagraph_setup_in\fP new value of font param 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+paragraph setup of objct 
+.RE
+.PP
+
+.SS "const char* hocr::Hocr::get_build_string ()\fC [inline]\fP"
+.PP
+get build string 
+.PP
+\fBReturns:\fP
+.RS 4
+build string 
+.RE
+.PP
+
+.PP
+References hocr_get_build_string().
+.SH "Field Documentation"
+.PP 
+.SS "int \fBhocr::Hocr::progress\fP"
+.PP
+Referenced by do_font_recognition(), do_image_processing(), do_layout_analysis(), get_progress(), Hocr(), set_bitmap(), and set_pixbuf().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libhocr from the source code.
