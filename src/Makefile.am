@@ -55,31 +55,7 @@ library_include_HEADERS = \
          ho_recognize_nikud.h \
          fonts/ho_recognize_font_1.h \
          fonts/ho_recognize_font_2.h \
-         fonts/ho_recognize_font_3.h \
-         fonts/ho_recognize_font_4.h \
-         fonts/ho_recognize_font_5.h \
-         fonts/ho_recognize_font_6.h \
          ho_layout.h \
          ho_string.h \
-         ho_linguistics.h \
-         ho_gtk.h 
+         ho_linguistics.h
 
-# libhocrgtk, helper functions to use hocr in gtk programs
-if WITH_GTK
-
-lib_LTLIBRARIES += libhebocrgtk.la
-
-libhebocrgtk_la_SOURCES = \
-        ho_gtk.c
-
-libhebocrgtk_la_CFLAGS = \
-        $(gtk_CFLAGS)
-        
-libhebocrgtk_la_LIBADD = \
-        $(gtk_LIBS) \
-        $(libhebocr_la_LIBADD) \
-        -L. -lhebocr
-        
-libhebocrgtk_la_LDFLAGS = $(libhebocr_la_LDFLAGS)
-
-endif

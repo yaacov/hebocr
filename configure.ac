@@ -94,113 +94,6 @@ fi
 AM_CONDITIONAL(WITH_FFTW, test "$build_fftw" = yes)
 
 dnl ============================================================================
-dnl check for glib
-
-build_lib=yes
-
-AC_ARG_ENABLE([glib], 
-  [AS_HELP_STRING([--disable-glib],
-  [do not use glib])],
-  [build_glib=no], [build_glib=yes])
-
-dnl check for glib
-
-if test "$build_glib" = "yes"; then
-    glib_pkg_modules="glib-2.0"
-    PKG_CHECK_MODULES(glib, [$glib_pkg_modules], build_glib=yes, build_glib=no)
-    
-    if test "$build_glib" = "yes"; then
-        glib_CFLAGS+=" -DUSE_GLIB"
-        AC_SUBST(glib_CFLAGS)
-        AC_SUBST(glib_LIBS)
-    fi
-fi
-
-AM_CONDITIONAL(WITH_GLIB, test "$build_glib" = yes)
-
-dnl ============================================================================
-dnl check for gtk
-
-build_gtk=yes
-
-AC_ARG_ENABLE([gtk], 
-  [AS_HELP_STRING([--disable-gtk],
-  [do not use gtk])],
-  [build_gtk=no], [build_gtk=yes])
-
-dnl check for gtk
-
-if test "$build_gtk" = "yes"; then
-    gtk_pkg_modules="gtk+-2.0"
-    PKG_CHECK_MODULES(gtk, [$gtk_pkg_modules], build_gtk=yes, build_gtk=no)
-    
-    if test "$build_gtk" = "yes"; then
-        gtk_CFLAGS+=" -DUSE_GTK"
-        AC_SUBST(gtk_CFLAGS)
-        AC_SUBST(gtk_LIBS)
-    
-        requires_gtk="$gtk_pkg_modules"
-    
-        dnl export required gtk librarys to pkg-config pc file 
-        AC_SUBST(requires_gtk)
-    fi
-fi
-
-AM_CONDITIONAL(WITH_GTK, test "$build_gtk" = yes)
-
-dnl ============================================================================
-dnl check for python
-
-AM_PATH_PYTHON([2.5], [have_python=yes], [have_python=no])
-
-build_python=$have_python
-
-AC_ARG_ENABLE([python], 
-  [AS_HELP_STRING([--disable-python],
-  [do not build python binding])],
-  [build_python=no], [build_python=$have_python])
-
-AC_ARG_WITH(python-sitelib-dir, 
-  [AS_HELP_STRING([--with-python-sitelib-dir=PATH],
-  [path to python site lib])])
-
-if test "$have_python" = "yes"; then
-    PY_PREFIX=`python -c 'import sys ; print sys.prefix'`
-    AC_MSG_CHECKING(for $PY_PREFIX/include/python${PYTHON_VERSION}/Python.h)
-    if test -f $PY_PREFIX/include/python${PYTHON_VERSION}/Python.h; then
-		  AC_MSG_RESULT(yes)
-		  PY_CFLAGS="-I$PY_PREFIX/include/python${PYTHON_VERSION}"
-		  
-		  if test "$with_python_sitelib_dir" = "" ; then
-		    PY_MODULES_PATH=$pythondir
-		  else
-		    PY_MODULES_PATH=$with_python_sitelib_dir
-		  fi
-		  
-		  AC_SUBST([PY_CFLAGS])
-		  AC_SUBST([PY_MODULES_PATH])
-		  
-	  else
-		  AC_MSG_RESULT(no)
-		  build_python=no
-	  fi
-fi
-
-if test "$have_swig" = "no"; then
-  build_python=no
-fi
-
-if test "$build_tiff" = "no"; then
-  build_python=no
-fi
-
-if test "$build_fftw" = "no"; then
-  build_python=no
-fi
-
-AM_CONDITIONAL(WITH_PYTHON, test "$build_python" = "yes")
-
-dnl ============================================================================
 dnl build hspell
 
 build_hspell=yes
@@ -248,22 +141,6 @@ fi
 AM_CONDITIONAL(WITH_HOCR, test "$build_hocr" = "yes")
 
 dnl ============================================================================
-dnl build hocr-gtk
-
-build_hocr_gtk=yes
-
-AC_ARG_ENABLE([hocr-gtk], 
-  [AS_HELP_STRING([--disable-hocr-gtk],
-  [do not build hocr-gtk utility program])],
-  [build_hocr_gtk=no], [build_hocr_gtk=yes])
-
-if test "$build_python" = "no"; then
-  build_hocr_gtk=no
-fi
-
-AM_CONDITIONAL(WITH_HOCR_GTK, test "$build_hocr_gtk" = "yes")
-
-dnl ============================================================================
 dnl create a build string
 
 BUILD_DATE=`date +%d%m%Y`
@@ -289,15 +166,12 @@ dnl output
 AC_CONFIG_FILES([
 Makefile
 hebocr.pc
-hebocr-gtk.pc
 Doxyfile
 src/Makefile
 examples/Makefile
 examples/hocr/Makefile
-examples/hocr-gtk/Makefile
 examples/bindings/Makefile
 bindings/Makefile
-bindings/python/Makefile
 docs/Makefile
 docs/man/Makefile
 docs/man/man1/Makefile
@@ -317,15 +191,7 @@ echo compiler: ${CC}
 echo have swig:	${have_swig}
 echo pkg-config path: ${PKG_CONFIG}
 echo
-echo with glib: ${build_glib}
-echo with gtk: ${build_gtk}
 echo with hspell: ${build_hspell}
 echo with libtiff: ${build_tiff}
 echo with fftw: ${build_fftw}
-echo
-echo build python binding, requires swig, libtiff, fftw: ${build_python}
-echo python site lib path: ${PY_MODULES_PATH}
-echo
-echo build hocr, requires glib, suggests gtk: ${build_hocr}
-echo build hocr-gtk, requires python bindings: ${build_hocr_gtk}
 echo

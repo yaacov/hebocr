@@ -44,5 +44,14 @@
 #	define HEBOCR_SQUARE(x) ((x)*(x))
 #endif
 
+/*
+#ifndef BUILD
+#	define BUILD "Development build"
+#endif 
+
+#ifndef VERSION
+#	define VERSION "0.12"
+#endif    
+*/
 
 #endif // HEBOCR_GLOBALS_H
