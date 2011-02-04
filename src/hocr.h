@@ -107,6 +107,16 @@ typedef struct HEBOCR_IMAGE_OPTIONS{
 	unsigned char a_threshold;
 } HEBOCR_IMAGE_OPTIONS;
 
+typedef struct HEBOCR_LAYOUT_OPTIONS {
+	int font_spacing_code;
+	int paragraph_setup;
+	int slicing_threshold;
+	int slicing_width;
+	int line_leeway;
+	unsigned char dir_ltr;
+	unsigned char html;
+} HEBOCR_LAYOUT_OPTIONS;
+
 /**
  convert a gray pixbuf to bitmap 
 
@@ -135,10 +145,9 @@ typedef struct HEBOCR_IMAGE_OPTIONS{
  @param progress a progress indicator 0..100
  @return a newly allocated and filled layout
  */
-  ho_layout *hocr_layout_analysis (const ho_bitmap * m_in,
-    const int font_spacing_code, const int paragraph_setup,
-    const int slicing_threshold, const int slicing_width, const int line_leeway,
-    const unsigned char dir_ltr, int *progress);
+  ho_layout *hocr_layout_analysis (const ho_bitmap * m_in, 
+   HEBOCR_LAYOUT_OPTIONS layout_options, 
+   int *progress);
 
 /**
  fill a text buffer with fonts recognized from a page layout
@@ -183,10 +192,8 @@ typedef struct HEBOCR_IMAGE_OPTIONS{
   int hocr_do_ocr_fine (const ho_pixbuf * pix_in,
     ho_string * s_text_out,
     HEBOCR_IMAGE_OPTIONS *options,
-    const int font_spacing_code, const int paragraph_setup,
-    const int slicing_threshold, const int slicing_width, const int line_leeway,
-    const unsigned char dir_ltr,
-    const unsigned char html, int font_code, const unsigned char nikud,
+    HEBOCR_LAYOUT_OPTIONS layout_options, 
+    int font_code, const unsigned char nikud,
     const unsigned char do_linguistics, int *progress);
 
  /**

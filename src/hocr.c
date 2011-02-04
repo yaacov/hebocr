@@ -148,16 +148,13 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
  @return a newly allocated and filled layout
  */
 ho_layout *
-hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
-  const int paragraph_setup, const int slicing_threshold,
-  const int slicing_width, const int line_leeway, const unsigned char dir_ltr, int *progress)
+hocr_layout_analysis (const ho_bitmap * m_in, 
+  HEBOCR_LAYOUT_OPTIONS layout_options, 
+  int *progress)
 {
-  int cols = paragraph_setup;
-
+  int cols = layout_options.paragraph_setup;
   int block_index;
-
   int line_index;
-
   int word_index;
 
   ho_layout *layout_out = NULL;
@@ -170,7 +167,7 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
     cols = ho_dimentions_get_columns (m_in);
 
   /* create a new layout */
-  layout_out = ho_layout_new (m_in, font_spacing_code, cols, dir_ltr);
+  layout_out = ho_layout_new (m_in, layout_options.font_spacing_code, cols, layout_options.dir_ltr);
   if (!layout_out)
     return NULL;
 
@@ -193,7 +190,7 @@ hocr_layout_analysis (const ho_bitmap * m_in, const int font_spacing_code,
         word_index < layout_out->n_words[block_index][line_index]; word_index++)
       {
         ho_layout_create_font_mask (layout_out, block_index, line_index,
-          word_index, slicing_threshold, slicing_width, line_leeway);
+          word_index, layout_options.slicing_threshold, layout_options.slicing_width, layout_options.line_leeway);
       }
 
       /* update progress */
@@ -395,18 +392,13 @@ int
 hocr_do_ocr_fine (const ho_pixbuf * pix_in,
   ho_string * s_text_out,
   HEBOCR_IMAGE_OPTIONS *options,
-  const int font_spacing_code, const int paragraph_setup,
-  const int slicing_threshold, const int slicing_width, const int line_leeway,
-  const unsigned char dir_ltr,
-  const unsigned char html, int font_code, const unsigned char nikud,
+  HEBOCR_LAYOUT_OPTIONS layout_options, 
+  int font_code, const unsigned char nikud,
   const unsigned char do_linguistics, int *progress)
 {
   ho_bitmap *m_in = NULL;
-
   ho_layout *l_page = NULL;
-
   int return_val;
-
   if (!pix_in)
     return TRUE;
 
@@ -414,9 +406,7 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
   if (!m_in)
     return TRUE;
 
-  l_page = hocr_layout_analysis (m_in,
-    font_spacing_code, paragraph_setup,
-    slicing_threshold, slicing_width, line_leeway, dir_ltr, progress);
+  l_page = hocr_layout_analysis (m_in, layout_options, progress);
 
   if (!l_page)
   {
@@ -425,7 +415,7 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
   }
 
   return_val = hocr_font_recognition (l_page, s_text_out,
-    html, font_code, nikud, do_linguistics, progress);
+    layout_options.html, font_code, nikud, do_linguistics, progress);
 
   return return_val;
 }
@@ -437,6 +427,7 @@ hocr_do_ocr (const ho_pixbuf * pix_in,
   int *progress)
 {
 	HEBOCR_IMAGE_OPTIONS options;
+	HEBOCR_LAYOUT_OPTIONS layout_options;
 
 	options.adaptive = 0;
 	options.a_threshold = 0;
@@ -445,10 +436,17 @@ hocr_do_ocr (const ho_pixbuf * pix_in,
 	options.rotate = 0;
 	options.scale = 0;
 	options.threshold = 0;
+	
+	layout_options.font_spacing_code = 0;
+	layout_options.paragraph_setup = 0;
+	layout_options.slicing_threshold = 0;
+	layout_options.slicing_width = 0;
+	layout_options.line_leeway = 0;
+	layout_options.dir_ltr = 0;
+	layout_options.html = html;
 
-	return hocr_do_ocr_fine( pix_in, s_text_out, &options,
-     0, 0, 0, 0, 0, 0, html, font_code, 1, do_linguistics,
-    progress);
+	return hocr_do_ocr_fine( pix_in, s_text_out, &options, 
+	  layout_options, font_code, 1, do_linguistics,    progress);
 }
 
 const char *
