@@ -99,102 +99,74 @@ extern "C"
 
 typedef struct HEBOCR_IMAGE_OPTIONS{
 	unsigned char scale;
-	unsigned char no_auto_scale;
-	double rotate;
-	unsigned char no_auto_rotate;
-	unsigned char adaptive;
-	unsigned char threshold;
-	unsigned char a_threshold;
+	unsigned char no_auto_scale;	// do not try to autoscale
+	double rotate;			// rotation angle
+	unsigned char no_auto_rotate;	// do not try to autorotate
+	unsigned char adaptive;		// type of thresholding to use. 0-normal,1-no,2-fine.
+	unsigned char threshold;	// threshold the threshold to use 0..100 (0-auto)
+	unsigned char a_threshold;	// threshold to use for adaptive thresholding 0..100 (0-auto)
 } HEBOCR_IMAGE_OPTIONS;
 
 typedef struct HEBOCR_LAYOUT_OPTIONS {
-	int font_spacing_code;
-	int paragraph_setup;
-	int slicing_threshold;
-	int slicing_width;
+	int font_spacing_code;		//  -3 tight .. 0 .. 3 spaced
+	int paragraph_setup;		// free text blocks or boxed in columns
+	int slicing_threshold;		// percent of line fill to cut fonts
+	int slicing_width;		// what is a font wide
 	int line_leeway;
-	unsigned char dir_ltr;
-	unsigned char html;
+	unsigned char dir_ltr;		// true=ltr false=rtl
+	unsigned char html;		// 1 -> output format is html, 0 -> text
 } HEBOCR_LAYOUT_OPTIONS;
+
+typedef struct HEBOCR_FONT_OPTIONS {
+	int font_code;			// code for the font to use (use 0)
+	unsigned char nikud;		// recognize nikud in image
+	unsigned char do_linguistics;	// unused
+} HEBOCR_FONT_OPTIONS;
+
 
 /**
  convert a gray pixbuf to bitmap 
 
  @param pix_in the input ho_pixbuf
- @param scale the scale to use
- @param no_auto_scale do not try to autoscale
- @param rotate the rotation angle to use
- @param no_auto_rotate do not try to autorotate
- @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
- @param threshold the threshold to use 0..100 (0-auto)
- @param a_threshold the threshold to use for adaptive thresholding 0..100 (0-auto)
+ @param options image process options
  @param progress a progress indicator 0..100
  @return newly allocated gray ho_bitmap
  */
-  ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS *options, int *progress);
+ho_bitmap *hocr_image_processing( const ho_pixbuf* pix_in, HEBOCR_IMAGE_OPTIONS* options, int* progress );
 
 /**
  new ho_layout 
-
  @param m_in a pointer to a text bitmap
- @param font_spacing_code -3 tight .. 0 .. 3 spaced
- @param paragraph_setup free text blocks or boxed in columns
- @param slicing_threshold percent of line fill to cut fonts
- @param slicing_width what is a wide font
- @param dir true-ltr false-rtl
+ @param layout_options image layout options
  @param progress a progress indicator 0..100
  @return a newly allocated and filled layout
  */
-  ho_layout *hocr_layout_analysis (const ho_bitmap * m_in, 
-   HEBOCR_LAYOUT_OPTIONS layout_options, 
-   int *progress);
+ho_layout *hocr_layout_analysis( const ho_bitmap* m_in, HEBOCR_LAYOUT_OPTIONS layout_options, int* progress );
 
 /**
  fill a text buffer with fonts recognized from a page layout
 
  @param l_page the page layout to recognize
  @param s_text_out the text buffer to fill
- @param html output format is html
- @param font_code code for the font to use
- @param nikud recognize nikud in image
+ @param font_options  the font options to be used when recognizing text
+ @param html output HTML or plain text
  @param progress a progress indicator 0..100
  @return FALSE
  */
-  int
-    hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-    const unsigned char html, int font_code, const unsigned char nikud,
-    unsigned char do_linguistics, int *progress);
+int hocr_font_recognition( const ho_layout* l_page, ho_string* s_text_out, HEBOCR_FONT_OPTIONS *font_options, int html, int* progress );
 
  /**
  do ocr on a pixbuf 
 
  @param pix_in the input ho_pixbuf
  @param s_text_out the text buffer to fill
- @param scale the scale to use
- @param no_auto_scale do not try to autoscale
- @param rotate the rotation angle to use
- @param no_auto_rotate do not try to autorotate
- @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
- @param threshold the threshold to use 0..100 (0-auto)
- @param a_threshold the threshold to use for adaptive thresholding 0..100 (0-auto)
- @param m_in a pointer to a text bitmap
- @param font_spacing_code -3 tight .. 0 .. 3 spaced
- @param paragraph_setup free text blocks or boxed in columns
- @param slicing_threshold percent of line fill to cut fonts
- @param slicing_width what is a wide font
- @param dir true-ltr false-rtl
- @param html output format is html
- @param font_code code for the font to use
- @param nikud recognize nikud in image
+ @param options image options to be used
+ @param layout_options layout options to be used
+ @param font_options font options to be user
  @param progress a progress indicator 0..100
  @return FALSE
  */
-  int hocr_do_ocr_fine (const ho_pixbuf * pix_in,
-    ho_string * s_text_out,
-    HEBOCR_IMAGE_OPTIONS *options,
-    HEBOCR_LAYOUT_OPTIONS layout_options, 
-    int font_code, const unsigned char nikud,
-    const unsigned char do_linguistics, int *progress);
+int hocr_do_ocr_fine( const ho_pixbuf * pix_in, ho_string * s_text_out, HEBOCR_IMAGE_OPTIONS *options, HEBOCR_LAYOUT_OPTIONS layout_options, HEBOCR_FONT_OPTIONS *font_options, int *progress);
 
  /**
  do ocr on a pixbuf, using default values
@@ -206,9 +178,7 @@ typedef struct HEBOCR_LAYOUT_OPTIONS {
  @param progress a progress indicator 0..100
  @return FALSE
  */
-  int hocr_do_ocr (const ho_pixbuf * pix_in,
-    ho_string * s_text_out, const unsigned char html, int font_code,
-    const unsigned char do_linguistics, int *progress);
+int hocr_do_ocr( const ho_pixbuf * pix_in, ho_string * s_text_out, const unsigned char html, int font_code, const unsigned char do_linguistics, int *progress );
 
 /**
  return the build string

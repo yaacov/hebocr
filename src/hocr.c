@@ -216,39 +216,23 @@ hocr_layout_analysis (const ho_bitmap * m_in,
  @param progress a progress indicator 0..100
  @return FALSE
  */
-int
-hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
-  const unsigned char html, int font_code, const unsigned char nikud,
-  unsigned char do_linguistics, int *progress)
+int hocr_font_recognition( const ho_layout* l_page, ho_string* s_text_out, HEBOCR_FONT_OPTIONS *font_options, int html, int* progress )
 {
   int block_index;
-
   int line_index;
-
   int word_index;
-
   int font_index;
-
   int current_font_number = 0;
-
   int number_of_fonts = l_page->number_of_fonts;
-
   ho_bitmap *m_text = NULL;
-
   ho_bitmap *m_mask = NULL;
-
   ho_bitmap *m_font_main_sign = NULL;
-
   ho_bitmap *m_font_nikud = NULL;
 
   char text_out[200];
-
   const char *font;
-
   const char *font_nikud;
-
   const char *font_dagesh;
-
   const char *font_shin;
 
   /* init progress */
@@ -326,14 +310,14 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
           last_char_i = char_i;
           font =
             ho_recognize_font (m_font_main_sign, m_mask,
-            font_code, do_linguistics, word_end, word_start, &char_i,
+	    font_options->font_code, font_options->do_linguistics, word_end, word_start, &char_i,
             last_char_i);
 
           /* insert font to text out */
           ho_string_cat (s_text_out, font);
 
           /* get font nikud */
-          if (nikud)
+	  if (font_options->nikud)
           {
             m_font_nikud = ho_bitmap_clone (m_text);
             if (!m_font_nikud)
@@ -342,7 +326,7 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
 
             /* recognize font from images */
             font_nikud = ho_recognize_nikud (m_font_nikud, m_mask,
-              font_code, &font_dagesh, &font_shin);
+	      font_options->font_code, &font_dagesh, &font_shin);
 
             /* free bitmaps */
             ho_bitmap_free (m_font_nikud);
@@ -388,17 +372,10 @@ hocr_font_recognition (const ho_layout * l_page, ho_string * s_text_out,
   return FALSE;
 }
 
-int
-hocr_do_ocr_fine (const ho_pixbuf * pix_in,
-  ho_string * s_text_out,
-  HEBOCR_IMAGE_OPTIONS *options,
-  HEBOCR_LAYOUT_OPTIONS layout_options, 
-  int font_code, const unsigned char nikud,
-  const unsigned char do_linguistics, int *progress)
+int hocr_do_ocr_fine (const ho_pixbuf * pix_in, ho_string * s_text_out, HEBOCR_IMAGE_OPTIONS *options, HEBOCR_LAYOUT_OPTIONS layout_options, HEBOCR_FONT_OPTIONS *font_options, int *progress)
 {
   ho_bitmap *m_in = NULL;
   ho_layout *l_page = NULL;
-  int return_val;
   if (!pix_in)
     return TRUE;
 
@@ -414,20 +391,14 @@ hocr_do_ocr_fine (const ho_pixbuf * pix_in,
     return TRUE;
   }
 
-  return_val = hocr_font_recognition (l_page, s_text_out,
-    layout_options.html, font_code, nikud, do_linguistics, progress);
-
-  return return_val;
+  return hocr_font_recognition( l_page, s_text_out, font_options, layout_options.html, progress );
 }
 
-int
-hocr_do_ocr (const ho_pixbuf * pix_in,
-  ho_string * s_text_out,
-  const unsigned char html, int font_code, const unsigned char do_linguistics,
-  int *progress)
+int hocr_do_ocr( const ho_pixbuf * pix_in, ho_string * s_text_out, const unsigned char html, int font_code, const unsigned char do_linguistics, int *progress )
 {
-	HEBOCR_IMAGE_OPTIONS options;
+	HEBOCR_IMAGE_OPTIONS  options;
 	HEBOCR_LAYOUT_OPTIONS layout_options;
+	HEBOCR_FONT_OPTIONS   font_options;
 
 	options.adaptive = 0;
 	options.a_threshold = 0;
@@ -445,8 +416,11 @@ hocr_do_ocr (const ho_pixbuf * pix_in,
 	layout_options.dir_ltr = 0;
 	layout_options.html = html;
 
-	return hocr_do_ocr_fine( pix_in, s_text_out, &options, 
-	  layout_options, font_code, 1, do_linguistics,    progress);
+	font_options.do_linguistics = do_linguistics;
+	font_options.font_code = font_code;
+	font_options.nikud  = 1;
+
+	return hocr_do_ocr_fine( pix_in, s_text_out, &options, layout_options, &font_options, progress);
 }
 
 const char *
