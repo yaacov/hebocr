@@ -1,4 +1,3 @@
-
 /***************************************************************************
  *            ho_pixbuf.c
  *
@@ -35,9 +34,19 @@
 #include "ho_bitmap.h"
 #include "ho_pixbuf.h"
 
-ho_pixbuf *
-ho_pixbuf_new (const unsigned char n_channels,
-  const int width, const int height, const int rowstride)
+/**
+ Allocate a new ho_pixbuf.
+
+ The new ho_pixbuf is createw with the size you specified in the
+ parameters, and filled in black color (255).
+
+ @param n_channels number of color channels
+ @param height hight of pixbuf in pixels
+ @param width width of pixbuf in pixels
+ @param rowstride number of bytes in a row
+ @return newly allocated ho_pixbuf
+ */
+ho_pixbuf* ho_pixbuf_new( int n_channels, int width, int height, int rowstride )
 {
   ho_pixbuf *pix = NULL;
 
@@ -965,7 +974,7 @@ ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf * pix,
  @param size kernel size to use for adaptive thresholding
  @return newly allocated b/w ho_bitmap
  */
-ho_bitmap* ho_pixbuf_to_bitmap_wrapper( const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS *image_options, size_t size )
+ho_bitmap* ho_pixbuf_to_bitmap_wrapper( const ho_pixbuf* pix_in, HEBOCR_IMAGE_OPTIONS* image_options, size_t size )
 {
   ho_pixbuf *pix = NULL;
   ho_pixbuf *pix_temp = NULL;

@@ -72,16 +72,7 @@ typedef struct
   unsigned char *data;
 } ho_pixbuf;
 
-/**
- new ho_pixbuf 
- @param n_channels number of color channels
- @param height hight of pixbuf in pixels
- @param width width of pixbuf in pixels
- @param rowstride number of bytes in a row
- @return newly allocated ho_pixbuf
- */
-ho_pixbuf *ho_pixbuf_new (const unsigned char n_channels,
-  const int width, const int height, const int rowstride);
+ho_pixbuf* ho_pixbuf_new( int n_channels, int width, int height, int rowstride );
 
 /**
  clone ho_pixbuf
