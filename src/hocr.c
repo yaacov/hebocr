@@ -63,7 +63,7 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
   *progress = 25;
 
   /* do we want to auto scale ? */
-  if (!image_options->scale && !image_options->no_auto_scale)
+  if (!image_options->scale && image_options->auto_scale)
   {
     /* get fonts size for autoscale */
     if (ho_dimentions_font_width_height_nikud (bitmap_temp, 6, 200, 6, 200))
@@ -111,7 +111,7 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
 
     bitmap_out = bitmap_temp;
   }
-  else if (!image_options->no_auto_rotate)
+  else if (image_options->auto_rotate)
   {
     /* get fonts size for auto angle */
     if (ho_dimentions_font_width_height_nikud (bitmap_out, 6, 200, 6, 200))
@@ -399,8 +399,8 @@ int hocr_do_ocr( const ho_pixbuf * pix_in, ho_string * s_text_out, const unsigne
 
 	options.adaptive = 0;
 	options.a_threshold = 0;
-	options.no_auto_rotate = 0;
-	options.no_auto_scale = 0;
+	options.auto_rotate = 1;
+	options.auto_scale = 1;
 	options.rotate = 0;
 	options.scale = 0;
 	options.threshold = 0;

@@ -54,9 +54,9 @@
 
 typedef struct HEBOCR_IMAGE_OPTIONS{
 	unsigned char scale;
-	unsigned char no_auto_scale;	// do not try to autoscale
+	unsigned char auto_scale;	// do try to autoscale
 	double rotate;			// rotation angle
-	unsigned char no_auto_rotate;	// do not try to autorotate
+	unsigned char auto_rotate;	// do try to autorotate
 	unsigned char adaptive;		// type of thresholding to use. 0-normal,1-no,2-fine.
 	unsigned char threshold;	// threshold the threshold to use 0..100 (0-auto)
 	unsigned char a_threshold;	// threshold to use for adaptive thresholding 0..100 (0-auto)
