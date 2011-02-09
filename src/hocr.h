@@ -61,40 +61,9 @@ extern "C"
 #	define VERSION "0.12"
 #endif
 
-/* color image map */
 #include <ho_pixbuf.h>
-
-/* gray array (double) */
-#include <ho_array.h>
-#include <ho_array_hist.h>
-#include <ho_array_stat.h>
-
-/* binary image map */
 #include <ho_bitmap.h>
-#include <ho_bitmap_hist.h>
-
-/* object image map */
-#include <ho_objmap.h>
-
-/* layout container for hocr segmentations */
-#include <ho_layout.h>
-#include <ho_dimentions.h>
-#include <ho_segment.h>
-
-/* font recognition */
-#include <ho_font.h>
-#include <ho_recognize.h>
-#include <ho_recognize_nikud.h>
-
-/* linguistics */
-#include <ho_linguistics.h>
-
-/* specific font recognition */
-
-/* string utilities */
 #include <ho_string.h>
-
-/* wrapper function */
 
 
 typedef struct HEBOCR_IMAGE_OPTIONS{
@@ -124,15 +93,7 @@ typedef struct HEBOCR_FONT_OPTIONS {
 } HEBOCR_FONT_OPTIONS;
 
 
-/**
- convert a gray pixbuf to bitmap 
-
- @param pix_in the input ho_pixbuf
- @param options image process options
- @param progress a progress indicator 0..100
- @return newly allocated gray ho_bitmap
- */
-ho_bitmap *hocr_image_processing( const ho_pixbuf* pix_in, HEBOCR_IMAGE_OPTIONS* options, int* progress );
+ho_bitmap *hocr_image_processing( const ho_pixbuf* pix_in, HEBOCR_IMAGE_OPTIONS* image_options, int* progress );
 
 /**
  new ho_layout 
@@ -141,7 +102,7 @@ ho_bitmap *hocr_image_processing( const ho_pixbuf* pix_in, HEBOCR_IMAGE_OPTIONS*
  @param progress a progress indicator 0..100
  @return a newly allocated and filled layout
  */
-ho_layout *hocr_layout_analysis( const ho_bitmap* m_in, HEBOCR_LAYOUT_OPTIONS layout_options, int* progress );
+ho_layout *hocr_layout_analysis( const ho_bitmap* m_in, HEBOCR_LAYOUT_OPTIONS* layout_options, int* progress );
 
 /**
  fill a text buffer with fonts recognized from a page layout
@@ -166,7 +127,7 @@ int hocr_font_recognition( const ho_layout* l_page, ho_string* s_text_out, HEBOC
  @param progress a progress indicator 0..100
  @return FALSE
  */
-int hocr_do_ocr_fine( const ho_pixbuf * pix_in, ho_string * s_text_out, HEBOCR_IMAGE_OPTIONS *options, HEBOCR_LAYOUT_OPTIONS layout_options, HEBOCR_FONT_OPTIONS *font_options, int *progress);
+int hocr_do_ocr_fine( const ho_pixbuf * pix_in, ho_string * s_text_out, HEBOCR_IMAGE_OPTIONS *options, HEBOCR_LAYOUT_OPTIONS *layout_options, HEBOCR_FONT_OPTIONS *font_options, int *progress);
 
  /**
  do ocr on a pixbuf, using default values

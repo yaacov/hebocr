@@ -28,6 +28,7 @@
 #include <math.h>
 
 #include "hebocr_globals.h"
+#include "ho_dimentions.h"
 #include "ho_linguistics.h"
 #include "ho_bitmap.h"
 #include "ho_objmap.h"

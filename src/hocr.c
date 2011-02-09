@@ -1,4 +1,3 @@
-
 /***************************************************************************
  *            hocr.c
  *
@@ -25,25 +24,25 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <ho_layout.h>
+#include <ho_dimentions.h>
+#include <ho_font.h>
+#include <ho_recognize.h>
+#include <ho_recognize_nikud.h>
+
 #include "hebocr_globals.h"
 #include "hocr.h"
 
 
 /**
- convert a gray pixbuf to bitmap 
+ convert a gray pixbuf to bitmap
 
  @param pix_in the input ho_pixbuf
- @param scale the scale to use
- @param no_auto_scale do not try to autoscale
- @param rotate the rotation angle to use
- @param no_auto_rotate do not try to autorotate
- @param adaptive what type of thresholding to use
- @param threshold the threshold to use 0..100
- @param a_threshold the threshold to use for adaptive thresholding 0..100
+ @param options image process options
  @param progress a progress indicator 0..100
  @return newly allocated gray ho_bitmap
  */
-ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS *options, int *progress)
+ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS *image_options, int *progress)
 {
 
   ho_bitmap *bitmap_out = NULL;
@@ -57,7 +56,7 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
 
   /* get the raw b/w bitmap from the pixbuf */
   bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
-    options->scale, options->adaptive, options->threshold, options->a_threshold, size);
+    image_options->scale, image_options->adaptive, image_options->threshold, image_options->a_threshold, size);
   if (!bitmap_temp)
     return NULL;
 
@@ -65,7 +64,7 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
   *progress = 25;
 
   /* do we want to auto scale ? */
-  if (!options->scale && !options->no_auto_scale)
+  if (!image_options->scale && !image_options->no_auto_scale)
   {
     /* get fonts size for autoscale */
     if (ho_dimentions_font_width_height_nikud (bitmap_temp, 6, 200, 6, 200))
@@ -84,7 +83,7 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
       /* re-create bitmap */
       ho_bitmap_free (bitmap_temp);
       bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
-	scale_by, options->adaptive, options->threshold, options->a_threshold, size);
+	scale_by, image_options->adaptive, image_options->threshold, image_options->a_threshold, size);
       if (!bitmap_temp)
         return NULL;
     }
@@ -105,16 +104,16 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
   *progress = 75;
 
   /* rotate image */
-  if (options->rotate)
+  if (image_options->rotate)
   {
-    bitmap_temp = ho_bitmap_rotate (bitmap_out, options->rotate);
+    bitmap_temp = ho_bitmap_rotate (bitmap_out, image_options->rotate);
     ho_bitmap_free (bitmap_out);
     if (!bitmap_temp)
       return NULL;
 
     bitmap_out = bitmap_temp;
   }
-  else if (!options->no_auto_rotate)
+  else if (!image_options->no_auto_rotate)
   {
     /* get fonts size for auto angle */
     if (ho_dimentions_font_width_height_nikud (bitmap_out, 6, 200, 6, 200))
@@ -149,10 +148,10 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
  */
 ho_layout *
 hocr_layout_analysis (const ho_bitmap * m_in, 
-  HEBOCR_LAYOUT_OPTIONS layout_options, 
+  HEBOCR_LAYOUT_OPTIONS* layout_options,
   int *progress)
 {
-  int cols = layout_options.paragraph_setup;
+  int cols = layout_options->paragraph_setup;
   int block_index;
   int line_index;
   int word_index;
@@ -167,7 +166,7 @@ hocr_layout_analysis (const ho_bitmap * m_in,
     cols = ho_dimentions_get_columns (m_in);
 
   /* create a new layout */
-  layout_out = ho_layout_new (m_in, layout_options.font_spacing_code, cols, layout_options.dir_ltr);
+  layout_out = ho_layout_new (m_in, layout_options->font_spacing_code, cols, layout_options->dir_ltr);
   if (!layout_out)
     return NULL;
 
@@ -190,7 +189,7 @@ hocr_layout_analysis (const ho_bitmap * m_in,
         word_index < layout_out->n_words[block_index][line_index]; word_index++)
       {
         ho_layout_create_font_mask (layout_out, block_index, line_index,
-          word_index, layout_options.slicing_threshold, layout_options.slicing_width, layout_options.line_leeway);
+	  word_index, layout_options->slicing_threshold, layout_options->slicing_width, layout_options->line_leeway);
       }
 
       /* update progress */
@@ -372,7 +371,7 @@ int hocr_font_recognition( const ho_layout* l_page, ho_string* s_text_out, HEBOC
   return FALSE;
 }
 
-int hocr_do_ocr_fine (const ho_pixbuf * pix_in, ho_string * s_text_out, HEBOCR_IMAGE_OPTIONS *options, HEBOCR_LAYOUT_OPTIONS layout_options, HEBOCR_FONT_OPTIONS *font_options, int *progress)
+int hocr_do_ocr_fine (const ho_pixbuf * pix_in, ho_string * s_text_out, HEBOCR_IMAGE_OPTIONS *options, HEBOCR_LAYOUT_OPTIONS* layout_options, HEBOCR_FONT_OPTIONS *font_options, int *progress)
 {
   ho_bitmap *m_in = NULL;
   ho_layout *l_page = NULL;
@@ -391,7 +390,7 @@ int hocr_do_ocr_fine (const ho_pixbuf * pix_in, ho_string * s_text_out, HEBOCR_I
     return TRUE;
   }
 
-  return hocr_font_recognition( l_page, s_text_out, font_options, layout_options.html, progress );
+  return hocr_font_recognition( l_page, s_text_out, font_options, layout_options->html, progress );
 }
 
 int hocr_do_ocr( const ho_pixbuf * pix_in, ho_string * s_text_out, const unsigned char html, int font_code, const unsigned char do_linguistics, int *progress )
@@ -420,7 +419,7 @@ int hocr_do_ocr( const ho_pixbuf * pix_in, ho_string * s_text_out, const unsigne
 	font_options.font_code = font_code;
 	font_options.nikud  = 1;
 
-	return hocr_do_ocr_fine( pix_in, s_text_out, &options, layout_options, &font_options, progress);
+	return hocr_do_ocr_fine( pix_in, s_text_out, &options, &layout_options, &font_options, progress);
 }
 
 const char *
