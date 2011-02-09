@@ -958,12 +958,14 @@ ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf * pix,
   return m_out;
 }
 
-ho_bitmap *
-ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
-  const unsigned char scale,
-  const unsigned char adaptive,
-  const unsigned char threshold,
-  const unsigned char a_threshold, const unsigned char size)
+/**
+ convert a color of gray pixbuf to bitmap wrapper function
+ @param pix_in the input ho_pixbuf
+ @param image_options configuration options. Used items are: scale, adaptive, threshold, a_treshold
+ @param size kernel size to use for adaptive thresholding
+ @return newly allocated b/w ho_bitmap
+ */
+ho_bitmap* ho_pixbuf_to_bitmap_wrapper( const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS *image_options, size_t size )
 {
   ho_pixbuf *pix = NULL;
   ho_pixbuf *pix_temp = NULL;
@@ -971,24 +973,24 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
 
   /* if pix is color convert to gray scale */
   if (pix_in->n_channels > 1)
-    pix = ho_pixbuf_color_to_gray (pix_in);
+    pix = ho_pixbuf_color_to_gray(pix_in);
   else
-    pix = ho_pixbuf_clone (pix_in);
+    pix = ho_pixbuf_clone(pix_in);
 
   if (!pix)
     return NULL;
 
   /* streach picture grays */
-  pix_temp = ho_pixbuf_linear_filter (pix);
-  ho_pixbuf_free (pix);
+  pix_temp = ho_pixbuf_linear_filter(pix);
+  ho_pixbuf_free(pix);
   if (!pix_temp)
     return NULL;
   pix = pix_temp;
 
   /* scale */
-  if (scale > 1)
+  if (image_options->scale > 1)
   {
-    pix_temp = ho_pixbuf_scale (pix, scale);
+    pix_temp = ho_pixbuf_scale (pix, image_options->scale);
     ho_pixbuf_free (pix);
     if (!pix_temp)
       return NULL;
@@ -996,20 +998,20 @@ ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
   }
 
   /* convert to b/w bitmap */
-  switch (adaptive)
+  switch(image_options->adaptive)
   {
   case 0:
-    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, size, a_threshold);
+    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, image_options->threshold, size, image_options->a_threshold);
     break;
   case 1:
-    m_bw = ho_pixbuf_to_bitmap (pix, threshold);
+    m_bw = ho_pixbuf_to_bitmap (pix, image_options->threshold);
     break;
   case 2:
     m_bw =
-      ho_pixbuf_to_bitmap_adaptive_fine (pix, threshold, size, a_threshold);
+      ho_pixbuf_to_bitmap_adaptive_fine (pix, image_options->threshold, size, image_options->a_threshold);
     break;
   default:
-    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, threshold, size, a_threshold);
+    m_bw = ho_pixbuf_to_bitmap_adaptive (pix, image_options->threshold, size, image_options->a_threshold);
     break;
   }
 

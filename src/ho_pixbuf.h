@@ -1,4 +1,3 @@
-
 /***************************************************************************
  *            ho_pixbuf.h
  *
@@ -31,9 +30,12 @@
 #ifndef HO_PIXBUF_H
 #define HO_PIXBUF_H 1
 
+#include <hebocr_globals.h>
 #include <ho_bitmap.h>
 #include <ho_objmap.h>
 #include <ho_layout.h>
+
+#include <stddef.h>
 
 /* utility defines */
 #define ho_pixbuf_min3(a,b,c) ((((a)<(b))&&((a)<(c))) ? (a) : (((b)<(c)) ? (b) : (c)))
@@ -318,22 +320,7 @@ ho_bitmap *ho_pixbuf_to_bitmap_adaptive_fine (const ho_pixbuf *
   unsigned char threshold,
   unsigned char size, unsigned char adaptive_threshold);
 
-/**
- convert a color of gray pixbuf to bitmap wrapper function
- @param pix_in the input ho_pixbuf
- @param scale the scale to use
- @param adaptive what type of thresholding to use. 0-normal,1-no,2-fine.
- @param threshold the threshold to use 0..100
- @param a_threshold the threshold to use for adaptive thresholding 0..100
- @param size kernel size to use for adaptive thresholding 
- @return newly allocated b/w ho_bitmap
- */
-ho_bitmap *
-ho_pixbuf_to_bitmap_wrapper (const ho_pixbuf * pix_in,
-  const unsigned char scale,
-  const unsigned char adaptive,
-  const unsigned char threshold, const unsigned char a_threshold,
-  const unsigned char size);
+ho_bitmap* ho_pixbuf_to_bitmap_wrapper( const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS *image_options, size_t size );
 
 /**
  draw a line from x1,y1 to x2,y2

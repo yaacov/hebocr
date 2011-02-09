@@ -55,8 +55,7 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
   *progress = 0;
 
   /* get the raw b/w bitmap from the pixbuf */
-  bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
-    image_options->scale, image_options->adaptive, image_options->threshold, image_options->a_threshold, size);
+  bitmap_temp = ho_pixbuf_to_bitmap_wrapper(pix_in, image_options, size);
   if (!bitmap_temp)
     return NULL;
 
@@ -82,8 +81,7 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
     {
       /* re-create bitmap */
       ho_bitmap_free (bitmap_temp);
-      bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in,
-	scale_by, image_options->adaptive, image_options->threshold, image_options->a_threshold, size);
+      bitmap_temp = ho_pixbuf_to_bitmap_wrapper (pix_in, image_options, size);
       if (!bitmap_temp)
         return NULL;
     }

@@ -52,5 +52,32 @@
 #	define VERSION "0.12"
 #endif    
 
+typedef struct HEBOCR_IMAGE_OPTIONS{
+	unsigned char scale;
+	unsigned char no_auto_scale;	// do not try to autoscale
+	double rotate;			// rotation angle
+	unsigned char no_auto_rotate;	// do not try to autorotate
+	unsigned char adaptive;		// type of thresholding to use. 0-normal,1-no,2-fine.
+	unsigned char threshold;	// threshold the threshold to use 0..100 (0-auto)
+	unsigned char a_threshold;	// threshold to use for adaptive thresholding 0..100 (0-auto)
+} HEBOCR_IMAGE_OPTIONS;
+
+typedef struct HEBOCR_LAYOUT_OPTIONS {
+	int font_spacing_code;		//  -3 tight .. 0 .. 3 spaced
+	int paragraph_setup;		// free text blocks or boxed in columns
+	int slicing_threshold;		// percent of line fill to cut fonts
+	int slicing_width;		// what is a font wide
+	int line_leeway;
+	unsigned char dir_ltr;		// true=ltr false=rtl
+	unsigned char html;		// 1 -> output format is html, 0 -> text
+} HEBOCR_LAYOUT_OPTIONS;
+
+typedef struct HEBOCR_FONT_OPTIONS {
+	int font_code;			// code for the font to use (use 0)
+	unsigned char nikud;		// recognize nikud in image
+	unsigned char do_linguistics;	// unused
+} HEBOCR_FONT_OPTIONS;
+
+
 
 #endif // HEBOCR_GLOBALS_H
