@@ -102,9 +102,9 @@ ho_bitmap *hocr_image_processing (const ho_pixbuf * pix_in, HEBOCR_IMAGE_OPTIONS
   *progress = 75;
 
   /* rotate image */
-  if (image_options->rotate)
+  if (image_options->rotation_angle != 0)
   {
-    bitmap_temp = ho_bitmap_rotate (bitmap_out, image_options->rotate);
+    bitmap_temp = ho_bitmap_rotate(bitmap_out, image_options->rotation_angle);
     ho_bitmap_free (bitmap_out);
     if (!bitmap_temp)
       return NULL;
@@ -401,7 +401,7 @@ int hocr_do_ocr( const ho_pixbuf * pix_in, ho_string * s_text_out, const unsigne
 	options.a_threshold = 0;
 	options.auto_rotate = 1;
 	options.auto_scale = 1;
-	options.rotate = 0;
+	options.rotation_angle = 0;
 	options.scale = 0;
 	options.threshold = 0;
 	
