@@ -41,7 +41,7 @@
 
 static const char *ho_sign_array[HO_ARRAY_OUT_SIZE] =
   { "*", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ",
-  "ך", "ל", "מ", "ם", "נ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",
+  "ך", "ל", "מ", "ם", "� ", "ן", "ס", "ע", "פ", "ף", "צ", "ץ",
   "ק", "ר", "ש", "ת", ".", ",",
   "'", "\"", "?", "!", ":", ";", ")", "(", "-", "+", "/",
   "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
@@ -2070,7 +2070,7 @@ ho_recognize_create_array_in (const ho_bitmap * m_text,
 double
 ho_recognize_array (const double *array_in, const int sign_index, int font_code)
 {
-  double return_value;
+  double return_value = 0;
 
   if (font_code == 0)
   {
