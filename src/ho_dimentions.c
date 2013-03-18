@@ -540,9 +540,8 @@ ho_dimentions_get_lines_angle (const ho_bitmap * m)
     }
   }
 
-  ho_bitmap_free (m_temp);
-
   width = 2 * m_temp->width / 4;
+  ho_bitmap_free (m_temp);
 
   /* sanity check */
   if ((y_left - y_right) == 0 || width < 10)

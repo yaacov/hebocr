@@ -1345,8 +1345,10 @@ ho_recognize_holes_dimentions (const ho_bitmap * m_text,
     return TRUE;
 
   sum = ho_bitmap_filter_count_objects (m_holes);
-  if (sum > 2 || sum < 1)
+  if (sum > 2 || sum < 1) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   /* get line start and end */
   x = m_mask->width / 2;
@@ -1369,8 +1371,10 @@ ho_recognize_holes_dimentions (const ho_bitmap * m_text,
   font_end = y + 1;
   font_height = font_end - font_start;
 
-  if (!font_height || !line_height)
+  if (!font_height || !line_height) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   sum = 0;
   for (x = 0; x < m_mask->width && sum == 0; x++)
@@ -1384,8 +1388,10 @@ ho_recognize_holes_dimentions (const ho_bitmap * m_text,
   font_end_x = x + 1;
   font_width = font_end_x - font_start_x;
 
-  if (!font_width)
+  if (!font_width) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   *height = (double) font_height / (double) line_height;
   *width = (double) font_width / (double) line_height;
@@ -1472,6 +1478,7 @@ ho_recognize_holes_dimentions (const ho_bitmap * m_text,
   if (*bottom_right > 1.0)
     *bottom_right = 1.0;
 
+  ho_bitmap_free(m_holes);
   return FALSE;
 }
 
@@ -1532,8 +1539,10 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
     return TRUE;
 
   sum = ho_bitmap_filter_count_objects (m_holes);
-  if (sum > 2 || sum < 1)
+  if (sum > 2 || sum < 1) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   /* get line start and end */
   x = m_mask->width / 2;
@@ -1556,8 +1565,10 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   font_end = y + 1;
   font_height = font_end - font_start;
 
-  if (!font_height || !line_height)
+  if (!font_height || !line_height) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   sum = 0;
   for (x = 0; x < m_mask->width && sum == 0; x++)
@@ -1571,13 +1582,17 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   font_end_x = x + 1;
   font_width = font_end_x - font_start_x;
 
-  if (!font_width)
+  if (!font_width) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   /* get horizontal left egdes */
   m_bars = ho_font_edges_left (m_holes, m_mask);
-  if (!m_bars)
+  if (!m_bars) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
@@ -1603,8 +1618,10 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
   m_bars = ho_font_edges_right (m_holes, m_mask);
-  if (!m_bars)
+  if (!m_bars) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   /* look for a horizontal line in bitmap */
   x = m_bars->width / 2;
@@ -1629,8 +1646,10 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
 
   ho_bitmap_free (m_bars);
   m_bars = ho_font_edges_top (m_holes, m_mask);
-  if (!m_bars)
+  if (!m_bars) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   /* look for a vertical line in bitmap */
   y = m_bars->height / 2;
@@ -1656,8 +1675,10 @@ ho_recognize_holes_edges (const ho_bitmap * m_text,
   /* get horizontal right edges */
   ho_bitmap_free (m_bars);
   m_bars = ho_font_edges_bottom (m_holes, m_mask);
-  if (!m_bars)
+  if (!m_bars) {
+    ho_bitmap_free(m_holes);
     return TRUE;
+  }
 
   /* look for a vertical line in bitmap */
   y = m_bars->height / 2;

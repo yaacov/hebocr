@@ -979,9 +979,14 @@ ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
   if (!m_obj)
     return NULL;
   m_out = ho_bitmap_new (m->width, m->height);
+  if (!m_out)
+  {
+    ho_objmap_free (m_obj);
+    return NULL;
+  }
+
   m_out->x = m->x;
   m_out->y = m->y;
-
   m_out->type = m->type;
   m_out->font_height = m->font_height;
   m_out->font_width = m->font_width;
@@ -991,11 +996,6 @@ ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
   m_out->com_line_fill = m->com_line_fill;
   m_out->nikud = m->nikud;
 
-  if (!m_out)
-  {
-    ho_objmap_free (m_obj);
-    return NULL;
-  }
 
   /* loop over all the objects and box them */
   for (index = 0; index < m_obj->obj_list->size; index++)
@@ -1014,7 +1014,7 @@ ho_bitmap_filter_boxes (const ho_bitmap * m, const int leeway_down,
 
     ho_bitmap_draw_box (m_out, x, y, width, height);
   }
-
+  ho_objmap_free (m_obj);
   return m_out;
 }
 
@@ -1126,6 +1126,7 @@ ho_bitmap_filter_set_height (const ho_bitmap * m, const int height,
     ho_bitmap_or (m_out, m_temp2);
     ho_bitmap_free (m_temp2);
   }
+  ho_objmap_free (m_obj);
 
   return m_out;
 }
