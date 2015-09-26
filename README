@@ -1,35 +1,17 @@
-hebOCR is a free Hebrew OCR (optical character recognition) library based on the
-hebocr c/c++ library originally written by Dr. by Kobi Zamir. The aim of this
-project is to develop a fully open-source and free OCR (or hebrew definition)
+hebOCR:
+------
+hebOCR is a Hebrew character recognition library
+https://github.com/yaacov/hebocr
 
+Debian package
+--------------
+To install hebocr (hocr) on a debian system:
+apt-get install hocr-gtk
 
-Official downloads are available at http://code.google.com/p/hebocr/downloads/list
-Full code is available using mercrial:
+hebOCR or HOCR
+--------------
+The original name is HOCR. It's what is used internally in the sources. 
+But, when google published it's hOCR format for representing OCR output, 
+we decided to change the name to hebOCR to clear up any disambiguation.
 
-hg clone https://hebocr.googlecode.com/hg/ hebocr
-
-If you want to submit code, contact me via my email and I will give you
-permissions to the repository.
-
-This library is a fork of libhocr. The fork was done since the library was
-not really maintained, and the rename was done due to Google's HOCR tools
-project. See:
-
-	http://en.wikipedia.org/wiki/HOCR
-	http://code.google.com/p/hocr-tools/
-
-Diego, diegoiast@gmail.com
-
--------- original --------------
-About:
-
-  OCR is a Hebrew character recognition library
-  http://hocr.berlios.de
-
-How can I help ?
-
-  Get the code via the svn repository try it, 
-  fix it and submit patches to the code.
-
-Yaacov Zamir <kzamir_at_walla.co.il> 
-Monday, 10 Av 5765, August 15 2005
+Wednesday, 19 January 2011, 14 Sh'vat 5771
